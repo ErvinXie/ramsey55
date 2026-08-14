@@ -466,6 +466,13 @@ the compaction log; the independent auditor and UNKNOWN-only composer also
 check and carry that log. On a real J297775 leaf this reduced 31,254,828 bytes
 to 15,791,261 bytes, and both producer replay and a separate auditor returned
 `VERIFIED`. Tiny five-byte smoke proofs correctly retained their originals.
+The producer also accepts `--scratch-directory`: augmented CNFs, raw DRAT,
+and compact candidates live in that temporary filesystem, while only the
+checked retained proof is atomically published to the output directory.
+Cross-filesystem publication uses a uniquely named partial copy followed by
+an atomic rename. A `/dev/shm` ARM smoke left no temporary residue and its two
+published proofs passed a separate replay; this avoids multi-gigabyte
+transient growth on the 251-GiB persistent volume.
 
 `tools/audit_materialized_proof_chain.py` provides a separate whole-chain
 replay. It byte-snapshots `state.json`, audits every proof manifest, rebuilds
@@ -500,6 +507,11 @@ formula and complete ordered cube-family binding are identical. Cross-solver
 composition retains the primary manifest's default solver and records a
 per-result solver binary/hash override for every replacement from another
 solver; the leaf auditor checks those overrides before replaying the proof.
+The immutable-state path was exercised on the J297775 pre-switch snapshot:
+54 manifests and 53 refinement rounds through round 55 were replayed, covering
+443 refined parents and ending at the recorded 17 VERIFIED/17 UNKNOWN
+manifest. The audit hash is
+`944477bfab2b93d3025234441e81573b1734072e4466a4ec0bace99bde57e295`.
 
 A 120-second ARM portfolio on frozen hard frontiers found CaDiCaL stronger
 than default Kissat on these residuals. It closed 3/17 J297775 open parents,

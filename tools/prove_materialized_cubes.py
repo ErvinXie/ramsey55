@@ -5,8 +5,11 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
+import errno
 import hashlib
 import json
+import os
+import shutil
 import subprocess
 import tempfile
 import threading
@@ -45,6 +48,29 @@ def atomic_json(path: Path, value: object) -> None:
     temporary.replace(path)
 
 
+def publish_proof(source: Path, destination: Path) -> None:
+    """Atomically publish a checked proof, including across filesystems."""
+
+    part = destination.with_name(f".{destination.name}.publish.part")
+    if destination.exists() or part.exists():
+        raise RuntimeError(f"refusing to overwrite proof artifact {destination}")
+    try:
+        source.replace(destination)
+        return
+    except OSError as error:
+        if error.errno != errno.EXDEV:
+            raise
+    try:
+        shutil.copyfile(source, part)
+        with part.open("rb") as stream:
+            os.fsync(stream.fileno())
+        part.replace(destination)
+        source.unlink()
+    except BaseException:
+        part.unlink(missing_ok=True)
+        raise
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("cnf", type=Path)
@@ -76,6 +102,11 @@ def main() -> int:
         action="store_true",
         help="retain a smaller independently replayed binary DRAT core when possible",
     )
+    parser.add_argument(
+        "--scratch-directory",
+        type=Path,
+        help="place transient CNFs and raw/compact proof candidates here",
+    )
     arguments = parser.parse_args()
     if arguments.jobs <= 0 or arguments.checkpoint_every <= 0 or arguments.seconds < 0:
         parser.error(
@@ -89,6 +120,11 @@ def main() -> int:
     ):
         if not path.is_file():
             parser.error(f"{label} does not exist: {path}")
+    if (
+        arguments.scratch_directory is not None
+        and not arguments.scratch_directory.is_dir()
+    ):
+        parser.error(f"scratch directory does not exist: {arguments.scratch_directory}")
 
     output = arguments.output_directory
     output.mkdir(parents=True, exist_ok=True)
@@ -130,12 +166,20 @@ def main() -> int:
         },
         "per_cube_seconds": arguments.seconds,
         "compact_proof": arguments.compact_proof,
+        "scratch_directory": (
+            str(arguments.scratch_directory)
+            if arguments.scratch_directory is not None
+            else None
+        ),
         "jobs": min(arguments.jobs, len(cubes)),
         "results": results,
     }
     atomic_json(progress_path, document)
 
-    with tempfile.TemporaryDirectory(prefix="materialized-cubes-", dir=output) as raw:
+    temporary_parent = arguments.scratch_directory or output
+    with tempfile.TemporaryDirectory(
+        prefix="materialized-cubes-", dir=temporary_parent
+    ) as raw:
         temporary_directory = Path(raw)
 
         def prove(item: tuple[int, list[int]]) -> tuple[int, dict[str, Any]]:
@@ -149,15 +193,15 @@ def main() -> int:
             )
             augmented_sha256 = file_sha256(formula)
             proof = output / f"{stem}.drat"
-            proof_part = output / f".{stem}.drat.part"
-            compact_part = output / f".{stem}.compact.drat.part"
+            proof_part = temporary_directory / f"{stem}.raw.drat"
+            compact_part = temporary_directory / f"{stem}.compact.drat"
+            publish_part = proof.with_name(f".{proof.name}.publish.part")
             checker_log = output / f"{stem}.checker.log"
             compact_log = output / f"{stem}.compact.log"
             sat_log = output / f"{stem}.sat.log"
             if (
                 proof.exists()
-                or proof_part.exists()
-                or compact_part.exists()
+                or publish_part.exists()
                 or checker_log.exists()
                 or compact_log.exists()
                 or sat_log.exists()
@@ -262,13 +306,13 @@ def main() -> int:
                             raise RuntimeError(
                                 f"checker rejected compact proof for cube {index}; "
                                 f"see {checker_log}"
-                            )
+                        )
                         proof_part.unlink()
-                        compact_part.replace(proof)
+                        publish_proof(compact_part, proof)
                     else:
                         checker_log.write_text(checked.stdout, encoding="utf-8")
                         compact_part.unlink()
-                        proof_part.replace(proof)
+                        publish_proof(proof_part, proof)
                     compaction = {
                         "method": "drat-trim -C -l",
                         "retained": retain_compact,
@@ -290,7 +334,7 @@ def main() -> int:
                         raise RuntimeError(
                             f"checker rejected cube {index}; see {checker_log}"
                         )
-                    proof_part.replace(proof)
+                    publish_proof(proof_part, proof)
                 result = {
                     "index": index,
                     "cube": cube,

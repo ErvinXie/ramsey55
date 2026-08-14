@@ -242,6 +242,18 @@ class MaterializedProofToolTests(unittest.TestCase):
         self.assertNotEqual(digest, MATERIALIZED_PROVER.cube_sha256([-2, 1]))
         self.assertNotEqual(digest, MATERIALIZED_PROVER.cube_sha256([1, 2]))
 
+    def test_checked_proof_publication_is_atomic(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            source = root / "scratch.drat"
+            destination = root / "retained.drat"
+            source.write_bytes(b"proof")
+            MATERIALIZED_PROVER.publish_proof(source, destination)
+            self.assertEqual(destination.read_bytes(), b"proof")
+            self.assertFalse(source.exists())
+            with self.assertRaisesRegex(RuntimeError, "refusing to overwrite"):
+                MATERIALIZED_PROVER.publish_proof(destination, destination)
+
     def test_artifact_rejects_path_traversal(self) -> None:
         with self.assertRaisesRegex(ValueError, "artifact"):
             MATERIALIZED_AUDIT.artifact(Path("/tmp/proofs"), "../proof.drat")

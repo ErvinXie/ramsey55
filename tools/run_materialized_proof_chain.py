@@ -78,6 +78,11 @@ def main() -> int:
     parser.add_argument("--max-rounds", type=int, default=100)
     parser.add_argument("--solver-argument", action="append", default=[])
     parser.add_argument("--compact-proof", action="store_true")
+    parser.add_argument(
+        "--scratch-directory",
+        type=Path,
+        help="pass a transient proof/CNF directory to the materialized producer",
+    )
     arguments = parser.parse_args()
     if (
         arguments.jobs <= 0
@@ -97,6 +102,11 @@ def main() -> int:
     ):
         if not path.is_file():
             parser.error(f"required file does not exist: {path}")
+    if (
+        arguments.scratch_directory is not None
+        and not arguments.scratch_directory.is_dir()
+    ):
+        parser.error(f"scratch directory does not exist: {arguments.scratch_directory}")
 
     root = Path(__file__).resolve().parents[1]
     tools = root / "tools"
@@ -256,6 +266,10 @@ def main() -> int:
             prove_command.append(f"--solver-argument={option}")
         if arguments.compact_proof:
             prove_command.append("--compact-proof")
+        if arguments.scratch_directory is not None:
+            prove_command.extend(
+                ("--scratch-directory", str(arguments.scratch_directory))
+            )
         proof_status = run_logged(prove_command, first_proof_log)
         if proof_status == 10:
             raise RuntimeError(f"solver found SAT at round {round_number}")
@@ -303,6 +317,10 @@ def main() -> int:
                     retry_command.append(f"--solver-argument={option}")
                 if arguments.compact_proof:
                     retry_command.append("--compact-proof")
+                if arguments.scratch_directory is not None:
+                    retry_command.extend(
+                        ("--scratch-directory", str(arguments.scratch_directory))
+                    )
                 retry_status = run_logged(retry_command, retry_log)
                 if retry_status == 10:
                     raise RuntimeError(f"retry solver found SAT at round {round_number}")
