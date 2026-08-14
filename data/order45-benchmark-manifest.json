@@ -1,0 +1,34 @@
+{
+  "coverage_dependencies": [
+    "R(4,5)=25 gives 20 <= d(v) <= 24",
+    "the handshake identity gives an even-degree vertex",
+    "colour complementation maps degree 24 to degree 20",
+    "vertex relabelling fixes the distinguished star"
+  ],
+  "degree_window": [
+    20,
+    24
+  ],
+  "files": [
+    {
+      "clauses": 2443562,
+      "degree": 20,
+      "path": "r55-n45-d20.cnf",
+      "sha256": "57984e902587656e67c88c6394fdb58c6f72d5e0ac8deda9c9d839b05957f12b",
+      "variables": 990
+    },
+    {
+      "clauses": 2443562,
+      "degree": 22,
+      "path": "r55-n45-d22.cnf",
+      "sha256": "1675b35934f64d3f3af15550eec3b510b359be2cd69d1d6a5f2bffb1ccb52d15",
+      "variables": 990
+    }
+  ],
+  "normalized_degree_branches": [
+    20,
+    22
+  ],
+  "order": 45,
+  "schema": "ramsey55.order45-benchmarks.v1"
+}

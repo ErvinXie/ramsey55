@@ -17,6 +17,7 @@ summaries belong in `doc/`. Agent collaboration conventions are defined in
 - [K43 two-violation landscape](doc/near-miss-landscape.md)
 - [Nonseparable-identity experiment](doc/nonseparable-identity-experiment.md)
 - [Degree-18 extreme gluing experiment](doc/degree18-extreme-gluing.md)
+- [Order-45 upper-bound program](doc/order45-upper-bound.md)
 
 ## Reproduce the checked baseline
 
@@ -66,3 +67,10 @@ Generate the two raw 43-vertex SAT benchmarks with:
       --fixed-star-degree 18 --output build/r55_n43_d18.cnf
     PYTHONPATH=src python3 tools/generate_cnf.py --order 43 \
       --fixed-star-degree 20 --output build/r55_n43_d20.cnf
+
+Generate and independently verify the complete pair of normalized 45-vertex
+benchmarks with:
+
+    PYTHONPATH=src python3 tools/generate_order45_benchmarks.py
+    PYTHONPATH=src python3 tools/verify_order45_benchmarks.py \
+      data/order45-benchmark-manifest.json --cnf-dir build/order45

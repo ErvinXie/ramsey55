@@ -1,0 +1,146 @@
+# Order-45 upper-bound program
+
+Updated: 2026-08-14
+
+## Current status
+
+The target is to prove \(R(5,5)\le45\) by excluding every Ramsey-free
+two-colouring of \(K_{45}\). The theorem is **not proved**. What is complete at
+this checkpoint is the normalization to two labelled SAT branches, an exact
+independent audit of those CNFs, and a quantitative test of how much the
+public extreme \(R(4,5)\) catalogs cover under the elementary excess identity.
+
+## Complete labelled reduction
+
+Let \(G\) be a hypothetical graph on 45 vertices with neither a \(K_5\) nor an
+independent set of size five. For every vertex \(v\):
+
+- \(G[N(v)]\in\mathcal R(4,5,d(v))\), so \(d(v)\le24\) by \(R(4,5)=25\);
+- the complement of \(G[V\setminus(N(v)\cup\{v\})]\) is in
+  \(\mathcal R(4,5,44-d(v))\), so \(d(v)\ge20\).
+
+Thus every degree lies in \([20,24]\). The handshake lemma says that the
+number of odd-degree vertices is even. Since there are 45 vertices, some
+vertex therefore has even degree 20, 22, or 24. Colour complementation sends
+the degree-24 case to degree 20. Relabelling the selected vertex to zero and
+placing its neighbours first gives exactly two fixed-star branches:
+
+| branch | fixed clauses |
+|---:|---|
+| 20 | \(0i\) is an edge for \(1\le i\le20\), and a nonedge otherwise |
+| 22 | \(0i\) is an edge for \(1\le i\le22\), and a nonedge otherwise |
+
+`src/ramsey55/order45.py` implements this normalization on explicit graphs,
+and its degree-20, degree-22, and complemented degree-24 paths are unit tested.
+The formal file `formal/Ramsey55/Order45.lean` currently checks the arithmetic
+parity reduction from degree counts. A final formal bridge still needs a
+machine-checked \(R(4,5)=25\) dependency, actual graph degree counts, colour
+complementation, and the relabelling equivalence. The complete 74-target Lean
+project, including this new file, builds successfully with pinned Lean 4.31.0
+on the ARM node.
+
+## Exact raw SAT benchmarks
+
+`tools/generate_order45_benchmarks.py` emits both labelled formulas. Each has
+one variable per edge of \(K_{45}\), two ten-literal clauses for each
+five-set, and 44 fixed-star unit clauses. The independently implemented
+streaming verifier in `tools/verify_order45_benchmarks.py` reconstructs every
+variable and clause rather than calling the generator.
+
+| branch | variables | clauses | SHA-256 |
+|---:|---:|---:|---|
+| 20 | 990 | 2,443,562 | `57984e902587656e67c88c6394fdb58c6f72d5e0ac8deda9c9d839b05957f12b` |
+| 22 | 990 | 2,443,562 | `1675b35934f64d3f3af15550eec3b510b359be2cd69d1d6a5f2bffb1ccb52d15` |
+
+The small committed manifest is `data/order45-benchmark-manifest.json`; the
+107 MiB CNFs remain generated build artifacts. Reproduce and verify them with:
+
+```bash
+PYTHONPATH=src python3 tools/generate_order45_benchmarks.py
+PYTHONPATH=src python3 tools/verify_order45_benchmarks.py \
+  data/order45-benchmark-manifest.json --cnf-dir build/order45
+```
+
+On the 64-vCPU ARM node, four independent 60-second probes all timed out.
+Kissat reached about 399,588 conflicts on degree 20 and 201,975 on degree 22,
+using about 360 MiB per process. These are profiling runs only: timeout is
+neither UNSAT nor a certificate.
+
+## What the elementary excess identity covers
+
+For \(H=G[N(v)]\) and \(J\) the complement of the graph on the nonneighbours
+of \(v\), twice the local contribution to the three-vertex identity is
+
+\[
+  2c(v)=(44-d)(43-d)-d(45-2d)-2(e(H)+e(J)).
+\]
+
+The contributions sum to zero, so some vertex has \(c(v)\le0\). After colour
+complementation, an excess witness can have degree 20, 21, or 22. This is
+different from the complete fixed-star reduction above: parity removes the
+degree-21 SAT branch, but it does **not** prove that the nonpositive excess
+witness is even-degree.
+
+The public `r45extreme` data gives the following exact layer audit:
+
+| witness split | doubled constant | required edge sum | feasible edge-count pairs | pairs present in archive | raw catalog-record pairs |
+|---|---:|---:|---:|---:|---:|
+| 20 + 24 | 452 | at least 226 | 28 | 18 | 316,734,625 |
+| 21 + 23 | 443 | at least 222 | 36 | 8 | 3,481,603,081 |
+| 22 + 22 | 440 | at least 220 | 45 ordered | 4 ordered | 967,769,881 |
+
+Colour swap reduces the last raw count to 483,900,495 unordered pairs. These
+numbers are pairs of unlabelled local records before testing a single cross
+edge or overlap, so they substantially understate the cost of naive gluing.
+They also expose uncovered edge layers: the elementary identity does not
+force the witness into the already classified high tails.
+
+The audit is deterministic:
+
+```bash
+sh scripts/fetch_r45extreme.sh
+PYTHONPATH=src:. python3 tools/analyze_order45_excess_coverage.py
+```
+
+The source archive SHA-256 is
+`9cfac9dbd1c209cfa342e5d5424df2a7a3fbb008ca00bf0a992e5bbe72f925b6`.
+The separately published complete 24-vertex catalog has SHA-256
+`83ca4028f206b2fa4315ef219b8c2c57c7835209673dd8183d8fb4353bd4fdd0`
+and 352,366 records with edge histogram 116 through 132. Its upper tail
+contains 11,485, 3,401, 843, 147, 32, 3, and 2 records at 126 through 132
+edges.
+
+## Small-local LP result
+
+The exact rational relaxation in `tools/local_identity_bounds.py` was rerun
+with ambient order 45 and all labelled Ramsey-compatible induced types
+through order six. Every combined degree interval still crosses zero:
+
+| degree | exact order-six interval |
+|---:|---|
+| 20 | \([-3489384/25,1070408/5]\) |
+| 21 | \([-3472244/25,4498989/20]\) |
+| 22 | \([-690096/5,682226/3]\) |
+| 23 | \([-688718/5,5872992/25]\) |
+| 24 | \([-696376/5,6147466/25]\) |
+
+This rules out the old identity plus edge ranges and only order-at-most-six
+local distribution constraints as a sign-separating proof. It does not rule
+out whole-neighbourhood constraints, overlap consistency, SDP/SOS-derived
+inequalities, or a different counting identity.
+
+## Compute assessment and next bottleneck
+
+The ARM node has 64 logical CPUs, 244 GiB RAM, and about 194 GiB currently
+free disk. It is adequate for parallel pilots, catalog scans, cube discovery,
+and certificate replay. More raw cores would not fix the present bottleneck:
+the weakest catalog-filtered spaces still contain hundreds of millions to
+billions of local record pairs, while a direct fixed-star CNF does not close
+in short CDCL runs.
+
+The next useful milestone is therefore a stronger, independently checkable
+filter that either forces a much smaller set of whole local graphs or groups
+large SAT regions under one certified lemma. Once such a cover exists, final
+proof production will likely need additional storage and a distributed CPU
+pool for DRAT/LRAT generation and replay. Until then, the existing ARM machine
+is sufficient for the research loop.

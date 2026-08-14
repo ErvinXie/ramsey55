@@ -207,8 +207,17 @@ def main() -> None:
         b_bounds[vertices] = low[0], high[0]
         print(f"B({vertices}) [{low[0]}, {high[0]}] at edges {low[1]}/{high[1]}")
 
+    degrees = [
+        degree
+        for degree in sorted(EDGE_RANGES)
+        if ambient - 1 - degree in b_bounds
+    ]
+    if not degrees:
+        raise ValueError(
+            "ambient order has no degree whose two local orders are covered"
+        )
     print("combined degree bounds")
-    for degree in range(18, 25):
+    for degree in degrees:
         lower = a_bounds[degree][0] + b_bounds[ambient - 1 - degree][0]
         upper = a_bounds[degree][1] + b_bounds[ambient - 1 - degree][1]
         print(f"  d={degree}: [{lower}, {upper}]")
