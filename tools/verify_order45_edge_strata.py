@@ -6,8 +6,18 @@ from __future__ import annotations
 import argparse, hashlib, itertools, json
 from pathlib import Path
 
-from verify_order45_lex_benchmarks import independent_lex
-from verify_order45_strengthened_benchmarks import edge_variable, expected_clauses
+if __package__:
+    from tools.verify_order45_lex_benchmarks import independent_lex
+    from tools.verify_order45_strengthened_benchmarks import (
+        edge_variable,
+        expected_clauses,
+    )
+else:
+    from verify_order45_lex_benchmarks import independent_lex
+    from verify_order45_strengthened_benchmarks import (
+        edge_variable,
+        expected_clauses,
+    )
 
 SCHEMA = "ramsey55.order45-edge-strata.v1"
 RANGES = {20:(68,100),21:(77,107),22:(88,114),23:(101,122),24:(116,132)}

@@ -8,7 +8,16 @@ import hashlib
 import json
 from pathlib import Path
 
-from verify_order45_strengthened_benchmarks import edge_variable, expected_clauses
+if __package__:
+    from tools.verify_order45_strengthened_benchmarks import (
+        edge_variable,
+        expected_clauses,
+    )
+else:
+    from verify_order45_strengthened_benchmarks import (
+        edge_variable,
+        expected_clauses,
+    )
 
 
 SCHEMA = "ramsey55.order45-lex-benchmarks.v1"

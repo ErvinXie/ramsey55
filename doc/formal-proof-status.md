@@ -235,9 +235,12 @@ theorems contain only Lean's standard axioms and no `sorryAx` or
 This closes the abstract input/state/bound/sum semantics. Still missing at the
 data boundary is a kernel-checked or equivalently audited statement that the
 three generated mother DIMACS streams contain these exact suffixes. The
-independent Python verifier already checks those bytes and maps, but that fact
-has not yet been imported as a Lean theorem. Graph/excess reduction and checked
-UNSAT-certificate import remain separate obligations.
+independent byte-level statement is now recorded in
+`data/order45-counter-tail-manifest.json`: a second audit reconstructs and
+compares clauses 2,584,036/2,584,054/2,584,060 onward and binds the three
+167,810/161,604/159,612-clause suffixes by SHA-256. This is equivalently
+audited external data, not yet an embedded Lean theorem. Graph/excess reduction
+and checked UNSAT-certificate import remain separate obligations.
 
 [Symmetry.lean](../formal/Ramsey55/Symmetry.lean) adds the generic bridge for
 an optional symmetry-reduced route. It proves that a nonempty finite orbit

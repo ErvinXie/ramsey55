@@ -376,6 +376,12 @@ The prefix SHA-256 is
 This remains an UNKNOWN checkpoint until the complete binary DRAT replay is
 verified.
 
+The original recursive d20 process subsequently reached depth 1024 and exited
+2 exactly at its documented guard. This does not invalidate the earlier
+flushed prefix: the selective checkpoint continuation remains live from the
+complete 30-cube residual cover. Future launches use the explicit-stack runner
+and therefore do not inherit this host-language depth failure.
+
 The d20 comparison also rejects an otherwise tempting heuristic change.
 Selective freezing with unrestricted lookahead left 1 and 2 branches on the
 two hard cubes after 120 seconds, while forcing all dynamic choices into the
@@ -493,6 +499,18 @@ It now also reconstructs all six ordered H/J input lists, every typed state
 literal, the two counter streams, four range units, and sum-clause tail. Lean
 proves each concrete tail covers its 28/36/45 typed cubes and that all 109 map
 back to the committed signed DIMACS lists. The remaining formal data step is
-only to show that each mother DIMACS stream contains this exact suffix; the
-counter, range, density, and cube semantics no longer cross that boundary as
-assumptions.
+only to import the independently audited fact that each mother DIMACS stream
+contains this exact suffix; the counter, range, density, and cube semantics no
+longer cross that boundary as assumptions.
+
+`tools/audit_order45_counter_tails.py` checks that fact without changing the
+production formula manifest or cube hashes. It verifies each full mother hash,
+seeks to the exact tail clause offset, independently reconstructs and compares
+every remaining clause, and binds both ordered input-ID streams. The committed
+`data/order45-counter-tail-manifest.json` records suffix sizes
+167,810/161,604/159,612 and hashes `dd952b03...95b4b`,
+`7b81acea...4e75`, and `47525d3f...1b10`.
+
+```bash
+PYTHONPATH=src:tools:. python3 tools/audit_order45_counter_tails.py
+```
