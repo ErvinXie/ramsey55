@@ -534,6 +534,47 @@ At round 139, four additional random seeds for each solver also left both
 J297775 closed parents UNKNOWN at 120 seconds. All transient CNFs and raw DRAT
 were removed from RAM scratch; the continuous chain then resumed from the
 same state with CaDiCaL and scratch enabled.
+At J326185 closed round 151, three seeds of both CaDiCaL and Kissat `--unsat`
+likewise closed none of five parents at 120 seconds. The CaDiCaL continuation
+later widened to nine parents and was frozen at round 156; default Kissat now
+continues the identical ordered frontier from the round-155 manifest. An
+independent immutable-state replay accepted that entire CaDiCaL segment (44
+manifests, 43 refinements, and 231 refined parents) and matched the exact
+9 VERIFIED/9 UNKNOWN terminal manifest. Its audit SHA-256 is
+`d9ac7d0b98198f589c37c3a80fd6f6db2c06d9aa86ae485c1132e3a7245d8b66`.
+A separate 120-second CaDiCaL retry closed none of the 23 J326185 open parents
+at round 80. The J297775 and J326185 open continuations were subsequently
+frozen at rounds 69 and 82 and restarted from their exact terminal manifests
+with `/dev/shm` scratch. Thus all four active residual chains now publish only
+checked compact proofs to persistent storage.
+Independent replay accepted both frozen open segments. The J297775 round
+55--69 segment contains 15 manifests, 14 refinements, and 276 refined parents,
+ending at 23 VERIFIED/23 UNKNOWN; its audit SHA-256 is
+`bbfb731c92c55a6b11395470ff858e43de505b5d0001eef3844e92829fedaa82`.
+The J326185 round 66--82 segment contains 17 manifests, 16 refinements, and 273
+refined parents with the same terminal counts; its audit SHA-256 is
+`e591393b15c43ab26ea7fccb9d9fd801b6ae6c6de48cf3549a90dc011a965cb7`.
+
+The pinned CnC checkout now also builds certified iGlucose. A small audited
+source patch makes its Linux FPU setup portable to ARM, returns conventional
+SAT/UNSAT status codes, maps the second positional path to DRUP output, and
+emits the empty clause when preprocessing alone finds a contradiction. This
+lets `prove_materialized_cubes.py` hash-bind the actual solver binary rather
+than an adapter. A two-cube materialized smoke produced and independently
+replayed both compact proofs. On the J297775 closed round-178 frontier, seven
+other 300-second configurations (six CaDiCaL phase/search variants and Kissat
+`--sat`) nevertheless closed none of the two parents, and certified iGlucose
+also left both UNKNOWN. On a ten-parent J326185 round-187 snapshot, iGlucose
+instead produced three compact proofs in about 85, 147, and 175 seconds. Each
+passed a separate replay; cross-solver composition raised the exact 18-row
+boundary manifest from 8 VERIFIED/10 UNKNOWN to 11/7, and an independent audit
+accepted all eleven retained proofs. The closed chain was restarted from this
+smaller certified frontier, abandoning only later exploratory rounds that were
+not part of the frozen bundle prefix. The frozen Kissat prefix from rounds
+156--187 was itself independently replayed: 32 manifests, 31 refinements, and
+279 refined parents led to the exact 8 VERIFIED/10 UNKNOWN terminal manifest.
+Its audit SHA-256 is
+`e18d93f15b5ae60b8475ef6b79b0b69a6e4edb22d84825133ddd20a716137b8a`.
 
 The J326185 closed-leaf batch verified 16,746 of 16,756 leaves and left ten
 UNKNOWN, with all 16,746 proofs accepted by a separate 48-way replay. Its

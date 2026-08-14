@@ -95,10 +95,23 @@ checkout_pinned \
   https://github.com/marijnheule/CnC.git \
   "$source_root/CnC" \
   "$cnc_commit"
+iglucose_patch="$repo_root/patches/iglucose-portable-exit-codes.patch"
+if git -C "$source_root/CnC" apply --check "$iglucose_patch"; then
+  git -C "$source_root/CnC" apply "$iglucose_patch"
+elif ! git -C "$source_root/CnC" apply --reverse --check "$iglucose_patch"; then
+  echo "error: the pinned iGlucose source does not match its portability patch" >&2
+  exit 2
+fi
 make -C "$source_root/CnC/march_cu" clean
 make -C "$source_root/CnC/march_cu" -j"$(nproc)" \
   CFLAGS="-O3 -DNDEBUG -fcommon"
 ln -sfn "$source_root/CnC/march_cu/march_cu" "$bin_root/march_cu"
+(
+  cd "$source_root/CnC/iglucose/core"
+  make -j"$(nproc)" r
+)
+ln -sfn "$source_root/CnC/iglucose/core/iglucose_release" \
+  "$bin_root/iglucose"
 
 if command -v labelg >/dev/null 2>&1; then
   labelg_path=$(command -v labelg)
@@ -156,6 +169,7 @@ echo "  drat-trim:  $bin_root/drat-trim"
 echo "  kissat:     $bin_root/kissat"
 echo "  satsuma:    $bin_root/satsuma"
 echo "  march_cu:   $bin_root/march_cu"
+echo "  iglucose:   $bin_root/iglucose"
 echo "  labelg:     $bin_root/labelg"
 echo "  enumerator: $repo_root/build/enumerate_primary_sat_models"
 echo "  cuber:      $repo_root/build/generate_cadical_cubes"

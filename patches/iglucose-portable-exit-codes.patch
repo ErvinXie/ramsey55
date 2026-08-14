@@ -1,0 +1,56 @@
+diff --git a/iglucose/core/Main.cc b/iglucose/core/Main.cc
+index 5006e0f..e1be8a0 100644
+--- a/iglucose/core/Main.cc
++++ b/iglucose/core/Main.cc
+@@ -93,7 +93,7 @@ int main(int argc, char** argv)
+         setUsageHelp("c USAGE: %s [options] <input-file> <result-output-file>\n\n  where input may be either in plain or gzipped DIMACS.\n");
+         // printf("This is MiniSat 2.0 beta\n");
+ 
+-#if defined(__linux__)
++#if defined(__linux__) && (defined(__i386__) || defined(__x86_64__))
+         fpu_control_t oldcw, newcw;
+         _FPU_GETCW(oldcw); newcw = (oldcw & ~_FPU_EXTENDED) | _FPU_DOUBLE; _FPU_SETCW(newcw);
+         printf("c WARNING: for repeatability, setting FPU to use double precision\n");
+@@ -114,6 +114,14 @@ int main(int argc, char** argv)
+         parseOptions(argc, argv, true);
+ 
+         Solver S;
++        if (S.certifiedUNSAT && argc >= 3) {
++            fclose(S.certifiedOutput);
++            S.certifiedOutput = fopen(argv[argc - 1], "wb");
++            if (S.certifiedOutput == NULL) {
++                printf("c ERROR! Could not open proof file: %s\n", argv[argc - 1]);
++                exit(1);
++            }
++        }
+ 
+         S.verbosity = verb;
+         S.verbEveryConflicts = vv;
+@@ -152,7 +160,8 @@ int main(int argc, char** argv)
+         if (in == NULL)
+             printf("c ERROR! Could not open file: %s\n", argc == 1 ? "<stdin>" : argv[1]), exit(1);
+ 
+-        FILE* res = (argc >= 3) ? fopen(argv[argc-1], "wb") : NULL;
++        FILE* res = (argc >= 3 && !S.certifiedUNSAT)
++          ? fopen(argv[argc-1], "wb") : NULL;
+ 
+  	// Change to signal-handlers that will only notify the solver and allow it to terminate
+  	// voluntarily:
+@@ -178,6 +187,8 @@ int main(int argc, char** argv)
+ 
+  	  if (!S.simplify()){
+  	    if (res != NULL) fprintf(res, "UNSAT\n");
++            if (S.certifiedUNSAT) fprintf(S.certifiedOutput, "0\n");
++            ret = l_False;
+  	    if (S.verbosity > 0){
+  	      printf("===============================================================================\n");
+  	      printf("Solved by unit propagation\n");
+@@ -245,7 +255,7 @@ int main(int argc, char** argv)
+  	  printStats(S);
+  	  printf("\n"); }
+ 
+- 	return 0;
++        return ret == l_True ? 10 : ret == l_False ? 20 : 0;
+     } catch (OutOfMemoryException&){
+       printf("c ===================================================================================================\n");
+         printf("INDETERMINATE\n");
