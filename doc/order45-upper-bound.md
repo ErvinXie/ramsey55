@@ -231,6 +231,14 @@ binary DRAT stream, solves each cube under assumptions, calls CaDiCaL's
 lookahead split when a conflict budget expires. A final assumption-free
 UNSAT call must derive the empty clause. The complete mechanism is exercised
 on `tests/data/cube-proof-smoke.*` and independently accepted by `drat-trim`.
+The runner accepts optional maximum-conflict and maximum-lookahead-time
+arguments. The latter is important because CaDiCaL's probing lookahead has no
+native propagation limit; on expiry its supported `Terminator` callback makes
+lookahead return the best occurrence-ranked split found so far. This changes
+only the search heuristic, not the emitted proof or its independent replay.
+`tools/audit_order45_fixed_pair_proofs.py` checks formula and cube hashes,
+complete balanced result forests, the recorded runner parameters, and each
+DRAT replay before writing a compact artifact manifest.
 The large two-formula proof and replay are still pending at this checkpoint;
 therefore even this top local stratum is not yet claimed closed.
 

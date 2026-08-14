@@ -1,0 +1,59 @@
+from __future__ import annotations
+
+from pathlib import Path
+import tempfile
+import unittest
+
+from tools.audit_order45_fixed_pair_proofs import (
+    audit_results,
+    cube_count,
+    dimacs_shape,
+)
+
+
+class FixedPairProofAuditTests(unittest.TestCase):
+    def test_dimacs_shape_and_cube_count(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            temporary = Path(directory)
+            cnf = temporary / "tiny.cnf"
+            cnf.write_text("c tiny\np cnf 2 2\n1 0\n-1 2 0\n", encoding="ascii")
+            cubes = temporary / "tiny.icnf"
+            cubes.write_text("a 1 0\na -1 0\n", encoding="ascii")
+            self.assertEqual(dimacs_shape(cnf), (2, 2))
+            self.assertEqual(cube_count(cubes), 2)
+
+    def test_balanced_result_forest(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            results = Path(directory) / "results.tsv"
+            results.write_text(
+                "root\tattempt\tdepth\tlimit\tstatus\tcore\tsplit\tseconds\n"
+                "0\t0\t0\t1\t0\t0\t2\t0.1\n"
+                "0\t1\t1\t1\t20\t1\t0\t0.2\n"
+                "0\t2\t1\t1\t20\t1\t0\t0.3\n"
+                "1\t3\t0\t1\t20\t1\t0\t0.4\n",
+                encoding="ascii",
+            )
+            report = audit_results(results, 2)
+        self.assertEqual(report["attempts"], 4)
+        self.assertEqual(report["splits"], 1)
+        self.assertEqual(report["unsat_leaves"], 3)
+        self.assertEqual(report["maximum_extra_depth"], 1)
+        self.assertEqual(report["minimum_conflict_limit"], 1)
+        self.assertEqual(report["maximum_conflict_limit"], 1)
+        self.assertEqual(report["reported_solve_seconds"], 1.0)
+
+    def test_unbalanced_result_forest_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            results = Path(directory) / "results.tsv"
+            results.write_text(
+                "root\tattempt\tdepth\tlimit\tstatus\tcore\tsplit\tseconds\n"
+                "0\t0\t0\t1\t0\t0\t2\t0.1\n"
+                "0\t1\t1\t1\t20\t1\t0\t0.2\n",
+                encoding="ascii",
+            )
+            with self.assertRaisesRegex(ValueError, "unbalanced"):
+                audit_results(results, 1)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -16,6 +16,26 @@ namespace {
 
 using Clock = std::chrono::steady_clock;
 
+class DeadlineTerminator : public CaDiCaL::Terminator {
+ public:
+  void start(double seconds) {
+    deadline_ = Clock::now() +
+                std::chrono::duration_cast<Clock::duration>(
+                    std::chrono::duration<double>(seconds));
+    enabled_ = true;
+  }
+
+  void stop() { enabled_ = false; }
+
+  bool terminate() override {
+    return enabled_ && Clock::now() >= deadline_;
+  }
+
+ private:
+  bool enabled_ = false;
+  Clock::time_point deadline_{};
+};
+
 std::vector<std::vector<int>> readCubes(const std::string& path) {
   std::ifstream input(path);
   if (!input) throw std::runtime_error("cannot open " + path);
@@ -54,15 +74,30 @@ std::vector<std::vector<int>> readCubes(const std::string& path) {
 }  // namespace
 
 int main(int argc, char** argv) try {
-  if (argc != 6) {
+  if (argc < 6 || argc > 8) {
     std::cerr << "usage: prove_cadical_cubes input.cnf cubes proof.drat"
-                 " results.tsv conflicts\n";
+                 " results.tsv conflicts [maximum-conflicts]"
+                 " [maximum-lookahead-seconds]\n";
     return 2;
   }
   const auto cubes = readCubes(argv[2]);
   const int conflictLimit = std::stoi(argv[5]);
   if (conflictLimit <= 0) throw std::runtime_error("invalid conflict limit");
+  const int maximumConflictLimit =
+      argc >= 7 ? std::stoi(argv[6]) : 1'000'000'000;
+  if (maximumConflictLimit < conflictLimit) {
+    throw std::runtime_error("maximum conflict limit is below base limit");
+  }
+  const double maximumLookaheadSeconds =
+      argc == 8 ? std::stod(argv[7]) : 0.0;
+  if (maximumLookaheadSeconds < 0.0) {
+    throw std::runtime_error("negative maximum lookahead time");
+  }
+  DeadlineTerminator terminator;
   CaDiCaL::Solver solver;
+  if (maximumLookaheadSeconds > 0.0) {
+    solver.connect_terminator(&terminator);
+  }
   solver.set("quiet", 1);
   if (!solver.trace_proof(argv[3])) {
     throw std::runtime_error("cannot open proof trace");
@@ -108,7 +143,7 @@ int main(int argc, char** argv) try {
     const long long scaledLimit =
         static_cast<long long>(conflictLimit) << shift;
     const int effectiveLimit = static_cast<int>(
-        std::min<long long>(scaledLimit, 1'000'000'000));
+        std::min<long long>(scaledLimit, maximumConflictLimit));
     for (const int literal : cube) solver.assume(literal);
     if (!solver.limit("conflicts", effectiveLimit)) {
       throw std::runtime_error("conflict limit rejected");
@@ -138,8 +173,12 @@ int main(int argc, char** argv) try {
     if (status != 0) throw std::runtime_error("invalid solve status");
 
     for (const int literal : cube) solver.assume(literal);
+    if (maximumLookaheadSeconds > 0.0) {
+      terminator.start(maximumLookaheadSeconds);
+    }
     const auto lookaheadStart = Clock::now();
     const int split = solver.lookahead();
+    terminator.stop();
     const double lookaheadSeconds = std::chrono::duration<double>(
         Clock::now() - lookaheadStart).count();
     const int lookaheadStatus = solver.status();
