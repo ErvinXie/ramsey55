@@ -146,6 +146,11 @@ def main() -> None:
     parser.add_argument("--first-round", type=int, required=True)
     parser.add_argument("--checker", type=Path, required=True)
     parser.add_argument("--jobs", type=int, default=1)
+    parser.add_argument(
+        "--state",
+        type=Path,
+        help="immutable state snapshot; defaults to WORKDIR/state.json",
+    )
     parser.add_argument("--manifest", type=Path)
     arguments = parser.parse_args()
     if arguments.first_round < 0 or arguments.jobs <= 0:
@@ -155,7 +160,9 @@ def main() -> None:
     if arguments.manifest is not None and arguments.manifest.exists():
         parser.error(f"refusing to overwrite audit manifest {arguments.manifest}")
 
-    state_path = arguments.workdir / "state.json"
+    state_path = arguments.state or arguments.workdir / "state.json"
+    if not state_path.is_file():
+        parser.error(f"chain state does not exist: {state_path}")
     state_bytes = state_path.read_bytes()
     state = json.loads(state_bytes)
     if not isinstance(state, dict):
@@ -220,6 +227,7 @@ def main() -> None:
         "seed_manifest": str(arguments.seed_manifest),
         "seed_manifest_sha256": file_sha256(arguments.seed_manifest),
         "workdir": str(arguments.workdir),
+        "state_path": str(state_path),
         "state_snapshot": state,
         "state_sha256": hashlib.sha256(state_bytes).hexdigest(),
         "first_round": arguments.first_round,

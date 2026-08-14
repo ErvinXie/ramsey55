@@ -40,6 +40,7 @@ BINARY_REFINEMENT = load_tool("audit_binary_cube_refinement")
 MATERIALIZED_COMPOSE = load_tool("compose_materialized_cube_proofs")
 MATERIALIZED_CHAIN = load_tool("run_materialized_proof_chain")
 MATERIALIZED_CHAIN_AUDIT = load_tool("audit_materialized_proof_chain")
+FIXED_PAIR_BUNDLE = load_tool("audit_fixed_pair_proof_bundle")
 
 
 class ExternalCubeToolTests(unittest.TestCase):
@@ -118,6 +119,15 @@ class ResultMergeTests(unittest.TestCase):
             path = Path(raw) / "retry.icnf"
             MATERIALIZED_CHAIN.write_icnf(path, [[1, -2], [-1, 3]])
             self.assertEqual(path.read_text(), "a 1 -2 0\na -1 3 0\n")
+
+    def test_materialized_composition_binds_cross_solver_override(self) -> None:
+        kissat = {"path": "kissat", "sha256": "1" * 64, "arguments": []}
+        cadical = {"path": "cadical", "sha256": "2" * 64, "arguments": []}
+        result: dict[str, object] = {"status": 20}
+        MATERIALIZED_COMPOSE.bind_effective_solver(result, cadical, kissat)
+        self.assertEqual(result["solver"], cadical)
+        MATERIALIZED_COMPOSE.bind_effective_solver(result, cadical, cadical)
+        self.assertNotIn("solver", result)
 
 
 class CartesianAdoptionTests(unittest.TestCase):
@@ -259,6 +269,19 @@ class MaterializedProofToolTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "supplied checker"):
                 MATERIALIZED_AUDIT.validate_tool_bindings(document, wrong)
 
+    def test_leaf_auditor_validates_cross_solver_override(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            solver = Path(raw) / "cadical"
+            solver.write_bytes(b"solver")
+            entry = {
+                "path": str(solver),
+                "sha256": MATERIALIZED_PROVER.file_sha256(solver),
+            }
+            MATERIALIZED_AUDIT.validate_binary_binding(entry, "cube 0 solver")
+            entry["sha256"] = "0" * 64
+            with self.assertRaisesRegex(ValueError, "cube 0 solver binary"):
+                MATERIALIZED_AUDIT.validate_binary_binding(entry, "cube 0 solver")
+
     def test_compaction_metadata_binds_its_log(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)
@@ -350,6 +373,113 @@ class MaterializedProofToolTests(unittest.TestCase):
     def test_rejects_reordered_refinement_children(self) -> None:
         with self.assertRaisesRegex(ValueError, "positive child"):
             BINARY_REFINEMENT.audit(((1,),), ((1, -2), (1, 2)), (2,))
+
+    def test_fixed_pair_bundle_matches_cube_content_not_path_spelling(self) -> None:
+        expected = {"path": "forest/closed.icnf", "sha256": "a" * 64, "count": 7}
+        actual = {"path": "proofs/cubes.icnf", "sha256": "a" * 64, "count": 7}
+        FIXED_PAIR_BUNDLE.validate_cube_binding(actual, expected, "closed")
+        actual["count"] = 6
+        with self.assertRaisesRegex(ValueError, "closed cube binding mismatch"):
+            FIXED_PAIR_BUNDLE.validate_cube_binding(actual, expected, "closed")
+
+    def test_fixed_pair_bundle_replays_initial_binary_cover(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            cubes = root / "roots.icnf"
+            cubes.write_text("a -1 0\na 1 0\n", encoding="ascii")
+            forest = root / "forest.json"
+            forest.write_text(
+                json.dumps(
+                    {
+                        "schema": FIXED_PAIR_BUNDLE.FOREST_SCHEMA,
+                        "source_cubes": {
+                            "path": str(cubes),
+                            "sha256": MATERIALIZED_PROVER.file_sha256(cubes),
+                            "count": 2,
+                        },
+                    }
+                )
+            )
+            source = BINARY_COVER.read_cubes(cubes)
+            steps, residual = BINARY_COVER.merge_certificate(source)
+            certificate = root / "cover.json"
+            certificate.write_text(
+                json.dumps(
+                    {
+                        "schema": BINARY_COVER.SCHEMA,
+                        "input": str(cubes),
+                        "input_sha256": MATERIALIZED_PROVER.file_sha256(cubes),
+                        "cube_count": 2,
+                        "steps": steps,
+                        "step_count": len(steps),
+                        "residual": [BINARY_COVER.ordered(cube) for cube in residual],
+                        "covered": True,
+                    }
+                )
+            )
+            audited = FIXED_PAIR_BUNDLE.audit_initial_cover(forest, certificate)
+            self.assertTrue(audited["covered"])
+            self.assertEqual(audited["steps"], 1)
+            tampered = json.loads(certificate.read_text())
+            tampered["input_sha256"] = "0" * 64
+            certificate.write_text(json.dumps(tampered))
+            with self.assertRaisesRegex(ValueError, "not bound"):
+                FIXED_PAIR_BUNDLE.audit_initial_cover(forest, certificate)
+
+    def test_fixed_pair_bundle_binds_chain_segment_boundaries(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            seed = root / "seed.json"
+            seed.write_text("next segment\n")
+            previous = {
+                "final_manifest_sha256": MATERIALIZED_PROVER.file_sha256(seed)
+            }
+            self.assertEqual(
+                FIXED_PAIR_BUNDLE.validate_chain_adjacency(previous, seed, "closed"),
+                "identical terminal manifest",
+            )
+
+            formula = {"path": "formula.cnf", "sha256": "f" * 64}
+            cubes = {"path": "cubes.icnf", "sha256": "c" * 64, "count": 2}
+            old = root / "old.json"
+            old.write_text(
+                json.dumps(
+                    {
+                        "schema": MATERIALIZED_PROVER.SCHEMA,
+                        "formula": formula,
+                        "cubes": cubes,
+                        "attempt": 1,
+                    }
+                )
+            )
+            retry = root / "retry.json"
+            retry.write_text(
+                json.dumps(
+                    {
+                        "schema": MATERIALIZED_PROVER.SCHEMA,
+                        "formula": formula,
+                        "cubes": cubes,
+                        "attempt": 2,
+                    }
+                )
+            )
+            replacement = {
+                "final_manifest": str(old),
+                "final_manifest_sha256": MATERIALIZED_PROVER.file_sha256(old),
+            }
+            self.assertEqual(
+                FIXED_PAIR_BUNDLE.validate_chain_adjacency(
+                    replacement, retry, "closed"
+                ),
+                "independently replayed exact-cube retry",
+            )
+            changed = json.loads(retry.read_text())
+            changed["cubes"]["sha256"] = "0" * 64
+            retry.write_text(json.dumps(changed))
+            with self.assertRaisesRegex(ValueError, "segment boundary mismatch"):
+                FIXED_PAIR_BUNDLE.validate_chain_adjacency(
+                    replacement, retry, "closed"
+                )
 
 
 if __name__ == "__main__":

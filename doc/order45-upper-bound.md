@@ -479,6 +479,40 @@ terminal manifest remained partial with seven UNKNOWN children; the audit
 manifest hash is
 `ec1c1561a1a2b628031c2b1c3adee5cbc1ca8b32b4000632cb173da2963508bc`.
 
+`tools/audit_fixed_pair_proof_bundle.py` closes the remaining certificate-
+composition gap above those chains. A bundle names the fixed-pair formula,
+the initial sibling-merge cover, the proof-forest snapshot, the closed-leaf
+chain, and the initial/refined open-leaf chain. The auditor independently
+replays the 16,383 initial merges and every per-root forest cover, rebuilds the
+exact open UNKNOWN frontier and its complementary refinement, invokes the
+whole-chain auditor for both leaf families, and replays every retained DRAT
+proof with the supplied checker. It emits `fixed_pair_unsat: true` only when
+both terminal chains are complete. Static real-data audits already accept all
+path/hash/count bindings for J297775 and J326185; these structural audits are
+not a substitute for the final leaf-proof replay while the chains remain
+partial.
+
+Long chains may change solver policy without discarding their certified
+prefix. The chain auditor accepts an immutable `state.json` snapshot, and the
+bundle auditor joins consecutive segments by terminal-manifest hash. It also
+accepts an independently replayed exact-cube retry at a boundary when the
+formula and complete ordered cube-family binding are identical. Cross-solver
+composition retains the primary manifest's default solver and records a
+per-result solver binary/hash override for every replacement from another
+solver; the leaf auditor checks those overrides before replaying the proof.
+
+A 120-second ARM portfolio on frozen hard frontiers found CaDiCaL stronger
+than default Kissat on these residuals. It closed 3/17 J297775 open parents,
+3/8 J326185 closed parents, and 1/10 J326185 open parents in the first
+telemetry snapshot. Exact retries at later certified boundaries closed 3/8
+J326185 closed parents and 1/12 J326185 open parents; their cross-solver
+combined manifests independently replayed as 11 VERIFIED plus 5 UNKNOWN and
+11 VERIFIED plus 11 UNKNOWN respectively. The continuation chains now start
+from those smaller frontiers. An exact 17-parent J297775 open retry closed
+none, and neither CaDiCaL nor Kissat `--unsat` closed either of two later
+J297775 closed parents. Their already certified refinement continuations were
+therefore resumed.
+
 The J326185 closed-leaf batch verified 16,746 of 16,756 leaves and left ten
 UNKNOWN, with all 16,746 proofs accepted by a separate 48-way replay. Its
 J297775 counterpart verified 16,734 of 16,750 leaves and left 16 UNKNOWN; a
@@ -565,7 +599,7 @@ inequalities, or a different counting identity.
 ## Compute assessment and next bottleneck
 
 The ARM node has 64 logical CPUs and 244 GiB RAM. After retaining the current
-materialized proofs it has about 75 GiB free disk, so proof-log storage is now
+materialized proofs it has about 69 GiB free disk, so proof-log storage is now
 the tighter operational margin. It remains adequate for parallel pilots,
 catalog scans, cube discovery, and certificate replay. More raw cores would
 not fix the present bottleneck:

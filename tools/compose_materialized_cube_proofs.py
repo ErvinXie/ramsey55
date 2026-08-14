@@ -50,6 +50,20 @@ def validate_document(document: dict[str, Any]) -> None:
         raise ValueError("invalid materialized-proof status")
 
 
+def bind_effective_solver(
+    result: dict[str, Any],
+    source_solver: dict[str, Any],
+    output_solver: dict[str, Any],
+) -> None:
+    """Record a per-result override only when it differs from the output default."""
+
+    effective = result.get("solver", source_solver)
+    if effective == output_solver:
+        result.pop("solver", None)
+    else:
+        result["solver"] = copy.deepcopy(effective)
+
+
 def ordered_unknown_replacements(
     primary_results: list[dict[str, Any]], secondary_results: list[dict[str, Any]]
 ) -> list[int]:
@@ -103,7 +117,7 @@ def main() -> None:
     secondary = json.loads(arguments.secondary_manifest.read_text(encoding="utf-8"))
     validate_document(primary)
     validate_document(secondary)
-    for key in ("formula", "solver", "checker"):
+    for key in ("formula", "checker"):
         if primary[key] != secondary[key]:
             raise ValueError(f"primary/secondary {key} mismatch")
 
@@ -140,6 +154,7 @@ def main() -> None:
         if index in selected:
             source_root = arguments.secondary_manifest.parent
             result = copy.deepcopy(selected[index])
+            bind_effective_solver(result, secondary["solver"], primary["solver"])
             if (
                 result["cube"] != primary_result["cube"]
                 or result["cube_sha256"] != primary_result["cube_sha256"]
@@ -151,6 +166,8 @@ def main() -> None:
             result["seconds"] = round(
                 float(primary_result["seconds"]) + float(result["seconds"]), 6
             )
+        else:
+            bind_effective_solver(result, primary["solver"], primary["solver"])
         result["index"] = index
         if int(result["status"]) == 20:
             stem = f"cube-{index:06d}-{cube_sha256(result['cube'])[:16]}"

@@ -25,12 +25,15 @@ def artifact(root: Path, name: object) -> Path:
     return root / name
 
 
+def validate_binary_binding(entry: dict[str, Any], label: str) -> None:
+    path = Path(entry["path"])
+    if not path.is_file() or file_sha256(path) != entry["sha256"]:
+        raise ValueError(f"{label} binary hash mismatch")
+
+
 def validate_tool_bindings(document: dict[str, Any], checker: Path) -> None:
     for label in ("solver", "checker"):
-        entry = document[label]
-        path = Path(entry["path"])
-        if not path.is_file() or file_sha256(path) != entry["sha256"]:
-            raise ValueError(f"{label} binary hash mismatch")
+        validate_binary_binding(document[label], label)
     if file_sha256(checker) != document["checker"]["sha256"]:
         raise ValueError("supplied checker does not match manifest")
 
@@ -110,6 +113,8 @@ def main() -> None:
             index, cube, result = item
             if result is None or int(result["index"]) != index:
                 raise ValueError(f"missing or misindexed result {index}")
+            if "solver" in result:
+                validate_binary_binding(result["solver"], f"cube {index} solver")
             if result["cube"] != cube or result["cube_sha256"] != cube_sha256(cube):
                 raise ValueError(f"cube binding mismatch at index {index}")
             if float(result["seconds"]) < 0:
