@@ -2,7 +2,8 @@
   "claim": "120-second UNKNOWN search telemetry; not an UNSAT certificate",
   "parameters": {
     "edge_strata": {"conflicts": 30000, "maximum_conflicts": 128000, "maximum_lookahead_seconds": 1.0, "maximum_primary_split_variable": 0, "maximum_solve_seconds": 10.0},
-    "fixed_pairs": {"conflicts": 10000, "maximum_conflicts": 128000, "maximum_lookahead_seconds": 1.0, "maximum_primary_split_variable": 480, "maximum_solve_seconds": 5.0}
+    "fixed_pairs": {"conflicts": 10000, "maximum_conflicts": 128000, "maximum_lookahead_seconds": 1.0, "maximum_primary_split_variable": 480, "maximum_solve_seconds": 5.0},
+    "fixed_pairs_primary0": {"conflicts": 10000, "maximum_conflicts": 128000, "maximum_lookahead_seconds": 1.0, "maximum_primary_split_variable": 0, "maximum_solve_seconds": 5.0}
   },
   "results": [
     {"case": "d20-c0", "closed": 11, "initial_frozen_variables": 16, "maximum_depth": 12, "open": 2, "reported_seconds": 111.292032, "roots_seen": 1, "rows": 23, "splits": 12, "tsv_sha256": "41ee8c121365d819529b417929e628aaa72b89b65bc4eee359a8e1f87cb55aa8"},
@@ -12,7 +13,9 @@
     {"case": "d22-c0", "closed": 12, "initial_frozen_variables": 20, "maximum_depth": 9, "open": 2, "reported_seconds": 107.355155, "roots_seen": 1, "rows": 25, "splits": 13, "tsv_sha256": "1d93797ee4e7c97641f3f228e9f6f3a31e7a169c73046505a1a023cc755a434b"},
     {"case": "d22-c15", "closed": 10, "initial_frozen_variables": 20, "maximum_depth": 12, "open": 3, "reported_seconds": 111.162531, "roots_seen": 1, "rows": 22, "splits": 12, "tsv_sha256": "69c2f831e4d0c7533e3ea648b41e82573086fd2a184a6e9761cbbedaaeb83432"},
     {"case": "fixed-j297775", "closed": 16448, "initial_frozen_variables": 494, "maximum_depth": 33, "open": 20, "reported_seconds": 119.803212, "roots_seen": 16384, "rows": 16532, "splits": 84, "tsv_sha256": "f2b6e255111d0e3e5427e3059196a22f518ab141b6db0a656d502809d9a12647"},
-    {"case": "fixed-j326185", "closed": 16452, "initial_frozen_variables": 494, "maximum_depth": 30, "open": 18, "reported_seconds": 119.363045, "roots_seen": 16384, "rows": 16538, "splits": 86, "tsv_sha256": "e7d4fcaf296f020de00094b5e34c2aa4e70af7d30e4a766b8ab98278282c6853"}
+    {"case": "fixed-j326185", "closed": 16452, "initial_frozen_variables": 494, "maximum_depth": 30, "open": 18, "reported_seconds": 119.363045, "roots_seen": 16384, "rows": 16538, "splits": 86, "tsv_sha256": "e7d4fcaf296f020de00094b5e34c2aa4e70af7d30e4a766b8ab98278282c6853"},
+    {"case": "fixed-primary0-j297775", "closed": 16473, "initial_frozen_variables": 14, "maximum_depth": 32, "open": 4, "reported_seconds": 119.695091, "roots_seen": 16384, "rows": 16566, "splits": 93, "tsv_sha256": "eb9dff1d3512f791c5fae3de99f4fba4fd7dd19fe3ea2c888e854205a5dfb1a7"},
+    {"case": "fixed-primary0-j326185", "closed": 16485, "initial_frozen_variables": 14, "maximum_depth": 38, "open": 4, "reported_seconds": 119.287609, "roots_seen": 16384, "rows": 16590, "splits": 105, "tsv_sha256": "1d4a40cfbf301b1fdbfd74cbec1c0f3a019eccf8988f02f68ab17156d1cc1380"}
   ],
   "runner_sha256": "e3b923c6dce8135c7fdb5a3632695b0a8b6572125c2c56ff2b31fed27198f419",
   "schema": "ramsey55.order45-selective-freeze-pilot.v1",

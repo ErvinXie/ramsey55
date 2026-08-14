@@ -21,13 +21,23 @@ class FixedPairProofAuditTests(unittest.TestCase):
             (root / "data/order45-selective-freeze-pilot.json").read_text()
         )
         self.assertIn("not an UNSAT certificate", pilot["claim"])
-        self.assertEqual(len(pilot["results"]), 8)
+        self.assertEqual(len(pilot["results"]), 10)
         for result in pilot["results"]:
             self.assertEqual(
                 result["open"],
                 result["splits"] - result["closed"] + result["roots_seen"],
             )
             self.assertGreater(result["open"], 0)
+        primary_zero = [
+            result
+            for result in pilot["results"]
+            if result["case"].startswith("fixed-primary0-")
+        ]
+        self.assertEqual([result["open"] for result in primary_zero], [4, 4])
+        self.assertEqual(
+            [result["initial_frozen_variables"] for result in primary_zero],
+            [14, 14],
+        )
 
     def test_dimacs_shape_and_cube_count(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

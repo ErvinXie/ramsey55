@@ -274,7 +274,12 @@ auditor independently recomputes and checks that count. The hash-bound
 `data/order45-selective-freeze-pilot.json` found little change on the large
 edge-stratum samples, but reduced each fixed-pair formula's initial frozen set
 from all 9,746 variables to 494 and improved tail-split throughput enough to
-justify a second fixed-pair production route. Every pilot remained UNKNOWN.
+justify a second fixed-pair production route. A follow-up that left the
+480 cross-edge variables unfrozen reduced the initial set further to the 14
+variables used by the input cubes; after 120 seconds both formulas had only
+four open branches, versus 20/18 with the primary range frozen. This is the
+current preferred fixed-pair production configuration. Every pilot remained
+UNKNOWN.
 An additional optional primary-variable bound replaces auxiliary-variable
 lookahead choices by the most frequent unused variable within the bound. For
 the fixed H/J encoding, variables 1 through 480 are exactly the H--J cross
