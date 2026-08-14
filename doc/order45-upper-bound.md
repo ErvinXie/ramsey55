@@ -262,6 +262,12 @@ checks the per-root result tree and recorded runner limits, regenerates the
 temporary cube-augmented CNF, and replays every leaf proof. Missing leaves are
 fatal by default; `--allow-partial` produces only an explicitly incomplete
 progress inventory.
+The same runner can instead process every root for one degree in a single
+proof stream. Its final assumption-free solve derives the empty clause from
+the mother CNF, so this route needs only three base-formula DRAT replays and
+can reuse learned clauses between roots. `tools/audit_order45_strata_proofs.py`
+checks this unified route against the same formula/cube manifest, result-forest
+balance, logged effective parameters, and independent `drat-trim` replay.
 The committed `data/order45-strata-leaf-pilot.json` records four 120-second
 parameter comparisons with formula, cube, runner, and TSV hashes. It is
 explicitly UNKNOWN telemetry. Its historical root-only runner had an argument

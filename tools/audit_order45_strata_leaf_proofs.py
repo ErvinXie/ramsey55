@@ -123,7 +123,7 @@ def audit_root_results(path: Path, root: int) -> dict[str, int | float]:
 
 def audit_runner_log(
     path: Path,
-    root: int,
+    root: int | str,
     conflicts: int,
     maximum_conflicts: int,
     maximum_lookahead_seconds: float,
@@ -159,7 +159,11 @@ def audit_runner_log(
             values["maximum_primary_split_variable"]
         ),
         "maximum_solve_seconds": float(values["maximum_solve_seconds"]),
-        "root_index": int(values["root_index"]),
+        "root_index": (
+            values["root_index"]
+            if root == "all"
+            else int(values["root_index"])
+        ),
     }
     if actual != expected:
         raise ValueError(

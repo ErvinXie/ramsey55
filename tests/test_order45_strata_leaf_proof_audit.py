@@ -115,6 +115,20 @@ class Order45StrataLeafProofAuditTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "runner parameter mismatch"):
                 audit_runner_log(path, 15, 30000, 128000, 1.0, 0, 10.0)
 
+    def test_audits_unified_runner_parameters(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "runner.log"
+            path.write_text(
+                "conflicts\t30000\n"
+                "maximum_conflicts\t128000\n"
+                "maximum_lookahead_seconds\t1\n"
+                "maximum_primary_split_variable\t0\n"
+                "maximum_solve_seconds\t10\n"
+                "root_index\tall\n",
+                encoding="utf-8",
+            )
+            audit_runner_log(path, "all", 30000, 128000, 1.0, 0, 10.0)
+
 
 if __name__ == "__main__":
     unittest.main()
