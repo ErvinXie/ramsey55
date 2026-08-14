@@ -40,6 +40,7 @@ fi
 grep -q '^maximum_solve_seconds[[:space:]]0.125$' \
   "$temporary/root-solver.log"
 grep -q '^root_index[[:space:]]0$' "$temporary/root-solver.log"
+grep -q '^freeze_policy[[:space:]]selective$' "$temporary/root-solver.log"
 python3 "$root/tools/materialize_cnf_cube.py" \
   "$root/tests/data/cube-leaf-smoke.cnf" \
   "$root/tests/data/cube-leaf-smoke.icnf" 0 \

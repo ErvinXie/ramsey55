@@ -151,6 +151,7 @@ int main(int argc, char** argv) try {
   std::cout << "maximum_primary_split_variable\t"
             << maximumPrimarySplitVariable << '\n';
   std::cout << "maximum_solve_seconds\t" << maximumSolveSeconds << '\n';
+  std::cout << "freeze_policy\tselective\n";
   std::cout << "root_index\t";
   if (rootOnly) {
     std::cout << selectedRoot;
@@ -183,9 +184,22 @@ int main(int argc, char** argv) try {
       }
     }
   }
-  for (int variable = 1; variable <= variables; ++variable) {
-    solver.freeze(variable);
+  std::vector<bool> frozen(variables + 1);
+  std::size_t frozenVariables = 0;
+  const auto freezeVariable = [&](int variable) {
+    if (!frozen[variable]) {
+      solver.freeze(variable);
+      frozen[variable] = true;
+      ++frozenVariables;
+    }
+  };
+  for (const auto& cube : cubes) {
+    for (const int literal : cube) freezeVariable(std::abs(literal));
   }
+  for (int variable = 1; variable <= maximumPrimarySplitVariable; ++variable) {
+    freezeVariable(variable);
+  }
+  std::cout << "initial_frozen_variables\t" << frozenVariables << std::endl;
 
   std::ofstream report(argv[4]);
   if (!report) throw std::runtime_error("cannot create result output");
@@ -299,6 +313,7 @@ int main(int argc, char** argv) try {
            << seconds + lookaheadSeconds << '\n'
            << std::flush;
     ++splits;
+    freezeVariable(std::abs(split));
     cube.push_back(split);
     if (proveCube(root, cube, depth + 1) != 20) return 10;
     cube.back() = -split;

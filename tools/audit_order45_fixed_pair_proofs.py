@@ -74,6 +74,62 @@ def cube_count(path: Path) -> int:
     return count
 
 
+def cube_variables(path: Path) -> set[int]:
+    variables: set[int] = set()
+    with path.open(encoding="ascii") as stream:
+        for line in stream:
+            if not line.strip() or line.startswith("c"):
+                continue
+            fields = line.split()
+            fields = fields[1:]
+            if len(fields) < 2 or fields[-1] != "0":
+                raise ValueError(f"invalid cube in {path}")
+            variables.update(abs(int(literal)) for literal in fields[:-1])
+    return variables
+
+
+def audit_selective_runner_log(
+    path: Path,
+    conflicts: int,
+    maximum_conflicts: int,
+    maximum_lookahead_seconds: float,
+    maximum_primary_split_variable: int,
+    maximum_solve_seconds: float,
+    initial_frozen_variables: int,
+) -> None:
+    expected = {
+        "conflicts": str(conflicts),
+        "maximum_conflicts": str(maximum_conflicts),
+        "maximum_lookahead_seconds": str(maximum_lookahead_seconds),
+        "maximum_primary_split_variable": str(maximum_primary_split_variable),
+        "maximum_solve_seconds": str(maximum_solve_seconds),
+        "freeze_policy": "selective",
+        "root_index": "all",
+        "initial_frozen_variables": str(initial_frozen_variables),
+    }
+    observed: dict[str, str] = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        fields = line.split("\t")
+        if fields[0] not in expected:
+            continue
+        if len(fields) != 2 or fields[0] in observed:
+            raise ValueError(f"invalid runner configuration in {path}: {line!r}")
+        observed[fields[0]] = fields[1]
+    missing = expected.keys() - observed.keys()
+    if missing:
+        raise ValueError(f"missing runner configuration in {path}: {sorted(missing)}")
+    for key, value in expected.items():
+        if key in {"maximum_lookahead_seconds", "maximum_solve_seconds"}:
+            matches = float(observed[key]) == float(value)
+        else:
+            matches = observed[key] == value
+        if not matches:
+            raise ValueError(
+                f"runner configuration mismatch for {key} in {path}: "
+                f"{observed[key]!r} != {value!r}"
+            )
+
+
 def audit_results(path: Path, roots: int) -> dict[str, int | float]:
     attempts = splits = closed = 0
     global_unsat_cores = 0
@@ -187,6 +243,11 @@ def main() -> None:
     parser.add_argument("--maximum-primary-split-variable", type=int, default=0)
     parser.add_argument("--maximum-solve-seconds", type=float, default=0.0)
     parser.add_argument(
+        "--freeze-policy",
+        choices=("legacy-all", "selective"),
+        default="legacy-all",
+    )
+    parser.add_argument(
         "--output",
         type=Path,
         default=Path("build/order45-fixed-pair-proof-manifest.json"),
@@ -235,6 +296,7 @@ def main() -> None:
         proof = arguments.proof_dir / f"{stem}.drat"
         results = arguments.proof_dir / f"{stem}.tsv"
         checker_log = arguments.proof_dir / f"{stem}.drat-trim.log"
+        runner_log = arguments.proof_dir / f"{stem}.log"
         variables, clauses = dimacs_shape(cnf)
         if (variables, clauses) != (formula["variables"], formula["clauses"]):
             raise ValueError(f"formula shape mismatch for J{j_index}")
@@ -247,6 +309,19 @@ def main() -> None:
                 raise ValueError(f"base conflict limit mismatch for J{j_index}")
             if statistics["maximum_conflict_limit"] > arguments.maximum_conflicts:
                 raise ValueError(f"maximum conflict limit exceeded for J{j_index}")
+            if arguments.freeze_policy == "selective":
+                initially_frozen = cube_variables(cubes) | set(
+                    range(1, arguments.maximum_primary_split_variable + 1)
+                )
+                audit_selective_runner_log(
+                    runner_log,
+                    arguments.conflicts,
+                    arguments.maximum_conflicts,
+                    arguments.maximum_lookahead_seconds,
+                    arguments.maximum_primary_split_variable,
+                    arguments.maximum_solve_seconds,
+                    len(initially_frozen),
+                )
         check_proof(arguments.checker, cnf, proof, checker_log)
         proofs.append(
             {
@@ -278,6 +353,14 @@ def main() -> None:
                     "path": str(checker_log),
                     "sha256": file_sha256(checker_log),
                 },
+                "runner_log": (
+                    {
+                        "path": str(runner_log),
+                        "sha256": file_sha256(runner_log),
+                    }
+                    if arguments.freeze_policy == "selective"
+                    else None
+                ),
             }
         )
         print(f"verified J{j_index}: {proof}")
@@ -310,6 +393,7 @@ def main() -> None:
                         arguments.maximum_primary_split_variable
                     ),
                     "maximum_solve_seconds": arguments.maximum_solve_seconds,
+                    "freeze_policy": arguments.freeze_policy,
                 }
                 if arguments.conflicts is not None
                 else None

@@ -265,6 +265,16 @@ maximum-solve-time arguments. The time bounds use CaDiCaL's supported
 native propagation limit; on expiry lookahead returns the best
 occurrence-ranked split found so far. These controls change only the search
 heuristic, not the emitted proof or its independent replay.
+The runner now freezes only variables already present in the input cubes and
+the explicitly requested primary-variable range; every dynamic split variable
+is frozen immediately before recursion. This preserves assumption semantics
+while allowing CaDiCaL to eliminate unrelated counter auxiliaries. The runner
+logs the policy and exact initial frozen-variable count, and the fixed-pair
+auditor independently recomputes and checks that count. The hash-bound
+`data/order45-selective-freeze-pilot.json` found little change on the large
+edge-stratum samples, but reduced each fixed-pair formula's initial frozen set
+from all 9,746 variables to 494 and improved tail-split throughput enough to
+justify a second fixed-pair production route. Every pilot remained UNKNOWN.
 An additional optional primary-variable bound replaces auxiliary-variable
 lookahead choices by the most frequent unused variable within the bound. For
 the fixed H/J encoding, variables 1 through 480 are exactly the H--J cross

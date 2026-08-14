@@ -1,17 +1,34 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 import tempfile
 import unittest
 
 from tools.audit_order45_fixed_pair_proofs import (
     audit_results,
+    audit_selective_runner_log,
     cube_count,
+    cube_variables,
     dimacs_shape,
 )
 
 
 class FixedPairProofAuditTests(unittest.TestCase):
+    def test_selective_freeze_pilot_is_explicit_unknown_telemetry(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        pilot = json.loads(
+            (root / "data/order45-selective-freeze-pilot.json").read_text()
+        )
+        self.assertIn("not an UNSAT certificate", pilot["claim"])
+        self.assertEqual(len(pilot["results"]), 8)
+        for result in pilot["results"]:
+            self.assertEqual(
+                result["open"],
+                result["splits"] - result["closed"] + result["roots_seen"],
+            )
+            self.assertGreater(result["open"], 0)
+
     def test_dimacs_shape_and_cube_count(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             temporary = Path(directory)
@@ -21,6 +38,23 @@ class FixedPairProofAuditTests(unittest.TestCase):
             cubes.write_text("a 1 0\na -1 0\n", encoding="ascii")
             self.assertEqual(dimacs_shape(cnf), (2, 2))
             self.assertEqual(cube_count(cubes), 2)
+            self.assertEqual(cube_variables(cubes), {1})
+
+    def test_selective_runner_log_binds_freeze_policy(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            log = Path(directory) / "runner.log"
+            log.write_text(
+                "conflicts\t10000\n"
+                "maximum_conflicts\t128000\n"
+                "maximum_lookahead_seconds\t1\n"
+                "maximum_primary_split_variable\t480\n"
+                "maximum_solve_seconds\t5\n"
+                "freeze_policy\tselective\n"
+                "root_index\tall\n"
+                "initial_frozen_variables\t494\n",
+                encoding="utf-8",
+            )
+            audit_selective_runner_log(log, 10000, 128000, 1.0, 480, 5.0, 494)
 
     def test_balanced_result_forest(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
