@@ -8,5 +8,6 @@ import Ramsey55.LowerBound42
 import Ramsey55.Target
 import Ramsey55.Order45
 import Ramsey55.CubeCover
+import Ramsey55.CnfCardinality
 import Ramsey55.Order45CubeCover
 import Ramsey55.Symmetry

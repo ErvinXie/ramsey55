@@ -158,9 +158,8 @@ theorems have empty axiom audits; the split theorems use only Lean's standard
 
 This is the formal composition interface, not yet the completed order-45
 proof. Remaining formal work includes connecting the concrete DIMACS encoder
-to graph colourings, proving the sequential-counter clauses give the exact
-edge counts used by the concrete relative cover, importing or checking the
-generated cube data and leaf UNSAT results, and connecting the full
+and its variable map to graph colourings and the abstract counter development,
+importing or checking the generated cube data and leaf UNSAT results, and connecting the full
 excess-witness reduction to an arbitrary Ramsey-free 45-vertex colouring.
 
 [Order45CubeCover.lean](../formal/Ramsey55/Order45CubeCover.lean) now checks
@@ -178,11 +177,27 @@ The file also defines the generator's four-literal exact-count cube
 `H≥h, ¬(H≥h+1), J≥j, ¬(J≥j+1)`. Assuming observable counter outputs have
 their stated at-least semantics, it proves that every allowed dense edge pair
 satisfies a member of the corresponding concrete cube list. Thus the formal
-gap at this layer is no longer vague: derive `ExactAtLeastCounterOutputs` from
-the sequential-counter clauses and bind the resulting literals to the DIMACS
-variable map. The count theorem has an empty axiom audit; the quantified
-coverage results contain only Lean's standard axioms and no `sorry` or
-`native_decide`.
+gap at this layer is no longer vague. The count theorem has an empty axiom
+audit; the quantified coverage results contain only Lean's standard axioms
+and no `sorry` or `native_decide`.
+
+[CnfCardinality.lean](../formal/Ramsey55/CnfCardinality.lean) discharges the
+generic sequential-counter soundness obligation. It proves directly from CNF
+semantics that the generator's initial, first-column, diagonal, and interior
+clause groups encode respectively `current ↔ item`, `current ↔ old ∨ item`,
+`current ↔ diagonal ∧ item`, and
+`current ↔ old ∨ (diagonal ∧ item)`. A finite row/width induction then proves
+that every state cell means “at least column+1 true inputs,” and packages the
+last row as `ExactAtLeastCounterOutputs`.
+
+The order-45 file instantiates this theorem at the actual H/J row counts and
+counter widths: `(190,101)/(276,133)`, `(210,108)/(253,123)`, and
+`(231,115)/(231,115)`. It thereby derives all three concrete cube-cover
+conclusions from satisfaction of the finite cell groups plus the range and
+density bounds. What remains for this bridge is data-level rather than
+counter mathematics: define the exact DIMACS input/state literal maps and
+prove the generated mother formula contains those cell, bound, and sum
+clauses.
 
 [Symmetry.lean](../formal/Ramsey55/Symmetry.lean) adds the generic bridge for
 an optional symmetry-reduced route. It proves that a nonempty finite orbit

@@ -1,4 +1,4 @@
-import Ramsey55.CubeCover
+import Ramsey55.CnfCardinality
 import Ramsey55.Order45
 
 namespace Ramsey55
@@ -57,15 +57,6 @@ def order45Degree21EdgePairs : List (Nat × Nat) :=
 def order45Degree22EdgePairs : List (Nat × Nat) :=
   admissibleEdgePairs 88 114 88 114 220
 
-/-- Abstract semantic contract for the observable outputs of an at-least
-counter: output `k` is true exactly when the represented count is at least
-`k + 1`. The next formal bridge must derive this contract from the concrete
-sequential-counter CNF clauses. -/
-def ExactAtLeastCounterOutputs {variables : Nat}
-    (assignment : CnfAssignment variables)
-    (outputs : Nat → CnfLiteral variables) (count : Nat) : Prop :=
-  ∀ k, (outputs k).Holds assignment ↔ k + 1 ≤ count
-
 /-- The four-literal exact-count cube emitted for one `(e(H), e(J))` pair. -/
 def exactEdgePairCube {variables : Nat}
     (hOutputs jOutputs : Nat → CnfLiteral variables)
@@ -76,40 +67,44 @@ def exactEdgePairCube {variables : Nat}
 theorem satisfies_exactEdgePairCube {variables : Nat}
     (assignment : CnfAssignment variables)
     (hOutputs jOutputs : Nat → CnfLiteral variables)
-    (edgesH edgesJ : Nat) (hPositive : 0 < edgesH) (jPositive : 0 < edgesJ)
-    (hExact : ExactAtLeastCounterOutputs assignment hOutputs edgesH)
-    (jExact : ExactAtLeastCounterOutputs assignment jOutputs edgesJ) :
+    (hWidth jWidth edgesH edgesJ : Nat)
+    (hPositive : 0 < edgesH) (jPositive : 0 < edgesJ)
+    (hInside : edgesH < hWidth) (jInside : edgesJ < jWidth)
+    (hExact : ExactAtLeastCounterOutputs assignment hOutputs hWidth edgesH)
+    (jExact : ExactAtLeastCounterOutputs assignment jOutputs jWidth edgesJ) :
     SatisfiesCnfCube assignment
       (exactEdgePairCube hOutputs jOutputs (edgesH, edgesJ)) := by
   intro literal membership
   simp only [exactEdgePairCube, List.mem_cons, List.not_mem_nil,
     or_false] at membership
   rcases membership with rfl | rfl | rfl | rfl
-  · exact (hExact (edgesH - 1)).mpr (by omega)
+  · exact (hExact (edgesH - 1) (by omega)).mpr (by omega)
   · rw [CnfLiteral.negate_holds_iff_not_holds]
     intro holds
-    have tooMany := (hExact edgesH).mp holds
+    have tooMany := (hExact edgesH hInside).mp holds
     omega
-  · exact (jExact (edgesJ - 1)).mpr (by omega)
+  · exact (jExact (edgesJ - 1) (by omega)).mpr (by omega)
   · rw [CnfLiteral.negate_holds_iff_not_holds]
     intro holds
-    have tooMany := (jExact edgesJ).mp holds
+    have tooMany := (jExact edgesJ jInside).mp holds
     omega
 
 theorem exists_satisfied_exactEdgePairCube {variables : Nat}
     (assignment : CnfAssignment variables)
     (hOutputs jOutputs : Nat → CnfLiteral variables)
-    (pairs : List (Nat × Nat)) (edgesH edgesJ : Nat)
+    (pairs : List (Nat × Nat)) (hWidth jWidth edgesH edgesJ : Nat)
     (pairMember : (edgesH, edgesJ) ∈ pairs)
     (hPositive : 0 < edgesH) (jPositive : 0 < edgesJ)
-    (hExact : ExactAtLeastCounterOutputs assignment hOutputs edgesH)
-    (jExact : ExactAtLeastCounterOutputs assignment jOutputs edgesJ) :
+    (hInside : edgesH < hWidth) (jInside : edgesJ < jWidth)
+    (hExact : ExactAtLeastCounterOutputs assignment hOutputs hWidth edgesH)
+    (jExact : ExactAtLeastCounterOutputs assignment jOutputs jWidth edgesJ) :
     ∃ cube ∈ pairs.map (exactEdgePairCube hOutputs jOutputs),
       SatisfiesCnfCube assignment cube := by
   refine ⟨exactEdgePairCube hOutputs jOutputs (edgesH, edgesJ), ?_, ?_⟩
   · exact List.mem_map.mpr ⟨(edgesH, edgesJ), pairMember, rfl⟩
   · exact satisfies_exactEdgePairCube assignment hOutputs jOutputs
-      edgesH edgesJ hPositive jPositive hExact jExact
+      hWidth jWidth edgesH edgesJ hPositive jPositive hInside jInside
+      hExact jExact
 
 set_option maxRecDepth 100000 in
 theorem order45EdgePairCounts :
@@ -149,16 +144,16 @@ theorem order45Degree20CounterCubes_cover {variables : Nat}
     (hLower : 68 ≤ edgesH) (hUpper : edgesH ≤ 100)
     (jLower : 116 ≤ edgesJ) (jUpper : edgesJ ≤ 132)
     (dense : 226 ≤ edgesH + edgesJ)
-    (hExact : ExactAtLeastCounterOutputs assignment hOutputs edgesH)
-    (jExact : ExactAtLeastCounterOutputs assignment jOutputs edgesJ) :
+    (hExact : ExactAtLeastCounterOutputs assignment hOutputs 101 edgesH)
+    (jExact : ExactAtLeastCounterOutputs assignment jOutputs 133 edgesJ) :
     ∃ cube ∈ order45Degree20EdgePairs.map
         (exactEdgePairCube hOutputs jOutputs),
       SatisfiesCnfCube assignment cube := by
   exact exists_satisfied_exactEdgePairCube assignment hOutputs jOutputs
-    order45Degree20EdgePairs edgesH edgesJ
+    order45Degree20EdgePairs 101 133 edgesH edgesJ
     (order45Degree20EdgePairs_cover edgesH edgesJ
       hLower hUpper jLower jUpper dense)
-    (by omega) (by omega) hExact jExact
+    (by omega) (by omega) (by omega) (by omega) hExact jExact
 
 theorem order45Degree21CounterCubes_cover {variables : Nat}
     (assignment : CnfAssignment variables)
@@ -167,16 +162,16 @@ theorem order45Degree21CounterCubes_cover {variables : Nat}
     (hLower : 77 ≤ edgesH) (hUpper : edgesH ≤ 107)
     (jLower : 101 ≤ edgesJ) (jUpper : edgesJ ≤ 122)
     (dense : 222 ≤ edgesH + edgesJ)
-    (hExact : ExactAtLeastCounterOutputs assignment hOutputs edgesH)
-    (jExact : ExactAtLeastCounterOutputs assignment jOutputs edgesJ) :
+    (hExact : ExactAtLeastCounterOutputs assignment hOutputs 108 edgesH)
+    (jExact : ExactAtLeastCounterOutputs assignment jOutputs 123 edgesJ) :
     ∃ cube ∈ order45Degree21EdgePairs.map
         (exactEdgePairCube hOutputs jOutputs),
       SatisfiesCnfCube assignment cube := by
   exact exists_satisfied_exactEdgePairCube assignment hOutputs jOutputs
-    order45Degree21EdgePairs edgesH edgesJ
+    order45Degree21EdgePairs 108 123 edgesH edgesJ
     (order45Degree21EdgePairs_cover edgesH edgesJ
       hLower hUpper jLower jUpper dense)
-    (by omega) (by omega) hExact jExact
+    (by omega) (by omega) (by omega) (by omega) hExact jExact
 
 theorem order45Degree22CounterCubes_cover {variables : Nat}
     (assignment : CnfAssignment variables)
@@ -185,16 +180,91 @@ theorem order45Degree22CounterCubes_cover {variables : Nat}
     (hLower : 88 ≤ edgesH) (hUpper : edgesH ≤ 114)
     (jLower : 88 ≤ edgesJ) (jUpper : edgesJ ≤ 114)
     (dense : 220 ≤ edgesH + edgesJ)
-    (hExact : ExactAtLeastCounterOutputs assignment hOutputs edgesH)
-    (jExact : ExactAtLeastCounterOutputs assignment jOutputs edgesJ) :
+    (hExact : ExactAtLeastCounterOutputs assignment hOutputs 115 edgesH)
+    (jExact : ExactAtLeastCounterOutputs assignment jOutputs 115 edgesJ) :
     ∃ cube ∈ order45Degree22EdgePairs.map
         (exactEdgePairCube hOutputs jOutputs),
       SatisfiesCnfCube assignment cube := by
   exact exists_satisfied_exactEdgePairCube assignment hOutputs jOutputs
-    order45Degree22EdgePairs edgesH edgesJ
+    order45Degree22EdgePairs 115 115 edgesH edgesJ
     (order45Degree22EdgePairs_cover edgesH edgesJ
       hLower hUpper jLower jUpper dense)
-    (by omega) (by omega) hExact jExact
+    (by omega) (by omega) (by omega) (by omega) hExact jExact
+
+theorem order45Degree20SequentialCounterCubes_cover {variables : Nat}
+    (assignment : CnfAssignment variables)
+    (hInput jInput : Nat → CnfLiteral variables)
+    (hState jState : Nat → Nat → CnfLiteral variables)
+    (hCells : SatisfiesSequentialCounterCells assignment hInput hState 190 101)
+    (jCells : SatisfiesSequentialCounterCells assignment jInput jState 276 133)
+    (hLower : 68 ≤ sequentialCounterInputCount assignment hInput 190)
+    (hUpper : sequentialCounterInputCount assignment hInput 190 ≤ 100)
+    (jLower : 116 ≤ sequentialCounterInputCount assignment jInput 276)
+    (jUpper : sequentialCounterInputCount assignment jInput 276 ≤ 132)
+    (dense : 226 ≤ sequentialCounterInputCount assignment hInput 190 +
+      sequentialCounterInputCount assignment jInput 276) :
+    ∃ cube ∈ order45Degree20EdgePairs.map
+        (exactEdgePairCube (hState (190 - 1)) (jState (276 - 1))),
+      SatisfiesCnfCube assignment cube := by
+  have hExact := satisfiesSequentialCounterCells_outputs_exact assignment
+    hInput hState 190 101 (by omega) (by omega) hCells
+  have jExact := satisfiesSequentialCounterCells_outputs_exact assignment
+    jInput jState 276 133 (by omega) (by omega) jCells
+  exact order45Degree20CounterCubes_cover assignment
+    (hState (190 - 1)) (jState (276 - 1))
+    (sequentialCounterInputCount assignment hInput 190)
+    (sequentialCounterInputCount assignment jInput 276)
+    hLower hUpper jLower jUpper dense hExact jExact
+
+theorem order45Degree21SequentialCounterCubes_cover {variables : Nat}
+    (assignment : CnfAssignment variables)
+    (hInput jInput : Nat → CnfLiteral variables)
+    (hState jState : Nat → Nat → CnfLiteral variables)
+    (hCells : SatisfiesSequentialCounterCells assignment hInput hState 210 108)
+    (jCells : SatisfiesSequentialCounterCells assignment jInput jState 253 123)
+    (hLower : 77 ≤ sequentialCounterInputCount assignment hInput 210)
+    (hUpper : sequentialCounterInputCount assignment hInput 210 ≤ 107)
+    (jLower : 101 ≤ sequentialCounterInputCount assignment jInput 253)
+    (jUpper : sequentialCounterInputCount assignment jInput 253 ≤ 122)
+    (dense : 222 ≤ sequentialCounterInputCount assignment hInput 210 +
+      sequentialCounterInputCount assignment jInput 253) :
+    ∃ cube ∈ order45Degree21EdgePairs.map
+        (exactEdgePairCube (hState (210 - 1)) (jState (253 - 1))),
+      SatisfiesCnfCube assignment cube := by
+  have hExact := satisfiesSequentialCounterCells_outputs_exact assignment
+    hInput hState 210 108 (by omega) (by omega) hCells
+  have jExact := satisfiesSequentialCounterCells_outputs_exact assignment
+    jInput jState 253 123 (by omega) (by omega) jCells
+  exact order45Degree21CounterCubes_cover assignment
+    (hState (210 - 1)) (jState (253 - 1))
+    (sequentialCounterInputCount assignment hInput 210)
+    (sequentialCounterInputCount assignment jInput 253)
+    hLower hUpper jLower jUpper dense hExact jExact
+
+theorem order45Degree22SequentialCounterCubes_cover {variables : Nat}
+    (assignment : CnfAssignment variables)
+    (hInput jInput : Nat → CnfLiteral variables)
+    (hState jState : Nat → Nat → CnfLiteral variables)
+    (hCells : SatisfiesSequentialCounterCells assignment hInput hState 231 115)
+    (jCells : SatisfiesSequentialCounterCells assignment jInput jState 231 115)
+    (hLower : 88 ≤ sequentialCounterInputCount assignment hInput 231)
+    (hUpper : sequentialCounterInputCount assignment hInput 231 ≤ 114)
+    (jLower : 88 ≤ sequentialCounterInputCount assignment jInput 231)
+    (jUpper : sequentialCounterInputCount assignment jInput 231 ≤ 114)
+    (dense : 220 ≤ sequentialCounterInputCount assignment hInput 231 +
+      sequentialCounterInputCount assignment jInput 231) :
+    ∃ cube ∈ order45Degree22EdgePairs.map
+        (exactEdgePairCube (hState (231 - 1)) (jState (231 - 1))),
+      SatisfiesCnfCube assignment cube := by
+  have hExact := satisfiesSequentialCounterCells_outputs_exact assignment
+    hInput hState 231 115 (by omega) (by omega) hCells
+  have jExact := satisfiesSequentialCounterCells_outputs_exact assignment
+    jInput jState 231 115 (by omega) (by omega) jCells
+  exact order45Degree22CounterCubes_cover assignment
+    (hState (231 - 1)) (jState (231 - 1))
+    (sequentialCounterInputCount assignment hInput 231)
+    (sequentialCounterInputCount assignment jInput 231)
+    hLower hUpper jLower jUpper dense hExact jExact
 
 #print axioms mem_admissibleEdgePairs_iff
 #print axioms order45EdgePairCounts
@@ -205,5 +275,8 @@ theorem order45Degree22CounterCubes_cover {variables : Nat}
 #print axioms order45Degree20CounterCubes_cover
 #print axioms order45Degree21CounterCubes_cover
 #print axioms order45Degree22CounterCubes_cover
+#print axioms order45Degree20SequentialCounterCubes_cover
+#print axioms order45Degree21SequentialCounterCubes_cover
+#print axioms order45Degree22SequentialCounterCubes_cover
 
 end Ramsey55
