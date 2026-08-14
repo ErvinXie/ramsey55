@@ -262,13 +262,15 @@ checks the per-root result tree and recorded runner limits, regenerates the
 temporary cube-augmented CNF, and replays every leaf proof. Missing leaves are
 fatal by default; `--allow-partial` produces only an explicitly incomplete
 progress inventory.
-The committed `data/order45-strata-leaf-pilot.json` records three 120-second
+The committed `data/order45-strata-leaf-pilot.json` records four 120-second
 parameter comparisons with formula, cube, runner, and TSV hashes. It is
 explicitly UNKNOWN telemetry. On the representative d20/d21/d22 cubes,
 10,000-conflict auxiliary splitting left 2/1/2 open leaves, versus 14/13/15
 when dynamic choices were forced to the 990 graph-edge variables and 4/4/7
-with the lower 1,000-conflict auxiliary budget. The 10,000-conflict auxiliary
-configuration is therefore the current production choice.
+with the lower 1,000-conflict auxiliary budget. Raising the auxiliary budget
+to 30,000 left exactly one open leaf in all three cases at depths 4/5/5. The
+30,000-conflict auxiliary configuration is therefore the current production
+choice; all four pilot configurations remain UNKNOWN rather than proofs.
 `tools/audit_order45_fixed_pair_proofs.py` checks formula and cube hashes,
 complete balanced result forests, the recorded runner parameters, and each
 DRAT replay before writing a compact artifact manifest.

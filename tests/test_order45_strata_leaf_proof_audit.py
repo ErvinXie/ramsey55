@@ -21,7 +21,7 @@ class Order45StrataLeafProofAuditTests(unittest.TestCase):
         self.assertIn("not an UNSAT certificate", document["claim"])
         self.assertEqual(document["timeout_seconds"], 120)
         self.assertEqual(len(document["cases"]), 3)
-        self.assertEqual(len(document["configurations"]), 3)
+        self.assertEqual(len(document["configurations"]), 4)
         for configuration in document["configurations"]:
             self.assertEqual(len(configuration["results"]), 3)
             for result in configuration["results"]:

@@ -32,6 +32,15 @@
         {"closed": 86, "degree": 21, "maximum_depth": 42, "open": 4, "reported_seconds": 116.132635, "rows": 175, "splits": 89, "tsv_sha256": "b91a1b7981d298884cae828247c5c9012b5d27907cf21d17817a49a30a401c3d"},
         {"closed": 122, "degree": 22, "maximum_depth": 120, "open": 7, "reported_seconds": 116.505862, "rows": 250, "splits": 128, "tsv_sha256": "203c1b5bc35f9c06b77307c7f11dc107d9ef50d6d9bdec3720229527226bb07d"}
       ]
+    },
+    {
+      "name": "auxiliary-30k",
+      "parameters": {"conflicts": 30000, "maximum_conflicts": 128000, "maximum_lookahead_seconds": 1.0, "maximum_primary_split_variable": 0, "maximum_solve_seconds": 10.0},
+      "results": [
+        {"closed": 4, "degree": 20, "maximum_depth": 4, "open": 1, "reported_seconds": 111.529023, "rows": 8, "splits": 4, "tsv_sha256": "fd5e362ce6816b7f5795790068a2a0aa9aabd7a7e0f572f72659598df0184e77"},
+        {"closed": 5, "degree": 21, "maximum_depth": 5, "open": 1, "reported_seconds": 114.721507, "rows": 10, "splits": 5, "tsv_sha256": "a30591e13e1cac011e8fa8a29758eff7c0f3f98cf3b4c1600ab3dcd9676ba5e7"},
+        {"closed": 5, "degree": 22, "maximum_depth": 5, "open": 1, "reported_seconds": 116.293048, "rows": 10, "splits": 5, "tsv_sha256": "24407b520b82f4682950c508e3d77c9815e263215b0a322ddbb9e1c47ac1ebca"}
+      ]
     }
   ],
   "runner_sha256": "ab0cf870e64a81deab8061737df379f7c4340e0ce7f10e896dd180b3403bc31e",
