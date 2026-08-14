@@ -38,6 +38,7 @@ BINARY_COVER = load_tool("certify_binary_cube_cover")
 MATERIALIZED_FRONTIER = load_tool("export_materialized_proof_frontier")
 BINARY_REFINEMENT = load_tool("audit_binary_cube_refinement")
 MATERIALIZED_COMPOSE = load_tool("compose_materialized_cube_proofs")
+MATERIALIZED_PORTFOLIO = load_tool("compose_materialized_cube_portfolio")
 MATERIALIZED_CHAIN = load_tool("run_materialized_proof_chain")
 MATERIALIZED_CHAIN_AUDIT = load_tool("audit_materialized_proof_chain")
 FIXED_PAIR_BUNDLE = load_tool("audit_fixed_pair_proof_bundle")
@@ -128,6 +129,28 @@ class ResultMergeTests(unittest.TestCase):
         self.assertEqual(result["solver"], cadical)
         MATERIALIZED_COMPOSE.bind_effective_solver(result, cadical, cadical)
         self.assertNotIn("solver", result)
+
+    def test_materialized_portfolio_selects_smallest_verified_proof(self) -> None:
+        documents = [
+            {
+                "results": [
+                    {"status": 0},
+                    {"status": 20, "proof_bytes": 50},
+                    {"status": 20, "proof_bytes": 30},
+                ]
+            },
+            {
+                "results": [
+                    {"status": 20, "proof_bytes": 40},
+                    {"status": 20, "proof_bytes": 20},
+                    {"status": 0},
+                ]
+            },
+        ]
+        self.assertEqual(MATERIALIZED_PORTFOLIO.selected_sources(documents), [1, 1, 0])
+        documents[1]["results"][2] = {"status": 10}
+        with self.assertRaisesRegex(ValueError, "SAT result"):
+            MATERIALIZED_PORTFOLIO.selected_sources(documents)
 
 
 class CartesianAdoptionTests(unittest.TestCase):

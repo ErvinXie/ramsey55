@@ -507,6 +507,12 @@ formula and complete ordered cube-family binding are identical. Cross-solver
 composition retains the primary manifest's default solver and records a
 per-result solver binary/hash override for every replacement from another
 solver; the leaf auditor checks those overrides before replaying the proof.
+`tools/compose_materialized_cube_portfolio.py` extends this to any number of
+identical cube-family runs. It rejects SAT, chooses the smallest verified
+proof per cube, binds every source manifest and selected source index, and
+keeps all per-solver provenance needed by the leaf auditor. A real eight-cube
+ARM composition retained three proofs and a separate replay accepted all
+three.
 The immutable-state path was exercised on the J297775 pre-switch snapshot:
 54 manifests and 53 refinement rounds through round 55 were replayed, covering
 443 refined parents and ending at the recorded 17 VERIFIED/17 UNKNOWN
@@ -524,6 +530,10 @@ from those smaller frontiers. An exact 17-parent J297775 open retry closed
 none, and neither CaDiCaL nor Kissat `--unsat` closed either of two later
 J297775 closed parents. Their already certified refinement continuations were
 therefore resumed.
+At round 139, four additional random seeds for each solver also left both
+J297775 closed parents UNKNOWN at 120 seconds. All transient CNFs and raw DRAT
+were removed from RAM scratch; the continuous chain then resumed from the
+same state with CaDiCaL and scratch enabled.
 
 The J326185 closed-leaf batch verified 16,746 of 16,756 leaves and left ten
 UNKNOWN, with all 16,746 proofs accepted by a separate 48-way replay. Its
