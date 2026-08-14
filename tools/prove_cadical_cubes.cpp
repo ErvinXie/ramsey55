@@ -213,7 +213,8 @@ int main(int argc, char** argv) try {
     const std::size_t attempt = attempts++;
     if (status == 10) {
       report << root << '\t' << attempt << '\t' << depth << '\t'
-             << effectiveLimit << "\t10\t0\t0\t" << seconds << '\n';
+             << effectiveLimit << "\t10\t0\t0\t" << seconds << '\n'
+             << std::flush;
       solver.conclude();
       printModel();
       return 10;
@@ -224,7 +225,8 @@ int main(int argc, char** argv) try {
       solver.conclude();
       report << root << '\t' << attempt << '\t' << depth << '\t'
              << effectiveLimit << "\t20\t" << core << "\t0\t" << seconds
-             << '\n';
+             << '\n'
+             << std::flush;
       globallyUnsat |= core == 0;
       return 20;
     }
@@ -243,7 +245,8 @@ int main(int argc, char** argv) try {
     if (lookaheadStatus == 10) {
       report << root << '\t' << attempt << '\t' << depth << '\t'
              << effectiveLimit << "\t10\t0\t0\t"
-             << seconds + lookaheadSeconds << '\n';
+             << seconds + lookaheadSeconds << '\n'
+             << std::flush;
       solver.conclude();
       printModel();
       return 10;
@@ -254,7 +257,8 @@ int main(int argc, char** argv) try {
       solver.conclude();
       report << root << '\t' << attempt << '\t' << depth << '\t'
              << effectiveLimit << "\t20\t" << core << "\t0\t"
-             << seconds + lookaheadSeconds << '\n';
+             << seconds + lookaheadSeconds << '\n'
+             << std::flush;
       globallyUnsat |= core == 0;
       return 20;
     }
@@ -278,7 +282,8 @@ int main(int argc, char** argv) try {
     }
     report << root << '\t' << attempt << '\t' << depth << '\t'
            << effectiveLimit << "\t0\t0\t" << split << '\t'
-           << seconds + lookaheadSeconds << '\n';
+           << seconds + lookaheadSeconds << '\n'
+           << std::flush;
     ++splits;
     cube.push_back(split);
     if (proveCube(root, cube, depth + 1) != 20) return 10;
