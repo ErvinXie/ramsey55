@@ -1,0 +1,17 @@
+{
+  "coverage_dependencies": [
+    "the global three-vertex excess contributions sum to zero",
+    "some vertex therefore has nonpositive contribution",
+    "colour complementation maps witness degree d to 44-d and swaps H,J",
+    "R(4,5)=25 gives the degree window [20,24]"
+  ],
+  "degree_window": [20, 24],
+  "files": [
+    {"clauses": 2902909, "degree": 20, "minimum_local_edge_sum": 226, "path": "r55-n45-excess-d20.cnf", "sha256": "5ed896267ac7b31ca99a9fcb2974f17c4faeaa4accd9f479d8bce5dcbb70e945", "variables": 116518},
+    {"clauses": 2896390, "degree": 21, "minimum_local_edge_sum": 222, "path": "r55-n45-excess-d21.cnf", "sha256": "224a4ad51e4dbcb11d57b87d34d8222ebbd9ebfa047f3a89009e12d27e5794b1", "variables": 114885},
+    {"clauses": 2893579, "degree": 22, "minimum_local_edge_sum": 220, "path": "r55-n45-excess-d22.cnf", "sha256": "ee9d8cb6607d7eb1592fe09088c4963e1ace408d9b73940b1d7280539a70a9bd", "variables": 114181}
+  ],
+  "normalized_witness_degrees": [20, 21, 22],
+  "order": 45,
+  "schema": "ramsey55.order45-excess-witness-benchmarks.v1"
+}

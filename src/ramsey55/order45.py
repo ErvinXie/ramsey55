@@ -14,6 +14,22 @@ from .graph import Graph
 
 
 ORDER45_BRANCH_DEGREES = (20, 22)
+ORDER45_EXCESS_WITNESS_DEGREES = (20, 21, 22)
+
+
+def doubled_order45_local_excess_constant(degree: int) -> int:
+    """Twice the edge-independent part of the local excess contribution."""
+
+    return (44 - degree) * (43 - degree) - degree * (45 - 2 * degree)
+
+
+def order45_excess_minimum_edge_sum(degree: int) -> int:
+    """Minimum ``e(H)+e(J)`` when the local contribution is nonpositive."""
+
+    if degree not in range(20, 25):
+        raise ValueError("order-45 Ramsey degree must be between 20 and 24")
+    constant = doubled_order45_local_excess_constant(degree)
+    return (constant + 1) // 2
 
 
 @dataclass(frozen=True, slots=True)

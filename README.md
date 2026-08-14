@@ -87,3 +87,9 @@ Generate the safe cross-row lex-leader variants with:
     PYTHONPATH=src python3 tools/generate_order45_lex_benchmarks.py
     PYTHONPATH=src:tools python3 tools/verify_order45_lex_benchmarks.py \
       data/order45-lex-benchmark-manifest.json --cnf-dir build/order45-lex
+
+Generate the complete nonpositive-excess witness cover with:
+
+    PYTHONPATH=src:tools python3 tools/generate_order45_excess_benchmarks.py
+    PYTHONPATH=src:tools python3 tools/verify_order45_excess_benchmarks.py \
+      data/order45-excess-benchmark-manifest.json --cnf-dir build/order45-excess

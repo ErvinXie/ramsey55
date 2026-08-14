@@ -44,6 +44,30 @@ class CardinalityEncodingTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "distinct"):
             cardinality_range_encoding((1, 1), 0, 1, 1)
 
+    def test_signed_literals_count_their_satisfied_values(self) -> None:
+        inputs = (1, -2, 3)
+        for lower in range(4):
+            for upper in range(lower, 4):
+                maximum, clauses = cardinality_range_encoding(
+                    inputs, lower, upper, 3
+                )
+                for primary in product((False, True), repeat=3):
+                    extendible = False
+                    for auxiliary in product((False, True), repeat=maximum - 3):
+                        values = primary + auxiliary
+                        assignment = {
+                            variable: values[variable - 1]
+                            for variable in range(1, maximum + 1)
+                        }
+                        if all(
+                            clause_is_satisfied(clause, assignment)
+                            for clause in clauses
+                        ):
+                            extendible = True
+                            break
+                    count = int(primary[0]) + int(not primary[1]) + int(primary[2])
+                    self.assertEqual(extendible, lower <= count <= upper)
+
 
 if __name__ == "__main__":
     unittest.main()

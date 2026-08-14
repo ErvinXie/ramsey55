@@ -13,7 +13,7 @@ def cardinality_range_encoding(
     upper: int,
     maximum_variable: int,
 ) -> tuple[int, tuple[Clause, ...]]:
-    """Encode ``lower <= sum(inputs) <= upper`` with full counter equivalences.
+    """Encode a range on the number of satisfied input literals.
 
     Auxiliary ``s[i,j]`` means that at least ``j`` of the first ``i`` inputs
     are true.  Defining both directions makes the auxiliary assignment unique,
@@ -24,16 +24,17 @@ def cardinality_range_encoding(
     size = len(inputs)
     if lower < 0 or lower > upper or upper > size:
         raise ValueError("invalid cardinality range")
-    if any(variable <= 0 or variable > maximum_variable for variable in inputs):
-        raise ValueError("cardinality inputs must be existing positive variables")
-    if len(set(inputs)) != size:
+    if any(literal == 0 or abs(literal) > maximum_variable for literal in inputs):
+        raise ValueError("cardinality inputs must be existing nonzero literals")
+    if len({abs(literal) for literal in inputs}) != size:
         raise ValueError("cardinality inputs must be distinct")
     if lower == 0 and upper == size:
         return maximum_variable, ()
 
     variable = maximum_variable
     clauses: list[Clause] = []
-    threshold = min(size, upper + 1)
+    required_upper_state = upper + 1 if upper < size else 0
+    threshold = min(size, max(lower, required_upper_state))
     at_least = [[0] * (threshold + 1) for _ in range(size + 1)]
     for i in range(1, size + 1):
         item = inputs[i - 1]

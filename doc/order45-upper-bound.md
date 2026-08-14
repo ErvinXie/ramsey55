@@ -145,6 +145,21 @@ The public `r45extreme` data gives the following exact layer audit:
 | 21 + 23 | 443 | at least 222 | 36 | 8 | 3,481,603,081 |
 | 22 + 22 | 440 | at least 220 | 45 ordered | 4 ordered | 967,769,881 |
 
+These thresholds are also encoded as a complete three-branch SAT cover.
+`tools/generate_order45_excess_benchmarks.py` fixes the nonpositive witness at
+the apex, normalizes its degree to 20, 21, or 22, and counts H-edges together
+with negated nonneighbour-side edges (the J-edges). The three formulas have
+116,518/114,885/114,181 variables and 2,902,909/2,896,390/2,893,579 clauses.
+Their SHA-256 values are recorded in
+`data/order45-excess-benchmark-manifest.json`, and an independent signed
+counter implementation reconstructs every clause. The global identity itself
+was exhaustively executed on every graph through order five.
+
+All three 60-second Kissat probes remained UNKNOWN. The d20/d21/d22 decision
+counts were 1,087,354/936,207/871,278, with 104,600,340/182,072,997/
+187,876,713 propagations. This is a complete structural cover, but not yet a
+closed one.
+
 Colour swap reduces the last raw count to 483,900,495 unordered pairs. These
 numbers are pairs of unlabelled local records before testing a single cross
 edge or overlap, so they substantially understate the cost of naive gluing.
