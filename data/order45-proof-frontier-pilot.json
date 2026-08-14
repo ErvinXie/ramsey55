@@ -112,7 +112,7 @@
     }
   ],
   "claim": "live proof-prefix reconstruction and 120-second UNKNOWN search telemetry; not an UNSAT certificate",
-  "exporter_sha256": "b1b06dc78a512a58b334cb438877f242e6d8a242b81278dce1d0748068b81b9c",
+  "exporter_sha256": "34ddb56503b876296f32aa6e7d5f66790c231713a2414eb88489e5517fac8ef3",
   "per_cube_seconds": 120,
   "schema": "ramsey55.proof-frontier-pilot.v1",
   "solve_runner_sha256": "6044359c39345ae222cd6047a5bf9d3b65ca4339ea5b9120c3ffe8baf63d04e5",

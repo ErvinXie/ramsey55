@@ -334,7 +334,11 @@ files, while checking the global attempt sequence, root order, signed branch
 literals, depth transitions, and the identity
 `open = 1 + splits - closed`. A final incomplete TSV record is tolerated only
 because a live writer can be observed between writes; an incomplete interior
-record is rejected.
+record is rejected. For a unified stream stopped within one root,
+`--include-later-roots` additionally appends every untouched later input root
+and rejects the operation if any of them already has a result row. Thus the
+export can represent the entire remaining mother-formula cover, rather than
+only the partial current tree.
 
 The hash-bound snapshot in `data/order45-proof-frontier-pilot.json` separates
 easy pending siblings from true hard cores. A 120-second independent pass
@@ -357,6 +361,17 @@ the parent-cube formula. A real checkpoint still has to pass the same full
 replay: runner exit 20 or successful frontier reconstruction alone is never
 treated as a certificate, because a copied live proof buffer and independently
 generated DRAT state need not compose without checker validation.
+
+This recovery path is also protecting the legacy d20 unified stream from its
+depth-1024 runner limit. A live checkpoint at depth 952 copied a
+5,137,727,488-byte proof prefix, reconstructed three open current-root cubes,
+and appended the 27 untouched edge-pair roots for a 30-cube global frontier.
+The source runner was immediately resumed; a separate selective fragment is
+working on the global frontier and will compose and replay only after exit 20.
+The prefix SHA-256 is
+`4849fbb423e15b17f6f5bc56ca7a6bb4e67a913aaf7aac2ae821d414433d84a4`.
+This remains an UNKNOWN checkpoint until the complete binary DRAT replay is
+verified.
 
 The d20 comparison also rejects an otherwise tempting heuristic change.
 Selective freezing with unrestricted lookahead left 1 and 2 branches on the

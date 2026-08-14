@@ -131,12 +131,24 @@ def main() -> None:
     parser.add_argument("root", type=int)
     parser.add_argument("results", type=Path)
     parser.add_argument("output", type=Path)
+    parser.add_argument(
+        "--include-later-roots",
+        action="store_true",
+        help="append untouched input roots after the selected live root",
+    )
     arguments = parser.parse_args()
     cubes = read_cubes(arguments.cubes)
     if not 0 <= arguments.root < len(cubes):
         parser.error("root index is outside the cube file")
     rows = read_rows(arguments.results, arguments.root)
     frontier = reconstruct_frontier(cubes[arguments.root], rows)
+    if arguments.include_later_roots:
+        for later_root in range(arguments.root + 1, len(cubes)):
+            if read_rows(arguments.results, later_root):
+                parser.error(
+                    "--include-later-roots requires every later root to be untouched"
+                )
+        frontier += cubes[arguments.root + 1 :]
     temporary = arguments.output.with_suffix(arguments.output.suffix + ".tmp")
     with temporary.open("w", encoding="ascii", newline="\n") as output:
         for cube in frontier:

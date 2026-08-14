@@ -3,6 +3,8 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -102,6 +104,37 @@ class ProofFrontierExportTests(unittest.TestCase):
             rows = read_rows(results, 1)
         self.assertEqual(tuple(row.attempt for row in rows), (1, 2))
         self.assertEqual(reconstruct_frontier((2,), rows), ((2, 3),))
+
+    def test_cli_appends_only_untouched_later_roots(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            cubes = root / "cubes.icnf"
+            cubes.write_text("a 1 0\na 2 0\na 3 0\n", encoding="ascii")
+            results = root / "results.tsv"
+            results.write_text(
+                "root\tattempt\tdepth\tlimit\tstatus\tcore\tsplit\tseconds\n"
+                "0\t0\t0\t10\t0\t0\t4\t0.1\n"
+                "0\t1\t1\t10\t20\t1\t0\t0.2\n",
+                encoding="ascii",
+            )
+            output = root / "frontier.icnf"
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(Path(__file__).parents[1] / "tools/export_proof_frontier.py"),
+                    str(cubes),
+                    "0",
+                    str(results),
+                    str(output),
+                    "--include-later-roots",
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+                text=True,
+            )
+            self.assertEqual(
+                read_cubes(output), ((1, -4), (2,), (3,))
+            )
 
 
 if __name__ == "__main__":
