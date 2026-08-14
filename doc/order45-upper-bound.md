@@ -415,9 +415,9 @@ formula, cube file, ordered cube, augmented CNF, solver and checker binaries,
 proof, and checker log by SHA-256. `tools/audit_materialized_cube_proofs.py`
 then recreates every augmented CNF and replays every proof again. UNKNOWN is a
 first-class partial result and SAT stops frontier processing. A two-leaf
-Kissat/DRAT smoke proof passes both checker invocations. After the staged
-retry and chain-audit additions, the complete ARM Python suite has 112 passing
-tests.
+Kissat/DRAT smoke proof passes both checker invocations. After the staged,
+chain-audit, and compact-proof additions, the complete ARM Python suite has
+113 passing tests.
 
 The first real snapshots apply this route to the two no-symmetry H100/J132
 fixed-pair streams. They contain 16,750 closed plus four open leaves for
@@ -444,8 +444,12 @@ confirmed that this one-easy/one-hard pattern persists: a uniform long budget
 mostly waits on the single hard continuation at every level.
 
 `tools/run_materialized_proof_chain.py` therefore supports a staged conquer
-policy. It first gives every child two seconds and applies the 60-second
-budget only when both siblings of one parent remain UNKNOWN. The new
+policy. It first gives every child two seconds and applies the long budget
+only when both siblings of one parent remain UNKNOWN. The initial long budget
+was 60 seconds. A proof-mode 120-second rerun on eight J297775 round-37
+residuals closed one additional cube at 96.98 seconds; that cube's sibling was
+already proved, so the extra closure removes a whole parent. All four chains
+therefore switched at audited boundaries to a 120-second long budget. The new
 `tools/compose_materialized_cube_proofs.py` accepts only an ordered subsequence
 of primary UNKNOWN rows, binds both source manifests by SHA-256, carries the
 replacement indices, and hard-links or copies the selected proof artifacts
@@ -453,6 +457,15 @@ into a fresh combined manifest. Both stage manifests and the composition are
 independently replayed. A real two-cube ARM smoke combined one short-stage
 proof with one retry proof and the final independent `drat-trim` replay
 verified both leaves.
+
+Proof storage can be reduced without weakening replay. With
+`--compact-proof`, the producer asks `drat-trim -C -l` for a binary core,
+retains it only when it is smaller than the solver proof, and immediately
+replays the retained core. The manifest binds the source proof size/hash and
+the compaction log; the independent auditor and UNKNOWN-only composer also
+check and carry that log. On a real J297775 leaf this reduced 31,254,828 bytes
+to 15,791,261 bytes, and both producer replay and a separate auditor returned
+`VERIFIED`. Tiny five-byte smoke proofs correctly retained their originals.
 
 `tools/audit_materialized_proof_chain.py` provides a separate whole-chain
 replay. It byte-snapshots `state.json`, audits every proof manifest, rebuilds
@@ -473,6 +486,13 @@ separate 48-way replay accepted all 16,734 retained proofs. Both residual
 chains and both open chains are still running. Therefore neither fixed-pair
 formula, their local edge stratum, nor the order-45 theorem is claimed closed
 here.
+
+A structural-split pilot does not support replacing lookahead by a fixed
+cross-edge order. For one hash-bound J297775 hard parent, splitting on the
+first unassigned H--J variable (variable 1 in the primary range 1--480) left
+both children UNKNOWN at 120 seconds. The auxiliary-heavy CaDiCaL lookahead
+splits are retained because their repeated one-easy/one-hard behavior is much
+more useful for certified descent.
 
 That hedge is now running for all three unified mother formulas with exact
 configuration `30000/128000 conflicts, 1 second lookahead, primary bound 0,

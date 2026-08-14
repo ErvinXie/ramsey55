@@ -77,6 +77,7 @@ def main() -> int:
     parser.add_argument("--first-round", type=int, default=0)
     parser.add_argument("--max-rounds", type=int, default=100)
     parser.add_argument("--solver-argument", action="append", default=[])
+    parser.add_argument("--compact-proof", action="store_true")
     arguments = parser.parse_args()
     if (
         arguments.jobs <= 0
@@ -253,6 +254,8 @@ def main() -> int:
         ]
         for option in arguments.solver_argument:
             prove_command.append(f"--solver-argument={option}")
+        if arguments.compact_proof:
+            prove_command.append("--compact-proof")
         proof_status = run_logged(prove_command, first_proof_log)
         if proof_status == 10:
             raise RuntimeError(f"solver found SAT at round {round_number}")
@@ -298,6 +301,8 @@ def main() -> int:
                 ]
                 for option in arguments.solver_argument:
                     retry_command.append(f"--solver-argument={option}")
+                if arguments.compact_proof:
+                    retry_command.append("--compact-proof")
                 retry_status = run_logged(retry_command, retry_log)
                 if retry_status == 10:
                     raise RuntimeError(f"retry solver found SAT at round {round_number}")

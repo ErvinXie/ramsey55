@@ -167,6 +167,15 @@ def main() -> None:
             )
             result["proof"] = proof_name
             result["checker_log"] = log_name
+            if "compaction" in result:
+                compact_log_name = stem + ".compact.log"
+                copy_bound_artifact(
+                    source_root,
+                    result["compaction"]["log"],
+                    output / compact_log_name,
+                    result["compaction"]["log_sha256"],
+                )
+                result["compaction"]["log"] = compact_log_name
         combined_results.append(result)
 
     combined = copy.deepcopy(primary)

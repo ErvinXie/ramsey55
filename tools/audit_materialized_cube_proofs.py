@@ -35,6 +35,25 @@ def validate_tool_bindings(document: dict[str, Any], checker: Path) -> None:
         raise ValueError("supplied checker does not match manifest")
 
 
+def validate_compaction(root: Path, result: dict[str, Any], index: int) -> None:
+    if "compaction" not in result:
+        return
+    compaction = result["compaction"]
+    source_hash = compaction.get("source_proof_sha256")
+    if (
+        compaction.get("method") != "drat-trim -C -l"
+        or not isinstance(compaction.get("retained"), bool)
+        or int(compaction.get("source_proof_bytes", 0)) <= 0
+        or not isinstance(source_hash, str)
+        or len(source_hash) != 64
+        or any(character not in "0123456789abcdef" for character in source_hash)
+    ):
+        raise ValueError(f"invalid proof compaction at cube {index}")
+    compact_log = artifact(root, compaction["log"])
+    if file_sha256(compact_log) != compaction["log_sha256"]:
+        raise ValueError(f"proof-compaction log hash mismatch at cube {index}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("manifest", type=Path)
@@ -117,6 +136,7 @@ def main() -> None:
                 raise ValueError(f"proof hash mismatch at cube {index}")
             if file_sha256(checker_log) != result["checker_log_sha256"]:
                 raise ValueError(f"producer checker-log hash mismatch at cube {index}")
+            validate_compaction(root, result, index)
             checked = subprocess.run(
                 [str(arguments.checker), str(augmented), str(proof)],
                 stdout=subprocess.PIPE,

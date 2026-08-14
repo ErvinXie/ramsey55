@@ -259,6 +259,26 @@ class MaterializedProofToolTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "supplied checker"):
                 MATERIALIZED_AUDIT.validate_tool_bindings(document, wrong)
 
+    def test_compaction_metadata_binds_its_log(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            log = root / "cube.compact.log"
+            log.write_text("s VERIFIED\n")
+            result = {
+                "compaction": {
+                    "method": "drat-trim -C -l",
+                    "retained": True,
+                    "source_proof_bytes": 123,
+                    "source_proof_sha256": "a" * 64,
+                    "log": log.name,
+                    "log_sha256": MATERIALIZED_PROVER.file_sha256(log),
+                }
+            }
+            MATERIALIZED_AUDIT.validate_compaction(root, result, 0)
+            log.write_text("tampered\n")
+            with self.assertRaisesRegex(ValueError, "log hash"):
+                MATERIALIZED_AUDIT.validate_compaction(root, result, 0)
+
     def test_chain_refinement_manifest_is_rebuilt_exactly(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)

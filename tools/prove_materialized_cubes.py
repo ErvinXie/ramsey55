@@ -71,6 +71,11 @@ def main() -> int:
         default=[],
         help="repeat for solver options; use --solver-argument=--unsat",
     )
+    parser.add_argument(
+        "--compact-proof",
+        action="store_true",
+        help="retain a smaller independently replayed binary DRAT core when possible",
+    )
     arguments = parser.parse_args()
     if arguments.jobs <= 0 or arguments.checkpoint_every <= 0 or arguments.seconds < 0:
         parser.error(
@@ -124,6 +129,7 @@ def main() -> int:
             "sha256": checker_sha256,
         },
         "per_cube_seconds": arguments.seconds,
+        "compact_proof": arguments.compact_proof,
         "jobs": min(arguments.jobs, len(cubes)),
         "results": results,
     }
@@ -144,12 +150,16 @@ def main() -> int:
             augmented_sha256 = file_sha256(formula)
             proof = output / f"{stem}.drat"
             proof_part = output / f".{stem}.drat.part"
+            compact_part = output / f".{stem}.compact.drat.part"
             checker_log = output / f"{stem}.checker.log"
+            compact_log = output / f"{stem}.compact.log"
             sat_log = output / f"{stem}.sat.log"
             if (
                 proof.exists()
                 or proof_part.exists()
+                or compact_part.exists()
                 or checker_log.exists()
+                or compact_log.exists()
                 or sat_log.exists()
             ):
                 raise RuntimeError(f"refusing to overwrite artifacts for cube {index}")
@@ -206,20 +216,82 @@ def main() -> int:
                     )
                 if not proof_part.is_file() or proof_part.stat().st_size == 0:
                     raise RuntimeError(f"solver emitted no proof for cube {index}")
-                checked = subprocess.run(
-                    [str(arguments.checker), str(formula), str(proof_part)],
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.STDOUT,
-                    text=True,
-                    check=False,
-                )
-                checker_log.write_text(checked.stdout, encoding="utf-8")
-                if checked.returncode or "s VERIFIED" not in checked.stdout:
-                    raise RuntimeError(
-                        f"checker rejected cube {index}; see {checker_log}"
+                source_proof_bytes = proof_part.stat().st_size
+                source_proof_sha256 = file_sha256(proof_part)
+                compaction: dict[str, Any] | None = None
+                if arguments.compact_proof:
+                    checked = subprocess.run(
+                        [
+                            str(arguments.checker),
+                            str(formula),
+                            str(proof_part),
+                            "-C",
+                            "-l",
+                            str(compact_part),
+                        ],
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.STDOUT,
+                        text=True,
+                        check=False,
                     )
-                proof_part.replace(proof)
-                return index, {
+                    compact_log.write_text(checked.stdout, encoding="utf-8")
+                    if (
+                        checked.returncode
+                        or "s VERIFIED" not in checked.stdout
+                        or not compact_part.is_file()
+                        or compact_part.stat().st_size == 0
+                    ):
+                        raise RuntimeError(
+                            f"proof compaction rejected cube {index}; see {compact_log}"
+                        )
+                    retain_compact = compact_part.stat().st_size < source_proof_bytes
+                    if retain_compact:
+                        replayed = subprocess.run(
+                            [
+                                str(arguments.checker),
+                                str(formula),
+                                str(compact_part),
+                            ],
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT,
+                            text=True,
+                            check=False,
+                        )
+                        checker_log.write_text(replayed.stdout, encoding="utf-8")
+                        if replayed.returncode or "s VERIFIED" not in replayed.stdout:
+                            raise RuntimeError(
+                                f"checker rejected compact proof for cube {index}; "
+                                f"see {checker_log}"
+                            )
+                        proof_part.unlink()
+                        compact_part.replace(proof)
+                    else:
+                        checker_log.write_text(checked.stdout, encoding="utf-8")
+                        compact_part.unlink()
+                        proof_part.replace(proof)
+                    compaction = {
+                        "method": "drat-trim -C -l",
+                        "retained": retain_compact,
+                        "source_proof_bytes": source_proof_bytes,
+                        "source_proof_sha256": source_proof_sha256,
+                        "log": compact_log.name,
+                        "log_sha256": file_sha256(compact_log),
+                    }
+                else:
+                    checked = subprocess.run(
+                        [str(arguments.checker), str(formula), str(proof_part)],
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.STDOUT,
+                        text=True,
+                        check=False,
+                    )
+                    checker_log.write_text(checked.stdout, encoding="utf-8")
+                    if checked.returncode or "s VERIFIED" not in checked.stdout:
+                        raise RuntimeError(
+                            f"checker rejected cube {index}; see {checker_log}"
+                        )
+                    proof_part.replace(proof)
+                result = {
                     "index": index,
                     "cube": cube,
                     "cube_sha256": cube_digest,
@@ -232,6 +304,9 @@ def main() -> int:
                     "checker_log": checker_log.name,
                     "checker_log_sha256": file_sha256(checker_log),
                 }
+                if compaction is not None:
+                    result["compaction"] = compaction
+                return index, result
             finally:
                 formula.unlink(missing_ok=True)
 
