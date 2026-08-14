@@ -256,7 +256,10 @@ further recursive splitting.
 `tools/prove_cadical_cubes.cpp` is the proof-producing path. It traces one
 binary DRAT stream, solves each cube under assumptions, calls CaDiCaL's
 `conclude()` to derive the negated failed core, and recursively applies a
-lookahead split when a conflict budget expires. A final assumption-free
+lookahead split when a conflict budget expires. The implementation now stores
+pending signed children on an explicit LIFO stack, preserving the same
+positive-then-negative preorder TSV while removing the former depth-1024 C++
+recursion guard. A final assumption-free
 UNSAT call must derive the empty clause. The complete mechanism is exercised
 on `tests/data/cube-proof-smoke.*` and independently accepted by `drat-trim`.
 The runner accepts optional maximum-conflict, maximum-lookahead-time, and

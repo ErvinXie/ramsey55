@@ -4,13 +4,13 @@
 #include <chrono>
 #include <cstdlib>
 #include <fstream>
-#include <functional>
 #include <iomanip>
 #include <iostream>
 #include <numeric>
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace {
@@ -222,115 +222,126 @@ int main(int argc, char** argv) try {
     std::cout << " 0\n";
   };
 
-  std::function<int(std::size_t, std::vector<int>&, int)> proveCube;
-  proveCube = [&](std::size_t root, std::vector<int>& cube, int depth) {
-    if (depth > 1024) throw std::runtime_error("dynamic cube depth exceeded 1024");
-    maximumDepth = std::max(maximumDepth, depth);
-    const int shift =
-        depth < 512 ? 0 : std::min(7 + (depth - 512) / 16, 10);
-    const long long scaledLimit =
-        static_cast<long long>(conflictLimit) << shift;
-    const int effectiveLimit = static_cast<int>(
-        std::min<long long>(scaledLimit, maximumConflictLimit));
-    for (const int literal : cube) solver.assume(literal);
-    if (!solver.limit("conflicts", effectiveLimit)) {
-      throw std::runtime_error("conflict limit rejected");
-    }
-    if (maximumSolveSeconds > 0.0) terminator.start(maximumSolveSeconds);
-    const auto start = Clock::now();
-    const int status = solver.solve();
-    terminator.stop();
-    const double seconds =
-        std::chrono::duration<double>(Clock::now() - start).count();
-    const std::size_t attempt = attempts++;
-    if (status == 10) {
-      report << root << '\t' << attempt << '\t' << depth << '\t'
-             << effectiveLimit << "\t10\t0\t0\t" << seconds << '\n'
-             << std::flush;
-      solver.conclude();
-      printModel();
-      return 10;
-    }
-    if (status == 20) {
-      int core = 0;
-      for (const int literal : cube) core += solver.failed(literal);
-      solver.conclude();
-      report << root << '\t' << attempt << '\t' << depth << '\t'
-             << effectiveLimit << "\t20\t" << core << "\t0\t" << seconds
-             << '\n'
-             << std::flush;
-      globallyUnsat |= core == 0;
-      return 20;
-    }
-    if (status != 0) throw std::runtime_error("invalid solve status");
-
-    for (const int literal : cube) solver.assume(literal);
-    if (maximumLookaheadSeconds > 0.0) {
-      terminator.start(maximumLookaheadSeconds);
-    }
-    const auto lookaheadStart = Clock::now();
-    int split = solver.lookahead();
-    terminator.stop();
-    const double lookaheadSeconds = std::chrono::duration<double>(
-        Clock::now() - lookaheadStart).count();
-    const int lookaheadStatus = solver.status();
-    if (lookaheadStatus == 10) {
-      report << root << '\t' << attempt << '\t' << depth << '\t'
-             << effectiveLimit << "\t10\t0\t0\t"
-             << seconds + lookaheadSeconds << '\n'
-             << std::flush;
-      solver.conclude();
-      printModel();
-      return 10;
-    }
-    if (lookaheadStatus == 20) {
-      int core = 0;
-      for (const int literal : cube) core += solver.failed(literal);
-      solver.conclude();
-      report << root << '\t' << attempt << '\t' << depth << '\t'
-             << effectiveLimit << "\t20\t" << core << "\t0\t"
-             << seconds + lookaheadSeconds << '\n'
-             << std::flush;
-      globallyUnsat |= core == 0;
-      return 20;
-    }
-    if (maximumPrimarySplitVariable &&
-        std::abs(split) > maximumPrimarySplitVariable) {
-      const auto unused = std::find_if(
-          primaryVariables.begin(), primaryVariables.end(), [&](int variable) {
-            return std::none_of(cube.begin(), cube.end(), [&](int literal) {
-              return std::abs(literal) == variable;
-            });
-          });
-      if (unused != primaryVariables.end()) split = *unused;
-    }
-    if (split == 0 || std::abs(split) > variables) {
-      throw std::runtime_error("lookahead did not return a split literal");
-    }
-    for (const int literal : cube) {
-      if (std::abs(literal) == std::abs(split)) {
-        throw std::runtime_error("lookahead repeated a cube variable");
+  struct PendingCube {
+    std::vector<int> literals;
+    int depth;
+  };
+  const auto proveRoot = [&](std::size_t root,
+                             const std::vector<int>& initialCube) {
+    std::vector<PendingCube> pending{{initialCube, 0}};
+    while (!pending.empty()) {
+      PendingCube node = std::move(pending.back());
+      pending.pop_back();
+      auto& cube = node.literals;
+      const int depth = node.depth;
+      maximumDepth = std::max(maximumDepth, depth);
+      const int shift =
+          depth < 512 ? 0 : std::min(7 + (depth - 512) / 16, 10);
+      const long long scaledLimit =
+          static_cast<long long>(conflictLimit) << shift;
+      const int effectiveLimit = static_cast<int>(
+          std::min<long long>(scaledLimit, maximumConflictLimit));
+      for (const int literal : cube) solver.assume(literal);
+      if (!solver.limit("conflicts", effectiveLimit)) {
+        throw std::runtime_error("conflict limit rejected");
       }
+      if (maximumSolveSeconds > 0.0) terminator.start(maximumSolveSeconds);
+      const auto start = Clock::now();
+      const int status = solver.solve();
+      terminator.stop();
+      const double seconds =
+          std::chrono::duration<double>(Clock::now() - start).count();
+      const std::size_t attempt = attempts++;
+      if (status == 10) {
+        report << root << '\t' << attempt << '\t' << depth << '\t'
+               << effectiveLimit << "\t10\t0\t0\t" << seconds << '\n'
+               << std::flush;
+        solver.conclude();
+        printModel();
+        return 10;
+      }
+      if (status == 20) {
+        int core = 0;
+        for (const int literal : cube) core += solver.failed(literal);
+        solver.conclude();
+        report << root << '\t' << attempt << '\t' << depth << '\t'
+               << effectiveLimit << "\t20\t" << core << "\t0\t" << seconds
+               << '\n'
+               << std::flush;
+        globallyUnsat |= core == 0;
+        continue;
+      }
+      if (status != 0) throw std::runtime_error("invalid solve status");
+
+      for (const int literal : cube) solver.assume(literal);
+      if (maximumLookaheadSeconds > 0.0) {
+        terminator.start(maximumLookaheadSeconds);
+      }
+      const auto lookaheadStart = Clock::now();
+      int split = solver.lookahead();
+      terminator.stop();
+      const double lookaheadSeconds = std::chrono::duration<double>(
+          Clock::now() - lookaheadStart).count();
+      const int lookaheadStatus = solver.status();
+      if (lookaheadStatus == 10) {
+        report << root << '\t' << attempt << '\t' << depth << '\t'
+               << effectiveLimit << "\t10\t0\t0\t"
+               << seconds + lookaheadSeconds << '\n'
+               << std::flush;
+        solver.conclude();
+        printModel();
+        return 10;
+      }
+      if (lookaheadStatus == 20) {
+        int core = 0;
+        for (const int literal : cube) core += solver.failed(literal);
+        solver.conclude();
+        report << root << '\t' << attempt << '\t' << depth << '\t'
+               << effectiveLimit << "\t20\t" << core << "\t0\t"
+               << seconds + lookaheadSeconds << '\n'
+               << std::flush;
+        globallyUnsat |= core == 0;
+        continue;
+      }
+      if (maximumPrimarySplitVariable &&
+          std::abs(split) > maximumPrimarySplitVariable) {
+        const auto unused = std::find_if(
+            primaryVariables.begin(), primaryVariables.end(), [&](int variable) {
+              return std::none_of(cube.begin(), cube.end(), [&](int literal) {
+                return std::abs(literal) == variable;
+              });
+            });
+        if (unused != primaryVariables.end()) split = *unused;
+      }
+      if (split == 0 || std::abs(split) > variables) {
+        throw std::runtime_error("lookahead did not return a split literal");
+      }
+      for (const int literal : cube) {
+        if (std::abs(literal) == std::abs(split)) {
+          throw std::runtime_error("lookahead repeated a cube variable");
+        }
+      }
+      report << root << '\t' << attempt << '\t' << depth << '\t'
+             << effectiveLimit << "\t0\t0\t" << split << '\t'
+             << seconds + lookaheadSeconds << '\n'
+             << std::flush;
+      ++splits;
+      freezeVariable(std::abs(split));
+      auto negativeCube = cube;
+      negativeCube.push_back(-split);
+      cube.push_back(split);
+      // LIFO order preserves the recursive runner's positive-then-negative
+      // preorder traversal while avoiding a host-language recursion limit.
+      pending.push_back({std::move(negativeCube), depth + 1});
+      pending.push_back({std::move(cube), depth + 1});
     }
-    report << root << '\t' << attempt << '\t' << depth << '\t'
-           << effectiveLimit << "\t0\t0\t" << split << '\t'
-           << seconds + lookaheadSeconds << '\n'
-           << std::flush;
-    ++splits;
-    freezeVariable(std::abs(split));
-    cube.push_back(split);
-    if (proveCube(root, cube, depth + 1) != 20) return 10;
-    cube.back() = -split;
-    if (proveCube(root, cube, depth + 1) != 20) return 10;
-    cube.pop_back();
     return 20;
   };
 
   const std::size_t firstRoot = selectedRoot;
   const std::size_t lastRoot = rootOnly ? firstRoot + 1 : cubes.size();
   for (std::size_t index = firstRoot; index < lastRoot; ++index) {
-    auto cube = cubes[index];
-    if (proveCube(index, cube, 0) == 10) {
+    if (proveRoot(index, cubes[index]) == 10) {
       solver.flush_proof_trace();
       solver.close_proof_trace();
       return 10;
