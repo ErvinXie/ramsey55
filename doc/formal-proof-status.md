@@ -163,6 +163,27 @@ edge counts used by the concrete relative cover, importing or checking the
 generated cube data and leaf UNSAT results, and connecting the full
 excess-witness reduction to an arbitrary Ramsey-free 45-vertex colouring.
 
+[Order45CubeCover.lean](../formal/Ramsey55/Order45CubeCover.lean) now checks
+the arithmetic and ordering of the concrete edge-pair layer. It defines the
+same lexicographically ordered, threshold-filtered closed-range product as the
+generator and proves membership is equivalent to the H/J range bounds plus
+the excess threshold. Kernel computation gives the exact three lengths:
+
+    theorem order45EdgePairCounts :
+      order45Degree20EdgePairs.length = 28 ∧
+      order45Degree21EdgePairs.length = 36 ∧
+      order45Degree22EdgePairs.length = 45
+
+The file also defines the generator's four-literal exact-count cube
+`H≥h, ¬(H≥h+1), J≥j, ¬(J≥j+1)`. Assuming observable counter outputs have
+their stated at-least semantics, it proves that every allowed dense edge pair
+satisfies a member of the corresponding concrete cube list. Thus the formal
+gap at this layer is no longer vague: derive `ExactAtLeastCounterOutputs` from
+the sequential-counter clauses and bind the resulting literals to the DIMACS
+variable map. The count theorem has an empty axiom audit; the quantified
+coverage results contain only Lean's standard axioms and no `sorry` or
+`native_decide`.
+
 [Symmetry.lean](../formal/Ramsey55/Symmetry.lean) adds the generic bridge for
 an optional symmetry-reduced route. It proves that a nonempty finite orbit
 closed under a listed family of transformations has a least representative;

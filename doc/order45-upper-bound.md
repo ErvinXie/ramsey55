@@ -362,6 +362,17 @@ auditor independently recomputes the initial freeze count before accepting a
 proof. These three jobs are hedges alongside the legacy jobs, and none is a
 certificate until its mother-CNF DRAT replay and strict audit both pass.
 
+The arithmetic part of the concrete cube bridge is now kernel-checked in
+`formal/Ramsey55/Order45CubeCover.lean`. Its list construction matches the
+generator's H-major/J-minor iteration and threshold filter, proves the exact
+28/36/45 lengths, and proves that every pair satisfying the catalog edge
+ranges and 226/222/220 density threshold belongs to the corresponding list.
+It then maps each pair to the same four observable counter literals used in
+DIMACS and proves coverage under an explicit exact-counter semantic contract.
+The remaining bridge at this layer is to prove that the concrete sequential
+counter clauses imply that contract and to bind the generated variable IDs;
+it is not hidden inside a computational claim.
+
 Colour swap reduces the last raw count to 483,900,495 unordered pairs. These
 numbers are pairs of unlabelled local records before testing a single cross
 edge or overlap, so they substantially understate the cost of naive gluing.

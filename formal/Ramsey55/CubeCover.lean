@@ -21,6 +21,12 @@ def CnfLiteral.negate {variables : Nat}
     (literal : CnfLiteral variables) : CnfLiteral variables :=
   { literal with positive := !literal.positive }
 
+theorem CnfLiteral.negate_holds_iff_not_holds {variables : Nat}
+    (assignment : CnfAssignment variables) (literal : CnfLiteral variables) :
+    literal.negate.Holds assignment ↔ ¬literal.Holds assignment := by
+  simp only [CnfLiteral.Holds, CnfLiteral.negate]
+  cases assignment literal.index <;> cases literal.positive <;> simp
+
 def SatisfiesCnfClause {variables : Nat}
     (assignment : CnfAssignment variables) (clause : CnfClause variables) : Prop :=
   ∃ literal ∈ clause, literal.Holds assignment
