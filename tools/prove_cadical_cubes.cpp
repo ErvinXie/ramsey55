@@ -97,15 +97,23 @@ std::vector<int> rankPrimaryVariables(const std::string& path, int limit) {
   return variables;
 }
 
+void appendBinaryEmptyClause(const std::string& path) {
+  std::ofstream proof(path, std::ios::binary | std::ios::app);
+  if (!proof) throw std::runtime_error("cannot append to proof trace");
+  proof.put('a');
+  proof.put('\0');
+  if (!proof) throw std::runtime_error("cannot append empty proof clause");
+}
+
 }  // namespace
 
 int main(int argc, char** argv) try {
-  if (argc < 6 || argc > 10) {
+  if (argc < 6 || argc > 11) {
     std::cerr << "usage: prove_cadical_cubes input.cnf cubes proof.drat"
                  " results.tsv conflicts [maximum-conflicts]"
                  " [maximum-lookahead-seconds]"
                  " [maximum-primary-split-variable]"
-                 " [maximum-solve-seconds]\n";
+                 " [maximum-solve-seconds] [root-index]\n";
     return 2;
   }
   const auto cubes = readCubes(argv[2]);
@@ -130,6 +138,11 @@ int main(int argc, char** argv) try {
       argc == 10 ? std::stod(argv[9]) : 0.0;
   if (maximumSolveSeconds < 0.0) {
     throw std::runtime_error("negative maximum solve time");
+  }
+  const bool rootOnly = argc == 11;
+  const std::size_t selectedRoot = rootOnly ? std::stoull(argv[10]) : 0;
+  if (rootOnly && selectedRoot >= cubes.size()) {
+    throw std::runtime_error("root index is out of range");
   }
   DeadlineTerminator terminator;
   CaDiCaL::Solver solver;
@@ -275,7 +288,9 @@ int main(int argc, char** argv) try {
     return 20;
   };
 
-  for (std::size_t index = 0; index < cubes.size(); ++index) {
+  const std::size_t firstRoot = selectedRoot;
+  const std::size_t lastRoot = rootOnly ? firstRoot + 1 : cubes.size();
+  for (std::size_t index = firstRoot; index < lastRoot; ++index) {
     auto cube = cubes[index];
     if (proveCube(index, cube, 0) == 10) {
       solver.flush_proof_trace();
@@ -288,6 +303,33 @@ int main(int argc, char** argv) try {
                 << " attempts=" << attempts << " splits=" << splits
                 << std::endl;
     }
+  }
+  if (rootOnly) {
+    const auto& cube = cubes[selectedRoot];
+    for (const int literal : cube) solver.assume(literal);
+    const int status = solver.solve();
+    if (status == 10) {
+      solver.conclude();
+      solver.close_proof_trace();
+      std::cout << "uncovered_model\t1\n";
+      return 10;
+    }
+    if (status != 20) {
+      throw std::runtime_error("final root solve returned UNKNOWN");
+    }
+    int core = 0;
+    for (const int literal : cube) core += solver.failed(literal);
+    solver.conclude();
+    solver.flush_proof_trace();
+    solver.close_proof_trace();
+    appendBinaryEmptyClause(argv[3]);
+    std::cout << "status\t20\n";
+    std::cout << "root\t" << selectedRoot << '\n';
+    std::cout << "root_core\t" << core << '\n';
+    std::cout << "attempts\t" << attempts << '\n';
+    std::cout << "splits\t" << splits << '\n';
+    std::cout << "maximum_extra_depth\t" << maximumDepth << '\n';
+    return 20;
   }
   if (!globallyUnsat) {
     const int status = solver.solve();

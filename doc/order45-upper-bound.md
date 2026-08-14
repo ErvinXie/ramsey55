@@ -241,6 +241,14 @@ An additional optional primary-variable bound replaces auxiliary-variable
 lookahead choices by the most frequent unused variable within the bound. For
 the fixed H/J encoding, variables 1 through 480 are exactly the H--J cross
 edges, so this mode directs difficult tails back toward structural choices.
+An optional final root index switches the runner from a monolithic refutation
+to an independently checkable cube proof. It closes only that root's dynamic
+binary subtree, derives the root blocking clause with `conclude()`, and ends
+with an empty step that is valid against the base CNF augmented by the cube's
+unit clauses. The smoke test deliberately uses a satisfiable base formula:
+`drat-trim` accepts the augmented CNF and rejects the same proof against the
+base formula alone. A collection of such leaf proofs establishes the mother
+formula only together with an independently checked exhaustive cube cover.
 `tools/audit_order45_fixed_pair_proofs.py` checks formula and cube hashes,
 complete balanced result forests, the recorded runner parameters, and each
 DRAT replay before writing a compact artifact manifest.
