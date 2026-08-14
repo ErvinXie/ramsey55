@@ -66,6 +66,41 @@ Kissat reached about 399,588 conflicts on degree 20 and 201,975 on degree 22,
 using about 360 MiB per process. These are profiling runs only: timeout is
 neither UNSAT nor a certificate.
 
+### Degree-window strengthening
+
+The raw formulas do not encode the already known degree window for vertices
+other than the fixed apex. `src/ramsey55/cardinality.py` now supplies a
+bidirectional sequential counter, and
+`tools/generate_order45_strengthened_benchmarks.py` applies the range 20--24
+to vertices 1 through 44. Every counter state is an equivalence, not merely a
+one-way implication. The implementation is exhaustively checked over all
+primary and auxiliary assignments through four inputs.
+
+| branch | variables | clauses | SHA-256 |
+|---:|---:|---:|---|
+| 20 | 36,190 | 2,581,414 | `e3e0ec995135e1aa3f36bc256b8c72c78fd3357a31372ccd848a19aaba345174` |
+| 22 | 36,190 | 2,581,414 | `c643341fcc364b766724df5ee2a6d7d0db5109bb853bfdfaf787ff8c51aca211` |
+
+An independent encoder reconstructs all clauses and checks the committed
+manifest. A separate generic DIMACS audit proves that each raw formula's
+2,443,562 clauses are an exact prefix; the strengthening adds 35,200
+variables and 137,852 clauses. Its logical use still depends on the
+\(R(4,5)=25\) degree-window theorem, whose Lean bridge remains explicit above.
+
+```bash
+PYTHONPATH=src python3 tools/generate_order45_strengthened_benchmarks.py
+PYTHONPATH=src python3 tools/verify_order45_strengthened_benchmarks.py \
+  data/order45-strengthened-benchmark-manifest.json \
+  --cnf-dir build/order45-strengthened
+```
+
+The strengthened formulas also remained UNKNOWN in 60-second Kissat probes.
+For degree 20/22 they produced respectively 302,578/138,862 conflicts,
+1,225,210/1,159,811 decisions, and 64,654,468/56,548,646 propagations. The
+roughly 6--10x propagation increase confirms that the counters are active,
+but conflict or decision counts across different encodings are not a measure
+of distance to UNSAT.
+
 ## What the elementary excess identity covers
 
 For \(H=G[N(v)]\) and \(J\) the complement of the graph on the nonneighbours

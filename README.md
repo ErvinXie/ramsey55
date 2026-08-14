@@ -74,3 +74,10 @@ benchmarks with:
     PYTHONPATH=src python3 tools/generate_order45_benchmarks.py
     PYTHONPATH=src python3 tools/verify_order45_benchmarks.py \
       data/order45-benchmark-manifest.json --cnf-dir build/order45
+
+Generate the degree-window-strengthened pair and run its independent encoder:
+
+    PYTHONPATH=src python3 tools/generate_order45_strengthened_benchmarks.py
+    PYTHONPATH=src python3 tools/verify_order45_strengthened_benchmarks.py \
+      data/order45-strengthened-benchmark-manifest.json \
+      --cnf-dir build/order45-strengthened

@@ -1,0 +1,36 @@
+{
+  "bounded_vertices": [
+    1,
+    44
+  ],
+  "coverage_dependency": "R(4,5)=25 implies every degree is in [20,24]",
+  "degree_window": [
+    20,
+    24
+  ],
+  "encoding": "bidirectional at-least sequential counter",
+  "files": [
+    {
+      "clauses": 2581414,
+      "degree": 20,
+      "path": "r55-n45-d20-deg20-24.cnf",
+      "raw_sha256": "57984e902587656e67c88c6394fdb58c6f72d5e0ac8deda9c9d839b05957f12b",
+      "sha256": "e3e0ec995135e1aa3f36bc256b8c72c78fd3357a31372ccd848a19aaba345174",
+      "variables": 36190
+    },
+    {
+      "clauses": 2581414,
+      "degree": 22,
+      "path": "r55-n45-d22-deg20-24.cnf",
+      "raw_sha256": "1675b35934f64d3f3af15550eec3b510b359be2cd69d1d6a5f2bffb1ccb52d15",
+      "sha256": "c643341fcc364b766724df5ee2a6d7d0db5109bb853bfdfaf787ff8c51aca211",
+      "variables": 36190
+    }
+  ],
+  "fixed_star_branches": [
+    20,
+    22
+  ],
+  "order": 45,
+  "schema": "ramsey55.order45-strengthened-benchmarks.v1"
+}
