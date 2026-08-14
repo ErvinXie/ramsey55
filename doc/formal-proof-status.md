@@ -197,14 +197,20 @@ that stream is contained in the mother CNF. This removes the previous bundle
 of per-cell semantic hypotheses from the data boundary; the theorem has no
 `sorryAx` or `native_decide` dependency.
 
+The emitted constraint tail is formal too. Two unit clauses around one counter
+are proved to impose its inclusive range. The generator's threshold clauses,
+including the cases where an out-of-width literal is omitted, are proved to
+force the sum of the two exact counts above the requested threshold. Combining
+the four units and all sum clauses yields the full H/J range-and-density tuple
+used by each order-45 cover theorem.
+
 The order-45 file instantiates this theorem at the actual H/J row counts and
 counter widths: `(190,101)/(276,133)`, `(210,108)/(253,123)`, and
 `(231,115)/(231,115)`. It now derives three formula-relative cube covers from
-mother-CNF satisfaction, inclusion of the two row-major counter substreams,
-and the range/density consequences. What remains is data-level rather than
-counter mathematics: define the exact DIMACS input/state literal maps, prove
-the generated mother formula contains those two streams, and derive the range
-and density consequences from its four unit bounds and sum clauses.
+mother-CNF satisfaction and inclusion of the two row-major counter substreams
+plus the generated constraint tail. No separate semantic range or density
+hypothesis remains. What remains is data-level rather than counter mathematics:
+prove the generated mother formula contains that concrete typed suffix.
 
 [Order45Dimacs.lean](../formal/Ramsey55/Order45Dimacs.lean) fixes the numeric
 counter-variable allocation used by the DIMACS generator. It defines the
@@ -212,14 +218,26 @@ row-major cell offset from the lex-clause base and produces all three signed
 four-literal cube lists from the formal edge-pair lists. Kernel checks confirm
 the 28/36/45 lengths, all six manifest endpoint cubes, and that the final J
 outputs are exactly variables 78697, 77148, and 76651—the three mother-formula
-variable maxima. All three numeric theorems have empty axiom audits.
+variable maxima. The formal DIMACS embedding reserves index zero as an unused
+dummy so one-based identifiers remain visible verbatim. Lean reconstructs the
+six H/J input lists in the same combinations order, checks their
+190/276/210/253/231/231 lengths and boundary identifiers, and defines every
+state cell from the row-major allocation.
 
-This binds the observable output IDs without embedding 109 hand-written cube
-rows. Still missing is the full input/state literal map theorem showing every
-locally formalized cell clause occurs in the generated DIMACS stream, plus
-formal soundness of its bound and sum clauses. The independent Python verifier
-already checks those bytes and maps, but that fact has not yet been imported
-as a Lean theorem.
+The file now constructs the complete typed counter suffix for each degree:
+H stream, J stream, four range units, and all sum clauses. It proves each
+suffix covers its exact typed cube family, proves all 109 typed cubes map back
+to the committed signed DIMACS integer lists, and lifts each suffix cover to
+any mother CNF containing it. The full 79-target ARM build succeeds; the new
+theorems contain only Lean's standard axioms and no `sorryAx` or
+`native_decide`.
+
+This closes the abstract input/state/bound/sum semantics. Still missing at the
+data boundary is a kernel-checked or equivalently audited statement that the
+three generated mother DIMACS streams contain these exact suffixes. The
+independent Python verifier already checks those bytes and maps, but that fact
+has not yet been imported as a Lean theorem. Graph/excess reduction and checked
+UNSAT-certificate import remain separate obligations.
 
 [Symmetry.lean](../formal/Ramsey55/Symmetry.lean) adds the generic bridge for
 an optional symmetry-reduced route. It proves that a nonempty finite orbit

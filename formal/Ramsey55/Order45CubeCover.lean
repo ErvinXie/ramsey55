@@ -356,6 +356,113 @@ theorem order45Degree22CounterSubformulas_cover {variables : Nat}
     hInput jInput hState jState hCells jCells
     hLower hUpper jLower jUpper dense
 
+/-- Fully CNF-relative degree-20 cover: the only data hypotheses are
+containment of the two counter streams and their emitted constraint tail. -/
+theorem order45Degree20CounterEncoding_cover {variables : Nat}
+    (formula : CnfFormula variables)
+    (hInput jInput : Nat → CnfLiteral variables)
+    (hState jState : Nat → Nat → CnfLiteral variables)
+    (hIncluded : ∀ clause ∈
+      sequentialCounterCellFormula hInput hState 190 101, clause ∈ formula)
+    (jIncluded : ∀ clause ∈
+      sequentialCounterCellFormula jInput jState 276 133, clause ∈ formula)
+    (constraintsIncluded : ∀ clause ∈ counterPairConstraintFormula
+      (hState (190 - 1)) (jState (276 - 1))
+      101 133 68 100 116 132 226, clause ∈ formula) :
+    CnfCubeFamilyCoversFormula formula
+      (order45Degree20EdgePairs.map
+        (exactEdgePairCube (hState (190 - 1)) (jState (276 - 1)))) := by
+  apply order45Degree20CounterSubformulas_cover formula
+    hInput jInput hState jState hIncluded jIncluded
+  intro assignment formulaSatisfied
+  have hCells := satisfiesSequentialCounterSubformula_cells assignment formula
+    hInput hState 190 101 (by omega) (by omega) formulaSatisfied hIncluded
+  have jCells := satisfiesSequentialCounterSubformula_cells assignment formula
+    jInput jState 276 133 (by omega) (by omega) formulaSatisfied jIncluded
+  have hExact := satisfiesSequentialCounterCells_outputs_exact assignment
+    hInput hState 190 101 (by omega) (by omega) hCells
+  have jExact := satisfiesSequentialCounterCells_outputs_exact assignment
+    jInput jState 276 133 (by omega) (by omega) jCells
+  have constraintsSatisfied := SatisfiesCnfFormula.of_subset assignment formula
+    (counterPairConstraintFormula (hState (190 - 1)) (jState (276 - 1))
+      101 133 68 100 116 132 226) formulaSatisfied constraintsIncluded
+  exact counterPairConstraintFormula_bounds assignment
+    (hState (190 - 1)) (jState (276 - 1)) 101 133
+    (sequentialCounterInputCount assignment hInput 190)
+    (sequentialCounterInputCount assignment jInput 276)
+    68 100 116 132 226 (by omega) (by omega) (by omega)
+    (by omega) (by omega) (by omega) hExact jExact constraintsSatisfied
+
+theorem order45Degree21CounterEncoding_cover {variables : Nat}
+    (formula : CnfFormula variables)
+    (hInput jInput : Nat → CnfLiteral variables)
+    (hState jState : Nat → Nat → CnfLiteral variables)
+    (hIncluded : ∀ clause ∈
+      sequentialCounterCellFormula hInput hState 210 108, clause ∈ formula)
+    (jIncluded : ∀ clause ∈
+      sequentialCounterCellFormula jInput jState 253 123, clause ∈ formula)
+    (constraintsIncluded : ∀ clause ∈ counterPairConstraintFormula
+      (hState (210 - 1)) (jState (253 - 1))
+      108 123 77 107 101 122 222, clause ∈ formula) :
+    CnfCubeFamilyCoversFormula formula
+      (order45Degree21EdgePairs.map
+        (exactEdgePairCube (hState (210 - 1)) (jState (253 - 1)))) := by
+  apply order45Degree21CounterSubformulas_cover formula
+    hInput jInput hState jState hIncluded jIncluded
+  intro assignment formulaSatisfied
+  have hCells := satisfiesSequentialCounterSubformula_cells assignment formula
+    hInput hState 210 108 (by omega) (by omega) formulaSatisfied hIncluded
+  have jCells := satisfiesSequentialCounterSubformula_cells assignment formula
+    jInput jState 253 123 (by omega) (by omega) formulaSatisfied jIncluded
+  have hExact := satisfiesSequentialCounterCells_outputs_exact assignment
+    hInput hState 210 108 (by omega) (by omega) hCells
+  have jExact := satisfiesSequentialCounterCells_outputs_exact assignment
+    jInput jState 253 123 (by omega) (by omega) jCells
+  have constraintsSatisfied := SatisfiesCnfFormula.of_subset assignment formula
+    (counterPairConstraintFormula (hState (210 - 1)) (jState (253 - 1))
+      108 123 77 107 101 122 222) formulaSatisfied constraintsIncluded
+  exact counterPairConstraintFormula_bounds assignment
+    (hState (210 - 1)) (jState (253 - 1)) 108 123
+    (sequentialCounterInputCount assignment hInput 210)
+    (sequentialCounterInputCount assignment jInput 253)
+    77 107 101 122 222 (by omega) (by omega) (by omega)
+    (by omega) (by omega) (by omega) hExact jExact constraintsSatisfied
+
+theorem order45Degree22CounterEncoding_cover {variables : Nat}
+    (formula : CnfFormula variables)
+    (hInput jInput : Nat → CnfLiteral variables)
+    (hState jState : Nat → Nat → CnfLiteral variables)
+    (hIncluded : ∀ clause ∈
+      sequentialCounterCellFormula hInput hState 231 115, clause ∈ formula)
+    (jIncluded : ∀ clause ∈
+      sequentialCounterCellFormula jInput jState 231 115, clause ∈ formula)
+    (constraintsIncluded : ∀ clause ∈ counterPairConstraintFormula
+      (hState (231 - 1)) (jState (231 - 1))
+      115 115 88 114 88 114 220, clause ∈ formula) :
+    CnfCubeFamilyCoversFormula formula
+      (order45Degree22EdgePairs.map
+        (exactEdgePairCube (hState (231 - 1)) (jState (231 - 1)))) := by
+  apply order45Degree22CounterSubformulas_cover formula
+    hInput jInput hState jState hIncluded jIncluded
+  intro assignment formulaSatisfied
+  have hCells := satisfiesSequentialCounterSubformula_cells assignment formula
+    hInput hState 231 115 (by omega) (by omega) formulaSatisfied hIncluded
+  have jCells := satisfiesSequentialCounterSubformula_cells assignment formula
+    jInput jState 231 115 (by omega) (by omega) formulaSatisfied jIncluded
+  have hExact := satisfiesSequentialCounterCells_outputs_exact assignment
+    hInput hState 231 115 (by omega) (by omega) hCells
+  have jExact := satisfiesSequentialCounterCells_outputs_exact assignment
+    jInput jState 231 115 (by omega) (by omega) jCells
+  have constraintsSatisfied := SatisfiesCnfFormula.of_subset assignment formula
+    (counterPairConstraintFormula (hState (231 - 1)) (jState (231 - 1))
+      115 115 88 114 88 114 220) formulaSatisfied constraintsIncluded
+  exact counterPairConstraintFormula_bounds assignment
+    (hState (231 - 1)) (jState (231 - 1)) 115 115
+    (sequentialCounterInputCount assignment hInput 231)
+    (sequentialCounterInputCount assignment jInput 231)
+    88 114 88 114 220 (by omega) (by omega) (by omega)
+    (by omega) (by omega) (by omega) hExact jExact constraintsSatisfied
+
 #print axioms mem_admissibleEdgePairs_iff
 #print axioms order45EdgePairCounts
 #print axioms order45Degree20EdgePairs_cover
@@ -371,5 +478,8 @@ theorem order45Degree22CounterSubformulas_cover {variables : Nat}
 #print axioms order45Degree20CounterSubformulas_cover
 #print axioms order45Degree21CounterSubformulas_cover
 #print axioms order45Degree22CounterSubformulas_cover
+#print axioms order45Degree20CounterEncoding_cover
+#print axioms order45Degree21CounterEncoding_cover
+#print axioms order45Degree22CounterEncoding_cover
 
 end Ramsey55

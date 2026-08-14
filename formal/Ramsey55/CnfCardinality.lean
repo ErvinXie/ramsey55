@@ -106,6 +106,162 @@ def ExactAtLeastCounterOutputs {variables : Nat}
     (outputs : Nat → CnfLiteral variables) (width count : Nat) : Prop :=
   ∀ k, k < width → ((outputs k).Holds assignment ↔ k + 1 ≤ count)
 
+/-- The two unit clauses emitted for an inclusive lower/upper counter range. -/
+def counterRangeClauses {variables : Nat}
+    (outputs : Nat → CnfLiteral variables) (lower upper : Nat) :
+    CnfFormula variables :=
+  [[outputs (lower - 1)], [(outputs upper).negate]]
+
+theorem counterRangeClauses_bounds {variables : Nat}
+    (assignment : CnfAssignment variables)
+    (outputs : Nat → CnfLiteral variables) (width count lower upper : Nat)
+    (lowerPositive : 0 < lower) (ordered : lower ≤ upper)
+    (upperInside : upper < width)
+    (exact : ExactAtLeastCounterOutputs assignment outputs width count)
+    (satisfied : SatisfiesCnfFormula assignment
+      (counterRangeClauses outputs lower upper)) :
+    lower ≤ count ∧ count ≤ upper := by
+  have lowerHolds : (outputs (lower - 1)).Holds assignment := by
+    have := satisfied [outputs (lower - 1)] (by simp [counterRangeClauses])
+    simpa [SatisfiesCnfClause] using this
+  have upperDoesNotHold : ¬(outputs upper).Holds assignment := by
+    have := satisfied [(outputs upper).negate] (by simp [counterRangeClauses])
+    simpa [SatisfiesCnfClause,
+      CnfLiteral.negate_holds_iff_not_holds] using this
+  have lowerExact := exact (lower - 1) (by omega)
+  have upperExact := exact upper upperInside
+  rw [lowerExact] at lowerHolds
+  rw [upperExact] at upperDoesNotHold
+  omega
+
+/-- One clause of the generator's lower bound on the sum of two observable
+at-least counters. `split` ranges from zero through `threshold - 1`; outputs
+past a truncated width are omitted exactly as in the Python encoder. -/
+def counterSumClause {variables : Nat}
+    (hOutputs jOutputs : Nat → CnfLiteral variables)
+    (hWidth jWidth threshold split : Nat) : CnfClause variables :=
+  (if split + 1 ≤ hWidth then [hOutputs split] else []) ++
+  (if threshold - split ≤ jWidth then
+    [jOutputs (threshold - split - 1)] else [])
+
+def counterSumFormula {variables : Nat}
+    (hOutputs jOutputs : Nat → CnfLiteral variables)
+    (hWidth jWidth threshold : Nat) : CnfFormula variables :=
+  (List.range threshold).map fun split =>
+    counterSumClause hOutputs jOutputs hWidth jWidth threshold split
+
+/-- The exact tail emitted after two counter streams: four range units followed
+by the lower-bound-on-sum clauses. -/
+def counterPairConstraintFormula {variables : Nat}
+    (hOutputs jOutputs : Nat → CnfLiteral variables)
+    (hWidth jWidth hLower hUpper jLower jUpper threshold : Nat) :
+    CnfFormula variables :=
+  counterRangeClauses hOutputs hLower hUpper ++
+  counterRangeClauses jOutputs jLower jUpper ++
+  counterSumFormula hOutputs jOutputs hWidth jWidth threshold
+
+theorem counterSumFormula_lower_bound {variables : Nat}
+    (assignment : CnfAssignment variables)
+    (hOutputs jOutputs : Nat → CnfLiteral variables)
+    (hWidth jWidth threshold hCount jCount : Nat)
+    (hExact : ExactAtLeastCounterOutputs
+      assignment hOutputs hWidth hCount)
+    (jExact : ExactAtLeastCounterOutputs
+      assignment jOutputs jWidth jCount)
+    (satisfied : SatisfiesCnfFormula assignment
+      (counterSumFormula hOutputs jOutputs hWidth jWidth threshold)) :
+    threshold ≤ hCount + jCount := by
+  by_cases dense : threshold ≤ hCount + jCount
+  · exact dense
+  · exfalso
+    have hCountBelow : hCount < threshold := by omega
+    have clauseMember :
+        counterSumClause hOutputs jOutputs hWidth jWidth threshold hCount ∈
+          counterSumFormula hOutputs jOutputs hWidth jWidth threshold := by
+      simp only [counterSumFormula, List.mem_map, List.mem_range]
+      exact ⟨hCount, hCountBelow, rfl⟩
+    have clauseSatisfied := satisfied _ clauseMember
+    rcases clauseSatisfied with ⟨literal, literalMember, literalHolds⟩
+    by_cases hFits : hCount + 1 ≤ hWidth
+    · have hDoesNotHold : ¬(hOutputs hCount).Holds assignment := by
+        rw [hExact hCount (by omega)]
+        omega
+      by_cases jFits : threshold - hCount ≤ jWidth
+      · have jRequiredPositive : 0 < threshold - hCount := by omega
+        have jDoesNotHold :
+            ¬(jOutputs (threshold - hCount - 1)).Holds assignment := by
+          rw [jExact (threshold - hCount - 1) (by omega)]
+          omega
+        simp [counterSumClause, hFits, jFits] at literalMember
+        rcases literalMember with rfl | rfl
+        · exact hDoesNotHold literalHolds
+        · exact jDoesNotHold literalHolds
+      · simp [counterSumClause, hFits, jFits] at literalMember
+        subst literal
+        exact hDoesNotHold literalHolds
+    · by_cases jFits : threshold - hCount ≤ jWidth
+      · have jRequiredPositive : 0 < threshold - hCount := by omega
+        have jDoesNotHold :
+            ¬(jOutputs (threshold - hCount - 1)).Holds assignment := by
+          rw [jExact (threshold - hCount - 1) (by omega)]
+          omega
+        simp [counterSumClause, hFits, jFits] at literalMember
+        subst literal
+        exact jDoesNotHold literalHolds
+      · simp [counterSumClause, hFits, jFits] at literalMember
+
+theorem counterPairConstraintFormula_bounds {variables : Nat}
+    (assignment : CnfAssignment variables)
+    (hOutputs jOutputs : Nat → CnfLiteral variables)
+    (hWidth jWidth hCount jCount hLower hUpper jLower jUpper threshold : Nat)
+    (hLowerPositive : 0 < hLower) (hOrdered : hLower ≤ hUpper)
+    (hUpperInside : hUpper < hWidth)
+    (jLowerPositive : 0 < jLower) (jOrdered : jLower ≤ jUpper)
+    (jUpperInside : jUpper < jWidth)
+    (hExact : ExactAtLeastCounterOutputs
+      assignment hOutputs hWidth hCount)
+    (jExact : ExactAtLeastCounterOutputs
+      assignment jOutputs jWidth jCount)
+    (satisfied : SatisfiesCnfFormula assignment
+      (counterPairConstraintFormula hOutputs jOutputs hWidth jWidth
+        hLower hUpper jLower jUpper threshold)) :
+    hLower ≤ hCount ∧ hCount ≤ hUpper ∧
+      jLower ≤ jCount ∧ jCount ≤ jUpper ∧
+      threshold ≤ hCount + jCount := by
+  have hRangeSatisfied : SatisfiesCnfFormula assignment
+      (counterRangeClauses hOutputs hLower hUpper) := by
+    apply SatisfiesCnfFormula.of_subset assignment
+      (counterPairConstraintFormula hOutputs jOutputs hWidth jWidth
+        hLower hUpper jLower jUpper threshold)
+      (counterRangeClauses hOutputs hLower hUpper) satisfied
+    intro clause membership
+    simp [counterPairConstraintFormula, membership]
+  have jRangeSatisfied : SatisfiesCnfFormula assignment
+      (counterRangeClauses jOutputs jLower jUpper) := by
+    apply SatisfiesCnfFormula.of_subset assignment
+      (counterPairConstraintFormula hOutputs jOutputs hWidth jWidth
+        hLower hUpper jLower jUpper threshold)
+      (counterRangeClauses jOutputs jLower jUpper) satisfied
+    intro clause membership
+    simp [counterPairConstraintFormula, membership]
+  have sumSatisfied : SatisfiesCnfFormula assignment
+      (counterSumFormula hOutputs jOutputs hWidth jWidth threshold) := by
+    apply SatisfiesCnfFormula.of_subset assignment
+      (counterPairConstraintFormula hOutputs jOutputs hWidth jWidth
+        hLower hUpper jLower jUpper threshold)
+      (counterSumFormula hOutputs jOutputs hWidth jWidth threshold) satisfied
+    intro clause membership
+    simp [counterPairConstraintFormula, membership]
+  rcases counterRangeClauses_bounds assignment hOutputs hWidth hCount
+    hLower hUpper hLowerPositive hOrdered hUpperInside hExact
+    hRangeSatisfied with ⟨hLowerBound, hUpperBound⟩
+  rcases counterRangeClauses_bounds assignment jOutputs jWidth jCount
+    jLower jUpper jLowerPositive jOrdered jUpperInside jExact
+    jRangeSatisfied with ⟨jLowerBound, jUpperBound⟩
+  exact ⟨hLowerBound, hUpperBound, jLowerBound, jUpperBound,
+    counterSumFormula_lower_bound assignment hOutputs jOutputs
+      hWidth jWidth threshold hCount jCount hExact jExact sumSatisfied⟩
+
 def sequentialCounterInputCount {variables : Nat}
     (assignment : CnfAssignment variables)
     (input : Nat → CnfLiteral variables) (rows : Nat) : Nat :=
@@ -329,6 +485,9 @@ theorem satisfiesSequentialCounterCells_outputs_exact {variables : Nat}
 #print axioms counterFirstColumnClauses_iff
 #print axioms counterDiagonalClauses_iff
 #print axioms counterInteriorClauses_iff
+#print axioms counterRangeClauses_bounds
+#print axioms counterSumFormula_lower_bound
+#print axioms counterPairConstraintFormula_bounds
 #print axioms trueCountPrefix_le
 #print axioms counterRecurrence_exact
 #print axioms satisfiesSequentialCounterCellFormula_cells

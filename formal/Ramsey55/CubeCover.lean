@@ -125,6 +125,19 @@ theorem cnfCubeFamilyCoversFormula_of_cover {variables : Nat}
   intro assignment _
   exact cover assignment
 
+/-- A cover proved from a structural CNF suffix also covers every satisfying
+assignment of any larger mother formula that contains that suffix. -/
+theorem cnfCubeFamilyCoversFormula_of_subformula {variables : Nat}
+    (formula subformula : CnfFormula variables)
+    (cubes : List (CnfCube variables))
+    (cover : CnfCubeFamilyCoversFormula subformula cubes)
+    (included : ∀ clause ∈ subformula, clause ∈ formula) :
+    CnfCubeFamilyCoversFormula formula cubes := by
+  intro assignment formulaSatisfied
+  apply cover assignment
+  exact SatisfiesCnfFormula.of_subset assignment formula subformula
+    formulaSatisfied included
+
 /-- Refuting every member of a formula-relative exhaustive cube family
 refutes the mother CNF. This is the composition theorem used by structural
 edge-count covers, which need not be tautologies on assignments that already
@@ -153,6 +166,7 @@ theorem cnfFormulaIsUnsat_of_cubeCover {variables : Nat}
 #print axioms satisfies_split_of_satisfies_cube
 #print axioms SatisfiesCnfFormula.of_subset
 #print axioms cnfCubeFamilyCoversFormula_split_head
+#print axioms cnfCubeFamilyCoversFormula_of_subformula
 #print axioms cnfFormulaIsUnsat_of_relativeCubeCover
 #print axioms cnfFormulaIsUnsat_of_cubeCover
 

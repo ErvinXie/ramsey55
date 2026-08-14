@@ -463,6 +463,10 @@ The numeric DIMACS bridge is now kernel-checked in
 from the three post-lex bases and reconstructs every observable H/J output.
 It generates the signed 28/36/45 cube lists, checks all six first/last manifest
 cubes, and proves that the final J outputs are variables 78697/77148/76651.
-These computations have empty axiom audits. The remaining formal data step is
-to show that the mother DIMACS stream contains the corresponding cell, range,
-and sum clauses under the same input/state map.
+It now also reconstructs all six ordered H/J input lists, every typed state
+literal, the two counter streams, four range units, and sum-clause tail. Lean
+proves each concrete tail covers its 28/36/45 typed cubes and that all 109 map
+back to the committed signed DIMACS lists. The remaining formal data step is
+only to show that each mother DIMACS stream contains this exact suffix; the
+counter, range, density, and cube semantics no longer cross that boundary as
+assumptions.
