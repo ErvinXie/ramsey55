@@ -108,38 +108,41 @@ void appendBinaryEmptyClause(const std::string& path) {
 }  // namespace
 
 int main(int argc, char** argv) try {
-  if (argc < 6 || argc > 11) {
+  const bool fragmentMode =
+      argc > 1 && std::string(argv[argc - 1]) == "--fragment";
+  const int argumentCount = argc - (fragmentMode ? 1 : 0);
+  if (argumentCount < 6 || argumentCount > 11) {
     std::cerr << "usage: prove_cadical_cubes input.cnf cubes proof.drat"
                  " results.tsv conflicts [maximum-conflicts]"
                  " [maximum-lookahead-seconds]"
                  " [maximum-primary-split-variable]"
-                 " [maximum-solve-seconds] [root-index]\n";
+                 " [maximum-solve-seconds] [root-index] [--fragment]\n";
     return 2;
   }
   const auto cubes = readCubes(argv[2]);
   const int conflictLimit = std::stoi(argv[5]);
   if (conflictLimit <= 0) throw std::runtime_error("invalid conflict limit");
   const int maximumConflictLimit =
-      argc >= 7 ? std::stoi(argv[6]) : 1'000'000'000;
+      argumentCount >= 7 ? std::stoi(argv[6]) : 1'000'000'000;
   if (maximumConflictLimit < conflictLimit) {
     throw std::runtime_error("maximum conflict limit is below base limit");
   }
   const double maximumLookaheadSeconds =
-      argc >= 8 ? std::stod(argv[7]) : 0.0;
+      argumentCount >= 8 ? std::stod(argv[7]) : 0.0;
   if (maximumLookaheadSeconds < 0.0) {
     throw std::runtime_error("negative maximum lookahead time");
   }
   const int maximumPrimarySplitVariable =
-      argc >= 9 ? std::stoi(argv[8]) : 0;
+      argumentCount >= 9 ? std::stoi(argv[8]) : 0;
   if (maximumPrimarySplitVariable < 0) {
     throw std::runtime_error("negative maximum primary split variable");
   }
   const double maximumSolveSeconds =
-      argc >= 10 ? std::stod(argv[9]) : 0.0;
+      argumentCount >= 10 ? std::stod(argv[9]) : 0.0;
   if (maximumSolveSeconds < 0.0) {
     throw std::runtime_error("negative maximum solve time");
   }
-  const bool rootOnly = argc == 11;
+  const bool rootOnly = argumentCount == 11;
   const std::size_t selectedRoot = rootOnly ? std::stoull(argv[10]) : 0;
   if (rootOnly && selectedRoot >= cubes.size()) {
     throw std::runtime_error("root index is out of range");
@@ -152,6 +155,7 @@ int main(int argc, char** argv) try {
             << maximumPrimarySplitVariable << '\n';
   std::cout << "maximum_solve_seconds\t" << maximumSolveSeconds << '\n';
   std::cout << "freeze_policy\tselective\n";
+  std::cout << "proof_fragment\t" << fragmentMode << '\n';
   std::cout << "root_index\t";
   if (rootOnly) {
     std::cout << selectedRoot;
@@ -337,6 +341,16 @@ int main(int argc, char** argv) try {
                 << " attempts=" << attempts << " splits=" << splits
                 << std::endl;
     }
+  }
+  if (fragmentMode) {
+    solver.flush_proof_trace();
+    solver.close_proof_trace();
+    std::cout << "status\t20\n";
+    std::cout << "cubes\t" << (lastRoot - firstRoot) << '\n';
+    std::cout << "attempts\t" << attempts << '\n';
+    std::cout << "splits\t" << splits << '\n';
+    std::cout << "maximum_extra_depth\t" << maximumDepth << '\n';
+    return 20;
   }
   if (rootOnly) {
     const auto& cube = cubes[selectedRoot];

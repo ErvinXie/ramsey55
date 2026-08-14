@@ -345,6 +345,19 @@ found SAT. These are search measurements only: a reconstructed open frontier
 does not contain the DRAT justification for already closed siblings, so it is
 not by itself a resumable certificate or an UNSAT proof.
 
+The proof runner now also has an explicit `--fragment` mode for composing a
+flushed proof prefix with proofs of exactly that reconstructed frontier. A
+fragment closes all input cubes and flushes its proof trace, but deliberately
+skips the final assumption-free solve and does not append an empty clause.
+`tools/compose_binary_drat.py` concatenates binary traces atomically and can
+append the binary empty step only at the final composition boundary. The smoke
+test closes two complementary children with independent solver instances,
+concatenates their traces, and requires `drat-trim` to verify the result against
+the parent-cube formula. A real checkpoint still has to pass the same full
+replay: runner exit 20 or successful frontier reconstruction alone is never
+treated as a certificate, because a copied live proof buffer and independently
+generated DRAT state need not compose without checker validation.
+
 The d20 comparison also rejects an otherwise tempting heuristic change.
 Selective freezing with unrestricted lookahead left 1 and 2 branches on the
 two hard cubes after 120 seconds, while forcing all dynamic choices into the

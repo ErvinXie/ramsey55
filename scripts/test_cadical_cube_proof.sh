@@ -50,6 +50,40 @@ python3 "$root/tools/materialize_cnf_cube.py" \
   > "$temporary/root-checker.log"
 grep -q "s VERIFIED" "$temporary/root-checker.log"
 
+# Two proof streams independently close the complementary children of the
+# same parent cube. Neither fragment performs a final solve or emits an empty
+# clause; concatenating both streams and appending the binary empty step must
+# verify against the parent-cube augmented formula.
+printf 'a -1 2 0\n' > "$temporary/fragment-positive.icnf"
+printf 'a -1 -2 0\n' > "$temporary/fragment-negative.icnf"
+for branch in positive negative; do
+  set +e
+  "$runner" \
+    "$root/tests/data/cube-leaf-smoke.cnf" \
+    "$temporary/fragment-$branch.icnf" \
+    "$temporary/fragment-$branch.drat" \
+    "$temporary/fragment-$branch.tsv" \
+    100 100 0 2 0 --fragment \
+    > "$temporary/fragment-$branch.log"
+  fragment_status=$?
+  set -e
+  if [ "$fragment_status" -ne 20 ]; then
+    cat "$temporary/fragment-$branch.log" >&2
+    echo "fragment proof driver returned $fragment_status instead of 20" >&2
+    exit 2
+  fi
+  grep -q '^proof_fragment[[:space:]]1$' \
+    "$temporary/fragment-$branch.log"
+done
+python3 "$root/tools/compose_binary_drat.py" --append-empty \
+  "$temporary/composed-root-proof.drat" \
+  "$temporary/fragment-positive.drat" \
+  "$temporary/fragment-negative.drat" >/dev/null
+"$root/.tools/src/drat-trim/drat-trim" \
+  "$temporary/root-augmented.cnf" "$temporary/composed-root-proof.drat" \
+  > "$temporary/composed-root-checker.log"
+grep -q "s VERIFIED" "$temporary/composed-root-checker.log"
+
 set +e
 "$root/.tools/src/drat-trim/drat-trim" \
   "$root/tests/data/cube-leaf-smoke.cnf" "$temporary/root-proof.drat" \
