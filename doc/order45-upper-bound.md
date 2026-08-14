@@ -237,6 +237,13 @@ The reproducible symmetry manifest is
 21,816/32,832 variables, 187,388/253,604 clauses, and SHA-256 values
 `6cded9314453d477647984aa99400bcf55704e463de4319891432d2149b1229c` and
 `d286a3c81f4618d3d02c73c5288f7aae1fe1352792b28c9f6a373a7e45819f9e`.
+The bounded comparison in
+`data/order45-fixed-pair-symmetry-pilot.json` is negative telemetry: all four
+600-second monolithic CaDiCaL/Kissat runs timed out. For J297775 a depth-10
+split left 19, 10, and 3 UNKNOWN cubes after 0.1, 10, and 120-second passes;
+the larger J326185 lex formula did not finish that cubing step in 180 seconds.
+This is worse than the no-symmetry depth-14 tail and is not a proof result, so
+the symmetry encoding is not the current production search path.
 
 Kissat, CaDiCaL, and Minisat all left the monolithic formulas UNKNOWN after
 600 seconds. CaDiCaL's native depth-14 cuber instead produced exactly 16,384

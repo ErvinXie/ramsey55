@@ -1,0 +1,60 @@
+{
+  "claim": "bounded UNKNOWN search telemetry; not an UNSAT certificate or a labelled symmetry proof",
+  "formula_manifest_sha256": "57a836b6c66ce06d67d24750af7218168cf716bfab346463c87d26f823c1af93",
+  "monolithic_600_seconds": {
+    "cadical": {
+      "binary_sha256": "c42ba87b1af1c11b564aa6754a4c55911c7c99834a69eb3d802b938dcefc587c",
+      "results": {"297775": "TIMEOUT", "326185": "TIMEOUT"},
+      "version": "2.1.2"
+    },
+    "kissat": {
+      "binary_sha256": "5d6188420ad85f22304954c4206204d6f371d022346725ba3286cdb104b73ef2",
+      "log_sha256": {
+        "297775": "6e6527bc14d7854c45b532fdbd4aabb0cb51c9b80c5301f80ff1079d1d56f95e",
+        "326185": "5e0cd4cecab2e8d355cd42cd97b03b6ad7d4beae5a1302d008a2615814988ead"
+      },
+      "results": {"297775": "TIMEOUT", "326185": "TIMEOUT"},
+      "version": "4.0.4"
+    }
+  },
+  "schema": "ramsey55.order45-fixed-pair-symmetry-pilot.v1",
+  "splitter": {
+    "binary_sha256": "b408f1c17ae9b2a0794c249865523d4c6f2769ef1e71b77355f890b7d54d8ea8",
+    "depth": 10,
+    "j297775": {
+      "cube_count": 1024,
+      "cubes_sha256": "a3bd1e7f10175c855675b35604a379a05bc8423dcca06812e63a2cb390784585",
+      "passes": [
+        {
+          "closed": 1005,
+          "input_cubes": 1024,
+          "per_cube_seconds": 0.1,
+          "reported_seconds": 3.425322,
+          "results_sha256": "7f7b40d9d1f0d91ceecfa268c601bb00a997b56ca544106cd8db021369c54c75",
+          "unknown": 19
+        },
+        {
+          "closed": 9,
+          "input_cubes": 19,
+          "per_cube_seconds": 10.0,
+          "reported_seconds": 128.827011,
+          "results_sha256": "4c94c879ef2b976bc2649ad92c86077cfc97a5a45f980a70690ffb46b68481bf",
+          "unknown": 10
+        },
+        {
+          "closed": 7,
+          "input_cubes": 10,
+          "per_cube_seconds": 120.0,
+          "reported_seconds": 657.37302,
+          "results_sha256": "8a1d1c039f47d9e7c9952f80cfc7a7cf24bc2d0b91da87d1b82b3e1081daeb12",
+          "unknown": 3
+        }
+      ]
+    },
+    "j326185": {
+      "result": "depth-10 cuber TIMEOUT before emitting a cube file",
+      "timeout_seconds": 180
+    },
+    "solver_binary_sha256": "6044359c39345ae222cd6047a5bf9d3b65ca4339ea5b9120c3ffe8baf63d04e5"
+  }
+}

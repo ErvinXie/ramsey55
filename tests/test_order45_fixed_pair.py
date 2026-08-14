@@ -56,6 +56,22 @@ class FixedPairIndependentEncodingTests(unittest.TestCase):
             [(4, 24), (4, 48)],
         )
 
+    def test_symmetry_pilot_is_explicit_unknown_telemetry(self) -> None:
+        pilot = json.loads(
+            (ROOT / "data/order45-fixed-pair-symmetry-pilot.json").read_text()
+        )
+        self.assertIn("not an UNSAT certificate", pilot["claim"])
+        self.assertEqual(
+            pilot["monolithic_600_seconds"]["cadical"]["results"],
+            {"297775": "TIMEOUT", "326185": "TIMEOUT"},
+        )
+        passes = pilot["splitter"]["j297775"]["passes"]
+        self.assertEqual([result["unknown"] for result in passes], [19, 10, 3])
+        for result in passes:
+            self.assertEqual(
+                result["input_cubes"], result["closed"] + result["unknown"]
+            )
+
     def test_reference_h100_record(self) -> None:
         record = (ROOT / "data/reference/r4520.100.g6").read_text().strip()
         adjacency = decode_short_graph6(record, 20)
