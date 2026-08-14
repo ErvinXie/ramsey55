@@ -1,6 +1,6 @@
 # R(5,5) formal proof status
 
-Updated: 2026-08-11
+Updated: 2026-08-14
 
 ## Target theorem
 
@@ -130,6 +130,28 @@ certificate notion back to finite colourings. It proves:
 checked lower bound in `ramsey55_is_43_of_all_42_nonextendable`. Thus the
 formal statement itself records the one remaining hypothesis instead of
 treating catalog completeness as an informal assumption.
+
+## Order-45 cube composition bridge
+
+[CubeCover.lean](../formal/Ramsey55/CubeCover.lean) defines finite Boolean
+assignments, signed CNF literals, clauses, formulas, cubes, exhaustive cube
+families, and formula/cube unsatisfiability. It proves two generic results used
+by the order-45 certificate pipeline:
+
+    theorem satisfies_split_of_satisfies_cube ...
+    theorem cnfFormulaIsUnsat_of_cubeCover ...
+
+The first proves that replacing a parent cube by its two children obtained by
+adding a literal and its negation preserves coverage. The second proves that
+independently refuting every cube in an exhaustive family refutes the mother
+CNF. The mother-formula theorem's axiom audit is empty; the split theorem uses
+only Lean's standard `propext`.
+
+This is the formal composition interface, not yet the completed order-45
+proof. Remaining formal work includes connecting the concrete DIMACS encoder
+to graph colourings, importing or checking the generated cube-cover data and
+leaf UNSAT results, and connecting the full excess-witness reduction to an
+arbitrary Ramsey-free 45-vertex colouring.
 
 ## Independently checked inputs
 

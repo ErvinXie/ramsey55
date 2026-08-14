@@ -35,9 +35,16 @@ and its degree-20, degree-22, and complemented degree-24 paths are unit tested.
 The formal file `formal/Ramsey55/Order45.lean` currently checks the arithmetic
 parity reduction from degree counts. A final formal bridge still needs a
 machine-checked \(R(4,5)=25\) dependency, actual graph degree counts, colour
-complementation, and the relabelling equivalence. The complete 74-target Lean
+complementation, and the relabelling equivalence. The complete 75-target Lean
 project, including this new file, builds successfully with pinned Lean 4.31.0
 on the ARM node.
+
+`formal/Ramsey55/CubeCover.lean` now supplies the generic certificate
+composition layer: binary literal splits preserve cube coverage, and an
+exhaustive family whose every formula/cube conjunction is UNSAT makes the
+mother CNF UNSAT. The latter theorem has an empty axiom audit. Concrete DIMACS
+semantics, generated cover data, checked leaf results, and the graph-to-CNF
+bridge remain to be connected before this yields an order-45 theorem.
 
 ## Exact raw SAT benchmarks
 
