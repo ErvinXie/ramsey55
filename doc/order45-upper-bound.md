@@ -249,6 +249,12 @@ unit clauses. The smoke test deliberately uses a satisfiable base formula:
 `drat-trim` accepts the augmented CNF and rejects the same proof against the
 base formula alone. A collection of such leaf proofs establishes the mother
 formula only together with an independently checked exhaustive cube cover.
+`tools/audit_order45_strata_leaf_proofs.py` enforces that composition: it
+binds each exported cube to the independently verified formula manifest,
+checks the per-root result tree and recorded runner limits, regenerates the
+temporary cube-augmented CNF, and replays every leaf proof. Missing leaves are
+fatal by default; `--allow-partial` produces only an explicitly incomplete
+progress inventory.
 `tools/audit_order45_fixed_pair_proofs.py` checks formula and cube hashes,
 complete balanced result forests, the recorded runner parameters, and each
 DRAT replay before writing a compact artifact manifest.
