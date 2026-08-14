@@ -69,6 +69,11 @@ def main() -> None:
     )
     parser.add_argument("--maximum-primary-split-variable", type=int, default=0)
     parser.add_argument("--maximum-solve-seconds", type=float, default=0.0)
+    parser.add_argument(
+        "--freeze-policy",
+        choices=("legacy-all", "selective"),
+        default="legacy-all",
+    )
     parser.add_argument("--allow-partial", action="store_true")
     parser.add_argument("--degree", type=int, action="append")
     parser.add_argument(
@@ -144,6 +149,9 @@ def main() -> None:
             "degree": str(degree),
         }:
             raise ValueError(f"cube metadata mismatch for d{degree}")
+        initially_frozen = {
+            abs(literal) for cube in cubes for literal in cube
+        } | set(range(1, arguments.maximum_primary_split_variable + 1))
 
         audit_runner_log(
             runner_log,
@@ -153,6 +161,8 @@ def main() -> None:
             arguments.maximum_lookahead_seconds,
             arguments.maximum_primary_split_variable,
             arguments.maximum_solve_seconds,
+            arguments.freeze_policy,
+            len(initially_frozen),
         )
         statistics = audit_results(results, len(cubes))
         if statistics["minimum_conflict_limit"] != arguments.conflicts:
@@ -222,6 +232,7 @@ def main() -> None:
                     arguments.maximum_primary_split_variable
                 ),
                 "maximum_solve_seconds": arguments.maximum_solve_seconds,
+                "freeze_policy": arguments.freeze_policy,
                 "root_index": "all",
             },
         },

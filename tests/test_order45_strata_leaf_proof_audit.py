@@ -129,6 +129,59 @@ class Order45StrataLeafProofAuditTests(unittest.TestCase):
             )
             audit_runner_log(path, "all", 30000, 128000, 1.0, 0, 10.0)
 
+    def test_audits_selective_runner_freeze_count(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "runner.log"
+            path.write_text(
+                "conflicts\t30000\n"
+                "maximum_conflicts\t128000\n"
+                "maximum_lookahead_seconds\t1\n"
+                "maximum_primary_split_variable\t0\n"
+                "maximum_solve_seconds\t10\n"
+                "freeze_policy\tselective\n"
+                "root_index\tall\n"
+                "initial_frozen_variables\t16\n",
+                encoding="utf-8",
+            )
+            audit_runner_log(
+                path,
+                "all",
+                30000,
+                128000,
+                1.0,
+                0,
+                10.0,
+                "selective",
+                16,
+            )
+
+    def test_rejects_selective_runner_freeze_mismatch(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "runner.log"
+            path.write_text(
+                "conflicts\t30000\n"
+                "maximum_conflicts\t128000\n"
+                "maximum_lookahead_seconds\t1\n"
+                "maximum_primary_split_variable\t0\n"
+                "maximum_solve_seconds\t10\n"
+                "freeze_policy\tselective\n"
+                "root_index\tall\n"
+                "initial_frozen_variables\t15\n",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "runner parameter mismatch"):
+                audit_runner_log(
+                    path,
+                    "all",
+                    30000,
+                    128000,
+                    1.0,
+                    0,
+                    10.0,
+                    "selective",
+                    16,
+                )
+
 
 if __name__ == "__main__":
     unittest.main()

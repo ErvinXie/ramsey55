@@ -129,16 +129,25 @@ def audit_runner_log(
     maximum_lookahead_seconds: float,
     maximum_primary_split_variable: int,
     maximum_solve_seconds: float,
+    freeze_policy: str = "legacy-all",
+    initial_frozen_variables: int | None = None,
 ) -> None:
+    if freeze_policy not in {"legacy-all", "selective"}:
+        raise ValueError(f"unknown freeze policy {freeze_policy!r}")
+    if freeze_policy == "selective" and initial_frozen_variables is None:
+        raise ValueError("selective runner audit requires an initial freeze count")
+    expected_keys = set(RUNNER_PARAMETER_KEYS)
+    if freeze_policy == "selective":
+        expected_keys.update(("freeze_policy", "initial_frozen_variables"))
     values: dict[str, str] = {}
     for line in path.read_text(encoding="utf-8").splitlines():
         fields = line.split("\t")
-        if fields[0] not in RUNNER_PARAMETER_KEYS:
+        if fields[0] not in expected_keys:
             continue
         if len(fields) != 2 or fields[0] in values:
             raise ValueError(f"invalid runner parameter in {path}: {line!r}")
         values[fields[0]] = fields[1]
-    missing = set(RUNNER_PARAMETER_KEYS) - values.keys()
+    missing = expected_keys - values.keys()
     if missing:
         raise ValueError(f"missing runner parameters in {path}: {sorted(missing)}")
     expected = {
@@ -149,6 +158,13 @@ def audit_runner_log(
         "maximum_solve_seconds": maximum_solve_seconds,
         "root_index": root,
     }
+    if freeze_policy == "selective":
+        expected.update(
+            {
+                "freeze_policy": "selective",
+                "initial_frozen_variables": initial_frozen_variables,
+            }
+        )
     actual = {
         "conflicts": int(values["conflicts"]),
         "maximum_conflicts": int(values["maximum_conflicts"]),
@@ -165,6 +181,15 @@ def audit_runner_log(
             else int(values["root_index"])
         ),
     }
+    if freeze_policy == "selective":
+        actual.update(
+            {
+                "freeze_policy": values["freeze_policy"],
+                "initial_frozen_variables": int(
+                    values["initial_frozen_variables"]
+                ),
+            }
+        )
     if actual != expected:
         raise ValueError(
             f"runner parameter mismatch in {path}: {actual} != {expected}"
@@ -222,6 +247,11 @@ def main() -> None:
     parser.add_argument("--maximum-lookahead-seconds", type=float)
     parser.add_argument("--maximum-primary-split-variable", type=int, default=0)
     parser.add_argument("--maximum-solve-seconds", type=float, default=0.0)
+    parser.add_argument(
+        "--freeze-policy",
+        choices=("legacy-all", "selective"),
+        default="legacy-all",
+    )
     parser.add_argument("--allow-partial", action="store_true")
     parser.add_argument("--degree", type=int, action="append")
     parser.add_argument(
@@ -292,6 +322,9 @@ def main() -> None:
             "degree": str(degree),
         }:
             raise ValueError(f"cube metadata mismatch for d{degree}")
+        initially_frozen = {
+            abs(literal) for cube in cubes for literal in cube
+        } | set(range(1, arguments.maximum_primary_split_variable + 1))
 
         for index, cube in enumerate(cubes):
             stem = arguments.proof_dir / f"d{degree}-c{index}"
@@ -317,6 +350,8 @@ def main() -> None:
                     arguments.maximum_lookahead_seconds,
                     arguments.maximum_primary_split_variable,
                     arguments.maximum_solve_seconds,
+                    arguments.freeze_policy,
+                    len(initially_frozen),
                 )
             statistics = audit_root_results(results, index)
             if arguments.conflicts is not None:
@@ -388,6 +423,7 @@ def main() -> None:
                         arguments.maximum_primary_split_variable
                     ),
                     "maximum_solve_seconds": arguments.maximum_solve_seconds,
+                    "freeze_policy": arguments.freeze_policy,
                     "root_index": "per proof",
                 }
                 if arguments.conflicts is not None

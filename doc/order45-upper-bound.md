@@ -352,6 +352,16 @@ two hard cubes after 120 seconds, while forcing all dynamic choices into the
 therefore retained, and any selective-freeze hedge should continue to allow
 auxiliary choices rather than impose the graph-edge bound.
 
+That hedge is now running for all three unified mother formulas with exact
+configuration `30000/128000 conflicts, 1 second lookahead, primary bound 0,
+10 seconds solve`. The logged initial frozen-variable counts are only 16, 18,
+and 20 for d20, d21, and d22. The reproducible entry point is
+`scripts/run_order45_strata_unified_selective_proof.sh`. It gates the checker
+on runner exit 20 and invokes the unified auditor in selective mode; the
+auditor independently recomputes the initial freeze count before accepting a
+proof. These three jobs are hedges alongside the legacy jobs, and none is a
+certificate until its mother-CNF DRAT replay and strict audit both pass.
+
 Colour swap reduces the last raw count to 483,900,495 unordered pairs. These
 numbers are pairs of unlabelled local records before testing a single cross
 edge or overlap, so they substantially understate the cost of naive gluing.
