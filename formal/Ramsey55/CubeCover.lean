@@ -35,6 +35,14 @@ def SatisfiesCnfFormula {variables : Nat}
     (assignment : CnfAssignment variables) (formula : CnfFormula variables) : Prop :=
   ∀ clause ∈ formula, SatisfiesCnfClause assignment clause
 
+theorem SatisfiesCnfFormula.of_subset {variables : Nat}
+    (assignment : CnfAssignment variables) (formula subformula : CnfFormula variables)
+    (satisfied : SatisfiesCnfFormula assignment formula)
+    (included : ∀ clause ∈ subformula, clause ∈ formula) :
+    SatisfiesCnfFormula assignment subformula := by
+  intro clause membership
+  exact satisfied clause (included clause membership)
+
 def SatisfiesCnfCube {variables : Nat}
     (assignment : CnfAssignment variables) (cube : CnfCube variables) : Prop :=
   ∀ literal ∈ cube, literal.Holds assignment
@@ -143,6 +151,7 @@ theorem cnfFormulaIsUnsat_of_cubeCover {variables : Nat}
     (cnfCubeFamilyCoversFormula_of_cover formula cubes cover) leaves
 
 #print axioms satisfies_split_of_satisfies_cube
+#print axioms SatisfiesCnfFormula.of_subset
 #print axioms cnfCubeFamilyCoversFormula_split_head
 #print axioms cnfFormulaIsUnsat_of_relativeCubeCover
 #print axioms cnfFormulaIsUnsat_of_cubeCover

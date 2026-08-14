@@ -266,6 +266,96 @@ theorem order45Degree22SequentialCounterCubes_cover {variables : Nat}
     (sequentialCounterInputCount assignment jInput 231)
     hLower hUpper jLower jUpper dense hExact jExact
 
+/-- If a mother formula contains both emitted counter streams and entails the
+four catalog bounds plus the excess inequality, its concrete degree-20 cube
+family covers every satisfying assignment. -/
+theorem order45Degree20CounterSubformulas_cover {variables : Nat}
+    (formula : CnfFormula variables)
+    (hInput jInput : Nat → CnfLiteral variables)
+    (hState jState : Nat → Nat → CnfLiteral variables)
+    (hIncluded : ∀ clause ∈
+      sequentialCounterCellFormula hInput hState 190 101, clause ∈ formula)
+    (jIncluded : ∀ clause ∈
+      sequentialCounterCellFormula jInput jState 276 133, clause ∈ formula)
+    (bounds : ∀ assignment, SatisfiesCnfFormula assignment formula →
+      68 ≤ sequentialCounterInputCount assignment hInput 190 ∧
+      sequentialCounterInputCount assignment hInput 190 ≤ 100 ∧
+      116 ≤ sequentialCounterInputCount assignment jInput 276 ∧
+      sequentialCounterInputCount assignment jInput 276 ≤ 132 ∧
+      226 ≤ sequentialCounterInputCount assignment hInput 190 +
+        sequentialCounterInputCount assignment jInput 276) :
+    CnfCubeFamilyCoversFormula formula
+      (order45Degree20EdgePairs.map
+        (exactEdgePairCube (hState (190 - 1)) (jState (276 - 1)))) := by
+  intro assignment formulaSatisfied
+  have hCells := satisfiesSequentialCounterSubformula_cells assignment formula
+    hInput hState 190 101 (by omega) (by omega) formulaSatisfied hIncluded
+  have jCells := satisfiesSequentialCounterSubformula_cells assignment formula
+    jInput jState 276 133 (by omega) (by omega) formulaSatisfied jIncluded
+  rcases bounds assignment formulaSatisfied with
+    ⟨hLower, hUpper, jLower, jUpper, dense⟩
+  exact order45Degree20SequentialCounterCubes_cover assignment
+    hInput jInput hState jState hCells jCells
+    hLower hUpper jLower jUpper dense
+
+theorem order45Degree21CounterSubformulas_cover {variables : Nat}
+    (formula : CnfFormula variables)
+    (hInput jInput : Nat → CnfLiteral variables)
+    (hState jState : Nat → Nat → CnfLiteral variables)
+    (hIncluded : ∀ clause ∈
+      sequentialCounterCellFormula hInput hState 210 108, clause ∈ formula)
+    (jIncluded : ∀ clause ∈
+      sequentialCounterCellFormula jInput jState 253 123, clause ∈ formula)
+    (bounds : ∀ assignment, SatisfiesCnfFormula assignment formula →
+      77 ≤ sequentialCounterInputCount assignment hInput 210 ∧
+      sequentialCounterInputCount assignment hInput 210 ≤ 107 ∧
+      101 ≤ sequentialCounterInputCount assignment jInput 253 ∧
+      sequentialCounterInputCount assignment jInput 253 ≤ 122 ∧
+      222 ≤ sequentialCounterInputCount assignment hInput 210 +
+        sequentialCounterInputCount assignment jInput 253) :
+    CnfCubeFamilyCoversFormula formula
+      (order45Degree21EdgePairs.map
+        (exactEdgePairCube (hState (210 - 1)) (jState (253 - 1)))) := by
+  intro assignment formulaSatisfied
+  have hCells := satisfiesSequentialCounterSubformula_cells assignment formula
+    hInput hState 210 108 (by omega) (by omega) formulaSatisfied hIncluded
+  have jCells := satisfiesSequentialCounterSubformula_cells assignment formula
+    jInput jState 253 123 (by omega) (by omega) formulaSatisfied jIncluded
+  rcases bounds assignment formulaSatisfied with
+    ⟨hLower, hUpper, jLower, jUpper, dense⟩
+  exact order45Degree21SequentialCounterCubes_cover assignment
+    hInput jInput hState jState hCells jCells
+    hLower hUpper jLower jUpper dense
+
+theorem order45Degree22CounterSubformulas_cover {variables : Nat}
+    (formula : CnfFormula variables)
+    (hInput jInput : Nat → CnfLiteral variables)
+    (hState jState : Nat → Nat → CnfLiteral variables)
+    (hIncluded : ∀ clause ∈
+      sequentialCounterCellFormula hInput hState 231 115, clause ∈ formula)
+    (jIncluded : ∀ clause ∈
+      sequentialCounterCellFormula jInput jState 231 115, clause ∈ formula)
+    (bounds : ∀ assignment, SatisfiesCnfFormula assignment formula →
+      88 ≤ sequentialCounterInputCount assignment hInput 231 ∧
+      sequentialCounterInputCount assignment hInput 231 ≤ 114 ∧
+      88 ≤ sequentialCounterInputCount assignment jInput 231 ∧
+      sequentialCounterInputCount assignment jInput 231 ≤ 114 ∧
+      220 ≤ sequentialCounterInputCount assignment hInput 231 +
+        sequentialCounterInputCount assignment jInput 231) :
+    CnfCubeFamilyCoversFormula formula
+      (order45Degree22EdgePairs.map
+        (exactEdgePairCube (hState (231 - 1)) (jState (231 - 1)))) := by
+  intro assignment formulaSatisfied
+  have hCells := satisfiesSequentialCounterSubformula_cells assignment formula
+    hInput hState 231 115 (by omega) (by omega) formulaSatisfied hIncluded
+  have jCells := satisfiesSequentialCounterSubformula_cells assignment formula
+    jInput jState 231 115 (by omega) (by omega) formulaSatisfied jIncluded
+  rcases bounds assignment formulaSatisfied with
+    ⟨hLower, hUpper, jLower, jUpper, dense⟩
+  exact order45Degree22SequentialCounterCubes_cover assignment
+    hInput jInput hState jState hCells jCells
+    hLower hUpper jLower jUpper dense
+
 #print axioms mem_admissibleEdgePairs_iff
 #print axioms order45EdgePairCounts
 #print axioms order45Degree20EdgePairs_cover
@@ -278,5 +368,8 @@ theorem order45Degree22SequentialCounterCubes_cover {variables : Nat}
 #print axioms order45Degree20SequentialCounterCubes_cover
 #print axioms order45Degree21SequentialCounterCubes_cover
 #print axioms order45Degree22SequentialCounterCubes_cover
+#print axioms order45Degree20CounterSubformulas_cover
+#print axioms order45Degree21CounterSubformulas_cover
+#print axioms order45Degree22CounterSubformulas_cover
 
 end Ramsey55

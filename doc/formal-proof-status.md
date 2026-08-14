@@ -190,14 +190,21 @@ clause groups encode respectively `current ↔ item`, `current ↔ old ∨ item`
 that every state cell means “at least column+1 true inputs,” and packages the
 last row as `ExactAtLeastCounterOutputs`.
 
+The file now also constructs the complete truncated counter clause stream in
+the generator's exact row-major cell and clause order. A subformula theorem
+proves that any satisfying mother assignment satisfies every counter cell when
+that stream is contained in the mother CNF. This removes the previous bundle
+of per-cell semantic hypotheses from the data boundary; the theorem has no
+`sorryAx` or `native_decide` dependency.
+
 The order-45 file instantiates this theorem at the actual H/J row counts and
 counter widths: `(190,101)/(276,133)`, `(210,108)/(253,123)`, and
-`(231,115)/(231,115)`. It thereby derives all three concrete cube-cover
-conclusions from satisfaction of the finite cell groups plus the range and
-density bounds. What remains for this bridge is data-level rather than
-counter mathematics: define the exact DIMACS input/state literal maps and
-prove the generated mother formula contains those cell, bound, and sum
-clauses.
+`(231,115)/(231,115)`. It now derives three formula-relative cube covers from
+mother-CNF satisfaction, inclusion of the two row-major counter substreams,
+and the range/density consequences. What remains is data-level rather than
+counter mathematics: define the exact DIMACS input/state literal maps, prove
+the generated mother formula contains those two streams, and derive the range
+and density consequences from its four unit bounds and sum clauses.
 
 [Order45Dimacs.lean](../formal/Ramsey55/Order45Dimacs.lean) fixes the numeric
 counter-variable allocation used by the DIMACS generator. It defines the

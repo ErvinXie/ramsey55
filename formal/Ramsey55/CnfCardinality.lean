@@ -180,6 +180,97 @@ def SatisfiesSequentialCounterCells {variables : Nat}
     SatisfiesCnfFormula assignment (counterInteriorClauses
       (state (i - 1) j) (state (i - 1) (j - 1)) (input i) (state i j)))
 
+/-- The exact row-major clause stream emitted by
+`at_least_counter_encoding`. Invalid cells are excluded by
+`sequentialCounterCellFormula`; this selector is only observed for
+`column ≤ row` and `column < width`. -/
+def sequentialCounterCellClauses {variables : Nat}
+    (input : Nat → CnfLiteral variables)
+    (state : Nat → Nat → CnfLiteral variables) (row column : Nat) :
+    CnfFormula variables :=
+  if row = 0 then
+    counterInitialClauses (input 0) (state 0 0)
+  else if column = 0 then
+    counterFirstColumnClauses (state (row - 1) 0) (input row) (state row 0)
+  else if column = row then
+    counterDiagonalClauses
+      (state (row - 1) (row - 1)) (input row) (state row row)
+  else
+    counterInteriorClauses (state (row - 1) column)
+      (state (row - 1) (column - 1)) (input row) (state row column)
+
+/-- A complete truncated counter subformula in the same row-major cell and
+clause order as the Python generator. -/
+def sequentialCounterCellFormula {variables : Nat}
+    (input : Nat → CnfLiteral variables)
+    (state : Nat → Nat → CnfLiteral variables) (rows width : Nat) :
+    CnfFormula variables :=
+  (List.range rows).flatMap fun row =>
+    (List.range (min (row + 1) width)).flatMap fun column =>
+      sequentialCounterCellClauses input state row column
+
+/-- Satisfaction of the emitted row-major clause stream supplies every local
+cell hypothesis used by the semantic counter theorem. -/
+theorem satisfiesSequentialCounterCellFormula_cells {variables : Nat}
+    (assignment : CnfAssignment variables)
+    (input : Nat → CnfLiteral variables)
+    (state : Nat → Nat → CnfLiteral variables) (rows width : Nat)
+    (rowsPositive : 0 < rows) (widthPositive : 0 < width)
+    (satisfied : SatisfiesCnfFormula assignment
+      (sequentialCounterCellFormula input state rows width)) :
+    SatisfiesSequentialCounterCells assignment input state rows width := by
+  have blockSatisfied (row column : Nat) (rowBound : row < rows)
+      (columnBound : column < min (row + 1) width) :
+      SatisfiesCnfFormula assignment
+        (sequentialCounterCellClauses input state row column) := by
+    intro clause clauseMembership
+    apply satisfied clause
+    simp only [sequentialCounterCellFormula, List.mem_flatMap,
+      List.mem_range]
+    exact ⟨row, rowBound, column, columnBound, clauseMembership⟩
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · have columnBound : 0 < min (0 + 1) width :=
+      (Nat.lt_min).2 ⟨by omega, widthPositive⟩
+    simpa [sequentialCounterCellClauses] using
+      blockSatisfied 0 0 rowsPositive columnBound
+  · intro row rowPositive rowBound
+    have columnBound : 0 < min (row + 1) width :=
+      (Nat.lt_min).2 ⟨by omega, widthPositive⟩
+    simpa [sequentialCounterCellClauses, Nat.ne_of_gt rowPositive] using
+      blockSatisfied row 0 rowBound columnBound
+  · intro row rowPositive rowBound rowInsideWidth
+    have columnBound : row < min (row + 1) width :=
+      (Nat.lt_min).2 ⟨by omega, rowInsideWidth⟩
+    simpa [sequentialCounterCellClauses, Nat.ne_of_gt rowPositive] using
+      blockSatisfied row row rowBound columnBound
+  · intro row column rowPositive rowBound columnPositive columnBeforeRow
+      columnInsideWidth
+    have columnBound : column < min (row + 1) width :=
+      (Nat.lt_min).2 ⟨by omega, columnInsideWidth⟩
+    have rowNotZero : row ≠ 0 := Nat.ne_of_gt rowPositive
+    have columnNotZero : column ≠ 0 := Nat.ne_of_gt columnPositive
+    have columnNotRow : column ≠ row := by omega
+    simpa [sequentialCounterCellClauses, rowNotZero, columnNotZero,
+      columnNotRow] using blockSatisfied row column rowBound columnBound
+
+/-- A mother CNF that contains the complete row-major counter stream supplies
+the same local-cell semantics. This is the subformula boundary used by the
+generated order-45 DIMACS formulas. -/
+theorem satisfiesSequentialCounterSubformula_cells {variables : Nat}
+    (assignment : CnfAssignment variables)
+    (formula : CnfFormula variables)
+    (input : Nat → CnfLiteral variables)
+    (state : Nat → Nat → CnfLiteral variables) (rows width : Nat)
+    (rowsPositive : 0 < rows) (widthPositive : 0 < width)
+    (satisfied : SatisfiesCnfFormula assignment formula)
+    (included : ∀ clause ∈ sequentialCounterCellFormula input state rows width,
+      clause ∈ formula) :
+    SatisfiesSequentialCounterCells assignment input state rows width := by
+  apply satisfiesSequentialCounterCellFormula_cells assignment input state
+    rows width rowsPositive widthPositive
+  exact SatisfiesCnfFormula.of_subset assignment formula
+    (sequentialCounterCellFormula input state rows width) satisfied included
+
 theorem satisfiesSequentialCounterCells_exact {variables : Nat}
     (assignment : CnfAssignment variables)
     (input : Nat → CnfLiteral variables)
@@ -240,6 +331,8 @@ theorem satisfiesSequentialCounterCells_outputs_exact {variables : Nat}
 #print axioms counterInteriorClauses_iff
 #print axioms trueCountPrefix_le
 #print axioms counterRecurrence_exact
+#print axioms satisfiesSequentialCounterCellFormula_cells
+#print axioms satisfiesSequentialCounterSubformula_cells
 #print axioms satisfiesSequentialCounterCells_exact
 #print axioms satisfiesSequentialCounterCells_outputs_exact
 

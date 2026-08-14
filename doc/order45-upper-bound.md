@@ -1,6 +1,6 @@
 # Order-45 upper-bound program
 
-Updated: 2026-08-14
+Updated: 2026-08-15
 
 ## Current status
 
@@ -386,9 +386,12 @@ DIMACS and proves coverage under an explicit exact-counter semantic contract.
 sequential-counter cell encodings sound and lifts them through a finite
 row/width induction to that exact-counter contract. The d20/d21/d22 bridge is
 instantiated with the actual H/J input sizes and widths. The remaining work at
-this layer is to bind the generated DIMACS variable IDs and prove its counter,
-bound, and sum clauses supply the formal hypotheses; it is not hidden inside
-a computational claim.
+this layer is to bind the generated DIMACS variable IDs and prove its bound and
+sum clauses supply the formal hypotheses; it is not hidden inside a
+computational claim. The counter side is now phrased as an exact row-major CNF
+substream: satisfaction of a mother containing that substream supplies every
+cell recurrence, and the three formula-relative cover theorems consume those
+two substream inclusions directly.
 
 Colour swap reduces the last raw count to 483,900,495 unordered pairs. These
 numbers are pairs of unlabelled local records before testing a single cross
