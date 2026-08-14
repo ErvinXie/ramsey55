@@ -1,0 +1,40 @@
+{
+  "cases": [
+    {"cube_index": 25, "cubes_sha256": "4b0cdfc27cb1bf5cfb165f232a3994246deabd02e3979059be0367be71b4c3f5", "degree": 20, "formula_sha256": "136f2db49207d56d5089b41d1a125b20933b53519a60eec78968a5f1d66cbfb1"},
+    {"cube_index": 26, "cubes_sha256": "63561ce3899ff18cf914e3a09a6db309e5adc8abd20e10f38a8bc2890202165b", "degree": 21, "formula_sha256": "11a9d318a16f5cfcf7893a5414ef85da069459beec1d8c26fc8a99bcc6537745"},
+    {"cube_index": 15, "cubes_sha256": "2cc7403fec6dfec99072c9e343994d7d44fda425c05b26c3b037408e1647016d", "degree": 22, "formula_sha256": "cb521e04f89ae315a4e9c1ba7da7ca5945b679ba5fa94138f2946e1a66752420"}
+  ],
+  "claim": "120-second UNKNOWN search telemetry; not an UNSAT certificate",
+  "configurations": [
+    {
+      "name": "primary-10k",
+      "parameters": {"conflicts": 10000, "maximum_conflicts": 128000, "maximum_lookahead_seconds": 1.0, "maximum_primary_split_variable": 990, "maximum_solve_seconds": 5.0},
+      "results": [
+        {"closed": 3, "degree": 20, "maximum_depth": 15, "open": 14, "reported_seconds": 109.365176, "rows": 19, "splits": 16, "tsv_sha256": "aac4edfe6cf4b1ec15da6f4ae01b16bd57cce4c9ab60eccea199f983090146c4"},
+        {"closed": 1, "degree": 21, "maximum_depth": 12, "open": 13, "reported_seconds": 111.560676, "rows": 14, "splits": 13, "tsv_sha256": "7daad3d5c96455d1d59355b6c6f671aeeedc1809aebd2aed94552889657803d7"},
+        {"closed": 1, "degree": 22, "maximum_depth": 14, "open": 15, "reported_seconds": 115.632739, "rows": 16, "splits": 15, "tsv_sha256": "b3cec0e96a7d31175e17eb7018961c9098305ae1b33414bf52bfbcc42b20b078"}
+      ]
+    },
+    {
+      "name": "auxiliary-10k",
+      "parameters": {"conflicts": 10000, "maximum_conflicts": 128000, "maximum_lookahead_seconds": 1.0, "maximum_primary_split_variable": 0, "maximum_solve_seconds": 5.0},
+      "results": [
+        {"closed": 21, "degree": 20, "maximum_depth": 22, "open": 2, "reported_seconds": 108.865898, "rows": 43, "splits": 22, "tsv_sha256": "01a0997fcae8c385372440e6ed998bb71744da0d0dd9e78833f6c6748ba0e203"},
+        {"closed": 13, "degree": 21, "maximum_depth": 13, "open": 1, "reported_seconds": 110.153052, "rows": 26, "splits": 13, "tsv_sha256": "605ecef406d10a43707acbb1a78eb716d19d2204854969eb6e2dfdab009eeb11"},
+        {"closed": 12, "degree": 22, "maximum_depth": 12, "open": 2, "reported_seconds": 114.45992, "rows": 25, "splits": 13, "tsv_sha256": "db809701f903697eb49dc200332c56f497fd109165000490c9d6f666c598bdcf"}
+      ]
+    },
+    {
+      "name": "auxiliary-1k",
+      "parameters": {"conflicts": 1000, "maximum_conflicts": 128000, "maximum_lookahead_seconds": 0.5, "maximum_primary_split_variable": 0, "maximum_solve_seconds": 2.0},
+      "results": [
+        {"closed": 104, "degree": 20, "maximum_depth": 73, "open": 4, "reported_seconds": 115.953906, "rows": 211, "splits": 107, "tsv_sha256": "137790ac5447cdca1bcb6ef4da282d8f7fb296183208fe381e043387a1bdaa0d"},
+        {"closed": 86, "degree": 21, "maximum_depth": 42, "open": 4, "reported_seconds": 116.132635, "rows": 175, "splits": 89, "tsv_sha256": "b91a1b7981d298884cae828247c5c9012b5d27907cf21d17817a49a30a401c3d"},
+        {"closed": 122, "degree": 22, "maximum_depth": 120, "open": 7, "reported_seconds": 116.505862, "rows": 250, "splits": 128, "tsv_sha256": "203c1b5bc35f9c06b77307c7f11dc107d9ef50d6d9bdec3720229527226bb07d"}
+      ]
+    }
+  ],
+  "runner_sha256": "ab0cf870e64a81deab8061737df379f7c4340e0ce7f10e896dd180b3403bc31e",
+  "schema": "ramsey55.order45-strata-leaf-pilot.v1",
+  "timeout_seconds": 120
+}

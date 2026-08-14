@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 import tempfile
 import unittest
@@ -11,6 +12,24 @@ from tools.audit_order45_strata_leaf_proofs import (
 
 
 class Order45StrataLeafProofAuditTests(unittest.TestCase):
+    def test_committed_pilot_is_explicit_unknown_telemetry(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        document = json.loads(
+            (root / "data/order45-strata-leaf-pilot.json").read_text()
+        )
+        self.assertEqual(document["schema"], "ramsey55.order45-strata-leaf-pilot.v1")
+        self.assertIn("not an UNSAT certificate", document["claim"])
+        self.assertEqual(document["timeout_seconds"], 120)
+        self.assertEqual(len(document["cases"]), 3)
+        self.assertEqual(len(document["configurations"]), 3)
+        for configuration in document["configurations"]:
+            self.assertEqual(len(configuration["results"]), 3)
+            for result in configuration["results"]:
+                self.assertEqual(
+                    result["open"], 1 + result["splits"] - result["closed"]
+                )
+                self.assertGreater(result["open"], 0)
+
     def test_reads_hash_bound_cubes(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "cubes.txt"
