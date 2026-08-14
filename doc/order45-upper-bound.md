@@ -382,6 +382,13 @@ flushed prefix: the selective checkpoint continuation remains live from the
 complete 30-cube residual cover. Future launches use the explicit-stack runner
 and therefore do not inherit this host-language depth failure.
 
+The residual cover is independently partitioned for parallel proof production:
+one current hard cube, the other two deep snapshot cubes, and three ordered
+nine-cube blocks covering the 27 untouched roots. `tools/audit_icnf_partition.py`
+requires byte-hashed ordered concatenation to equal the original 30-cube ICNF;
+reordering, omission, or duplication is fatal. This permits separately checked
+proof fragments without weakening the global cover obligation.
+
 The d20 comparison also rejects an otherwise tempting heuristic change.
 Selective freezing with unrestricted lookahead left 1 and 2 branches on the
 two hard cubes after 120 seconds, while forcing all dynamic choices into the
