@@ -77,6 +77,16 @@ def main() -> int:
     parser.add_argument("--first-round", type=int, default=0)
     parser.add_argument("--max-rounds", type=int, default=100)
     parser.add_argument("--solver-argument", action="append", default=[])
+    parser.add_argument(
+        "--fallback-solver",
+        type=Path,
+        help=(
+            "optional second solver for sibling pairs that remain jointly "
+            "UNKNOWN after the normal staged retry"
+        ),
+    )
+    parser.add_argument("--fallback-seconds", type=float, default=0.0)
+    parser.add_argument("--fallback-solver-argument", action="append", default=[])
     parser.add_argument("--compact-proof", action="store_true")
     parser.add_argument(
         "--scratch-directory",
@@ -89,10 +99,19 @@ def main() -> int:
         or arguments.seconds <= 0
         or arguments.quick_seconds < 0
         or arguments.quick_seconds >= arguments.seconds
+        or arguments.fallback_seconds < 0
         or arguments.first_round < 0
         or arguments.max_rounds <= 0
     ):
         parser.error("invalid jobs, seconds, quick-seconds, or round bound")
+    if arguments.fallback_solver is None:
+        if arguments.fallback_seconds or arguments.fallback_solver_argument:
+            parser.error("fallback options require --fallback-solver")
+    elif arguments.fallback_seconds <= 0 or arguments.quick_seconds <= 0:
+        parser.error(
+            "--fallback-solver requires positive --fallback-seconds and "
+            "--quick-seconds"
+        )
     for path in (
         arguments.formula,
         arguments.seed_manifest,
@@ -102,6 +121,11 @@ def main() -> int:
     ):
         if not path.is_file():
             parser.error(f"required file does not exist: {path}")
+    if (
+        arguments.fallback_solver is not None
+        and not arguments.fallback_solver.is_file()
+    ):
+        parser.error(f"required file does not exist: {arguments.fallback_solver}")
     if (
         arguments.scratch_directory is not None
         and not arguments.scratch_directory.is_dir()
@@ -156,6 +180,16 @@ def main() -> int:
         retry_log = prefix.with_name(prefix.name + "-retry-proofs.log")
         retry_audit_log = prefix.with_name(prefix.name + "-retry-proofs-audit.log")
         compose_log = prefix.with_name(prefix.name + "-compose.log")
+        primary_directory = prefix.with_name(prefix.name + "-primary-proofs")
+        fallback_cubes_path = prefix.with_name(prefix.name + "-fallback.icnf")
+        fallback_directory = prefix.with_name(prefix.name + "-fallback-proofs")
+        fallback_log = prefix.with_name(prefix.name + "-fallback-proofs.log")
+        fallback_audit_log = prefix.with_name(
+            prefix.name + "-fallback-proofs-audit.log"
+        )
+        fallback_compose_log = prefix.with_name(
+            prefix.name + "-fallback-compose.log"
+        )
         for path in (
             parents,
             frontier_manifest,
@@ -173,6 +207,12 @@ def main() -> int:
             retry_log,
             retry_audit_log,
             compose_log,
+            primary_directory,
+            fallback_cubes_path,
+            fallback_directory,
+            fallback_log,
+            fallback_audit_log,
+            fallback_compose_log,
         ):
             if path.exists():
                 raise RuntimeError(f"refusing to overwrite round artifact {path}")
@@ -296,6 +336,11 @@ def main() -> int:
             quick_results = quick_document["results"]
             child_cubes = [row["cube"] for row in quick_results]
             retry_cubes = double_unknown_cubes(child_cubes, quick_results)
+            staged_directory = (
+                primary_directory
+                if arguments.fallback_solver is not None
+                else proof_directory
+            )
             if retry_cubes:
                 write_icnf(retry_cubes_path, retry_cubes)
                 retry_command = [
@@ -348,14 +393,92 @@ def main() -> int:
                         str(tools / "compose_materialized_cube_proofs.py"),
                         str(current_manifest),
                         str(retry_manifest),
-                        str(proof_directory),
+                        str(staged_directory),
                     ],
                     compose_log,
                 )
                 if compose_status:
                     raise RuntimeError(f"proof composition failed at round {round_number}")
             else:
-                quick_directory.replace(proof_directory)
+                quick_directory.replace(staged_directory)
+            current_manifest = staged_directory / "manifest.json"
+            if arguments.fallback_solver is not None:
+                staged_document = json.loads(
+                    current_manifest.read_text(encoding="utf-8")
+                )
+                staged_results = staged_document["results"]
+                fallback_cubes = double_unknown_cubes(child_cubes, staged_results)
+                if fallback_cubes:
+                    write_icnf(fallback_cubes_path, fallback_cubes)
+                    fallback_command = [
+                        sys.executable,
+                        str(tools / "prove_materialized_cubes.py"),
+                        str(arguments.formula),
+                        str(fallback_cubes_path),
+                        str(fallback_directory),
+                        "--solver",
+                        str(arguments.fallback_solver),
+                        "--checker",
+                        str(arguments.checker),
+                        "--jobs",
+                        str(min(arguments.jobs, len(fallback_cubes))),
+                        "--seconds",
+                        str(arguments.fallback_seconds),
+                    ]
+                    for option in arguments.fallback_solver_argument:
+                        fallback_command.append(f"--solver-argument={option}")
+                    if arguments.compact_proof:
+                        fallback_command.append("--compact-proof")
+                    if arguments.scratch_directory is not None:
+                        fallback_command.extend(
+                            (
+                                "--scratch-directory",
+                                str(arguments.scratch_directory),
+                            )
+                        )
+                    fallback_status = run_logged(fallback_command, fallback_log)
+                    if fallback_status == 10:
+                        raise RuntimeError(
+                            f"fallback solver found SAT at round {round_number}"
+                        )
+                    if fallback_status not in (0, 20):
+                        raise RuntimeError(
+                            f"fallback proof producer failed at round {round_number}"
+                        )
+                    fallback_manifest = fallback_directory / "manifest.json"
+                    fallback_audit_command = [
+                        sys.executable,
+                        str(tools / "audit_materialized_cube_proofs.py"),
+                        str(fallback_manifest),
+                        "--checker",
+                        str(arguments.checker),
+                    ]
+                    if fallback_status == 0:
+                        fallback_audit_command.append("--allow-partial")
+                    fallback_audit_command.extend(("--jobs", str(arguments.jobs)))
+                    fallback_audit_status = run_logged(
+                        fallback_audit_command, fallback_audit_log
+                    )
+                    if fallback_audit_status:
+                        raise RuntimeError(
+                            f"fallback proof audit failed at round {round_number}"
+                        )
+                    fallback_compose_status = run_logged(
+                        [
+                            sys.executable,
+                            str(tools / "compose_materialized_cube_proofs.py"),
+                            str(current_manifest),
+                            str(fallback_manifest),
+                            str(proof_directory),
+                        ],
+                        fallback_compose_log,
+                    )
+                    if fallback_compose_status:
+                        raise RuntimeError(
+                            f"fallback proof composition failed at round {round_number}"
+                        )
+                else:
+                    primary_directory.replace(proof_directory)
             current_manifest = proof_directory / "manifest.json"
             final_document = json.loads(current_manifest.read_text(encoding="utf-8"))
             proof_status = 20 if final_document["summary"]["complete_unsat"] else 0

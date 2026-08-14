@@ -458,6 +458,18 @@ independently replayed. A real two-cube ARM smoke combined one short-stage
 proof with one retry proof and the final independent `drat-trim` replay
 verified both leaves.
 
+The staged chain also has an optional cross-solver fallback. After the normal
+quick and long passes are composed, `--fallback-solver` receives only sibling
+pairs that are still jointly UNKNOWN; its independently audited results are
+composed into the canonical `rXXXX-proofs` manifest, including per-result
+solver/hash overrides. A real one-round J297775 smoke forced all six children
+through this path with tiny budgets, then the whole-chain auditor reconstructed
+the three complementary parent splits and accepted the final six-row manifest.
+The audit SHA-256 is
+`5b205021244a03e71af5c3387ea9317e38f9191ed81361e11925dada661715b2`.
+The option is disabled by default, so earlier chain invocations and artifacts
+retain their exact behavior.
+
 Proof storage can be reduced without weakening replay. With
 `--compact-proof`, the producer asks `drat-trim -C -l` for a binary core,
 retains it only when it is smaller than the solver proof, and immediately
