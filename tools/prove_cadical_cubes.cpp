@@ -7,6 +7,7 @@
 #include <functional>
 #include <iomanip>
 #include <iostream>
+#include <numeric>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -71,13 +72,39 @@ std::vector<std::vector<int>> readCubes(const std::string& path) {
   return cubes;
 }
 
+std::vector<int> rankPrimaryVariables(const std::string& path, int limit) {
+  std::ifstream input(path);
+  if (!input) throw std::runtime_error("cannot open " + path);
+  std::vector<std::size_t> occurrences(limit + 1);
+  std::string line;
+  while (std::getline(input, line)) {
+    if (line.empty() || line[0] == 'c' || line[0] == 'p') continue;
+    std::istringstream fields(line);
+    int literal = 0;
+    while (fields >> literal && literal) {
+      const int variable = std::abs(literal);
+      if (variable <= limit) ++occurrences[variable];
+    }
+  }
+  std::vector<int> variables(limit);
+  std::iota(variables.begin(), variables.end(), 1);
+  std::sort(variables.begin(), variables.end(), [&](int left, int right) {
+    if (occurrences[left] != occurrences[right]) {
+      return occurrences[left] > occurrences[right];
+    }
+    return left < right;
+  });
+  return variables;
+}
+
 }  // namespace
 
 int main(int argc, char** argv) try {
-  if (argc < 6 || argc > 8) {
+  if (argc < 6 || argc > 9) {
     std::cerr << "usage: prove_cadical_cubes input.cnf cubes proof.drat"
                  " results.tsv conflicts [maximum-conflicts]"
-                 " [maximum-lookahead-seconds]\n";
+                 " [maximum-lookahead-seconds]"
+                 " [maximum-primary-split-variable]\n";
     return 2;
   }
   const auto cubes = readCubes(argv[2]);
@@ -93,6 +120,11 @@ int main(int argc, char** argv) try {
   if (maximumLookaheadSeconds < 0.0) {
     throw std::runtime_error("negative maximum lookahead time");
   }
+  const int maximumPrimarySplitVariable =
+      argc == 9 ? std::stoi(argv[8]) : 0;
+  if (maximumPrimarySplitVariable < 0) {
+    throw std::runtime_error("negative maximum primary split variable");
+  }
   DeadlineTerminator terminator;
   CaDiCaL::Solver solver;
   if (maximumLookaheadSeconds > 0.0) {
@@ -106,6 +138,11 @@ int main(int argc, char** argv) try {
   if (const char* error = solver.read_dimacs(argv[1], variables, 1)) {
     throw std::runtime_error(error);
   }
+  if (maximumPrimarySplitVariable > variables) {
+    throw std::runtime_error("primary split variable is outside the CNF range");
+  }
+  const auto primaryVariables =
+      rankPrimaryVariables(argv[1], maximumPrimarySplitVariable);
   for (const auto& cube : cubes) {
     for (const int literal : cube) {
       if (literal == 0 || std::abs(literal) > variables) {
@@ -177,7 +214,7 @@ int main(int argc, char** argv) try {
       terminator.start(maximumLookaheadSeconds);
     }
     const auto lookaheadStart = Clock::now();
-    const int split = solver.lookahead();
+    int split = solver.lookahead();
     terminator.stop();
     const double lookaheadSeconds = std::chrono::duration<double>(
         Clock::now() - lookaheadStart).count();
@@ -199,6 +236,16 @@ int main(int argc, char** argv) try {
              << seconds + lookaheadSeconds << '\n';
       globallyUnsat |= core == 0;
       return 20;
+    }
+    if (maximumPrimarySplitVariable &&
+        std::abs(split) > maximumPrimarySplitVariable) {
+      const auto unused = std::find_if(
+          primaryVariables.begin(), primaryVariables.end(), [&](int variable) {
+            return std::none_of(cube.begin(), cube.end(), [&](int literal) {
+              return std::abs(literal) == variable;
+            });
+          });
+      if (unused != primaryVariables.end()) split = *unused;
     }
     if (split == 0 || std::abs(split) > variables) {
       throw std::runtime_error("lookahead did not return a split literal");

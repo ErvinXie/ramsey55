@@ -35,6 +35,8 @@ class FixedPairProofAuditTests(unittest.TestCase):
             )
             report = audit_results(results, 2)
         self.assertEqual(report["attempts"], 4)
+        self.assertEqual(report["covered_roots"], 2)
+        self.assertEqual(report["global_unsat_cores"], 0)
         self.assertEqual(report["splits"], 1)
         self.assertEqual(report["unsat_leaves"], 3)
         self.assertEqual(report["maximum_extra_depth"], 1)
@@ -53,6 +55,18 @@ class FixedPairProofAuditTests(unittest.TestCase):
             )
             with self.assertRaisesRegex(ValueError, "unbalanced"):
                 audit_results(results, 1)
+
+    def test_global_unsat_core_allows_early_stop(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            results = Path(directory) / "results.tsv"
+            results.write_text(
+                "root\tattempt\tdepth\tlimit\tstatus\tcore\tsplit\tseconds\n"
+                "0\t0\t0\t10\t20\t0\t0\t0.1\n",
+                encoding="ascii",
+            )
+            report = audit_results(results, 2)
+        self.assertEqual(report["covered_roots"], 1)
+        self.assertEqual(report["global_unsat_cores"], 1)
 
 
 if __name__ == "__main__":

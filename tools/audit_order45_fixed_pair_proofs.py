@@ -76,6 +76,7 @@ def cube_count(path: Path) -> int:
 
 def audit_results(path: Path, roots: int) -> dict[str, int | float]:
     attempts = splits = closed = 0
+    global_unsat_cores = 0
     minimum_limit: int | None = None
     maximum_depth = maximum_limit = 0
     total_seconds = 0.0
@@ -105,6 +106,7 @@ def audit_results(path: Path, roots: int) -> dict[str, int | float]:
                 if core < 0 or split != 0:
                     raise ValueError(f"invalid UNSAT row in {path}")
                 closed += 1
+                global_unsat_cores += core == 0
             else:
                 raise ValueError(f"non-UNSAT terminal status {status} in {path}")
             counts = per_root.setdefault(root, [0, 0])
@@ -116,15 +118,20 @@ def audit_results(path: Path, roots: int) -> dict[str, int | float]:
             )
             maximum_limit = max(maximum_limit, limit)
             total_seconds += seconds
-    if set(per_root) != set(range(roots)):
+    covered_roots = len(per_root)
+    if set(per_root) != set(range(covered_roots)):
+        raise ValueError(f"result file {path} does not cover a root prefix")
+    if covered_roots != roots and not global_unsat_cores:
         raise ValueError(f"result file {path} does not cover all {roots} roots")
     for root, (root_splits, root_closed) in per_root.items():
         if root_closed != root_splits + 1:
             raise ValueError(f"unbalanced binary tree for root {root} in {path}")
-    if closed != roots + splits:
+    if closed != covered_roots + splits:
         raise ValueError(f"global binary tree balance failed in {path}")
     return {
         "attempts": attempts,
+        "covered_roots": covered_roots,
+        "global_unsat_cores": global_unsat_cores,
         "splits": splits,
         "unsat_leaves": closed,
         "maximum_extra_depth": maximum_depth,
@@ -177,6 +184,7 @@ def main() -> None:
     parser.add_argument("--conflicts", type=int)
     parser.add_argument("--maximum-conflicts", type=int)
     parser.add_argument("--maximum-lookahead-seconds", type=float)
+    parser.add_argument("--maximum-primary-split-variable", type=int, default=0)
     parser.add_argument(
         "--output",
         type=Path,
@@ -199,6 +207,8 @@ def main() -> None:
             or arguments.maximum_lookahead_seconds < 0
         ):
             parser.error("invalid proof-runner parameters")
+    if arguments.maximum_primary_split_variable < 0:
+        parser.error("invalid maximum primary split variable")
 
     formula_manifest = json.loads(arguments.formula_manifest.read_text())
     if formula_manifest.get("schema") != "ramsey55.order45-fixed-pairs.v1":
@@ -279,6 +289,9 @@ def main() -> None:
                     "maximum_conflicts": arguments.maximum_conflicts,
                     "maximum_lookahead_seconds": (
                         arguments.maximum_lookahead_seconds
+                    ),
+                    "maximum_primary_split_variable": (
+                        arguments.maximum_primary_split_variable
                     ),
                 }
                 if arguments.conflicts is not None

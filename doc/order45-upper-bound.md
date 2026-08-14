@@ -236,6 +236,10 @@ arguments. The latter is important because CaDiCaL's probing lookahead has no
 native propagation limit; on expiry its supported `Terminator` callback makes
 lookahead return the best occurrence-ranked split found so far. This changes
 only the search heuristic, not the emitted proof or its independent replay.
+An additional optional primary-variable bound replaces auxiliary-variable
+lookahead choices by the most frequent unused variable within the bound. For
+the fixed H/J encoding, variables 1 through 480 are exactly the H--J cross
+edges, so this mode directs difficult tails back toward structural choices.
 `tools/audit_order45_fixed_pair_proofs.py` checks formula and cube hashes,
 complete balanced result forests, the recorded runner parameters, and each
 DRAT replay before writing a compact artifact manifest.
