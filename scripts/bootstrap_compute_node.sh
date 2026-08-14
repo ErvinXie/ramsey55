@@ -128,6 +128,8 @@ ln -sfn "$labelg_path" "$bin_root/labelg"
     tools/solve_cadical_cubes.cpp \
     "$source_root/cadical/build/libcadical.a" \
     -pthread -o build/solve_cadical_cubes
+  sh scripts/build_refine_cadical_cubes.sh
+  sh scripts/build_prove_cadical_cubes.sh
   c++ -std=c++20 -O3 -DNDEBUG -Wall -Wextra -pedantic \
     -I"$source_root/cadical/src" \
     tools/scan_degree18_catalog.cpp \
@@ -139,6 +141,7 @@ ln -sfn "$labelg_path" "$bin_root/labelg"
   c++ -std=c++20 -O3 -DNDEBUG -Wall -Wextra -pedantic \
     tools/generate_degree18_pair_cnf.cpp \
     -o build/generate_degree18_pair_cnf
+  sh scripts/build_order45_fixed_pair_generator.sh
   c++ -std=c++20 -O3 -DNDEBUG -Wall -Wextra -pedantic \
     tools/count_degree18_cones.cpp \
     -o build/count_degree18_cones

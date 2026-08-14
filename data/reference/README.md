@@ -145,6 +145,19 @@ particular, the known exact bound `E(4,5,18)=85` makes the 85-edge file the
 complete A-side catalog when a 128-edge 24-vertex H-side has nonpositive
 excess contribution.
 
+## r4520.100.g6
+
+- Source: the `r45extreme.tar.gz` archive linked above.
+- Meaning: the unique unlabelled Ramsey(4,5,20) graph having 100 edges.
+- Size: one graph6 record. This is the complete 100-edge layer, not a sample.
+- SHA-256:
+  `d1d1ff46bd5d153b51d7da094f6bf459bceaefda65eb4941ead0bb9b09c897cd`.
+- Use: together with the two 132-edge records in the complete
+  `r45_24.g6` catalog, it defines the top `d=20` excess stratum used by the
+  order-45 fixed-pair generator and independent verifier.
+- Verify the copied record against the fetched archive with
+  `cmp data/reference/r4520.100.g6 build/r45extreme-data/r45extreme/r4520.100.g6`.
+
 ## k43_near_miss_1.matrix
 
 - Source:

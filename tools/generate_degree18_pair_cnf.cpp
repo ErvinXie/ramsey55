@@ -13,7 +13,11 @@
 
 namespace {
 
+#ifdef RAMSEY55_ORDER45_FIXED_PAIR
+constexpr int aSize = 20;
+#else
 constexpr int aSize = 18;
+#endif
 constexpr int bSize = 24;
 constexpr int order = aSize + bSize;
 using Clause = std::vector<int>;
@@ -331,9 +335,15 @@ int main(int argc, char** argv) try {
     return 0;
   }
   if (argc < 6) {
+#ifdef RAMSEY55_ORDER45_FIXED_PAIR
+    std::cerr << "usage: generate_order45_fixed_pair_cnf r45_24.g6 J-index"
+                 " r4520.100.g6 H-index output.cnf [--no-degree-bounds]"
+                 " [--no-symmetry]\n";
+#else
     std::cerr << "usage: generate_degree18_pair_cnf r45_24.g6 H-index"
                  " r45_18.g6 A-index output.cnf [--no-degree-bounds]"
                  " [--no-symmetry]\n";
+#endif
     return 2;
   }
   const std::size_t hIndex = std::stoull(argv[2]);
@@ -450,9 +460,16 @@ int main(int argc, char** argv) try {
     for (int vertex = 0; vertex < aSize; ++vertex) {
       const int fixedDegree = std::popcount(aGraph.adjacency[vertex]);
       std::vector<int> incident(cross[vertex].begin(), cross[vertex].end());
+#ifdef RAMSEY55_ORDER45_FIXED_PAIR
+      // The omitted distinguished vertex is adjacent to every A vertex.
+      add_cardinality_range(clauses, variables, incident,
+                            std::max(0, 19 - fixedDegree),
+                            std::min(bSize, 23 - fixedDegree));
+#else
       add_cardinality_range(clauses, variables, incident,
                             std::max(0, 17 - fixedDegree),
                             std::min(bSize, 23 - fixedDegree));
+#endif
     }
     for (int vertex = 0; vertex < bSize; ++vertex) {
       const int fixedDegree =
@@ -461,9 +478,16 @@ int main(int argc, char** argv) try {
       for (int other = 0; other < aSize; ++other) {
         incident.push_back(cross[other][vertex]);
       }
+#ifdef RAMSEY55_ORDER45_FIXED_PAIR
+      // The omitted distinguished vertex is nonadjacent to every B vertex.
+      add_cardinality_range(clauses, variables, incident,
+                            std::max(0, 20 - fixedDegree),
+                            std::min(aSize, 24 - fixedDegree));
+#else
       add_cardinality_range(clauses, variables, incident,
                             std::max(0, 18 - fixedDegree),
                             std::min(aSize, 24 - fixedDegree));
+#endif
     }
   }
   const std::size_t degreeBoundClauses = clauses.size() - ramseyClauses;
@@ -519,19 +543,33 @@ int main(int argc, char** argv) try {
 
   std::ofstream output(argv[5]);
   if (!output) throw std::runtime_error("cannot create output CNF");
+#ifdef RAMSEY55_ORDER45_FIXED_PAIR
+  output << "c order-45 fixed pair J=" << hIndex << " H=" << aIndex << '\n';
+#else
   output << "c degree-18 fixed pair H=" << hIndex << " A=" << aIndex << '\n';
+#endif
   output << "p cnf " << variables << ' ' << clauses.size() << '\n';
   for (const auto& clause : clauses) {
     for (const int literal : clause) output << literal << ' ';
     output << "0\n";
   }
+#ifdef RAMSEY55_ORDER45_FIXED_PAIR
+  std::cout << "J\t" << hIndex << '\n';
+  std::cout << "H\t" << aIndex << '\n';
+#else
   std::cout << "H\t" << hIndex << '\n';
   std::cout << "A\t" << aIndex << '\n';
+#endif
   std::cout << "variables\t" << variables << '\n';
   std::cout << "ramsey_clauses\t" << ramseyClauses << '\n';
   std::cout << "degree_bound_clauses\t" << degreeBoundClauses << '\n';
+#ifdef RAMSEY55_ORDER45_FIXED_PAIR
+  std::cout << "H_automorphisms\t" << aAutomorphisms << '\n';
+  std::cout << "J_automorphisms\t" << hAutomorphisms << '\n';
+#else
   std::cout << "A_automorphisms\t" << aAutomorphisms << '\n';
   std::cout << "H_automorphisms\t" << hAutomorphisms << '\n';
+#endif
   std::cout << "symmetry_clauses\t" << symmetryClauses << '\n';
   return 0;
 } catch (const std::exception& error) {

@@ -1,0 +1,13 @@
+{
+  "catalog": "data/reference/r4520.100.g6",
+  "catalog_sha256": "d1d1ff46bd5d153b51d7da094f6bf459bceaefda65eb4941ead0bb9b09c897cd",
+  "clauses": 2688807,
+  "degree": 20,
+  "edges_h": 100,
+  "graph6": "SznZXmZR\\HxJSjYEbWyDZ`XsuI]``lAb[",
+  "minimum_edges_j": 126,
+  "path": "order45-fixed-h100.cnf",
+  "schema": "ramsey55.order45-fixed-h100.v1",
+  "sha256": "6496cd1f444ea7da882d57717f56740114ba382d47cd915ff38df8121aaa3734",
+  "variables": 63091
+}

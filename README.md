@@ -100,3 +100,22 @@ Generate and independently verify the exact local-edge cube strata with:
     PYTHONPATH=src:tools python3 tools/verify_order45_edge_strata.py \
       build/order45-strata/manifest.json --cnf-dir build/order45-strata
     sh scripts/build_cadical_assumption_scan.sh
+
+Reproduce the unique-H100 reduction and the complete two-formula H100/J132
+top stratum with:
+
+    PYTHONPATH=src:tools python3 tools/generate_order45_fixed_h100.py
+    PYTHONPATH=src:tools python3 tools/verify_order45_fixed_h100.py \
+      data/order45-fixed-h100-manifest.json \
+      --cnf build/order45-fixed-h100.cnf
+    sh scripts/build_order45_fixed_pair_generator.sh
+    PYTHONPATH=src:tools python3 \
+      tools/generate_order45_fixed_pair_benchmarks.py
+    PYTHONPATH=src:tools python3 \
+      tools/verify_order45_fixed_pair_benchmarks.py \
+      data/order45-fixed-pair-manifest.json \
+      --cnf-dir build/order45-fixed-pairs
+
+These fixed-pair formulas cover only the exact local edge layer
+`e(H)=100, e(J)=132`. They are a rigorously checked subproblem of the full
+order-45 excess cover, not an upper-bound proof by themselves.

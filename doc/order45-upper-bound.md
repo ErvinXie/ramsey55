@@ -183,6 +183,57 @@ cube all 109 cases remained UNKNOWN; aggregate d20/d21/d22 solve time was
 eventual UNSAT cube must be rerun independently with its four units and a
 checked proof before it can enter the coverage certificate.
 
+### Unique H100 and the top H100/J132 stratum
+
+The most extreme available d20 layer has a single unlabelled
+(R(4,5,20)) graph with 100 edges. Fixing that graph while retaining every
+24-vertex J with at least 126 edges gives a 63,091-variable,
+2,688,807-clause formula. Its SHA-256 is
+`6496cd1f444ea7da882d57717f56740114ba382d47cd915ff38df8121aaa3734`.
+The generator and a separately implemented clause-by-clause verifier are
+`tools/generate_order45_fixed_h100.py` and
+`tools/verify_order45_fixed_h100.py`; their stable input and manifest are
+`data/reference/r4520.100.g6` and
+`data/order45-fixed-h100-manifest.json`.
+
+At the very top of this range, the complete 352,366-record 24-vertex catalog
+contains exactly two 132-edge records, at indices 297775 and 326185. Once H
+and J are fixed, the apex can be omitted and only the 480 H--J cross edges
+remain primary. The two no-symmetry formulas have the following exact audit:
+
+| J index | variables | clauses | SHA-256 |
+|---:|---:|---:|---|
+| 297775 | 9,746 | 114,968 | `61a21ab44f1d10708f645ebdf70c1b6c4c3544c4548dfa36211a4f89271a4625` |
+| 326185 | 9,746 | 115,088 | `e783d6b1c2f01832151938a6ec88e8e3708705d0a1af8bfd8851522a1dac78d6` |
+
+`tools/generate_degree18_pair_cnf.cpp`, compiled with
+`RAMSEY55_ORDER45_FIXED_PAIR`, emits the reduced formulas.
+`tools/verify_order45_fixed_pair_cnf.py` independently reimplements short
+graph6 decoding, the reduced five-set clauses, every degree counter,
+automorphism enumeration, and the optional lex encoding. The committed
+`data/order45-fixed-pair-manifest.json` deliberately selects the formulas
+without symmetry breaking: an UNSAT DRAT for either file then proves the
+entire labelled fixed graph-pair problem directly, without trusting a
+canonical-labelling argument. The H automorphism group has order 4; the two J
+groups have orders 24 and 48.
+
+Kissat, CaDiCaL, and Minisat all left the monolithic formulas UNKNOWN after
+600 seconds. CaDiCaL's native depth-14 cuber instead produced exactly 16,384
+cubes per formula. A 0.1-second parallel pass closed 16,361 and 16,364 of
+them, followed by 21/23 and 17/20 closures at 10 seconds, and another 1/2 and
+2/3 at 120 seconds. No pass found SAT. These numbers are search telemetry,
+not a certificate: workers reused learned clauses and a few tail cubes needed
+further recursive splitting.
+
+`tools/prove_cadical_cubes.cpp` is the proof-producing path. It traces one
+binary DRAT stream, solves each cube under assumptions, calls CaDiCaL's
+`conclude()` to derive the negated failed core, and recursively applies a
+lookahead split when a conflict budget expires. A final assumption-free
+UNSAT call must derive the empty clause. The complete mechanism is exercised
+on `tests/data/cube-proof-smoke.*` and independently accepted by `drat-trim`.
+The large two-formula proof and replay are still pending at this checkpoint;
+therefore even this top local stratum is not yet claimed closed.
+
 Colour swap reduces the last raw count to 483,900,495 unordered pairs. These
 numbers are pairs of unlabelled local records before testing a single cross
 edge or overlap, so they substantially understate the cost of naive gluing.
