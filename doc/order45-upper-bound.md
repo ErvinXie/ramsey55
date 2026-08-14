@@ -224,6 +224,15 @@ entire labelled fixed graph-pair problem directly, without trusting a
 canonical-labelling argument. The H automorphism group has order 4; the two J
 groups have orders 24 and 48.
 
+The generator and independent verifier also support lex-leader constraints
+for those explicitly enumerated automorphisms. This optional route is not a
+DRAT strengthening of the no-symmetry formula: it instead needs a checked
+orbit-representative argument. `formal/Ramsey55/Symmetry.lean` now proves the
+generic finite-orbit least-representative theorem. Concrete invariance of the
+fixed-pair clauses and correspondence between the emitted lex CNF and that
+theorem remain to be connected before a symmetry-reduced UNSAT proof can
+close the labelled stratum.
+
 Kissat, CaDiCaL, and Minisat all left the monolithic formulas UNKNOWN after
 600 seconds. CaDiCaL's native depth-14 cuber instead produced exactly 16,384
 cubes per formula. A 0.1-second parallel pass closed 16,361 and 16,364 of

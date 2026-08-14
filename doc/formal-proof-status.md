@@ -1,6 +1,6 @@
 # R(5,5) formal proof status
 
-Updated: 2026-08-14
+Updated: 2026-08-15
 
 ## Target theorem
 
@@ -152,6 +152,16 @@ proof. Remaining formal work includes connecting the concrete DIMACS encoder
 to graph colourings, importing or checking the generated cube-cover data and
 leaf UNSAT results, and connecting the full excess-witness reduction to an
 arbitrary Ramsey-free 45-vertex colouring.
+
+[Symmetry.lean](../formal/Ramsey55/Symmetry.lean) adds the generic bridge for
+an optional symmetry-reduced route. It proves that a nonempty finite orbit
+closed under a listed family of transformations has a least representative;
+if the base predicate holds throughout the orbit, that representative obeys
+every corresponding lex-leader inequality. Thus a checked lex CNF can be
+used without pretending its symmetry clauses follow by DRAT from the
+unsymmetrized CNF. The theorem is kernel-checked and contains no `sorry` or
+`native_decide`. Concrete permutation invariance, orbit closure, and the
+DIMACS lex-encoding bridge are still explicit missing obligations.
 
 ## Independently checked inputs
 
