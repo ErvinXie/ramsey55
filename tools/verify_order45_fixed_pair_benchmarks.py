@@ -22,6 +22,9 @@ def main() -> None:
     document = json.loads(arguments.manifest.read_text(encoding="utf-8"))
     if document.get("schema") != SCHEMA:
         raise ValueError("unexpected fixed-pair manifest schema")
+    symmetry_breaking = document.get("symmetry_breaking")
+    if not isinstance(symmetry_breaking, bool):
+        raise ValueError("manifest does not declare symmetry mode")
     h_catalog = Path(document["h_catalog"]["path"])
     j_catalog = Path(document["j_catalog"]["path"])
     if sha256(h_catalog) != document["h_catalog"]["sha256"]:
@@ -38,7 +41,7 @@ def main() -> None:
                 j_catalog=j_catalog,
                 j_index=formula["j_index"],
                 cnf=root / formula["path"],
-                no_symmetry=True,
+                no_symmetry=not symmetry_breaking,
             )
         )
         observed_indices.append(report["j_index"])
@@ -52,6 +55,13 @@ def main() -> None:
             "symmetry_clauses": report["symmetry_clauses"],
             "sha256": report["cnf_sha256"],
         }
+        if symmetry_breaking:
+            comparisons.update(
+                {
+                    "h_automorphisms": report["h_automorphisms"],
+                    "j_automorphisms": report["j_automorphisms"],
+                }
+            )
         for key, observed in comparisons.items():
             if formula.get(key) != observed:
                 raise ValueError(f"J{formula['j_index']} {key} differs")

@@ -232,6 +232,11 @@ generic finite-orbit least-representative theorem. Concrete invariance of the
 fixed-pair clauses and correspondence between the emitted lex CNF and that
 theorem remain to be connected before a symmetry-reduced UNSAT proof can
 close the labelled stratum.
+The reproducible symmetry manifest is
+`data/order45-fixed-pair-symmetry-manifest.json`: its two formulas have
+21,816/32,832 variables, 187,388/253,604 clauses, and SHA-256 values
+`6cded9314453d477647984aa99400bcf55704e463de4319891432d2149b1229c` and
+`d286a3c81f4618d3d02c73c5288f7aae1fe1352792b28c9f6a373a7e45819f9e`.
 
 Kissat, CaDiCaL, and Minisat all left the monolithic formulas UNKNOWN after
 600 seconds. CaDiCaL's native depth-14 cuber instead produced exactly 16,384

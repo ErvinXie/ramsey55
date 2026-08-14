@@ -219,6 +219,9 @@ def main() -> None:
     formula_manifest = json.loads(arguments.formula_manifest.read_text())
     if formula_manifest.get("schema") != "ramsey55.order45-fixed-pairs.v1":
         raise ValueError("unexpected formula manifest schema")
+    symmetry_breaking = formula_manifest.get("symmetry_breaking")
+    if not isinstance(symmetry_breaking, bool):
+        raise ValueError("formula manifest does not declare symmetry mode")
     for executable in (arguments.checker, arguments.runner):
         if not executable.is_file():
             raise FileNotFoundError(executable)
@@ -281,7 +284,14 @@ def main() -> None:
 
     document = {
         "schema": SCHEMA,
-        "claim": "both complete labelled H100/J132 fixed-pair CNFs are UNSAT",
+        "claim": (
+            "both H100/J132 lex-leader CNFs are UNSAT; the labelled claim "
+            "requires the finite-orbit symmetry bridge"
+            if symmetry_breaking
+            else "both complete labelled H100/J132 fixed-pair CNFs are UNSAT"
+        ),
+        "symmetry_breaking": symmetry_breaking,
+        "symmetry_bridge_required": symmetry_breaking,
         "formula_manifest": {
             "path": str(arguments.formula_manifest),
             "sha256": file_sha256(arguments.formula_manifest),

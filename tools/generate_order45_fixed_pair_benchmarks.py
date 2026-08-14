@@ -66,6 +66,11 @@ def main() -> None:
     parser.add_argument(
         "--output-dir", type=Path, default=Path("build/order45-fixed-pairs")
     )
+    parser.add_argument(
+        "--symmetry",
+        action="store_true",
+        help="emit independently verifiable lex-leader constraints",
+    )
     arguments = parser.parse_args()
 
     h_records = records(arguments.h_catalog)
@@ -83,17 +88,20 @@ def main() -> None:
     arguments.output_dir.mkdir(parents=True, exist_ok=True)
     formulas = []
     for j_index in j_indices:
-        path = arguments.output_dir / f"h0-j{j_index}-nosym.cnf"
+        suffix = "sym" if arguments.symmetry else "nosym"
+        path = arguments.output_dir / f"h0-j{j_index}-{suffix}.cnf"
+        command = [
+            str(arguments.generator),
+            str(arguments.j_catalog),
+            str(j_index),
+            str(arguments.h_catalog),
+            "0",
+            str(path),
+        ]
+        if not arguments.symmetry:
+            command.append("--no-symmetry")
         completed = subprocess.run(
-            [
-                str(arguments.generator),
-                str(arguments.j_catalog),
-                str(j_index),
-                str(arguments.h_catalog),
-                "0",
-                str(path),
-                "--no-symmetry",
-            ],
+            command,
             check=True,
             capture_output=True,
             text=True,
@@ -117,6 +125,14 @@ def main() -> None:
                 "degree_bound_clauses": statistics["degree_bound_clauses"],
                 "symmetry_clauses": statistics["symmetry_clauses"],
                 "sha256": file_sha256(path),
+                **(
+                    {
+                        "h_automorphisms": statistics["H_automorphisms"],
+                        "j_automorphisms": statistics["J_automorphisms"],
+                    }
+                    if arguments.symmetry
+                    else {}
+                ),
             }
         )
         print(f"generated {path}: {statistics['variables']} variables, {clauses} clauses")
@@ -128,8 +144,13 @@ def main() -> None:
         "degree_window": [20, 24],
         "h_layer": {"order": 20, "edges": 100, "records": 1},
         "j_layer": {"order": 24, "edges": 132, "records": len(j_indices)},
-        "coverage": "all labelled gluings of the complete unlabelled H100/J132 layers",
-        "symmetry_breaking": False,
+        "coverage": (
+            "lex leaders for all labelled gluings of the complete unlabelled "
+            "H100/J132 layers; requires the finite-orbit symmetry bridge"
+            if arguments.symmetry
+            else "all labelled gluings of the complete unlabelled H100/J132 layers"
+        ),
+        "symmetry_breaking": arguments.symmetry,
         "h_catalog": {
             "path": str(arguments.h_catalog),
             "sha256": file_sha256(arguments.h_catalog),

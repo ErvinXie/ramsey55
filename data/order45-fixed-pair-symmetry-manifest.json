@@ -1,0 +1,62 @@
+{
+  "coverage": "lex leaders for all labelled gluings of the complete unlabelled H100/J132 layers; requires the finite-orbit symmetry bridge",
+  "degree_window": [
+    20,
+    24
+  ],
+  "fixed_star_degree": 20,
+  "formulas": [
+    {
+      "clauses": 187388,
+      "degree_bound_clauses": 35600,
+      "h_automorphisms": 4,
+      "h_graph6": "SznZXmZR\\HxJSjYEbWyDZ`XsuI]``lAb[",
+      "h_index": 0,
+      "j_automorphisms": 24,
+      "j_graph6": "WsnNFaUwKUQbAMRC_xxXKCl\\dQz_{bsQ\\ZHYDZpPFj`n{SO",
+      "j_index": 297775,
+      "path": "h0-j297775-sym.cnf",
+      "ramsey_clauses": 79368,
+      "sha256": "6cded9314453d477647984aa99400bcf55704e463de4319891432d2149b1229c",
+      "symmetry_clauses": 72420,
+      "variables": 21816
+    },
+    {
+      "clauses": 253604,
+      "degree_bound_clauses": 35600,
+      "h_automorphisms": 4,
+      "h_graph6": "SznZXmZR\\HxJSjYEbWyDZ`XsuI]``lAb[",
+      "h_index": 0,
+      "j_automorphisms": 48,
+      "j_graph6": "WvyeKYRcsX[BEEQPeCxg]QdlC}`E}AjawjgyJiYqmbhN{Oo",
+      "j_index": 326185,
+      "path": "h0-j326185-sym.cnf",
+      "ramsey_clauses": 79488,
+      "sha256": "d286a3c81f4618d3d02c73c5288f7aae1fe1352792b28c9f6a373a7e45819f9e",
+      "symmetry_clauses": 138516,
+      "variables": 32832
+    }
+  ],
+  "h_catalog": {
+    "path": "data/reference/r4520.100.g6",
+    "sha256": "d1d1ff46bd5d153b51d7da094f6bf459bceaefda65eb4941ead0bb9b09c897cd"
+  },
+  "h_layer": {
+    "edges": 100,
+    "order": 20,
+    "records": 1
+  },
+  "j_catalog": {
+    "path": "data/reference/r45_24.g6",
+    "records": 352366,
+    "sha256": "83ca4028f206b2fa4315ef219b8c2c57c7835209673dd8183d8fb4353bd4fdd0"
+  },
+  "j_layer": {
+    "edges": 132,
+    "order": 24,
+    "records": 2
+  },
+  "order": 45,
+  "schema": "ramsey55.order45-fixed-pairs.v1",
+  "symmetry_breaking": true
+}

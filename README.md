@@ -116,6 +116,21 @@ top stratum with:
       data/order45-fixed-pair-manifest.json \
       --cnf-dir build/order45-fixed-pairs
 
+The optional symmetry-reduced comparison is generated and independently
+reconstructed with:
+
+    PYTHONPATH=src:tools python3 \
+      tools/generate_order45_fixed_pair_benchmarks.py \
+      --symmetry --output-dir build/order45-fixed-pairs/symmetry
+    PYTHONPATH=src:tools python3 \
+      tools/verify_order45_fixed_pair_benchmarks.py \
+      data/order45-fixed-pair-symmetry-manifest.json \
+      --cnf-dir build/order45-fixed-pairs/symmetry
+
+An UNSAT result for these lex-leader formulas still requires the checked
+finite-orbit bridge documented in `formal/Ramsey55/Symmetry.lean`; it is not
+by itself a labelled fixed-pair proof.
+
 These fixed-pair formulas cover only the exact local edge layer
 `e(H)=100, e(J)=132`. They are a rigorously checked subproblem of the full
 order-45 excess cover, not an upper-bound proof by themselves.

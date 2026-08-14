@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import itertools
+import json
 from pathlib import Path
 import shutil
 import subprocess
@@ -41,6 +42,20 @@ def extend_assignment(
 
 
 class FixedPairIndependentEncodingTests(unittest.TestCase):
+    def test_symmetry_manifest_records_bridge_boundary(self) -> None:
+        manifest = json.loads(
+            (ROOT / "data/order45-fixed-pair-symmetry-manifest.json").read_text()
+        )
+        self.assertTrue(manifest["symmetry_breaking"])
+        self.assertIn("requires", manifest["coverage"])
+        self.assertEqual(
+            [
+                (formula["h_automorphisms"], formula["j_automorphisms"])
+                for formula in manifest["formulas"]
+            ],
+            [(4, 24), (4, 48)],
+        )
+
     def test_reference_h100_record(self) -> None:
         record = (ROOT / "data/reference/r4520.100.g6").read_text().strip()
         adjacency = decode_short_graph6(record, 20)
