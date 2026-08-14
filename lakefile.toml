@@ -1,0 +1,7 @@
+name = "ramsey55"
+version = "0.1.0"
+defaultTargets = ["Ramsey55"]
+
+[[lean_lib]]
+name = "Ramsey55"
+srcDir = "formal"

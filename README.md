@@ -1,0 +1,68 @@
+# Ramsey55
+
+An AI-assisted research repository for work on the diagonal Ramsey number
+`R(5, 5)`.
+
+Project history is recorded in `daily-notes/`, while stable results and research
+summaries belong in `doc/`. Agent collaboration conventions are defined in
+`AGENTS.md` and `.meta-agent/AGENT-RUNTIME.md`.
+
+## Research baseline
+
+- [R(5,5) research frontier, 2026-08-11](doc/r55-frontier-2026-08-11.md)
+- [Formal proof status and trust boundary](doc/formal-proof-status.md)
+- [One-vertex extension certificates](doc/extension-certificates.md)
+- [Extension multiplicity landscape](doc/extension-multiplicity-landscape.md)
+- [Catalog single-edge flip forest](doc/catalog-flip-forest.md)
+- [K43 two-violation landscape](doc/near-miss-landscape.md)
+- [Nonseparable-identity experiment](doc/nonseparable-identity-experiment.md)
+- [Degree-18 extreme gluing experiment](doc/degree18-extreme-gluing.md)
+
+## Reproduce the checked baseline
+
+The Python verifier has no third-party dependencies:
+
+    sh scripts/fetch_reference_data.sh
+    PYTHONPATH=src python3 -m unittest discover -s tests -v
+    PYTHONPATH=src python3 tools/verify_reference.py
+    PYTHONPATH=src python3 tools/verify_catalog_flip_certificate.py
+    PYTHONPATH=src python3 tools/verify_four_flip_certificate.py
+
+The formal development is pinned to Lean 4.31.0:
+
+    lake build
+
+The principal theorems already checked by Lean are:
+
+- `Ramsey55.not_forcesMonochromatic5_42`, the lower bound
+  \(R(5,5)>42\);
+- `Ramsey55.reference42CatalogWithComplements_all_noExtension`, proving that
+  none of the 656 public 42-vertex graphs can gain one vertex while remaining
+  Ramsey-free;
+- `Ramsey55.reference42TwoViolationCatalogWithComplements_all_atLeastTwo`,
+  strengthening this to at least two distinct monochromatic \(K_5\)s for
+  every attachment to every public graph;
+- `Ramsey55.ramsey55_is_43_of_all_42_nonextendable`, reducing the exact target
+  to the explicit remaining obligation that every Ramsey-free 42-vertex
+  colouring is nonextendable.
+
+The historical claim that the 656 public graphs form a complete
+classification remains unproved. Consequently the exact upper bound is still
+open and this repository does not claim that \(R(5,5)=43\) has been solved.
+
+Regenerate the compact extension certificates and the generated Lean source:
+
+    PYTHONPATH=src python3 tools/generate_extension_certificates.py
+    PYTHONPATH=src python3 tools/generate_lean_extension_certificates.py
+    PYTHONPATH=src python3 \
+      tools/generate_extension_multiplicity_certificates.py
+    PYTHONPATH=src python3 \
+      tools/generate_lean_extension_multiplicity_certificates.py
+    lake build
+
+Generate the two raw 43-vertex SAT benchmarks with:
+
+    PYTHONPATH=src python3 tools/generate_cnf.py --order 43 \
+      --fixed-star-degree 18 --output build/r55_n43_d18.cnf
+    PYTHONPATH=src python3 tools/generate_cnf.py --order 43 \
+      --fixed-star-degree 20 --output build/r55_n43_d20.cnf
