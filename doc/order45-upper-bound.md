@@ -415,8 +415,9 @@ formula, cube file, ordered cube, augmented CNF, solver and checker binaries,
 proof, and checker log by SHA-256. `tools/audit_materialized_cube_proofs.py`
 then recreates every augmented CNF and replays every proof again. UNKNOWN is a
 first-class partial result and SAT stops frontier processing. A two-leaf
-Kissat/DRAT smoke proof passes both checker invocations. The complete ARM
-Python suite now has 107 passing tests.
+Kissat/DRAT smoke proof passes both checker invocations. After the staged
+retry and chain-audit additions, the complete ARM Python suite has 112 passing
+tests.
 
 The first real snapshots apply this route to the two no-symmetry H100/J132
 fixed-pair streams. They contain 16,750 closed plus four open leaves for
@@ -438,12 +439,40 @@ three J326185 cubes within 120 seconds, with no SAT result. Actual proof-mode
 reruns reproduced those closures and passed an independent replay. The four
 remaining hard parents were replaced by checked complementary child pairs;
 each pair again had one child prove UNSAT in about 0.023 seconds while the
-other remained UNKNOWN at 120 seconds. `tools/run_materialized_proof_chain.py`
-automates this narrow certified refinement with a shorter 20-second budget,
-auditing the previous proofs, UNKNOWN extraction, binary cover, new proofs,
-and state transition at every round. Closed-leaf proof production and the
-open chains are still running. Therefore neither fixed-pair formula, their
-local edge stratum, nor the order-45 theorem is claimed closed here.
+other remained UNKNOWN at 120 seconds. Early 20- and 60-second chain rounds
+confirmed that this one-easy/one-hard pattern persists: a uniform long budget
+mostly waits on the single hard continuation at every level.
+
+`tools/run_materialized_proof_chain.py` therefore supports a staged conquer
+policy. It first gives every child two seconds and applies the 60-second
+budget only when both siblings of one parent remain UNKNOWN. The new
+`tools/compose_materialized_cube_proofs.py` accepts only an ordered subsequence
+of primary UNKNOWN rows, binds both source manifests by SHA-256, carries the
+replacement indices, and hard-links or copies the selected proof artifacts
+into a fresh combined manifest. Both stage manifests and the composition are
+independently replayed. A real two-cube ARM smoke combined one short-stage
+proof with one retry proof and the final independent `drat-trim` replay
+verified both leaves.
+
+`tools/audit_materialized_proof_chain.py` provides a separate whole-chain
+replay. It byte-snapshots `state.json`, audits every proof manifest, rebuilds
+each exact ordered UNKNOWN frontier, checks every complementary split and its
+hash-bound refinement manifest, and requires the next proof manifest to bind
+that exact child file. The leaf auditor also verifies the manifest's solver
+and checker binary hashes and requires the supplied checker binary to match.
+A live J326185 open-chain replay accepted 44 proof manifests and 43 refinement
+rounds through a round-45 state snapshot, covering 188 refined parents. Its
+terminal manifest remained partial with seven UNKNOWN children; the audit
+manifest hash is
+`ec1c1561a1a2b628031c2b1c3adee5cbc1ca8b32b4000632cb173da2963508bc`.
+
+The J326185 closed-leaf batch verified 16,746 of 16,756 leaves and left ten
+UNKNOWN, with all 16,746 proofs accepted by a separate 48-way replay. Its
+J297775 counterpart verified 16,734 of 16,750 leaves and left 16 UNKNOWN; a
+separate 48-way replay accepted all 16,734 retained proofs. Both residual
+chains and both open chains are still running. Therefore neither fixed-pair
+formula, their local edge stratum, nor the order-45 theorem is claimed closed
+here.
 
 That hedge is now running for all three unified mother formulas with exact
 configuration `30000/128000 conflicts, 1 second lookahead, primary bound 0,
@@ -515,9 +544,11 @@ inequalities, or a different counting identity.
 
 ## Compute assessment and next bottleneck
 
-The ARM node has 64 logical CPUs, 244 GiB RAM, and about 194 GiB currently
-free disk. It is adequate for parallel pilots, catalog scans, cube discovery,
-and certificate replay. More raw cores would not fix the present bottleneck:
+The ARM node has 64 logical CPUs and 244 GiB RAM. After retaining the current
+materialized proofs it has about 75 GiB free disk, so proof-log storage is now
+the tighter operational margin. It remains adequate for parallel pilots,
+catalog scans, cube discovery, and certificate replay. More raw cores would
+not fix the present bottleneck:
 the weakest catalog-filtered spaces still contain hundreds of millions to
 billions of local record pairs, while a direct fixed-star CNF does not close
 in short CDCL runs.

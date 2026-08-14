@@ -25,6 +25,16 @@ def artifact(root: Path, name: object) -> Path:
     return root / name
 
 
+def validate_tool_bindings(document: dict[str, Any], checker: Path) -> None:
+    for label in ("solver", "checker"):
+        entry = document[label]
+        path = Path(entry["path"])
+        if not path.is_file() or file_sha256(path) != entry["sha256"]:
+            raise ValueError(f"{label} binary hash mismatch")
+    if file_sha256(checker) != document["checker"]["sha256"]:
+        raise ValueError("supplied checker does not match manifest")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("manifest", type=Path)
@@ -41,6 +51,7 @@ def main() -> None:
         parser.error(f"checker does not exist: {arguments.checker}")
     if arguments.jobs <= 0:
         parser.error("--jobs must be positive")
+    validate_tool_bindings(document, arguments.checker)
 
     formula_entry = document["formula"]
     cubes_entry = document["cubes"]

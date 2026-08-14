@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import sys
 import tempfile
 import unittest
@@ -36,6 +37,9 @@ MATERIALIZED_AUDIT = load_tool("audit_materialized_cube_proofs")
 BINARY_COVER = load_tool("certify_binary_cube_cover")
 MATERIALIZED_FRONTIER = load_tool("export_materialized_proof_frontier")
 BINARY_REFINEMENT = load_tool("audit_binary_cube_refinement")
+MATERIALIZED_COMPOSE = load_tool("compose_materialized_cube_proofs")
+MATERIALIZED_CHAIN = load_tool("run_materialized_proof_chain")
+MATERIALIZED_CHAIN_AUDIT = load_tool("audit_materialized_proof_chain")
 
 
 class ExternalCubeToolTests(unittest.TestCase):
@@ -75,6 +79,45 @@ class ResultMergeTests(unittest.TestCase):
     def test_projection_rejects_missing_cube(self) -> None:
         with self.assertRaisesRegex(ValueError, "absent"):
             PROJECT.project_results([[1]], [MERGE.Row(20, 1.0, "")], [[-1]])
+
+    def test_materialized_retry_replaces_only_ordered_unknown_rows(self) -> None:
+        primary = [
+            {"cube": [1], "status": 20},
+            {"cube": [-1, 2], "status": 0},
+            {"cube": [-1, -2], "status": 0},
+        ]
+        secondary = [
+            {"cube": [-1, 2], "status": 20},
+            {"cube": [-1, -2], "status": 0},
+        ]
+        self.assertEqual(
+            MATERIALIZED_COMPOSE.ordered_unknown_replacements(primary, secondary),
+            [1, 2],
+        )
+        with self.assertRaisesRegex(ValueError, "ordered UNKNOWN"):
+            MATERIALIZED_COMPOSE.ordered_unknown_replacements(
+                primary, [{"cube": [1], "status": 20}]
+            )
+
+    def test_long_retry_selects_only_double_unknown_siblings(self) -> None:
+        cubes = [[1], [-1], [2], [-2], [3], [-3]]
+        results = [
+            {"status": 20},
+            {"status": 0},
+            {"status": 0},
+            {"status": 0},
+            {"status": 20},
+            {"status": 20},
+        ]
+        self.assertEqual(
+            MATERIALIZED_CHAIN.double_unknown_cubes(cubes, results), [[2], [-2]]
+        )
+
+    def test_materialized_retry_cube_file_uses_assumption_rows(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            path = Path(raw) / "retry.icnf"
+            MATERIALIZED_CHAIN.write_icnf(path, [[1, -2], [-1, 3]])
+            self.assertEqual(path.read_text(), "a 1 -2 0\na -1 3 0\n")
 
 
 class CartesianAdoptionTests(unittest.TestCase):
@@ -192,6 +235,74 @@ class MaterializedProofToolTests(unittest.TestCase):
     def test_artifact_rejects_path_traversal(self) -> None:
         with self.assertRaisesRegex(ValueError, "artifact"):
             MATERIALIZED_AUDIT.artifact(Path("/tmp/proofs"), "../proof.drat")
+
+    def test_tool_bindings_reject_a_different_checker(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            solver = root / "solver"
+            checker = root / "checker"
+            wrong = root / "wrong"
+            solver.write_bytes(b"solver")
+            checker.write_bytes(b"checker")
+            wrong.write_bytes(b"wrong")
+            document = {
+                "solver": {
+                    "path": str(solver),
+                    "sha256": MATERIALIZED_PROVER.file_sha256(solver),
+                },
+                "checker": {
+                    "path": str(checker),
+                    "sha256": MATERIALIZED_PROVER.file_sha256(checker),
+                },
+            }
+            MATERIALIZED_AUDIT.validate_tool_bindings(document, checker)
+            with self.assertRaisesRegex(ValueError, "supplied checker"):
+                MATERIALIZED_AUDIT.validate_tool_bindings(document, wrong)
+
+    def test_chain_refinement_manifest_is_rebuilt_exactly(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            parents = root / "parents.icnf"
+            children = root / "children.icnf"
+            results = root / "refine.tsv"
+            manifest = root / "refinement.json"
+            parents.write_text("a 1 0\n")
+            children.write_text("a 1 2 0\na 1 -2 0\n")
+            results.write_text(
+                "cube\tstatus\tsplit\tseconds\tmodel\n0\t0\t2\t0.1\t\n"
+            )
+            expected = {
+                "schema": BINARY_REFINEMENT.SCHEMA,
+                "parents": {
+                    "path": str(parents),
+                    "sha256": BINARY_REFINEMENT.file_sha256(parents),
+                    "count": 1,
+                },
+                "children": {
+                    "path": str(children),
+                    "sha256": BINARY_REFINEMENT.file_sha256(children),
+                    "count": 2,
+                },
+                "results": {
+                    "path": str(results),
+                    "sha256": BINARY_REFINEMENT.file_sha256(results),
+                },
+                "splits": [2],
+                "complete_binary_refinement": True,
+            }
+            manifest.write_text(json.dumps(expected))
+            self.assertEqual(
+                MATERIALIZED_CHAIN_AUDIT.verify_refinement(
+                    parents, children, results, manifest
+                ),
+                1,
+            )
+            expected["splits"] = [-2]
+            manifest.write_text(json.dumps(expected))
+            with self.assertRaisesRegex(ValueError, "manifest mismatch"):
+                MATERIALIZED_CHAIN_AUDIT.verify_refinement(
+                    parents, children, results, manifest
+                )
 
     def test_exports_only_hash_bound_unknown_results(self) -> None:
         cubes = [[1], [-1, 2], [-1, -2]]

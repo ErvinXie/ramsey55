@@ -30,6 +30,31 @@ def run_logged(command: list[str], log: Path) -> int:
     return completed.returncode
 
 
+def double_unknown_cubes(
+    cubes: list[list[int]], results: list[dict[str, object]]
+) -> list[list[int]]:
+    if len(cubes) != len(results) or len(cubes) % 2:
+        raise ValueError("binary refinement did not produce paired results")
+    retry: list[list[int]] = []
+    for offset in range(0, len(cubes), 2):
+        pair = results[offset : offset + 2]
+        statuses = [int(row["status"]) for row in pair]
+        if 10 in statuses:
+            raise RuntimeError("SAT result requires investigation")
+        if any(status not in (0, 20) for status in statuses):
+            raise ValueError("invalid materialized-proof status")
+        if statuses == [0, 0]:
+            retry.extend(cubes[offset : offset + 2])
+    return retry
+
+
+def write_icnf(path: Path, cubes: list[list[int]]) -> None:
+    path.write_text(
+        "".join(f"a {' '.join(map(str, cube))} 0\n" for cube in cubes),
+        encoding="ascii",
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("formula", type=Path)
@@ -40,6 +65,15 @@ def main() -> int:
     parser.add_argument("--checker", type=Path, required=True)
     parser.add_argument("--jobs", type=int, default=8)
     parser.add_argument("--seconds", type=float, default=20.0)
+    parser.add_argument(
+        "--quick-seconds",
+        type=float,
+        default=0.0,
+        help=(
+            "optional first-pass budget; only sibling pairs that both remain "
+            "UNKNOWN are retried with --seconds"
+        ),
+    )
     parser.add_argument("--first-round", type=int, default=0)
     parser.add_argument("--max-rounds", type=int, default=100)
     parser.add_argument("--solver-argument", action="append", default=[])
@@ -47,10 +81,12 @@ def main() -> int:
     if (
         arguments.jobs <= 0
         or arguments.seconds <= 0
+        or arguments.quick_seconds < 0
+        or arguments.quick_seconds >= arguments.seconds
         or arguments.first_round < 0
         or arguments.max_rounds <= 0
     ):
-        parser.error("invalid jobs, seconds, or round bound")
+        parser.error("invalid jobs, seconds, quick-seconds, or round bound")
     for path in (
         arguments.formula,
         arguments.seed_manifest,
@@ -101,6 +137,14 @@ def main() -> int:
         refinement_manifest = prefix.with_name(prefix.name + "-refinement.json")
         proof_directory = prefix.with_name(prefix.name + "-proofs")
         proof_log = prefix.with_name(prefix.name + "-proofs.log")
+        quick_directory = prefix.with_name(prefix.name + "-quick-proofs")
+        quick_log = prefix.with_name(prefix.name + "-quick-proofs.log")
+        quick_audit_log = prefix.with_name(prefix.name + "-quick-proofs-audit.log")
+        retry_cubes_path = prefix.with_name(prefix.name + "-retry.icnf")
+        retry_directory = prefix.with_name(prefix.name + "-retry-proofs")
+        retry_log = prefix.with_name(prefix.name + "-retry-proofs.log")
+        retry_audit_log = prefix.with_name(prefix.name + "-retry-proofs-audit.log")
+        compose_log = prefix.with_name(prefix.name + "-compose.log")
         for path in (
             parents,
             frontier_manifest,
@@ -110,6 +154,14 @@ def main() -> int:
             refinement_manifest,
             proof_directory,
             proof_log,
+            quick_directory,
+            quick_log,
+            quick_audit_log,
+            retry_cubes_path,
+            retry_directory,
+            retry_log,
+            retry_audit_log,
+            compose_log,
         ):
             if path.exists():
                 raise RuntimeError(f"refusing to overwrite round artifact {path}")
@@ -180,12 +232,16 @@ def main() -> int:
         if refinement_status:
             raise RuntimeError(f"refinement audit failed at round {round_number}")
 
+        staged = arguments.quick_seconds > 0
+        first_proof_directory = quick_directory if staged else proof_directory
+        first_proof_log = quick_log if staged else proof_log
+        first_seconds = arguments.quick_seconds if staged else arguments.seconds
         prove_command = [
             sys.executable,
             str(tools / "prove_materialized_cubes.py"),
             str(arguments.formula),
             str(children),
-            str(proof_directory),
+            str(first_proof_directory),
             "--solver",
             str(arguments.solver),
             "--checker",
@@ -193,16 +249,93 @@ def main() -> int:
             "--jobs",
             str(min(arguments.jobs, 2 * unknown)),
             "--seconds",
-            str(arguments.seconds),
+            str(first_seconds),
         ]
         for option in arguments.solver_argument:
             prove_command.append(f"--solver-argument={option}")
-        proof_status = run_logged(prove_command, proof_log)
+        proof_status = run_logged(prove_command, first_proof_log)
         if proof_status == 10:
             raise RuntimeError(f"solver found SAT at round {round_number}")
         if proof_status not in (0, 20):
             raise RuntimeError(f"proof producer failed at round {round_number}")
-        current_manifest = proof_directory / "manifest.json"
+        current_manifest = first_proof_directory / "manifest.json"
+        if staged:
+            quick_audit_status = run_logged(
+                [
+                    sys.executable,
+                    str(tools / "audit_materialized_cube_proofs.py"),
+                    str(current_manifest),
+                    "--checker",
+                    str(arguments.checker),
+                    "--allow-partial",
+                    "--jobs",
+                    str(arguments.jobs),
+                ],
+                quick_audit_log,
+            )
+            if quick_audit_status:
+                raise RuntimeError(f"quick proof audit failed at round {round_number}")
+            quick_document = json.loads(current_manifest.read_text(encoding="utf-8"))
+            quick_results = quick_document["results"]
+            child_cubes = [row["cube"] for row in quick_results]
+            retry_cubes = double_unknown_cubes(child_cubes, quick_results)
+            if retry_cubes:
+                write_icnf(retry_cubes_path, retry_cubes)
+                retry_command = [
+                    sys.executable,
+                    str(tools / "prove_materialized_cubes.py"),
+                    str(arguments.formula),
+                    str(retry_cubes_path),
+                    str(retry_directory),
+                    "--solver",
+                    str(arguments.solver),
+                    "--checker",
+                    str(arguments.checker),
+                    "--jobs",
+                    str(min(arguments.jobs, len(retry_cubes))),
+                    "--seconds",
+                    str(arguments.seconds),
+                ]
+                for option in arguments.solver_argument:
+                    retry_command.append(f"--solver-argument={option}")
+                retry_status = run_logged(retry_command, retry_log)
+                if retry_status == 10:
+                    raise RuntimeError(f"retry solver found SAT at round {round_number}")
+                if retry_status not in (0, 20):
+                    raise RuntimeError(f"retry proof producer failed at round {round_number}")
+                retry_manifest = retry_directory / "manifest.json"
+                retry_audit_command = [
+                    sys.executable,
+                    str(tools / "audit_materialized_cube_proofs.py"),
+                    str(retry_manifest),
+                    "--checker",
+                    str(arguments.checker),
+                ]
+                if retry_status == 0:
+                    retry_audit_command.append("--allow-partial")
+                retry_audit_command.extend(("--jobs", str(arguments.jobs)))
+                retry_audit_status = run_logged(
+                    retry_audit_command, retry_audit_log
+                )
+                if retry_audit_status:
+                    raise RuntimeError(f"retry proof audit failed at round {round_number}")
+                compose_status = run_logged(
+                    [
+                        sys.executable,
+                        str(tools / "compose_materialized_cube_proofs.py"),
+                        str(current_manifest),
+                        str(retry_manifest),
+                        str(proof_directory),
+                    ],
+                    compose_log,
+                )
+                if compose_status:
+                    raise RuntimeError(f"proof composition failed at round {round_number}")
+            else:
+                quick_directory.replace(proof_directory)
+            current_manifest = proof_directory / "manifest.json"
+            final_document = json.loads(current_manifest.read_text(encoding="utf-8"))
+            proof_status = 20 if final_document["summary"]["complete_unsat"] else 0
         proof_audit_command = [
             sys.executable,
             str(tools / "audit_materialized_cube_proofs.py"),
