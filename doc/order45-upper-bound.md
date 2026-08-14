@@ -326,6 +326,32 @@ DRAT replay before writing a compact artifact manifest.
 The large two-formula proof and replay are still pending at this checkpoint;
 therefore even this top local stratum is not yet claimed closed.
 
+Live proof-frontier diagnosis is now reproducible with
+`tools/export_proof_frontier.py`. The tool replays the flushed preorder DFS
+table with an explicit stack and exports precisely the nodes that have not yet
+been visited. It accepts both one-root proof files and unified multi-root
+files, while checking the global attempt sequence, root order, signed branch
+literals, depth transitions, and the identity
+`open = 1 + splits - closed`. A final incomplete TSV record is tolerated only
+because a live writer can be observed between writes; an incomplete interior
+record is rejected.
+
+The hash-bound snapshot in `data/order45-proof-frontier-pilot.json` separates
+easy pending siblings from true hard cores. A 120-second independent pass
+reduced the d20/c27 snapshot from 22 to 2 cubes and d22/c15 from 6 to 2, but
+both depth-512 d20 unified cubes remained UNKNOWN. On the fixed-pair final
+root, the four production snapshots reduced from 7/4/4/1 to 3/2/2/1. No scan
+found SAT. These are search measurements only: a reconstructed open frontier
+does not contain the DRAT justification for already closed siblings, so it is
+not by itself a resumable certificate or an UNSAT proof.
+
+The d20 comparison also rejects an otherwise tempting heuristic change.
+Selective freezing with unrestricted lookahead left 1 and 2 branches on the
+two hard cubes after 120 seconds, while forcing all dynamic choices into the
+990 graph-edge variables left 10 and 10. The active legacy edge proofs are
+therefore retained, and any selective-freeze hedge should continue to allow
+auxiliary choices rather than impose the graph-edge bound.
+
 Colour swap reduces the last raw count to 483,900,495 unordered pairs. These
 numbers are pairs of unlabelled local records before testing a single cross
 edge or overlap, so they substantially understate the cost of naive gluing.
