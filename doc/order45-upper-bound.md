@@ -160,6 +160,29 @@ counts were 1,087,354/936,207/871,278, with 104,600,340/182,072,997/
 187,876,713 propagations. This is a complete structural cover, but not yet a
 closed one.
 
+### Exact local-edge strata
+
+The exact known edge ranges for the five relevant \(R(4,5,n)\) orders reduce
+the excess cover to 28, 36, and 45 feasible \((e(H),e(J))\) pairs. A second
+mother formulation defines separate bidirectional H/J counters. Each exact
+pair is then four assumption literals: at least \(h\), not at least \(h+1\),
+at least \(j\), and not at least \(j+1\). The independent verifier reconstructs
+all three mothers and proves that the emitted cubes are the expected disjoint
+cover of every feasible edge pair.
+
+The mothers have 78,697/77,148/76,651 variables and
+2,751,846/2,745,658/2,743,672 clauses. Their hashes and the generated cube
+files are bound in `data/order45-edge-strata-summary.json`. The exact edge
+ranges are an additional external theorem/catalog dependency and remain part
+of the final formalization boundary.
+
+`tools/cadical_assumption_scan.cpp` loads each mother once and reuses only
+globally valid learned clauses while scanning cubes. At 10,000 conflicts per
+cube all 109 cases remained UNKNOWN; aggregate d20/d21/d22 solve time was
+97.4/138.2/179.8 seconds. This reuse scan is a difficulty oracle only. Any
+eventual UNSAT cube must be rerun independently with its four units and a
+checked proof before it can enter the coverage certificate.
+
 Colour swap reduces the last raw count to 483,900,495 unordered pairs. These
 numbers are pairs of unlabelled local records before testing a single cross
 edge or overlap, so they substantially understate the cost of naive gluing.

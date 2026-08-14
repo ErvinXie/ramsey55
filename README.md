@@ -93,3 +93,10 @@ Generate the complete nonpositive-excess witness cover with:
     PYTHONPATH=src:tools python3 tools/generate_order45_excess_benchmarks.py
     PYTHONPATH=src:tools python3 tools/verify_order45_excess_benchmarks.py \
       data/order45-excess-benchmark-manifest.json --cnf-dir build/order45-excess
+
+Generate and independently verify the exact local-edge cube strata with:
+
+    PYTHONPATH=src:tools python3 tools/generate_order45_edge_strata.py
+    PYTHONPATH=src:tools python3 tools/verify_order45_edge_strata.py \
+      build/order45-strata/manifest.json --cnf-dir build/order45-strata
+    sh scripts/build_cadical_assumption_scan.sh

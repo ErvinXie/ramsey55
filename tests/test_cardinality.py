@@ -3,11 +3,26 @@ from __future__ import annotations
 from itertools import product
 import unittest
 
-from ramsey55.cardinality import cardinality_range_encoding
+from ramsey55.cardinality import at_least_counter_encoding, cardinality_range_encoding
 from ramsey55.sat import clause_is_satisfied
 
 
 class CardinalityEncodingTests(unittest.TestCase):
+    def test_observable_counter_outputs_exact_count(self) -> None:
+        maximum, clauses, outputs = at_least_counter_encoding((1, -2, 3), 3, 3)
+        for primary in product((False, True), repeat=3):
+            satisfying = []
+            for auxiliary in product((False, True), repeat=maximum - 3):
+                values = primary + auxiliary
+                assignment = {v: values[v - 1] for v in range(1, maximum + 1)}
+                if all(clause_is_satisfied(c, assignment) for c in clauses):
+                    satisfying.append(assignment)
+            self.assertEqual(len(satisfying), 1)
+            count = int(primary[0]) + int(not primary[1]) + int(primary[2])
+            self.assertEqual(
+                tuple(satisfying[0][v] for v in outputs),
+                tuple(j <= count for j in range(1, 4)),
+            )
     def test_all_primary_and_auxiliary_assignments_through_size_four(self) -> None:
         for size in range(1, 5):
             inputs = tuple(range(1, size + 1))

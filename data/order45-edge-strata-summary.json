@@ -1,0 +1,15 @@
+{
+  "cnfs": [
+    {"clauses": 2751846, "cubes": 28, "degree": 20, "sha256": "136f2db49207d56d5089b41d1a125b20933b53519a60eec78968a5f1d66cbfb1", "variables": 78697},
+    {"clauses": 2745658, "cubes": 36, "degree": 21, "sha256": "11a9d318a16f5cfcf7893a5414ef85da069459beec1d8c26fc8a99bcc6537745", "variables": 77148},
+    {"clauses": 2743672, "cubes": 45, "degree": 22, "sha256": "cb521e04f89ae315a4e9c1ba7da7ca5945b679ba5fa94138f2946e1a66752420", "variables": 76651}
+  ],
+  "cube_file_sha256": {"20": "4b0cdfc27cb1bf5cfb165f232a3994246deabd02e3979059be0367be71b4c3f5", "21": "63561ce3899ff18cf914e3a09a6db309e5adc8abd20e10f38a8bc2890202165b", "22": "2cc7403fec6dfec99072c9e343994d7d44fda425c05b26c3b037408e1647016d"},
+  "generated_manifest_sha256": "feb5fb09aa5744c2a5caa9efc98a95160ba779d6ec279ae831dbff8f5a3285f0",
+  "scan_10000_conflicts": {
+    "all_status": "UNKNOWN",
+    "result_sha256": {"20": "19cae0598b96e2d89bab27a57a2aaa40f44a95dd13654df30bb27b0651476342", "21": "0af520c315c5cb9ec35ea58e56c7c7e772044853bcabf4b6a2c980b814527a6a", "22": "4236c9746362c65f8d77d6528e5aaea6fa0a35f6fbc6c9fe549477bd51a782f4"},
+    "total_seconds": {"20": 97.3638, "21": 138.243, "22": 179.796}
+  },
+  "schema": "ramsey55.order45-edge-strata-summary.v1"
+}

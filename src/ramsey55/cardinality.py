@@ -7,6 +7,42 @@ from typing import Sequence
 from .sat import Clause
 
 
+def at_least_counter_encoding(
+    inputs: Sequence[int], threshold: int, maximum_variable: int
+) -> tuple[int, tuple[Clause, ...], tuple[int, ...]]:
+    """Define all final ``at least j`` states through ``threshold``."""
+
+    size = len(inputs)
+    if not 1 <= threshold <= size:
+        raise ValueError("counter threshold outside input range")
+    if any(lit == 0 or abs(lit) > maximum_variable for lit in inputs):
+        raise ValueError("counter inputs must be existing nonzero literals")
+    if len({abs(lit) for lit in inputs}) != size:
+        raise ValueError("counter inputs must be distinct")
+    variable = maximum_variable
+    clauses: list[Clause] = []
+    state = [[0] * (threshold + 1) for _ in range(size + 1)]
+    for i, item in enumerate(inputs, 1):
+        for j in range(1, min(i, threshold) + 1):
+            variable += 1
+            current = state[i][j] = variable
+            if i == j == 1:
+                clauses += [(-current, item), (-item, current)]
+            elif j == 1:
+                old = state[i - 1][1]
+                clauses += [(-old, current), (-item, current), (-current, old, item)]
+            elif j == i:
+                diagonal = state[i - 1][j - 1]
+                clauses += [(-current, diagonal), (-current, item),
+                            (-diagonal, -item, current)]
+            else:
+                old, diagonal = state[i - 1][j], state[i - 1][j - 1]
+                clauses += [(-old, current), (-diagonal, -item, current),
+                            (-current, old, diagonal), (-current, old, item)]
+    outputs = tuple(state[size][j] for j in range(1, threshold + 1))
+    return variable, tuple(clauses), outputs
+
+
 def cardinality_range_encoding(
     inputs: Sequence[int],
     lower: int,
