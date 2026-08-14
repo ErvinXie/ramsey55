@@ -264,7 +264,12 @@ fatal by default; `--allow-partial` produces only an explicitly incomplete
 progress inventory.
 The committed `data/order45-strata-leaf-pilot.json` records four 120-second
 parameter comparisons with formula, cube, runner, and TSV hashes. It is
-explicitly UNKNOWN telemetry. On the representative d20/d21/d22 cubes,
+explicitly UNKNOWN telemetry. Its historical root-only runner had an argument
+parsing defect that ignored the requested per-solve time cap; the manifest now
+records both the requested value and the true effective value zero. No proof
+claim depended on those runs. The corrected runner prints all effective
+parameters into its log, and the leaf auditor requires them to match its
+declared configuration. On the representative d20/d21/d22 cubes,
 10,000-conflict auxiliary splitting left 2/1/2 open leaves, versus 14/13/15
 when dynamic choices were forced to the 990 graph-edge variables and 4/4/7
 with the lower 1,000-conflict auxiliary budget. Raising the auxiliary budget

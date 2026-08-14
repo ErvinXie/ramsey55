@@ -7,6 +7,7 @@ import unittest
 
 from tools.audit_order45_strata_leaf_proofs import (
     audit_root_results,
+    audit_runner_log,
     read_bound_cubes,
 )
 
@@ -22,7 +23,15 @@ class Order45StrataLeafProofAuditTests(unittest.TestCase):
         self.assertEqual(document["timeout_seconds"], 120)
         self.assertEqual(len(document["cases"]), 3)
         self.assertEqual(len(document["configurations"]), 4)
+        self.assertIn("ignored", document["parameter_note"])
         for configuration in document["configurations"]:
+            self.assertEqual(
+                configuration["parameters"]["maximum_solve_seconds"], 0.0
+            )
+            self.assertGreater(
+                configuration["parameters"]["requested_maximum_solve_seconds"],
+                0.0,
+            )
             self.assertEqual(len(configuration["results"]), 3)
             for result in configuration["results"]:
                 self.assertEqual(
@@ -75,6 +84,36 @@ class Order45StrataLeafProofAuditTests(unittest.TestCase):
             )
             with self.assertRaisesRegex(ValueError, "unbalanced"):
                 audit_root_results(path, 0)
+
+    def test_audits_logged_runner_parameters(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "runner.log"
+            path.write_text(
+                "conflicts\t30000\n"
+                "maximum_conflicts\t128000\n"
+                "maximum_lookahead_seconds\t1\n"
+                "maximum_primary_split_variable\t0\n"
+                "maximum_solve_seconds\t10\n"
+                "root_index\t15\n"
+                "status\t20\n",
+                encoding="utf-8",
+            )
+            audit_runner_log(path, 15, 30000, 128000, 1.0, 0, 10.0)
+
+    def test_rejects_misreported_runner_parameters(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "runner.log"
+            path.write_text(
+                "conflicts\t30000\n"
+                "maximum_conflicts\t128000\n"
+                "maximum_lookahead_seconds\t1\n"
+                "maximum_primary_split_variable\t0\n"
+                "maximum_solve_seconds\t0\n"
+                "root_index\t15\n",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "runner parameter mismatch"):
+                audit_runner_log(path, 15, 30000, 128000, 1.0, 0, 10.0)
 
 
 if __name__ == "__main__":

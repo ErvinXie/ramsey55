@@ -5,10 +5,11 @@
     {"cube_index": 15, "cubes_sha256": "2cc7403fec6dfec99072c9e343994d7d44fda425c05b26c3b037408e1647016d", "degree": 22, "formula_sha256": "cb521e04f89ae315a4e9c1ba7da7ca5945b679ba5fa94138f2946e1a66752420"}
   ],
   "claim": "120-second UNKNOWN search telemetry; not an UNSAT certificate",
+  "parameter_note": "The historical runner ignored the requested maximum solve time in root-only mode because of an argc parsing defect. The effective value below is zero; requested_maximum_solve_seconds records the command-line value for reproducibility.",
   "configurations": [
     {
       "name": "primary-10k",
-      "parameters": {"conflicts": 10000, "maximum_conflicts": 128000, "maximum_lookahead_seconds": 1.0, "maximum_primary_split_variable": 990, "maximum_solve_seconds": 5.0},
+      "parameters": {"conflicts": 10000, "maximum_conflicts": 128000, "maximum_lookahead_seconds": 1.0, "maximum_primary_split_variable": 990, "maximum_solve_seconds": 0.0, "requested_maximum_solve_seconds": 5.0},
       "results": [
         {"closed": 3, "degree": 20, "maximum_depth": 15, "open": 14, "reported_seconds": 109.365176, "rows": 19, "splits": 16, "tsv_sha256": "aac4edfe6cf4b1ec15da6f4ae01b16bd57cce4c9ab60eccea199f983090146c4"},
         {"closed": 1, "degree": 21, "maximum_depth": 12, "open": 13, "reported_seconds": 111.560676, "rows": 14, "splits": 13, "tsv_sha256": "7daad3d5c96455d1d59355b6c6f671aeeedc1809aebd2aed94552889657803d7"},
@@ -17,7 +18,7 @@
     },
     {
       "name": "auxiliary-10k",
-      "parameters": {"conflicts": 10000, "maximum_conflicts": 128000, "maximum_lookahead_seconds": 1.0, "maximum_primary_split_variable": 0, "maximum_solve_seconds": 5.0},
+      "parameters": {"conflicts": 10000, "maximum_conflicts": 128000, "maximum_lookahead_seconds": 1.0, "maximum_primary_split_variable": 0, "maximum_solve_seconds": 0.0, "requested_maximum_solve_seconds": 5.0},
       "results": [
         {"closed": 21, "degree": 20, "maximum_depth": 22, "open": 2, "reported_seconds": 108.865898, "rows": 43, "splits": 22, "tsv_sha256": "01a0997fcae8c385372440e6ed998bb71744da0d0dd9e78833f6c6748ba0e203"},
         {"closed": 13, "degree": 21, "maximum_depth": 13, "open": 1, "reported_seconds": 110.153052, "rows": 26, "splits": 13, "tsv_sha256": "605ecef406d10a43707acbb1a78eb716d19d2204854969eb6e2dfdab009eeb11"},
@@ -26,7 +27,7 @@
     },
     {
       "name": "auxiliary-1k",
-      "parameters": {"conflicts": 1000, "maximum_conflicts": 128000, "maximum_lookahead_seconds": 0.5, "maximum_primary_split_variable": 0, "maximum_solve_seconds": 2.0},
+      "parameters": {"conflicts": 1000, "maximum_conflicts": 128000, "maximum_lookahead_seconds": 0.5, "maximum_primary_split_variable": 0, "maximum_solve_seconds": 0.0, "requested_maximum_solve_seconds": 2.0},
       "results": [
         {"closed": 104, "degree": 20, "maximum_depth": 73, "open": 4, "reported_seconds": 115.953906, "rows": 211, "splits": 107, "tsv_sha256": "137790ac5447cdca1bcb6ef4da282d8f7fb296183208fe381e043387a1bdaa0d"},
         {"closed": 86, "degree": 21, "maximum_depth": 42, "open": 4, "reported_seconds": 116.132635, "rows": 175, "splits": 89, "tsv_sha256": "b91a1b7981d298884cae828247c5c9012b5d27907cf21d17817a49a30a401c3d"},
@@ -35,7 +36,7 @@
     },
     {
       "name": "auxiliary-30k",
-      "parameters": {"conflicts": 30000, "maximum_conflicts": 128000, "maximum_lookahead_seconds": 1.0, "maximum_primary_split_variable": 0, "maximum_solve_seconds": 10.0},
+      "parameters": {"conflicts": 30000, "maximum_conflicts": 128000, "maximum_lookahead_seconds": 1.0, "maximum_primary_split_variable": 0, "maximum_solve_seconds": 0.0, "requested_maximum_solve_seconds": 10.0},
       "results": [
         {"closed": 4, "degree": 20, "maximum_depth": 4, "open": 1, "reported_seconds": 111.529023, "rows": 8, "splits": 4, "tsv_sha256": "fd5e362ce6816b7f5795790068a2a0aa9aabd7a7e0f572f72659598df0184e77"},
         {"closed": 5, "degree": 21, "maximum_depth": 5, "open": 1, "reported_seconds": 114.721507, "rows": 10, "splits": 5, "tsv_sha256": "a30591e13e1cac011e8fa8a29758eff7c0f3f98cf3b4c1600ab3dcd9676ba5e7"},

@@ -2,11 +2,12 @@
 set -eu
 
 root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+runner=${RAMSEY55_CUBE_PROOF_RUNNER:-"$root/build/prove_cadical_cubes"}
 temporary=$(mktemp -d "${TMPDIR:-/tmp}/ramsey55-cube-proof.XXXXXX")
 trap 'rm -rf "$temporary"' EXIT HUP INT TERM
 
 set +e
-"$root/build/prove_cadical_cubes" \
+"$runner" \
   "$root/tests/data/cube-proof-smoke.cnf" \
   "$root/tests/data/cube-proof-smoke.icnf" \
   "$temporary/proof.drat" "$temporary/results.tsv" 1 \
@@ -24,11 +25,11 @@ fi
 grep -q "s VERIFIED" "$temporary/checker.log"
 
 set +e
-"$root/build/prove_cadical_cubes" \
+"$runner" \
   "$root/tests/data/cube-leaf-smoke.cnf" \
   "$root/tests/data/cube-leaf-smoke.icnf" \
   "$temporary/root-proof.drat" "$temporary/root-results.tsv" \
-  1 1 0 2 0 0 > "$temporary/root-solver.log"
+  1 1 0 2 0.125 0 > "$temporary/root-solver.log"
 root_status=$?
 set -e
 if [ "$root_status" -ne 20 ]; then
@@ -36,6 +37,9 @@ if [ "$root_status" -ne 20 ]; then
   echo "root proof driver returned $root_status instead of 20" >&2
   exit 2
 fi
+grep -q '^maximum_solve_seconds[[:space:]]0.125$' \
+  "$temporary/root-solver.log"
+grep -q '^root_index[[:space:]]0$' "$temporary/root-solver.log"
 python3 "$root/tools/materialize_cnf_cube.py" \
   "$root/tests/data/cube-leaf-smoke.cnf" \
   "$root/tests/data/cube-leaf-smoke.icnf" 0 \

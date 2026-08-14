@@ -135,7 +135,7 @@ int main(int argc, char** argv) try {
     throw std::runtime_error("negative maximum primary split variable");
   }
   const double maximumSolveSeconds =
-      argc == 10 ? std::stod(argv[9]) : 0.0;
+      argc >= 10 ? std::stod(argv[9]) : 0.0;
   if (maximumSolveSeconds < 0.0) {
     throw std::runtime_error("negative maximum solve time");
   }
@@ -144,6 +144,20 @@ int main(int argc, char** argv) try {
   if (rootOnly && selectedRoot >= cubes.size()) {
     throw std::runtime_error("root index is out of range");
   }
+  std::cout << "conflicts\t" << conflictLimit << '\n';
+  std::cout << "maximum_conflicts\t" << maximumConflictLimit << '\n';
+  std::cout << "maximum_lookahead_seconds\t" << maximumLookaheadSeconds
+            << '\n';
+  std::cout << "maximum_primary_split_variable\t"
+            << maximumPrimarySplitVariable << '\n';
+  std::cout << "maximum_solve_seconds\t" << maximumSolveSeconds << '\n';
+  std::cout << "root_index\t";
+  if (rootOnly) {
+    std::cout << selectedRoot;
+  } else {
+    std::cout << "all";
+  }
+  std::cout << std::endl;
   DeadlineTerminator terminator;
   CaDiCaL::Solver solver;
   if (maximumLookaheadSeconds > 0.0 || maximumSolveSeconds > 0.0) {

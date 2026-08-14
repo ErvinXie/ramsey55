@@ -33,6 +33,14 @@ RESULT_HEADER = (
     "split",
     "seconds",
 )
+RUNNER_PARAMETER_KEYS = (
+    "conflicts",
+    "maximum_conflicts",
+    "maximum_lookahead_seconds",
+    "maximum_primary_split_variable",
+    "maximum_solve_seconds",
+    "root_index",
+)
 
 
 def read_bound_cubes(path: Path) -> tuple[dict[str, str], tuple[tuple[int, ...], ...]]:
@@ -111,6 +119,52 @@ def audit_root_results(path: Path, root: int) -> dict[str, int | float]:
         "maximum_conflict_limit": maximum_limit,
         "reported_solve_seconds": round(total_seconds, 6),
     }
+
+
+def audit_runner_log(
+    path: Path,
+    root: int,
+    conflicts: int,
+    maximum_conflicts: int,
+    maximum_lookahead_seconds: float,
+    maximum_primary_split_variable: int,
+    maximum_solve_seconds: float,
+) -> None:
+    values: dict[str, str] = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        fields = line.split("\t")
+        if fields[0] not in RUNNER_PARAMETER_KEYS:
+            continue
+        if len(fields) != 2 or fields[0] in values:
+            raise ValueError(f"invalid runner parameter in {path}: {line!r}")
+        values[fields[0]] = fields[1]
+    missing = set(RUNNER_PARAMETER_KEYS) - values.keys()
+    if missing:
+        raise ValueError(f"missing runner parameters in {path}: {sorted(missing)}")
+    expected = {
+        "conflicts": conflicts,
+        "maximum_conflicts": maximum_conflicts,
+        "maximum_lookahead_seconds": maximum_lookahead_seconds,
+        "maximum_primary_split_variable": maximum_primary_split_variable,
+        "maximum_solve_seconds": maximum_solve_seconds,
+        "root_index": root,
+    }
+    actual = {
+        "conflicts": int(values["conflicts"]),
+        "maximum_conflicts": int(values["maximum_conflicts"]),
+        "maximum_lookahead_seconds": float(
+            values["maximum_lookahead_seconds"]
+        ),
+        "maximum_primary_split_variable": int(
+            values["maximum_primary_split_variable"]
+        ),
+        "maximum_solve_seconds": float(values["maximum_solve_seconds"]),
+        "root_index": int(values["root_index"]),
+    }
+    if actual != expected:
+        raise ValueError(
+            f"runner parameter mismatch in {path}: {actual} != {expected}"
+        )
 
 
 def check_leaf_proof(
@@ -250,6 +304,16 @@ def main() -> None:
                     missing.append(f"d{degree}/c{index}")
                     continue
                 raise ValueError(f"runner did not report status 20 for d{degree}/c{index}")
+            if arguments.conflicts is not None:
+                audit_runner_log(
+                    runner_log,
+                    index,
+                    arguments.conflicts,
+                    arguments.maximum_conflicts,
+                    arguments.maximum_lookahead_seconds,
+                    arguments.maximum_primary_split_variable,
+                    arguments.maximum_solve_seconds,
+                )
             statistics = audit_root_results(results, index)
             if arguments.conflicts is not None:
                 if statistics["minimum_conflict_limit"] != arguments.conflicts:
