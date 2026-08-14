@@ -199,6 +199,21 @@ counter mathematics: define the exact DIMACS input/state literal maps and
 prove the generated mother formula contains those cell, bound, and sum
 clauses.
 
+[Order45Dimacs.lean](../formal/Ramsey55/Order45Dimacs.lean) fixes the numeric
+counter-variable allocation used by the DIMACS generator. It defines the
+row-major cell offset from the lex-clause base and produces all three signed
+four-literal cube lists from the formal edge-pair lists. Kernel checks confirm
+the 28/36/45 lengths, all six manifest endpoint cubes, and that the final J
+outputs are exactly variables 78697, 77148, and 76651—the three mother-formula
+variable maxima. All three numeric theorems have empty axiom audits.
+
+This binds the observable output IDs without embedding 109 hand-written cube
+rows. Still missing is the full input/state literal map theorem showing every
+locally formalized cell clause occurs in the generated DIMACS stream, plus
+formal soundness of its bound and sum clauses. The independent Python verifier
+already checks those bytes and maps, but that fact has not yet been imported
+as a Lean theorem.
+
 [Symmetry.lean](../formal/Ramsey55/Symmetry.lean) adds the generic bridge for
 an optional symmetry-reduced route. It proves that a nonempty finite orbit
 closed under a listed family of transformations has a least representative;

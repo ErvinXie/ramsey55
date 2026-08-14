@@ -10,4 +10,5 @@ import Ramsey55.Order45
 import Ramsey55.CubeCover
 import Ramsey55.CnfCardinality
 import Ramsey55.Order45CubeCover
+import Ramsey55.Order45Dimacs
 import Ramsey55.Symmetry

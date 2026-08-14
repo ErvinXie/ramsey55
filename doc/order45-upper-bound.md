@@ -441,3 +441,12 @@ directory name records the bound so it cannot overwrite the primary-0
 artifacts. This route is deliberately retained despite its wider short-run
 frontier because it has a finite structural split set and avoids relying on a
 very deep chain of auxiliary assignments.
+
+The numeric DIMACS bridge is now kernel-checked in
+`formal/Ramsey55/Order45Dimacs.lean`. A row-major allocation function starts
+from the three post-lex bases and reconstructs every observable H/J output.
+It generates the signed 28/36/45 cube lists, checks all six first/last manifest
+cubes, and proves that the final J outputs are variables 78697/77148/76651.
+These computations have empty axiom audits. The remaining formal data step is
+to show that the mother DIMACS stream contains the corresponding cell, range,
+and sum clauses under the same input/state map.
