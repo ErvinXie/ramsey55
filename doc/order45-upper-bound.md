@@ -279,7 +279,9 @@ justify a second fixed-pair production route. A follow-up that left the
 variables used by the input cubes; after 120 seconds both formulas had only
 four open branches, versus 20/18 with the primary range frozen. This is the
 current preferred fixed-pair production configuration. Every pilot remained
-UNKNOWN.
+UNKNOWN. A 30,000/100,000-conflict follow-up left 4/4 and 3/4 open branches
+respectively; the 10,000 route has the highest split throughput, while a
+100,000-conflict production pair is retained as a small-frontier hedge.
 An additional optional primary-variable bound replaces auxiliary-variable
 lookahead choices by the most frequent unused variable within the bound. For
 the fixed H/J encoding, variables 1 through 480 are exactly the H--J cross

@@ -3,7 +3,9 @@
   "parameters": {
     "edge_strata": {"conflicts": 30000, "maximum_conflicts": 128000, "maximum_lookahead_seconds": 1.0, "maximum_primary_split_variable": 0, "maximum_solve_seconds": 10.0},
     "fixed_pairs": {"conflicts": 10000, "maximum_conflicts": 128000, "maximum_lookahead_seconds": 1.0, "maximum_primary_split_variable": 480, "maximum_solve_seconds": 5.0},
-    "fixed_pairs_primary0": {"conflicts": 10000, "maximum_conflicts": 128000, "maximum_lookahead_seconds": 1.0, "maximum_primary_split_variable": 0, "maximum_solve_seconds": 5.0}
+    "fixed_pairs_primary0": {"conflicts": 10000, "maximum_conflicts": 128000, "maximum_lookahead_seconds": 1.0, "maximum_primary_split_variable": 0, "maximum_solve_seconds": 5.0},
+    "fixed_pairs_primary0_b30000": {"conflicts": 30000, "maximum_conflicts": 128000, "maximum_lookahead_seconds": 1.0, "maximum_primary_split_variable": 0, "maximum_solve_seconds": 10.0},
+    "fixed_pairs_primary0_b100000": {"conflicts": 100000, "maximum_conflicts": 128000, "maximum_lookahead_seconds": 1.0, "maximum_primary_split_variable": 0, "maximum_solve_seconds": 20.0}
   },
   "results": [
     {"case": "d20-c0", "closed": 11, "initial_frozen_variables": 16, "maximum_depth": 12, "open": 2, "reported_seconds": 111.292032, "roots_seen": 1, "rows": 23, "splits": 12, "tsv_sha256": "41ee8c121365d819529b417929e628aaa72b89b65bc4eee359a8e1f87cb55aa8"},
@@ -15,7 +17,11 @@
     {"case": "fixed-j297775", "closed": 16448, "initial_frozen_variables": 494, "maximum_depth": 33, "open": 20, "reported_seconds": 119.803212, "roots_seen": 16384, "rows": 16532, "splits": 84, "tsv_sha256": "f2b6e255111d0e3e5427e3059196a22f518ab141b6db0a656d502809d9a12647"},
     {"case": "fixed-j326185", "closed": 16452, "initial_frozen_variables": 494, "maximum_depth": 30, "open": 18, "reported_seconds": 119.363045, "roots_seen": 16384, "rows": 16538, "splits": 86, "tsv_sha256": "e7d4fcaf296f020de00094b5e34c2aa4e70af7d30e4a766b8ab98278282c6853"},
     {"case": "fixed-primary0-j297775", "closed": 16473, "initial_frozen_variables": 14, "maximum_depth": 32, "open": 4, "reported_seconds": 119.695091, "roots_seen": 16384, "rows": 16566, "splits": 93, "tsv_sha256": "eb9dff1d3512f791c5fae3de99f4fba4fd7dd19fe3ea2c888e854205a5dfb1a7"},
-    {"case": "fixed-primary0-j326185", "closed": 16485, "initial_frozen_variables": 14, "maximum_depth": 38, "open": 4, "reported_seconds": 119.287609, "roots_seen": 16384, "rows": 16590, "splits": 105, "tsv_sha256": "1d4a40cfbf301b1fdbfd74cbec1c0f3a019eccf8988f02f68ab17156d1cc1380"}
+    {"case": "fixed-primary0-j326185", "closed": 16485, "initial_frozen_variables": 14, "maximum_depth": 38, "open": 4, "reported_seconds": 119.287609, "roots_seen": 16384, "rows": 16590, "splits": 105, "tsv_sha256": "1d4a40cfbf301b1fdbfd74cbec1c0f3a019eccf8988f02f68ab17156d1cc1380"},
+    {"case": "fixed-primary0-b30000-j297775", "closed": 16407, "initial_frozen_variables": 14, "maximum_depth": 13, "open": 4, "reported_seconds": 117.512681, "roots_seen": 16384, "rows": 16434, "splits": 27, "tsv_sha256": "bf4aa4f5397e68de9b5f6a1b2510e3e054d722d15036ac3e0fade4a778e66f6c"},
+    {"case": "fixed-primary0-b30000-j326185", "closed": 16408, "initial_frozen_variables": 14, "maximum_depth": 16, "open": 4, "reported_seconds": 116.954769, "roots_seen": 16384, "rows": 16436, "splits": 28, "tsv_sha256": "96ab2e33c2a26ead1035ae04080bad7c59eba98c984fa9199f415d056732bc14"},
+    {"case": "fixed-primary0-b100000-j297775", "closed": 16388, "initial_frozen_variables": 14, "maximum_depth": 4, "open": 3, "reported_seconds": 105.489501, "roots_seen": 16384, "rows": 16395, "splits": 7, "tsv_sha256": "dff6b35e198198e93f5d83f2ac29c3fb4a19e6c252f889ce49f3049c7021c548"},
+    {"case": "fixed-primary0-b100000-j326185", "closed": 16388, "initial_frozen_variables": 14, "maximum_depth": 5, "open": 4, "reported_seconds": 108.252751, "roots_seen": 16384, "rows": 16396, "splits": 8, "tsv_sha256": "daee1cec308ce90a133f9427f7af30c5bfeb0365b03841693a8a191212395bc4"}
   ],
   "runner_sha256": "e3b923c6dce8135c7fdb5a3632695b0a8b6572125c2c56ff2b31fed27198f419",
   "schema": "ramsey55.order45-selective-freeze-pilot.v1",
