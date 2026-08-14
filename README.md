@@ -81,3 +81,9 @@ Generate the degree-window-strengthened pair and run its independent encoder:
     PYTHONPATH=src python3 tools/verify_order45_strengthened_benchmarks.py \
       data/order45-strengthened-benchmark-manifest.json \
       --cnf-dir build/order45-strengthened
+
+Generate the safe cross-row lex-leader variants with:
+
+    PYTHONPATH=src python3 tools/generate_order45_lex_benchmarks.py
+    PYTHONPATH=src:tools python3 tools/verify_order45_lex_benchmarks.py \
+      data/order45-lex-benchmark-manifest.json --cnf-dir build/order45-lex

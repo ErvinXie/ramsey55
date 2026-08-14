@@ -101,6 +101,27 @@ roughly 6--10x propagation increase confirms that the counters are active,
 but conflict or decision counts across different encodings are not a measure
 of distance to UNSAT.
 
+### Cross-row symmetry breaking
+
+After fixing the apex, its neighbours may still be permuted arbitrarily.
+Therefore every labelled orbit has a representative in which the neighbours'
+Boolean rows to the nonneighbour side are lexicographically nondecreasing.
+`src/ramsey55/lex.py` gives a bidirectional prefix-equality encoding, checked
+over every primary and auxiliary assignment through width four. Only the
+neighbour rows are sorted; independently sorting the opposite columns would
+not in general preserve the first ordering.
+
+The d20/d22 formulas have respectively 36,627/36,631 variables and
+2,584,036/2,584,060 clauses, with SHA-256
+`656b31f45a887c255f8a4ce181cb08e1b89675484ee833b58c03db69bf0558f3`
+and `f3e834bab124dc70761e3c33b4461e5d89862cb68b797bfc8e939ec80d22989f`.
+An independent recurrence reconstructed every clause.
+
+Both 60-second Kissat probes remained UNKNOWN. The d20/d22 runs produced
+176,498/173,090 conflicts, 995,991/1,129,574 decisions, and
+60,859,890/59,205,375 propagations. The decision reduction is useful evidence
+that the symmetry is active, not an UNSAT result.
+
 ## What the elementary excess identity covers
 
 For \(H=G[N(v)]\) and \(J\) the complement of the graph on the nonneighbours

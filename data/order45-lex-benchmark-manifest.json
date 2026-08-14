@@ -1,0 +1,30 @@
+{
+  "coverage": "permute the fixed apex neighbours to sort their cross rows",
+  "degree_window": [
+    20,
+    24
+  ],
+  "files": [
+    {
+      "clauses": 2584036,
+      "degree": 20,
+      "path": "r55-n45-d20-deg20-24-lexA.cnf",
+      "sha256": "656b31f45a887c255f8a4ce181cb08e1b89675484ee833b58c03db69bf0558f3",
+      "variables": 36627
+    },
+    {
+      "clauses": 2584060,
+      "degree": 22,
+      "path": "r55-n45-d22-deg20-24-lexA.cnf",
+      "sha256": "f3e834bab124dc70761e3c33b4461e5d89862cb68b797bfc8e939ec80d22989f",
+      "variables": 36631
+    }
+  ],
+  "fixed_star_branches": [
+    20,
+    22
+  ],
+  "order": 45,
+  "schema": "ramsey55.order45-lex-benchmarks.v1",
+  "symmetry": "neighbour-to-nonneighbour rows are lexicographically sorted"
+}
