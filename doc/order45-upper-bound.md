@@ -458,6 +458,14 @@ artifacts. This route is deliberately retained despite its wider short-run
 frontier because it has a finite structural split set and avoids relying on a
 very deep chain of auxiliary assignments.
 
+The primary-990 hedge was later paused recoverably after its three live
+frontiers widened to 47/60/58 nodes, while selective primary-0 was at 2/1/19.
+Likewise, the fixed-pair 10,000-conflict primary-0 pair was paused at 12/11
+open nodes and depths 309/441 because the 100,000-conflict pair had only 4/4
+open nodes at depths 104/64. These are portfolio decisions, not proof results:
+all partial traces and waiting wrappers are retained, and no stopped stream is
+used by a certificate.
+
 The numeric DIMACS bridge is now kernel-checked in
 `formal/Ramsey55/Order45Dimacs.lean`. A row-major allocation function starts
 from the three post-lex bases and reconstructs every observable H/J output.
