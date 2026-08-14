@@ -432,3 +432,12 @@ large SAT regions under one certified lemma. Once such a cover exists, final
 proof production will likely need additional storage and a distributed CPU
 pool for DRAT/LRAT generation and replay. Until then, the existing ARM machine
 is sufficient for the research loop.
+
+The selective unified launcher also accepts
+`RAMSEY55_PRIMARY_SPLIT_MAX=0..990`. The default remains unrestricted
+lookahead (`0`). A fresh `990` hedge freezes the graph-edge variables while
+leaving deterministic counter auxiliaries eligible for preprocessing; its
+directory name records the bound so it cannot overwrite the primary-0
+artifacts. This route is deliberately retained despite its wider short-run
+frontier because it has a finite structural split set and avoids relying on a
+very deep chain of auxiliary assignments.
