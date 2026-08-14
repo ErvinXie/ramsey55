@@ -231,11 +231,12 @@ binary DRAT stream, solves each cube under assumptions, calls CaDiCaL's
 lookahead split when a conflict budget expires. A final assumption-free
 UNSAT call must derive the empty clause. The complete mechanism is exercised
 on `tests/data/cube-proof-smoke.*` and independently accepted by `drat-trim`.
-The runner accepts optional maximum-conflict and maximum-lookahead-time
-arguments. The latter is important because CaDiCaL's probing lookahead has no
-native propagation limit; on expiry its supported `Terminator` callback makes
-lookahead return the best occurrence-ranked split found so far. This changes
-only the search heuristic, not the emitted proof or its independent replay.
+The runner accepts optional maximum-conflict, maximum-lookahead-time, and
+maximum-solve-time arguments. The time bounds use CaDiCaL's supported
+`Terminator` callback. The lookahead bound is important because probing has no
+native propagation limit; on expiry lookahead returns the best
+occurrence-ranked split found so far. These controls change only the search
+heuristic, not the emitted proof or its independent replay.
 An additional optional primary-variable bound replaces auxiliary-variable
 lookahead choices by the most frequent unused variable within the bound. For
 the fixed H/J encoding, variables 1 through 480 are exactly the H--J cross

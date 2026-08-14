@@ -185,6 +185,7 @@ def main() -> None:
     parser.add_argument("--maximum-conflicts", type=int)
     parser.add_argument("--maximum-lookahead-seconds", type=float)
     parser.add_argument("--maximum-primary-split-variable", type=int, default=0)
+    parser.add_argument("--maximum-solve-seconds", type=float, default=0.0)
     parser.add_argument(
         "--output",
         type=Path,
@@ -209,6 +210,11 @@ def main() -> None:
             parser.error("invalid proof-runner parameters")
     if arguments.maximum_primary_split_variable < 0:
         parser.error("invalid maximum primary split variable")
+    if (
+        not math.isfinite(arguments.maximum_solve_seconds)
+        or arguments.maximum_solve_seconds < 0
+    ):
+        parser.error("invalid maximum solve time")
 
     formula_manifest = json.loads(arguments.formula_manifest.read_text())
     if formula_manifest.get("schema") != "ramsey55.order45-fixed-pairs.v1":
@@ -293,6 +299,7 @@ def main() -> None:
                     "maximum_primary_split_variable": (
                         arguments.maximum_primary_split_variable
                     ),
+                    "maximum_solve_seconds": arguments.maximum_solve_seconds,
                 }
                 if arguments.conflicts is not None
                 else None

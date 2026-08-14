@@ -100,11 +100,12 @@ std::vector<int> rankPrimaryVariables(const std::string& path, int limit) {
 }  // namespace
 
 int main(int argc, char** argv) try {
-  if (argc < 6 || argc > 9) {
+  if (argc < 6 || argc > 10) {
     std::cerr << "usage: prove_cadical_cubes input.cnf cubes proof.drat"
                  " results.tsv conflicts [maximum-conflicts]"
                  " [maximum-lookahead-seconds]"
-                 " [maximum-primary-split-variable]\n";
+                 " [maximum-primary-split-variable]"
+                 " [maximum-solve-seconds]\n";
     return 2;
   }
   const auto cubes = readCubes(argv[2]);
@@ -116,18 +117,23 @@ int main(int argc, char** argv) try {
     throw std::runtime_error("maximum conflict limit is below base limit");
   }
   const double maximumLookaheadSeconds =
-      argc == 8 ? std::stod(argv[7]) : 0.0;
+      argc >= 8 ? std::stod(argv[7]) : 0.0;
   if (maximumLookaheadSeconds < 0.0) {
     throw std::runtime_error("negative maximum lookahead time");
   }
   const int maximumPrimarySplitVariable =
-      argc == 9 ? std::stoi(argv[8]) : 0;
+      argc >= 9 ? std::stoi(argv[8]) : 0;
   if (maximumPrimarySplitVariable < 0) {
     throw std::runtime_error("negative maximum primary split variable");
   }
+  const double maximumSolveSeconds =
+      argc == 10 ? std::stod(argv[9]) : 0.0;
+  if (maximumSolveSeconds < 0.0) {
+    throw std::runtime_error("negative maximum solve time");
+  }
   DeadlineTerminator terminator;
   CaDiCaL::Solver solver;
-  if (maximumLookaheadSeconds > 0.0) {
+  if (maximumLookaheadSeconds > 0.0 || maximumSolveSeconds > 0.0) {
     solver.connect_terminator(&terminator);
   }
   solver.set("quiet", 1);
@@ -185,8 +191,10 @@ int main(int argc, char** argv) try {
     if (!solver.limit("conflicts", effectiveLimit)) {
       throw std::runtime_error("conflict limit rejected");
     }
+    if (maximumSolveSeconds > 0.0) terminator.start(maximumSolveSeconds);
     const auto start = Clock::now();
     const int status = solver.solve();
+    terminator.stop();
     const double seconds =
         std::chrono::duration<double>(Clock::now() - start).count();
     const std::size_t attempt = attempts++;
