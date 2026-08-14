@@ -135,23 +135,33 @@ treating catalog completeness as an informal assumption.
 
 [CubeCover.lean](../formal/Ramsey55/CubeCover.lean) defines finite Boolean
 assignments, signed CNF literals, clauses, formulas, cubes, exhaustive cube
-families, and formula/cube unsatisfiability. It proves two generic results used
-by the order-45 certificate pipeline:
+families, formula-relative cube covers, and formula/cube unsatisfiability. It
+proves the generic results used by the order-45 certificate pipeline:
 
     theorem satisfies_split_of_satisfies_cube ...
+    theorem cnfCubeFamilyCoversFormula_split_head ...
+    theorem cnfFormulaIsUnsat_of_relativeCubeCover ...
     theorem cnfFormulaIsUnsat_of_cubeCover ...
 
 The first proves that replacing a parent cube by its two children obtained by
-adding a literal and its negation preserves coverage. The second proves that
-independently refuting every cube in an exhaustive family refutes the mother
-CNF. The mother-formula theorem's axiom audit is empty; the split theorem uses
-only Lean's standard `propext`.
+adding a literal and its negation preserves local coverage. The second lifts
+that split through a cover relative to the mother formula. The relative
+composition theorem proves that independently refuting every cube refutes the
+mother CNF whenever every satisfying assignment lies in some cube. This is
+strictly the right interface for the d20/d21/d22 edge-pair cubes: their
+counter-value cases cover assignments satisfying the counter and bound
+clauses, but are not claimed to be a DNF tautology on assignments that already
+violate the formula. An unconditional DNF cover is proved to imply a relative
+cover, preserving the original composition theorem. Both mother-formula
+theorems have empty axiom audits; the split theorems use only Lean's standard
+`propext`.
 
 This is the formal composition interface, not yet the completed order-45
 proof. Remaining formal work includes connecting the concrete DIMACS encoder
-to graph colourings, importing or checking the generated cube-cover data and
-leaf UNSAT results, and connecting the full excess-witness reduction to an
-arbitrary Ramsey-free 45-vertex colouring.
+to graph colourings, proving the sequential-counter clauses give the exact
+edge counts used by the concrete relative cover, importing or checking the
+generated cube data and leaf UNSAT results, and connecting the full
+excess-witness reduction to an arbitrary Ramsey-free 45-vertex colouring.
 
 [Symmetry.lean](../formal/Ramsey55/Symmetry.lean) adds the generic bridge for
 an optional symmetry-reduced route. It proves that a nonempty finite orbit

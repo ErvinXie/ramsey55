@@ -38,6 +38,15 @@ def CnfCubeFamilyCovers {variables : Nat}
     (cubes : List (CnfCube variables)) : Prop :=
   ∀ assignment, ∃ cube ∈ cubes, SatisfiesCnfCube assignment cube
 
+/-- The cube family covers every assignment that satisfies a particular
+mother formula. Unlike `CnfCubeFamilyCovers`, this permits a structural cover
+whose cases are exhaustive only after the formula's counter and bound clauses
+are assumed. -/
+def CnfCubeFamilyCoversFormula {variables : Nat}
+    (formula : CnfFormula variables) (cubes : List (CnfCube variables)) : Prop :=
+  ∀ assignment, SatisfiesCnfFormula assignment formula →
+    ∃ cube ∈ cubes, SatisfiesCnfCube assignment cube
+
 def CnfCubeIsUnsat {variables : Nat}
     (formula : CnfFormula variables) (cube : CnfCube variables) : Prop :=
   ¬∃ assignment, SatisfiesCnfFormula assignment formula ∧
@@ -74,6 +83,48 @@ theorem satisfies_split_of_satisfies_cube {variables : Nat}
     · exact negative
     · exact parent item membership
 
+/-- Replacing one covered parent by its two signed children preserves a cover
+relative to the mother formula. -/
+theorem cnfCubeFamilyCoversFormula_split_head {variables : Nat}
+    (formula : CnfFormula variables) (cubes : List (CnfCube variables))
+    (parent : CnfCube variables) (literal : CnfLiteral variables)
+    (cover : CnfCubeFamilyCoversFormula formula (parent :: cubes)) :
+    CnfCubeFamilyCoversFormula formula
+      ((literal :: parent) :: (literal.negate :: parent) :: cubes) := by
+  intro assignment formulaSatisfied
+  rcases cover assignment formulaSatisfied with
+    ⟨cube, cubeMember, cubeSatisfied⟩
+  simp only [List.mem_cons] at cubeMember
+  rcases cubeMember with rfl | cubeMember
+  · rcases satisfies_split_of_satisfies_cube assignment cube literal
+      cubeSatisfied with positive | negative
+    · exact ⟨literal :: cube, by simp, positive⟩
+    · exact ⟨literal.negate :: cube, by simp, negative⟩
+  · exact ⟨cube, by simp [cubeMember], cubeSatisfied⟩
+
+/-- An unconditional DNF cover is in particular a cover of the satisfying
+assignments of any mother formula. -/
+theorem cnfCubeFamilyCoversFormula_of_cover {variables : Nat}
+    (formula : CnfFormula variables) (cubes : List (CnfCube variables))
+    (cover : CnfCubeFamilyCovers cubes) :
+    CnfCubeFamilyCoversFormula formula cubes := by
+  intro assignment _
+  exact cover assignment
+
+/-- Refuting every member of a formula-relative exhaustive cube family
+refutes the mother CNF. This is the composition theorem used by structural
+edge-count covers, which need not be tautologies on assignments that already
+violate the mother formula. -/
+theorem cnfFormulaIsUnsat_of_relativeCubeCover {variables : Nat}
+    (formula : CnfFormula variables) (cubes : List (CnfCube variables))
+    (cover : CnfCubeFamilyCoversFormula formula cubes)
+    (leaves : ∀ cube ∈ cubes, CnfCubeIsUnsat formula cube) :
+    CnfFormulaIsUnsat formula := by
+  intro satisfiable
+  rcases satisfiable with ⟨assignment, formulaSatisfied⟩
+  rcases cover assignment formulaSatisfied with
+    ⟨cube, cubeMember, cubeSatisfied⟩
+  exact leaves cube cubeMember ⟨assignment, formulaSatisfied, cubeSatisfied⟩
 /-- Independently refuting every member of an exhaustive cube family refutes
 the mother CNF. The proof does not trust how the cubes or leaf proofs were
 found; those enter only through `cover` and `leaves`. -/
@@ -82,12 +133,12 @@ theorem cnfFormulaIsUnsat_of_cubeCover {variables : Nat}
     (cover : CnfCubeFamilyCovers cubes)
     (leaves : ∀ cube ∈ cubes, CnfCubeIsUnsat formula cube) :
     CnfFormulaIsUnsat formula := by
-  intro satisfiable
-  rcases satisfiable with ⟨assignment, formulaSatisfied⟩
-  rcases cover assignment with ⟨cube, cubeMember, cubeSatisfied⟩
-  exact leaves cube cubeMember ⟨assignment, formulaSatisfied, cubeSatisfied⟩
+  exact cnfFormulaIsUnsat_of_relativeCubeCover formula cubes
+    (cnfCubeFamilyCoversFormula_of_cover formula cubes cover) leaves
 
 #print axioms satisfies_split_of_satisfies_cube
+#print axioms cnfCubeFamilyCoversFormula_split_head
+#print axioms cnfFormulaIsUnsat_of_relativeCubeCover
 #print axioms cnfFormulaIsUnsat_of_cubeCover
 
 end Ramsey55
