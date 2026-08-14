@@ -32,6 +32,33 @@ theorem exists_finite_orbit_leader
   exact List.min_le_of_mem
     (orbitClosed leader leaderMember transformation transformationMember)
 
+/-- If every satisfying assignment comes with a finite closed orbit of
+satisfying assignments, refuting all assignments that obey the listed
+lex-leader inequalities refutes the original predicate. -/
+theorem predicate_unsat_of_no_finite_orbit_leader
+    {Assignment : Type u} [LE Assignment] [Min Assignment]
+    [Std.IsLinearOrder Assignment] [Std.LawfulOrderMin Assignment]
+    (transformations : List (Assignment → Assignment))
+    (predicate : Assignment → Prop)
+    (orbit : Assignment → List Assignment)
+    (orbitNonempty : ∀ assignment, orbit assignment ≠ [])
+    (orbitSatisfies : ∀ assignment, predicate assignment →
+      ∀ member ∈ orbit assignment, predicate member)
+    (orbitClosed : ∀ assignment, ∀ member ∈ orbit assignment,
+      ∀ transformation ∈ transformations,
+        transformation member ∈ orbit assignment)
+    (noLeader : ¬∃ leader, predicate leader ∧
+      ∀ transformation ∈ transformations,
+        leader ≤ transformation leader) :
+    ¬∃ assignment, predicate assignment := by
+  rintro ⟨assignment, satisfies⟩
+  rcases exists_finite_orbit_leader transformations (orbit assignment)
+      predicate (orbitNonempty assignment)
+      (orbitSatisfies assignment satisfies) (orbitClosed assignment) with
+    ⟨leader, _, leaderSatisfies, leaderMinimal⟩
+  exact noLeader ⟨leader, leaderSatisfies, leaderMinimal⟩
+
 #print axioms exists_finite_orbit_leader
+#print axioms predicate_unsat_of_no_finite_orbit_leader
 
 end Ramsey55

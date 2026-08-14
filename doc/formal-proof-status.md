@@ -159,9 +159,11 @@ closed under a listed family of transformations has a least representative;
 if the base predicate holds throughout the orbit, that representative obeys
 every corresponding lex-leader inequality. Thus a checked lex CNF can be
 used without pretending its symmetry clauses follow by DRAT from the
-unsymmetrized CNF. The theorem is kernel-checked and contains no `sorry` or
-`native_decide`. Concrete permutation invariance, orbit closure, and the
-DIMACS lex-encoding bridge are still explicit missing obligations.
+unsymmetrized CNF. A second theorem packages the contradiction: refuting all
+leaders refutes the original predicate whenever every base solution has such
+a finite closed satisfying orbit. Both theorems are kernel-checked and contain
+no `sorry` or `native_decide`. Concrete permutation invariance, orbit closure,
+and the DIMACS lex-encoding bridge are still explicit missing obligations.
 
 ## Independently checked inputs
 
