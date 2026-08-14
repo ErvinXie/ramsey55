@@ -31,6 +31,11 @@ ADOPT = load_tool("adopt_cartesian_refinement")
 PROJECT = load_tool("project_cube_results")
 COVER = load_tool("verify_cube_cover")
 AUDIT = load_tool("verify_adaptive_cube_covers")
+MATERIALIZED_PROVER = load_tool("prove_materialized_cubes")
+MATERIALIZED_AUDIT = load_tool("audit_materialized_cube_proofs")
+BINARY_COVER = load_tool("certify_binary_cube_cover")
+MATERIALIZED_FRONTIER = load_tool("export_materialized_proof_frontier")
+BINARY_REFINEMENT = load_tool("audit_binary_cube_refinement")
 
 
 class ExternalCubeToolTests(unittest.TestCase):
@@ -135,6 +140,22 @@ class CubeCoverTests(unittest.TestCase):
         self.assertTrue(covered)
         self.assertIn("merge", [step["kind"] for step in steps])
 
+    def test_fast_sibling_certificate_replays(self) -> None:
+        cubes = [
+            frozenset((1, 2)),
+            frozenset((1, -2)),
+            frozenset((-1, 3)),
+            frozenset((-1, -3)),
+        ]
+        steps, residual = BINARY_COVER.merge_certificate(cubes)
+        self.assertIn(frozenset(), residual)
+        self.assertEqual(BINARY_COVER.replay(cubes, steps), residual)
+
+    def test_fast_sibling_certificate_rejects_incomplete_cover(self) -> None:
+        cubes = [frozenset((1, 2)), frozenset((1, -2)), frozenset((-1, 3))]
+        _, residual = BINARY_COVER.merge_certificate(cubes)
+        self.assertNotIn(frozenset(), residual)
+
 
 class AdaptiveCoverAuditTests(unittest.TestCase):
     def test_classifies_header_only_cuber_unsat(self) -> None:
@@ -159,6 +180,45 @@ class AdaptiveCoverAuditTests(unittest.TestCase):
             cubes.write_text("", encoding="ascii")
             with self.assertRaisesRegex(ValueError, "companion"):
                 AUDIT.verify(cubes, root)
+
+
+class MaterializedProofToolTests(unittest.TestCase):
+    def test_cube_hash_binds_order_and_sign(self) -> None:
+        digest = MATERIALIZED_PROVER.cube_sha256([1, -2])
+        self.assertEqual(digest, MATERIALIZED_PROVER.cube_sha256([1, -2]))
+        self.assertNotEqual(digest, MATERIALIZED_PROVER.cube_sha256([-2, 1]))
+        self.assertNotEqual(digest, MATERIALIZED_PROVER.cube_sha256([1, 2]))
+
+    def test_artifact_rejects_path_traversal(self) -> None:
+        with self.assertRaisesRegex(ValueError, "artifact"):
+            MATERIALIZED_AUDIT.artifact(Path("/tmp/proofs"), "../proof.drat")
+
+    def test_exports_only_hash_bound_unknown_results(self) -> None:
+        cubes = [[1], [-1, 2], [-1, -2]]
+        results = []
+        for index, (cube, status) in enumerate(zip(cubes, (20, 0, 20))):
+            results.append(
+                {
+                    "index": index,
+                    "cube": cube,
+                    "cube_sha256": MATERIALIZED_PROVER.cube_sha256(cube),
+                    "status": status,
+                }
+            )
+        indices, unknown = MATERIALIZED_FRONTIER.export_unknown(
+            {"results": results}, cubes
+        )
+        self.assertEqual(indices, [1])
+        self.assertEqual(unknown, [[-1, 2]])
+
+    def test_audits_ordered_complementary_refinement(self) -> None:
+        parents = ((1,), (-1, 2))
+        children = ((1, 3), (1, -3), (-1, 2, -4), (-1, 2, 4))
+        BINARY_REFINEMENT.audit(parents, children, (3, -4))
+
+    def test_rejects_reordered_refinement_children(self) -> None:
+        with self.assertRaisesRegex(ValueError, "positive child"):
+            BINARY_REFINEMENT.audit(((1,),), ((1, -2), (1, 2)), (2,))
 
 
 if __name__ == "__main__":

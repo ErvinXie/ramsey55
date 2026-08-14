@@ -396,6 +396,55 @@ two hard cubes after 120 seconds, while forcing all dynamic choices into the
 therefore retained, and any selective-freeze hedge should continue to allow
 auxiliary choices rather than impose the graph-edge bound.
 
+### Materialized leaf certificates
+
+A second recovery route no longer depends on completing or replaying one
+multi-gigabyte live proof prefix. `tools/export_proof_forest.py` takes one
+byte snapshot of a unified DFS table and reconstructs both every terminal
+UNSAT leaf and every still-open node. `tools/audit_proof_forest.py` rebuilds
+that forest from the snapshot and independently calls the Boolean DPLL cover
+checker on every original root's terminal-leaf refinement. The original cube
+family can additionally be reduced by the replayable sibling-merge
+certificate in `tools/certify_binary_cube_cover.py`. These two checks separate
+the purely Boolean cover obligation from SAT solving.
+
+`tools/prove_materialized_cubes.py` appends each cube as DIMACS unit clauses,
+runs an external solver, and retains an UNSAT result only after `drat-trim`
+accepts that exact augmented formula and proof. Its manifest binds the mother
+formula, cube file, ordered cube, augmented CNF, solver and checker binaries,
+proof, and checker log by SHA-256. `tools/audit_materialized_cube_proofs.py`
+then recreates every augmented CNF and replays every proof again. UNKNOWN is a
+first-class partial result and SAT stops frontier processing. A two-leaf
+Kissat/DRAT smoke proof passes both checker invocations. The complete ARM
+Python suite now has 107 passing tests.
+
+The first real snapshots apply this route to the two no-symmetry H100/J132
+fixed-pair streams. They contain 16,750 closed plus four open leaves for
+J297775, and 16,756 closed plus three open leaves for J326185. Their forest
+manifest hashes are respectively
+`c45e0f4c415e94cc499e3120a55146bd7064bae9588a95fb16cea79be31ba013`
+and
+`f374ed7fab802b4432e7b28f83c0de82c9c1f1cbedb79107bdaad30ead64ea7c`.
+Both per-root refinement audits pass. The two 16,384-root initial families
+independently reduce to the empty cube in exactly 16,383 sibling merges; the
+certificate hashes are
+`9751264998b8b290547d52f5cea2538d8f7954b48aad8132bebcab56a25dcc6c`
+and
+`ee1baddd1e031afbc2f15ba19c245440b5b2b010ee73d890a6a234933d0ba8e8`.
+
+Materializing the seven open cubes exposed a useful conquer improvement.
+Default and UNSAT Kissat both closed two of four J297775 cubes and one of
+three J326185 cubes within 120 seconds, with no SAT result. Actual proof-mode
+reruns reproduced those closures and passed an independent replay. The four
+remaining hard parents were replaced by checked complementary child pairs;
+each pair again had one child prove UNSAT in about 0.023 seconds while the
+other remained UNKNOWN at 120 seconds. `tools/run_materialized_proof_chain.py`
+automates this narrow certified refinement with a shorter 20-second budget,
+auditing the previous proofs, UNKNOWN extraction, binary cover, new proofs,
+and state transition at every round. Closed-leaf proof production and the
+open chains are still running. Therefore neither fixed-pair formula, their
+local edge stratum, nor the order-45 theorem is claimed closed here.
+
 That hedge is now running for all three unified mother formulas with exact
 configuration `30000/128000 conflicts, 1 second lookahead, primary bound 0,
 10 seconds solve`. The logged initial frozen-variable counts are only 16, 18,

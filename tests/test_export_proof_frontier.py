@@ -14,6 +14,7 @@ from tools.export_proof_frontier import (
     read_rows,
     reconstruct_frontier,
 )
+from tools.export_proof_forest import reconstruct_forest
 
 
 class ProofFrontierExportTests(unittest.TestCase):
@@ -77,6 +78,31 @@ class ProofFrontierExportTests(unittest.TestCase):
                     # A root split must be followed at depth one.
                     Row(0, 0, 2, 0, 3),
                 ),
+            )
+
+    def test_reconstructs_closed_and_open_forest_leaves(self) -> None:
+        forest = reconstruct_forest(
+            ((1,), (-1,)),
+            {
+                0: (
+                    Row(0, 0, 0, 0, 2),
+                    Row(0, 1, 1, 20, 0),
+                )
+            },
+        )
+        self.assertEqual(forest[0].closed, ((1, 2),))
+        self.assertEqual(forest[0].open, ((1, -2),))
+        self.assertEqual(forest[1].closed, ())
+        self.assertEqual(forest[1].open, ((-1,),))
+
+    def test_rejects_rows_after_unfinished_root(self) -> None:
+        with self.assertRaisesRegex(ValueError, "later root"):
+            reconstruct_forest(
+                ((1,), (-1,)),
+                {
+                    0: (Row(0, 0, 0, 0, 2),),
+                    1: (Row(1, 1, 0, 20, 0),),
+                },
             )
 
     def test_rejects_incomplete_nonfinal_row(self) -> None:
