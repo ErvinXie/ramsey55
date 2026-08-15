@@ -157,13 +157,9 @@ def main() -> int:
         summary = proof_document["summary"]
         if int(summary["sat"]):
             raise RuntimeError(f"SAT result requires investigation: {current_manifest}")
-        if bool(summary["complete_unsat"]):
-            state.update(complete=True, current_manifest=str(current_manifest))
-            atomic_json(state_path, state)
-            print(f"complete at round {round_number}", flush=True)
-            return 20
 
         prefix = arguments.workdir / f"r{round_number:04d}"
+        seed_audit_log = prefix.with_name(prefix.name + "-seed-audit.log")
         parents = prefix.with_name(prefix.name + "-parents.icnf")
         frontier_manifest = prefix.with_name(prefix.name + "-parents.json")
         children = prefix.with_name(prefix.name + "-children.icnf")
@@ -191,6 +187,7 @@ def main() -> int:
             prefix.name + "-fallback-compose.log"
         )
         for path in (
+            seed_audit_log,
             parents,
             frontier_manifest,
             children,
@@ -228,10 +225,15 @@ def main() -> int:
                 "--jobs",
                 str(arguments.jobs),
             ],
-            prefix.with_name(prefix.name + "-seed-audit.log"),
+            seed_audit_log,
         )
         if audit_status:
             raise RuntimeError(f"seed proof audit failed at round {round_number}")
+        if bool(summary["complete_unsat"]):
+            state.update(complete=True, current_manifest=str(current_manifest))
+            atomic_json(state_path, state)
+            print(f"complete at round {round_number}", flush=True)
+            return 20
         export_status = run_logged(
             [
                 sys.executable,

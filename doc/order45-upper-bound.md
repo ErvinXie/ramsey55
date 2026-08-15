@@ -396,6 +396,33 @@ two hard cubes after 120 seconds, while forcing all dynamic choices into the
 therefore retained, and any selective-freeze hedge should continue to allow
 auxiliary choices rather than impose the graph-edge bound.
 
+The depth-952 checkpoint now also has a proof-prefix-independent certificate
+route. A byte snapshot of its 2,000 DFS rows reconstructs 999 closed leaves
+and 30 open leaves over all 28 exact d20 edge-pair roots. The forest manifest,
+closed ICNF, and open ICNF have SHA-256 values
+`5e2d21624ef408246437c9c72d31ddac7b043262b2d12ff37419a85c210f10a3`,
+`2d485bb1e031c101b2a91a7ad9b6358136bafaa042895e980262240a190fe6c3`,
+and
+`4facb09ec98441fec5b2257ac7922b17b7742018d8c69844f94c75234a3fa3b2`.
+Independent forest reconstruction proves that every root is covered, using
+32 Boolean DPLL nodes in total. A 30-second materialized CaDiCaL pass then
+produced and checked DRAT for 991 of the 999 closed leaves, retaining
+3,220,345,242 proof bytes; the remaining leaf indices are
+25, 34, 156, 247, 250, 478, 754, and 788. Its manifest SHA-256 is
+`47b37d9333eb46dff3d241ec6ff44a4a98f6acafd150a184a5fa675b79ee7cd8`.
+The matching pass over all 30 open leaves closed none; its partial-manifest
+SHA-256 is
+`a6cd24c01e318e36b487792014d1dba525d8a148670c5f372f80623b818ae4d0`.
+A 120-second parent-cube pass also closed 0/30, with manifest SHA-256
+`bf0c872f1a40f79d72cec076342a7acd2499d560342d38dfed30a1d49ce72417`.
+Binary refinement is much stronger here. After independent replay of all 991
+closed-leaf proofs, one 120-second round reduced eight hard parents to two,
+and the next reduced two to one. On the 30 open parents, a four-second staged
+round repeatedly gives exactly one checked easy child per parent: the first
+two rounds both ended 30 VERIFIED/30 UNKNOWN rather than widening the
+frontier. Thus this is a much smaller, exactly covered d20 residual with a
+live certified descent, not yet a d20 UNSAT certificate.
+
 ### Materialized leaf certificates
 
 A second recovery route no longer depends on completing or replaying one
@@ -530,6 +557,20 @@ The immutable-state path was exercised on the J297775 pre-switch snapshot:
 443 refined parents and ending at the recorded 17 VERIFIED/17 UNKNOWN
 manifest. The audit hash is
 `944477bfab2b93d3025234441e81573b1734072e4466a4ec0bace99bde57e295`.
+
+`tools/audit_order45_strata_proof_bundle.py` applies the same composition
+discipline to an exact-edge stratum. It hash-binds the mother CNF to the
+edge-strata formula manifest, requires the ordered forest roots to equal that
+manifest's four-literal cubes, reconstructs the forest cover, and audits both
+the closed- and open-leaf proof chains. Its strongest possible output is
+deliberately formula-relative: every exact-edge cube augmentation is UNSAT.
+It always leaves `mother_formula_unsat` false until the separate, kernel-
+checked exact-counter/cube bridge is connected. The materialized producer now
+also checkpoints successful workers in completion order, so one slow earlier
+cube cannot hide already checked proofs in the progress manifest. The chain
+driver now also audits a seed that already claims complete UNSAT before it can
+accept that claim. The complete local Python suite passes 125/125 after these
+additions; the preceding 124-test revision also passed on ARM.
 
 A 120-second ARM portfolio on frozen hard frontiers found CaDiCaL stronger
 than default Kissat on these residuals. It closed 3/17 J297775 open parents,

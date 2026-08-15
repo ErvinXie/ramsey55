@@ -322,6 +322,58 @@ class MaterializedProofToolTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "expected worker failure"):
                 next(results)
 
+    def test_complete_chain_seed_is_audited_before_acceptance(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            formula = root / "formula.cnf"
+            seed = root / "seed.json"
+            refiner = root / "refiner"
+            solver = root / "solver"
+            checker = root / "checker"
+            workdir = root / "chain"
+            formula.write_text("p cnf 1 1\n1 0\n", encoding="ascii")
+            seed.write_text(
+                json.dumps(
+                    {"summary": {"sat": 0, "complete_unsat": True}}
+                ),
+                encoding="utf-8",
+            )
+            for binary in (refiner, solver, checker):
+                binary.write_text("placeholder\n", encoding="ascii")
+
+            calls: list[tuple[list[str], Path]] = []
+            original_argv = sys.argv
+            original_run_logged = MATERIALIZED_CHAIN.run_logged
+
+            def fake_run_logged(command: list[str], log: Path) -> int:
+                calls.append((command, log))
+                return 0
+
+            MATERIALIZED_CHAIN.run_logged = fake_run_logged
+            sys.argv = [
+                "run_materialized_proof_chain.py",
+                str(formula),
+                str(seed),
+                str(workdir),
+                "--refiner",
+                str(refiner),
+                "--solver",
+                str(solver),
+                "--checker",
+                str(checker),
+            ]
+            try:
+                self.assertEqual(MATERIALIZED_CHAIN.main(), 20)
+            finally:
+                MATERIALIZED_CHAIN.run_logged = original_run_logged
+                sys.argv = original_argv
+
+            self.assertEqual(len(calls), 1)
+            self.assertIn("audit_materialized_cube_proofs.py", calls[0][0][1])
+            self.assertEqual(calls[0][1].name, "r0000-seed-audit.log")
+            state = json.loads((workdir / "state.json").read_text())
+            self.assertTrue(state["complete"])
+
     def test_artifact_rejects_path_traversal(self) -> None:
         with self.assertRaisesRegex(ValueError, "artifact"):
             MATERIALIZED_AUDIT.artifact(Path("/tmp/proofs"), "../proof.drat")
