@@ -1048,6 +1048,31 @@ strengthened scan found no additional five-second backbone. The stable record
 `68ffa587f5349193e9ee72542518c63f08e0bedc85534eaaa3d74503ff0f9dbb`
 and also reports `parent_cube_unsat=false`.
 
+The two deepest-cube scans exposed a small set of 23 useful candidate edge
+variables. Testing both polarities of those candidates across all 29 final
+parents found 66 J297775 and 59 J326185 one-sided contradictions. Proof-mode
+reruns and the frontier-level structural auditor accepted all 125. Adding all
+discovered survivor literals to each of the 18 affected parents did not close
+any of them in a 600-second Kissat `--unsat` pass: all 9/9 on each formula
+remained UNKNOWN.
+
+A broader one-second screen then tested both polarities of all 480 primary
+variables on every remaining parent. It found another 193 false polarities
+for J297775 and 178 for J326185, with no SAT result and no variable whose both
+polarities were UNSAT. Proof-mode reruns independently verified all 371.
+`drat-trim` reduced their 1,618,071 raw proof bytes to only 14,779 bytes,
+showing that the resulting contradictions are essentially propagation-level
+once the parent cube and false edge literal are units. Combined with the two
+deepest-parent certificates, the exact final frontiers now carry 216 and 200
+certified primary-edge backbone facts. They cover 14/15 J297775 parents and
+13/14 J326185 parents; only final parent indices 14 and 13, respectively,
+showed no backbone at the tested budget. The frontier-level auditor still
+reports `frontier_unsat=false`: these facts strengthen and organize the open
+search but do not reduce the authoritative 15/14 residual counts.
+The combined stable record
+`data/order45-final-frontier-primary-backbones.json` has SHA-256
+`a5cf6d340adb421916356b7d815a3143fb958ed0a16d4ccddb07d1131e09018d`.
+
 A structural-split pilot does not support replacing lookahead by a fixed
 cross-edge order. For one hash-bound J297775 hard parent, splitting on the
 first unassigned H--J variable (variable 1 in the primary range 1--480) left

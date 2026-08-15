@@ -1,0 +1,116 @@
+{
+  "candidate_matrix": {
+    "candidate_variables": [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 48, 97, 169, 193, 241, 337, 385, 409, 457],
+    "cases": [
+      {
+        "backbone_facts": 66,
+        "bad_branches_icnf_sha256": "7d141b8d0b5751557395948484ad2cb10e8175337c30ce09c7df236e4a63c7e0",
+        "case": "J297775",
+        "lineage_sha256": "b6ff19b6021a48cd402634e6e39a5f3fe16da4ac392bc5aee957ed29cf2411a7",
+        "parents_with_backbones": 9,
+        "proof_manifest_sha256": "334cccdc0f3db2de029abb0474671201d45f096dd1797c843175961f767cecd3",
+        "scan_results_sha256": "1bf10e41806f9fa8e9efb2cdc207823ee498af3a9bcd9a8d1ff7a9987cc9e4cd",
+        "structural_audit_sha256": "cb22ce8afbd9625f87c9b998335c35b02c1981442ed7564b388e083db86a4082",
+        "strengthened_600_results_sha256": "e83cce2d3d3046cf874ec0c466f9786d40482aab1d4fb397babcc6e8392d558d",
+        "strengthened_unknown": 9
+      },
+      {
+        "backbone_facts": 59,
+        "bad_branches_icnf_sha256": "ad315a3622af0aeeeb30a3f5287a0a39d125419756a15d73b8f5af8fc858f8e7",
+        "case": "J326185",
+        "lineage_sha256": "2ec3aeaba713c11d96b1cce4337cc3e18abee113c72f26042082933017ef1523",
+        "parents_with_backbones": 9,
+        "proof_manifest_sha256": "c7d9dbb7d5078a71e2cd9870787ce36a53b566c2b1723cfe7ffffb79dc63b712",
+        "scan_results_sha256": "e679b762d18aef510adae63989689274b529a57d447930fb6d782b007ab56727",
+        "structural_audit_sha256": "5cd8d08cce068afddf29acefb30cecdd7ab4b91916bb67c2edc351e74e858c55",
+        "strengthened_600_results_sha256": "d8bb412003e33c82e6457263a7a050b6f013830122813463ba3d3761dee11dab",
+        "strengthened_unknown": 9
+      }
+    ],
+    "per_cube_seconds": 5,
+    "strengthened_per_cube_seconds": 600
+  },
+  "claim": "416 certified primary-variable backbone facts across the exact final J297775/J326185 frontiers; not a proof that either frontier or formula is UNSAT",
+  "deepest_parent_certificates": [
+    {
+      "backbone_facts": 23,
+      "case": "J297775",
+      "parent_index": 0,
+      "record": "data/order45-j297-c0-primary-backbones.json",
+      "record_sha256": "87e4a6b824db942beecac7498a635f04733dc71544fd5ae4b1573a022b3dbf98"
+    },
+    {
+      "backbone_facts": 22,
+      "case": "J326185",
+      "parent_index": 0,
+      "record": "data/order45-j326-c0-primary-backbones.json",
+      "record_sha256": "68ffa587f5349193e9ee72542518c63f08e0bedc85534eaaa3d74503ff0f9dbb"
+    }
+  ],
+  "full_primary_screen": {
+    "cases": [
+      {
+        "backbone_facts": 193,
+        "bad_branches_icnf_sha256": "8aa255030cdd8461aa8c98a95204e700a1f2ef748d25a558adf53ec61a1864f8",
+        "case": "J297775",
+        "children": 13440,
+        "compact_proof_bytes": 7529,
+        "frontier_parents": 15,
+        "lineage_sha256": "643a9bf52f7e557394054955ed0bc646ca19fce0839e7317f958b64f767930c6",
+        "parents_screened": 14,
+        "parents_with_backbones": 13,
+        "proof_manifest_sha256": "a0dbe235f461717d8ba5d266690f036eeadffadba49ce69dd79447d046443872",
+        "raw_proof_bytes": 827814,
+        "scan_icnf_sha256": "7ea6ceb01466f3cf2b880e4a9c347890be86b765b7e8058de3462ce5519c46ca",
+        "scan_results_sha256": "bb4ba4de58aa1b1e6830c00b329ab8d747dfa808e48ac838fa671c2a94ae7584",
+        "structural_audit_sha256": "d04e474bbfdf04c78b9764fa10084f3e9c35acb97472f2ef51762565452f6db5",
+        "unknown_children": 13247,
+        "unsat_children": 193
+      },
+      {
+        "backbone_facts": 178,
+        "bad_branches_icnf_sha256": "9b5a40a27528f27356a0c2ebf307ea5c08627b34afd63c1ba060946991325fd7",
+        "case": "J326185",
+        "children": 12480,
+        "compact_proof_bytes": 7250,
+        "frontier_parents": 14,
+        "lineage_sha256": "e9626878f7819da7762263d4ec159a62869d6140bb0e4a19cda072239dde4cd1",
+        "parents_screened": 13,
+        "parents_with_backbones": 12,
+        "proof_manifest_sha256": "a92c44e723a681554b0ef654e970a09f31a28f8c70e85ae8838346edb0d82ae9",
+        "raw_proof_bytes": 790257,
+        "scan_icnf_sha256": "8a5a31b61bf39264b5d29ef6000ca92cffc028a88003c06e5a3e978e07c699e2",
+        "scan_results_sha256": "3d0f7fe615bd63a3837b0eaa4060ba252ee4295523d18bd385e346ab78f71b5e",
+        "structural_audit_sha256": "31a751dee004fa5b3189d8aa8164de1072cdabfcc29729c8fd15e4d7112dcc5a",
+        "unknown_children": 12302,
+        "unsat_children": 178
+      }
+    ],
+    "per_cube_seconds": 1,
+    "primary_variable_range": [1, 480]
+  },
+  "schema": "ramsey55.final-frontier-primary-backbone-certificates.v1",
+  "summary": {
+    "J297775": {
+      "backbone_facts": 216,
+      "frontier_parents": 15,
+      "frontier_unsat": false,
+      "parent_without_discovered_backbone": 14,
+      "parents_with_backbones": 14
+    },
+    "J326185": {
+      "backbone_facts": 200,
+      "frontier_parents": 14,
+      "frontier_unsat": false,
+      "parent_without_discovered_backbone": 13,
+      "parents_with_backbones": 13
+    },
+    "total_backbone_facts": 416
+  },
+  "tools": {
+    "frontier_backbone_auditor_sha256": "2c219d60b944ff017d2a302ea41392d98c5724351ca8e4987c1b9674f6fd2eed",
+    "materialized_auditor_sha256": "f27a8c23222a6cdc4d184115067786945be5b37b9dfebf7bdf6e320cb3dd75ea",
+    "producer_sha256": "4730f7486a72c94e508dca8d193428f13b71ead5905321c4843f8c630bdabe77",
+    "search_driver_sha256": "36986fb37fb808a08aaacd677dfe7ae532d1215f7120213a19c316d2bae7599f"
+  }
+}
