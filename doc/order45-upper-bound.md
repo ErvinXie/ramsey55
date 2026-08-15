@@ -453,6 +453,18 @@ The auditor reports the closed chain complete and the open chain incomplete;
 accordingly both `exact_edge_cube_augmentations_unsat` and
 `mother_formula_unsat` remain false.
 
+The growth-guarded d20 continuation later exhausted its 100-round allowance.
+It held exactly 30 UNKNOWN parents throughout, ending with authoritative state
+round 136 and current round-135 manifest SHA-256
+`65dc13f445f85c7b4775562637d1fbcc79ea35001bd94470cbc12199373a210f`.
+The state and chain-log SHA-256 values are
+`fb2dfbc8302cd618d0e7c5f014b8c219df3dfe2110576269f3f3a630ba7f126d`
+and
+`92760da9823000348da445c42f75a506b943bc1ecf6f710cb2ad703d2864cb63`.
+This deeper chain has not yet replaced the independently audited round-36
+boundary in the immutable top-level bundle, and it does not reduce the d20
+residual count.
+
 The immutable v4 bundle extends that same from-scratch audit through the
 frozen open round-36 boundary. Its fourth open segment contains 29 proof
 manifests, 28 complementary refinements, and 840 refined parents; it ends at
@@ -878,6 +890,67 @@ and `be9d166d056db9b97c9b94be8804ac9ec33db74664b5351fccd2f329f605197e`.
 Its following unguarded candidate widened to 32 and was excluded. These
 deeper equal-cardinality boundaries are now the exact sources for long
 certified iGlucose retries; no expanded frontier is part of either bundle.
+
+Those exact long retries materially strengthened both fixed-pair bundles.
+For the single J326185 closed parent at round 242, Kissat returned UNSAT in
+1,208.84 seconds and retained a 203,653,562-byte compact proof with SHA-256
+`a97fc60c5124836e7f70bb2951c20f2772901f3b02032d397736a0eb8bc11e49`.
+The producer manifest has SHA-256
+`39b1f19b76051b82d71eb0258187d5f618aa87736a09a4dfe144510c63d988e8`.
+A separate one-row replay accepted the proof. UNKNOWN-only composition with
+the exact round-241 manifest produced a 2 VERIFIED/0 UNKNOWN manifest with
+SHA-256
+`3e0d5d8183c75a020ada6abadba66a121973e8dd9bbb16a788ecf2db34b308f0`,
+and an independent full replay accepted both rows. A terminal seed replay
+then recorded `complete=true` at round 242. Its state SHA-256 is
+`717a938c01abae380141078b0f2db422bfb8e45084dd506b3f78eeab350a026a`.
+
+The two J297775 closed parents at round 345 were both solved by Kissat in
+1,822.32 and 1,385.11 seconds. Their retained compact proofs are 225,014,063
+and 238,588,047 bytes. The 2/0 producer manifest has SHA-256
+`52c7733f9278afde3263a13b491892a6681982221c4e4dc6ca79aac7a45e5749`;
+a separate two-row replay accepted both. Composition with the already audited
+6/2 eight-row boundary produced 8 VERIFIED/0 UNKNOWN, with manifest SHA-256
+`a0b7ed65f8456e7a7a8ad7806e0208aba172d0157a3dae6a7631215a7012971a`.
+Its full replay log has SHA-256
+`23834eff3d3e461574658b52af7a55ac633c959eb9a820a1f8409bd648544b57`,
+and the terminal chain recorded `complete=true` at round 345. Consequently
+the closed proof-forest side is complete for each fixed-pair formula. This is
+not a fixed-pair UNSAT result because each open side remains incomplete.
+
+Solver-diverse 3,600-second passes reduced those open sides. On the exact 27
+J297775 parents, certified iGlucose proved 5 and Kissat proved 12; the latter
+set subsumes the former. Their smallest-proof portfolio is 12 VERIFIED/15
+UNKNOWN and has manifest SHA-256
+`2db3854fb5e065255ace83e662f9971fbf53ac938eeb7650dac7dd52ec32fe13`.
+A separate replay accepted all twelve proofs. Composition with the round-86
+manifest produced 39 VERIFIED/15 UNKNOWN over 54 rows, with manifest and
+full-audit-log SHA-256 values
+`d93df6413297305364cf858c9017e3138770bbef2837c3b0a3c660e474db5e3c`
+and
+`1ae713008e452d49156770d4354657c98373fd5959130129e4edf22608b79dae`.
+Its guarded next round widened 15 to 16 and was rejected, leaving the
+15-parent boundary authoritative.
+On the exact 22 J326185 parents, iGlucose proved one and Kissat proved eight;
+their portfolio is 8 VERIFIED/14 UNKNOWN with manifest SHA-256
+`984969a1364b061590f00a8eb6d22a1cd9a3b1325e44c862106cec92cb087457`.
+Composition produced 30 VERIFIED/14 UNKNOWN over 44 rows, with manifest and
+full-audit-log SHA-256 values
+`71653f2e3e0e2a217d27dbda497ba2181db9e7f1efd3d1c8448788ce0656f582`
+and
+`36819a518340a35cf88b8a8b40bdd4d6e9989ad3ba7e7f51f7d379e0d2324e11`.
+A guarded next J326185 round widened 14 to 17 and was rejected, leaving the
+14-parent boundary authoritative.
+
+The current J297775 and J326185 fixed-pair bundle files have SHA-256 values
+`879398311418464529fcaf0757c760ca55ef5e0d189f6760fd2485a93d190dfd`
+and
+`87a98e744cc8f03d381cf188da98b73a6f024a379b86a3b8f83ba15defa541c2`.
+All newly appended producer, portfolio, composition, and terminal/guard
+segments were replayed independently before adoption. A new from-scratch
+replay of every earlier bundle segment has not yet been run. In particular,
+the bundle auditor must still report each fixed-pair formula incomplete: the
+authoritative open residual counts are 15 and 14, respectively.
 
 A structural-split pilot does not support replacing lookahead by a fixed
 cross-edge order. For one hash-bound J297775 hard parent, splitting on the
