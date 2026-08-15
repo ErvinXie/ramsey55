@@ -987,6 +987,22 @@ and
 Both audit manifests deliberately report `fixed_pair_unsat=false`: the
 authoritative open residual counts remain 15 and 14, respectively.
 
+An exact-frontier CaDiCaL control then tested whether the remaining hardness
+was merely a solver-profile artifact. The exporter bound the 15 J297775 and
+14 J326185 cubes to composed source manifests with SHA-256 values
+`d93df6413297305364cf858c9017e3138770bbef2837c3b0a3c660e474db5e3c`
+and
+`71653f2e3e0e2a217d27dbda497ba2181db9e7f1efd3d1c8448788ce0656f582`.
+CaDiCaL 2.1.2 ran every cube for 600 seconds under its default and `--unsat`
+profiles and under `--stabilizeonly=true --walk=false --seed=1`. Every one of
+the six batches returned zero SAT, zero UNSAT, and 15/14 UNKNOWN. The stable
+telemetry manifest
+`data/order45-final-open-cadical-profile-600.json` has SHA-256
+`7ab4f07526eb8732e65e6b8ca9288f82983cbf4dddf800752e32f5442b781948`
+and binds the solver, formulas, frontier files, arguments, TSV hashes, and
+timing summaries. This excludes a cheap CaDiCaL-profile shortcut at the tested
+budget; it is negative search telemetry, not an UNSAT certificate.
+
 A structural-split pilot does not support replacing lookahead by a fixed
 cross-edge order. For one hash-bound J297775 hard parent, splitting on the
 first unassigned H--J variable (variable 1 in the primary range 1--480) left

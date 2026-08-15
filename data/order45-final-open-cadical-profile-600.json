@@ -1,0 +1,47 @@
+{
+  "claim": "600-second exact-frontier search telemetry; not an UNSAT certificate",
+  "frontiers": [
+    {
+      "case": "J297775",
+      "formula": "build/order45-fixed-pairs/h0-j297775-nosym.cnf",
+      "formula_sha256": "61a21ab44f1d10708f645ebdf70c1b6c4c3544c4548dfa36211a4f89271a4625",
+      "icnf": "build/order45-fixed-pairs/final-open-cadical-profile-600-v1/j297-r0087-unknown.icnf",
+      "icnf_sha256": "4cb2f260633572d82c1effee1b16459e16b3ccdb04375ff61a7eb230c7be662c",
+      "lineage_sha256": "6014172c1d1917d1ca33e97f9e0da393e9d047da3690e41c6b490d46b4444fc0",
+      "source_manifest_sha256": "d93df6413297305364cf858c9017e3138770bbef2837c3b0a3c660e474db5e3c",
+      "unknown": 15,
+      "unknown_indices": [7, 11, 13, 15, 23, 25, 27, 31, 35, 41, 43, 47, 49, 51, 53]
+    },
+    {
+      "case": "J326185",
+      "formula": "build/order45-fixed-pairs/h0-j326185-nosym.cnf",
+      "formula_sha256": "e783d6b1c2f01832151938a6ec88e8e3708705d0a1af8bfd8851522a1dac78d6",
+      "icnf": "build/order45-fixed-pairs/final-open-cadical-profile-600-v1/j326-r0097-unknown.icnf",
+      "icnf_sha256": "0fd175177364b6205ff7cdd441afb08d255dcb98c9a7a7a91e7cc9f3b558372b",
+      "lineage_sha256": "b5ea1372fd7759b955a288455dc3e13b05e698f5e59a4c1e7b5d4d6f61ef722b",
+      "source_manifest_sha256": "71653f2e3e0e2a217d27dbda497ba2181db9e7f1efd3d1c8448788ce0656f582",
+      "unknown": 14,
+      "unknown_indices": [1, 5, 7, 9, 13, 15, 17, 19, 25, 31, 33, 35, 39, 43]
+    }
+  ],
+  "per_cube_seconds": 600,
+  "profiles": [
+    {"arguments": [], "name": "default"},
+    {"arguments": ["--unsat"], "name": "unsat"},
+    {"arguments": ["--stabilizeonly=true", "--walk=false", "--seed=1"], "name": "stable"}
+  ],
+  "results": [
+    {"case": "J297775", "maximum_seconds": 600.144, "median_seconds": 600.126, "minimum_seconds": 600.115, "profile": "default", "sat": 0, "tsv_sha256": "dd96e7be6e923316f3643f26b3d61d61b0fa45e71afbf9dd67d0124e6bb6039c", "unknown": 15, "unsat": 0},
+    {"case": "J297775", "maximum_seconds": 600.132, "median_seconds": 600.122, "minimum_seconds": 600.029, "profile": "stable", "sat": 0, "tsv_sha256": "d19c7687f6eb454263486e4c1e62c636539086695194fc291d022139a89d2d9b", "unknown": 15, "unsat": 0},
+    {"case": "J297775", "maximum_seconds": 600.147, "median_seconds": 600.126, "minimum_seconds": 600.121, "profile": "unsat", "sat": 0, "tsv_sha256": "007a8e93b272aaf7bf9f78b8663b9720bea9489fea7ac41618ee44d6b1f67b36", "unknown": 15, "unsat": 0},
+    {"case": "J326185", "maximum_seconds": 600.147, "median_seconds": 600.129, "minimum_seconds": 600.110, "profile": "default", "sat": 0, "tsv_sha256": "15c43162f46505e893b6d941124ee900a56919c0154d8a4c1ac7535d6c7d19b5", "unknown": 14, "unsat": 0},
+    {"case": "J326185", "maximum_seconds": 600.150, "median_seconds": 600.128, "minimum_seconds": 600.028, "profile": "stable", "sat": 0, "tsv_sha256": "4e6caa8684c43684705c85b3abfa09a7c8bda567186ae68bac50644a5636939d", "unknown": 14, "unsat": 0},
+    {"case": "J326185", "maximum_seconds": 600.200, "median_seconds": 600.142, "minimum_seconds": 600.114, "profile": "unsat", "sat": 0, "tsv_sha256": "5bd2c4867deb3dccaf3b01f11a9507d23e460c9f8f43fa643b89ed4d46aa33da", "unknown": 14, "unsat": 0}
+  ],
+  "schema": "ramsey55.fixed-pair-final-open-cadical-telemetry.v1",
+  "solver": {
+    "path": ".tools/bin/cadical",
+    "sha256": "c42ba87b1af1c11b564aa6754a4c55911c7c99834a69eb3d802b938dcefc587c",
+    "version": "2.1.2"
+  }
+}
