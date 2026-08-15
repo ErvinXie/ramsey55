@@ -1015,6 +1015,28 @@ results. The hash-bound manifest
 `9bc22be18b6ef73f4e3966e4c6a3e9cf11c8c26d64b07369b8de3de484c7bf6b`,
 keeps these states separate, and again makes no UNSAT claim.
 
+A complete primary-variable scan of the deepest J297775 residual then found
+a structural alternative to another auxiliary-only split. Kissat tested both
+polarities of all 480 H--J edge variables for five seconds and closed 23 of
+the 960 children. The closed children occur on 23 distinct variables, so they
+force the complementary primary literals
+`-25..-36, 37, 38, 48, 97, 169, 193, 241, 337, 385, 409, 457` under that
+194-literal parent cube. All 23 surviving sides remained UNKNOWN at 120
+seconds, and adding all forced literals exposed no further five-second
+backbone among the remaining 457 variables; the parent is therefore still
+open.
+
+The 23 false polarities were rerun in proof mode rather than retained as
+search telemetry. Kissat emitted 4,082,217 bytes of raw DRAT, `drat-trim`
+compacted them to 634,918 bytes, and an independent replay accepted all 23.
+`tools/audit_primary_backbone_proofs.py` additionally checks that every
+proved cube is exactly the same frontier parent plus one false primary
+literal before invoking the materialized-proof auditor. The stable record is
+`data/order45-j297-c0-primary-backbones.json`, SHA-256
+`87e4a6b824db942beecac7498a635f04733dc71544fd5ae4b1573a022b3dbf98`;
+it explicitly records `parent_cube_unsat=false`. These certified backbones
+are a strengthening for the remaining search, not a refutation of the parent.
+
 A structural-split pilot does not support replacing lookahead by a fixed
 cross-edge order. For one hash-bound J297775 hard parent, splitting on the
 first unassigned H--J variable (variable 1 in the primary range 1--480) left

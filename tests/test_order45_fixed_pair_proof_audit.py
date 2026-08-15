@@ -12,9 +12,87 @@ from tools.audit_order45_fixed_pair_proofs import (
     cube_variables,
     dimacs_shape,
 )
+from tools.audit_primary_backbone_proofs import validate_structure
+from tools.prove_materialized_cubes import SCHEMA, cube_sha256, file_sha256
 
 
 class FixedPairProofAuditTests(unittest.TestCase):
+    def test_committed_primary_backbones_do_not_claim_parent_unsat(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        certificate = json.loads(
+            (root / "data/order45-j297-c0-primary-backbones.json").read_text()
+        )
+        self.assertIn("not a proof", certificate["claim"])
+        self.assertFalse(certificate["parent_cube_unsat"])
+        self.assertEqual(len(certificate["backbones"]), 23)
+        self.assertEqual(certificate["certificate"]["proofs_verified"], 23)
+        self.assertEqual(certificate["discovery"]["all_primary_scan"]["unsat"], 23)
+
+    def test_primary_backbone_structure_binds_false_polarities(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            frontier = root / "frontier.icnf"
+            frontier.write_text("a 5 0\n", encoding="ascii")
+            branches = root / "bad.icnf"
+            branches.write_text("a 5 1 0\na 5 -2 0\n", encoding="ascii")
+            lineage = root / "lineage.json"
+            lineage.write_text(
+                json.dumps(
+                    {
+                        "schema": "ramsey55.primary-backbone-discovery.v1",
+                        "case": "tiny",
+                        "frontier_cube_index": 0,
+                        "backbones": [
+                            {
+                                "variable": 1,
+                                "bad_literal": 1,
+                                "survivor_literal": -1,
+                            },
+                            {
+                                "variable": 2,
+                                "bad_literal": -2,
+                                "survivor_literal": 2,
+                            },
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            cubes = [[5, 1], [5, -2]]
+            manifest = root / "manifest.json"
+            manifest.write_text(
+                json.dumps(
+                    {
+                        "schema": SCHEMA,
+                        "formula": {"variables": 5},
+                        "cubes": {
+                            "path": str(branches),
+                            "sha256": file_sha256(branches),
+                            "count": 2,
+                        },
+                        "results": [
+                            {
+                                "index": index,
+                                "status": 20,
+                                "cube": cube,
+                                "cube_sha256": cube_sha256(cube),
+                            }
+                            for index, cube in enumerate(cubes)
+                        ],
+                        "summary": {
+                            "complete_unsat": True,
+                            "sat": 0,
+                            "unknown": 0,
+                            "unsat_verified": 2,
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+            report = validate_structure(frontier, 0, 4, lineage, manifest)
+        self.assertEqual(report["backbones"], [-1, 2])
+        self.assertFalse(report["parent_cube_unsat"])
+
     def test_final_open_solver_diversity_is_explicit_unknown_telemetry(
         self,
     ) -> None:
