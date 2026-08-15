@@ -453,6 +453,20 @@ The auditor reports the closed chain complete and the open chain incomplete;
 accordingly both `exact_edge_cube_augmentations_unsat` and
 `mother_formula_unsat` remain false.
 
+The immutable v4 bundle extends that same from-scratch audit through the
+frozen open round-36 boundary. Its fourth open segment contains 29 proof
+manifests, 28 complementary refinements, and 840 refined parents; it ends at
+the exact 30 VERIFIED/30 UNKNOWN manifest bound by state SHA-256
+`5f6ac0e64ad049e48b1d5a5db3446c1431e24938778a1bf2e7a1086458143545`.
+The v4 bundle, audit, and audit-log SHA-256 values are
+`65d53c59b6ba0548ecf031090cb27828f6f29132c94c69d6ca9b2d1783106902`,
+`b480f877774493b3f27726344d13ad3a5592a64d5c46596d6f47d6acd1b3ea99`,
+and `426fe0bdae44ecf28fc75d0e9976a4b82824deeefa38bac662ab0fe710cd8575`.
+It again reports all 999 closed leaves complete and the 30 open leaves
+incomplete, so both top-level UNSAT flags remain false. A guarded continuation
+now descends from this boundary without accepting any larger UNKNOWN
+frontier.
+
 Three direct open-frontier controls found no shortcut at the tested depths.
 iGlucose at 300 seconds closed 0/30 original forest-open parents. After the
 certified binary chain had descended to its exact round-20 30-parent
