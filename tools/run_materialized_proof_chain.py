@@ -152,6 +152,7 @@ def main() -> int:
         atomic_json(state_path, state)
 
     final_round = round_number + arguments.max_rounds
+    audited_manifest: Path | None = None
     while round_number < final_round:
         proof_document = json.loads(current_manifest.read_text(encoding="utf-8"))
         summary = proof_document["summary"]
@@ -214,21 +215,23 @@ def main() -> int:
             if path.exists():
                 raise RuntimeError(f"refusing to overwrite round artifact {path}")
 
-        audit_status = run_logged(
-            [
-                sys.executable,
-                str(tools / "audit_materialized_cube_proofs.py"),
-                str(current_manifest),
-                "--checker",
-                str(arguments.checker),
-                "--allow-partial",
-                "--jobs",
-                str(arguments.jobs),
-            ],
-            seed_audit_log,
-        )
-        if audit_status:
-            raise RuntimeError(f"seed proof audit failed at round {round_number}")
+        if audited_manifest != current_manifest:
+            audit_status = run_logged(
+                [
+                    sys.executable,
+                    str(tools / "audit_materialized_cube_proofs.py"),
+                    str(current_manifest),
+                    "--checker",
+                    str(arguments.checker),
+                    "--allow-partial",
+                    "--jobs",
+                    str(arguments.jobs),
+                ],
+                seed_audit_log,
+            )
+            if audit_status:
+                raise RuntimeError(f"seed proof audit failed at round {round_number}")
+            audited_manifest = current_manifest
         if bool(summary["complete_unsat"]):
             state.update(complete=True, current_manifest=str(current_manifest))
             atomic_json(state_path, state)
@@ -500,6 +503,7 @@ def main() -> int:
         )
         if proof_audit_status:
             raise RuntimeError(f"new proof audit failed at round {round_number}")
+        audited_manifest = current_manifest
         round_number += 1
         state.update(
             round=round_number,

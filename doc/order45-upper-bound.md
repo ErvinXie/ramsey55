@@ -569,8 +569,11 @@ checked exact-counter/cube bridge is connected. The materialized producer now
 also checkpoints successful workers in completion order, so one slow earlier
 cube cannot hide already checked proofs in the progress manifest. The chain
 driver now also audits a seed that already claims complete UNSAT before it can
-accept that claim. The complete local Python suite passes 125/125 after these
-additions; the preceding 124-test revision also passed on ARM.
+accept that claim. Within one uninterrupted driver it remembers the manifest
+just replayed at the end of the prior round and does not replay those same
+bytes again as the next seed; a resumed process still starts with an
+independent seed replay. The complete local and ARM Python suites pass 125/125
+after these additions.
 
 A 120-second ARM portfolio on frozen hard frontiers found CaDiCaL stronger
 than default Kissat on these residuals. It closed 3/17 J297775 open parents,
