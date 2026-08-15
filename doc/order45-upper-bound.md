@@ -461,9 +461,17 @@ The state and chain-log SHA-256 values are
 `fb2dfbc8302cd618d0e7c5f014b8c219df3dfe2110576269f3f3a630ba7f126d`
 and
 `92760da9823000348da445c42f75a506b943bc1ecf6f710cb2ad703d2864cb63`.
-This deeper chain has not yet replaced the independently audited round-36
-boundary in the immutable top-level bundle, and it does not reduce the d20
-residual count.
+A fresh segment audit replayed 101 proof manifests and reconstructed all 100
+complementary refinements, covering 3,000 parents from round 36 through state
+round 136. It independently reproduced the final 30 VERIFIED/30 UNKNOWN
+summary and `complete_unsat=false`. The segment audit-manifest and log SHA-256
+values are
+`c40173de4879a0be5c53f3d9cf84980ed4ff8fc8a3046f369f3595c9190072d1`
+and
+`e65c28228279340f78dcb75002df95eb5093d6ec2fb19180a320e248871da894`.
+The deeper chain is therefore independently audited, but it has not yet been
+appended to and replayed through the immutable top-level bundle, and it does
+not reduce the d20 residual count.
 
 The immutable v4 bundle extends that same from-scratch audit through the
 frozen open round-36 boundary. Its fourth open segment contains 29 proof
