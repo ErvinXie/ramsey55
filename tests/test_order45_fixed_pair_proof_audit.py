@@ -15,6 +15,29 @@ from tools.audit_order45_fixed_pair_proofs import (
 
 
 class FixedPairProofAuditTests(unittest.TestCase):
+    def test_final_open_solver_diversity_is_explicit_unknown_telemetry(
+        self,
+    ) -> None:
+        root = Path(__file__).resolve().parents[1]
+        telemetry = json.loads(
+            (
+                root / "data/order45-final-open-solver-diversity-600.json"
+            ).read_text()
+        )
+        self.assertIn("not an UNSAT certificate", telemetry["claim"])
+        self.assertEqual(
+            telemetry["schema"],
+            "ramsey55.fixed-pair-final-open-solver-diversity-telemetry.v1",
+        )
+        results = telemetry["minisat"]["results"]
+        self.assertEqual(sum(result["unknown"] for result in results), 29)
+        self.assertEqual(sum(result["sat"] for result in results), 0)
+        self.assertEqual(sum(result["unsat"] for result in results), 0)
+        self.assertEqual(
+            telemetry["lingeling_compatibility"]["status"],
+            "INCOMPATIBLE_INTERNAL_ERROR",
+        )
+
     def test_selective_freeze_pilot_is_explicit_unknown_telemetry(self) -> None:
         root = Path(__file__).resolve().parents[1]
         pilot = json.loads(

@@ -1003,6 +1003,18 @@ and binds the solver, formulas, frontier files, arguments, TSV hashes, and
 timing summaries. This excludes a cheap CaDiCaL-profile shortcut at the tested
 budget; it is negative search telemetry, not an UNSAT certificate.
 
+An independent MiniSat 2.2.1 control then ran the same exact 15/14-cube
+frontiers for 600 seconds per cube. All 29 processes reached the time limit:
+zero returned SAT, zero returned UNSAT, and all remained UNKNOWN. Lingeling
+`bcj` was also built from the retained CnC source, but it exited immediately
+with `watcher stack overflow` on both the base CNF and a J297775 cube reduced
+by one CaDiCaL preprocessing round from 115,162 to 96,215 clauses. Those two
+attempts are recorded as an incompatible solver error, not as UNKNOWN search
+results. The hash-bound manifest
+`data/order45-final-open-solver-diversity-600.json` has SHA-256
+`9bc22be18b6ef73f4e3966e4c6a3e9cf11c8c26d64b07369b8de3de484c7bf6b`,
+keeps these states separate, and again makes no UNSAT claim.
+
 A structural-split pilot does not support replacing lookahead by a fixed
 cross-edge order. For one hash-bound J297775 hard parent, splitting on the
 first unassigned H--J variable (variable 1 in the primary range 1--480) left

@@ -1,0 +1,71 @@
+{
+  "claim": "600-second exact-frontier solver-diversity telemetry; not an UNSAT certificate",
+  "driver": {
+    "path": "tools/solve_external_cubes.py",
+    "sha256": "36986fb37fb808a08aaacd677dfe7ae532d1215f7120213a19c316d2bae7599f"
+  },
+  "frontier_manifest": {
+    "path": "data/order45-final-open-cadical-profile-600.json",
+    "sha256": "7ab4f07526eb8732e65e6b8ca9288f82983cbf4dddf800752e32f5442b781948"
+  },
+  "lingeling_compatibility": {
+    "binary_sha256": "6202016980d16f90c9e89bf84c18fd442735835416eca5684d8d20e66ed8fba2",
+    "build_arguments": ["-O3", "--no-aiger", "--no-yalsat", "--no-druplig"],
+    "error": "internal error in 'lglib.c': watcher stack overflow",
+    "source_commit": "705b60c6491ef2b61988b3ce6ac674be1b90571d",
+    "source_configure_sha256": "2110176a147ecd59404e575bdcdfa94d2f595fb1f7cc692bc953e862a4b3eff6",
+    "source_lglib_sha256": "0af6a2884b3a4a6810f1f0b51296940b2a93ed9e82d5dee9186f378cf94f5b84",
+    "status": "INCOMPATIBLE_INTERNAL_ERROR",
+    "trials": [
+      {
+        "case": "J297775-base",
+        "input_clauses": 114968,
+        "output_log_sha256": "3db4f5a81272bc9bfebda04139c0324744b8f5f79d6d26282cb065424d8fda38"
+      },
+      {
+        "cadical_arguments": ["-P1", "-c", "0"],
+        "cadical_binary_sha256": "c42ba87b1af1c11b564aa6754a4c55911c7c99834a69eb3d802b938dcefc587c",
+        "cadical_exit": 0,
+        "cadical_result": "UNKNOWN",
+        "case": "J297775-cube-0-preprocessed",
+        "cube_index": 0,
+        "cube_literals": 194,
+        "input_clauses": 115162,
+        "input_sha256": "c252b3d61bacd6747db78d9700b48c0681333b6ef2995273b08832a2ff3e6a99",
+        "output_clauses": 96215,
+        "output_log_sha256": "9cd7f50db9754dc34224602a8d00b9defa3fe7d77ade5d52c9c98b43cf7eadeb",
+        "output_sha256": "a4988107a618bb5128af9d398247375ef53bf57da10d1c3135a9ab3d138767cc"
+      }
+    ],
+    "version": "bcj 78ebb8672540bde0a335aea946bbf32515157d5a"
+  },
+  "minisat": {
+    "architecture": "arm64",
+    "binary_sha256": "edc661ba2c718b76cdda410645d3e5ce03a98d5d4535f7e5d9bd925679a9eebc",
+    "package_version": "1:2.2.1-8build1",
+    "per_cube_seconds": 600,
+    "results": [
+      {
+        "case": "J297775",
+        "maximum_seconds": 600.153501,
+        "median_seconds": 600.121109,
+        "minimum_seconds": 600.081846,
+        "sat": 0,
+        "tsv_sha256": "957f281ce881da0bc167a72c5fb95e4456c8fa3d034736c2447aa3556edb1cae",
+        "unknown": 15,
+        "unsat": 0
+      },
+      {
+        "case": "J326185",
+        "maximum_seconds": 600.144561,
+        "median_seconds": 600.123865,
+        "minimum_seconds": 600.020503,
+        "sat": 0,
+        "tsv_sha256": "81ee000c1f168ae6f59e431384214ce9f90b5888f7d20e0741cca28862ec01a8",
+        "unknown": 14,
+        "unsat": 0
+      }
+    ]
+  },
+  "schema": "ramsey55.fixed-pair-final-open-solver-diversity-telemetry.v1"
+}
