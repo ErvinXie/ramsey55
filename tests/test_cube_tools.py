@@ -47,6 +47,8 @@ ORDER45_FIXED_PROOFS = load_tool("audit_order45_fixed_pair_proofs")
 MATERIALIZE_CNF_CUBE = load_tool("materialize_cnf_cube")
 STRATA_LEAF_PROOFS = load_tool("audit_order45_strata_leaf_proofs")
 STRATA_PROOF_BUNDLE = load_tool("audit_order45_strata_proof_bundle")
+CARTESIAN_CUBES = load_tool("generate_cartesian_cubes")
+SCREEN_VARIABLES = load_tool("screen_cube_variables")
 
 
 class ExternalCubeToolTests(unittest.TestCase):
@@ -63,6 +65,25 @@ class ExternalCubeToolTests(unittest.TestCase):
     def test_parse_rejects_incomplete_model(self) -> None:
         with self.assertRaisesRegex(ValueError, "complete model"):
             EXTERNAL.parse_model("v 1 -2 0\n", 3)
+
+    def test_screen_variables_emits_parent_variable_polarity_order(self) -> None:
+        self.assertEqual(
+            SCREEN_VARIABLES.extend_cubes([[1], [-1, 2]], [3, 4]),
+            [
+                [1, -3],
+                [1, 3],
+                [1, -4],
+                [1, 4],
+                [-1, 2, -3],
+                [-1, 2, 3],
+                [-1, 2, -4],
+                [-1, 2, 4],
+            ],
+        )
+
+    def test_screen_variables_rejects_an_assigned_variable(self) -> None:
+        with self.assertRaisesRegex(ValueError, "already assigns"):
+            SCREEN_VARIABLES.extend_cubes([[1, -2]], [2, 3])
 
 
 class ResultMergeTests(unittest.TestCase):

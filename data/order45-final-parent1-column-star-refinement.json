@@ -1,0 +1,118 @@
+{
+  "claim": "a certified 15/32 reduction of final parent 1 in each fixed-pair frontier, followed by search telemetry on the 17 surviving leaves; neither parent nor fixed-pair formula is proved UNSAT",
+  "column2_screen": {
+    "cases": [
+      {
+        "case": "J297775",
+        "children": 680,
+        "input_sha256": "cb967ea39033d60cd33ba8e6e18085ac457e64cb36d90284641ca0117c9446d9",
+        "results_sha256": "14b0e4563d2b991183254ab8c2bc51627d55eca1e0809274b9229ac211f6f31b",
+        "unknown": 680,
+        "unsat": 0
+      },
+      {
+        "case": "J326185",
+        "children": 680,
+        "input_sha256": "18f8af889248716ef0b0cadf36477dca7e3be3a3c86a41548d97e4d5098e5441",
+        "results_sha256": "f8bfc1d1cf1fe596620ca65609941ff32acf646e273628cb00a4776b2603eed4",
+        "unknown": 680,
+        "unsat": 0
+      }
+    ],
+    "per_child_seconds": 5,
+    "variables": [2, 26, 50, 74, 98, 122, 146, 170, 194, 218, 242, 266, 290, 314, 338, 362, 386, 410, 434, 458]
+  },
+  "full_backbone_strengthening": {
+    "cases": [
+      {
+        "case": "J297775",
+        "default_results_sha256": "1b0c1ebd8cfa5fcda26350be59847c5e4fd979ad427f1cc9d1791cf83b1f144d",
+        "lineage_sha256": "ae5a78a9e570e783a8218f5474e23194fbdc58687c102ec3cfaa5a97330c3f1b",
+        "parents": 13,
+        "strengthened_icnf_sha256": "4e6b18b8de1c39436650b6623f858e13aeb666fe0c4b5215b9d7b635dd5bccd8",
+        "unknown_default": 13,
+        "unknown_unsat_profile": 13,
+        "unsat_profile_results_sha256": "7167ee25e163835f085def2e81b984c32763bc157500c220f4405afd4f1658dc"
+      },
+      {
+        "case": "J326185",
+        "default_results_sha256": "ab6f0bd27b7bee6f3c6a9d069e4ffca79fd924395165f6b8398fc732880ad291",
+        "lineage_sha256": "8ac2c30ae230482dc65041640b5d214755330f69b30c88221566b7266a1183ed",
+        "parents": 12,
+        "strengthened_icnf_sha256": "6455c32f860289f1dff831b39a609b6c87990d4a4ed7da0aed7b2ebce9d5e5dc",
+        "unknown_default": 12,
+        "unknown_unsat_profile": 12,
+        "unsat_profile_results_sha256": "057ff4d276f934e1e8adb67bda3b8c9e1659d33d07a181e348f1498762f50b10"
+      }
+    ],
+    "per_parent_seconds": 600
+  },
+  "parent1_column_star": {
+    "backbones": [-1, -25, -49, -73, -97, -121, -145, -169, -193, 217, 241, 265, 313, 337, 409],
+    "cases": [
+      {
+        "binary_cover_sha256": "463b4da02a5f3840e182460164153676af68347f7f9b42cb7791faa2086be8a2",
+        "case": "J297775",
+        "discovery_results_sha256": "33f66461165e8264cda689725031a676db9344fb063923c959a114883d77401a",
+        "leaves_sha256": "9c463649b3b96d8c0bf8f2b16718463eed19e5c62d8e0c642507dcd298e89f81",
+        "lineage_sha256": "95666c3ffcfa38ff1816d78966f684ae00ba664ac070114161afedd0fd740031",
+        "proof_bytes": 43788436,
+        "proof_manifest_sha256": "c050a5c4f49170b7bee5fe036f2c3f9ec6f2b43d9ec3e2e39bbfdba5ab6c37ff",
+        "unknown": 17,
+        "verified_unsat": 15
+      },
+      {
+        "binary_cover_sha256": "d6c1a0f873534e7b38616891d9cf8d01de0045de4d6ded80cfec259138b3ca31",
+        "case": "J326185",
+        "discovery_results_sha256": "5cc26b45fe2ed0f3fa7c9d138b5c1fbaa718f0b522c028696f1964428d028d6b",
+        "leaves_sha256": "2c9ee1882ba3a7cdf83c951f6853d0023f7d04c5ca507d4a6ffb532dcd21ac9b",
+        "lineage_sha256": "c1aa1b11b02883af9eefe856047cdfe586f7a0df7827af48bbb236a30e60c3c1",
+        "proof_bytes": 39255366,
+        "proof_manifest_sha256": "75c764a5f58985d50deb0a7f276ec2925a6bb43af5e443119d899721a4b9bf67",
+        "unknown": 17,
+        "verified_unsat": 15
+      }
+    ],
+    "free_variables": [289, 361, 385, 433, 457],
+    "leaf_count": 32,
+    "parent_index": 1,
+    "per_leaf_seconds": 120,
+    "star_variables": [1, 25, 49, 73, 97, 121, 145, 169, 193, 217, 241, 265, 289, 313, 337, 361, 385, 409, 433, 457],
+    "suffix_cover_sha256": "8f812fd9f6eda630311ba90422c0345dea32dfcbac8ed14b865f883cc0c77fab",
+    "unsat_leaf_indices": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 16, 29, 31],
+    "unknown_leaf_indices": [10, 11, 14, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 30]
+  },
+  "schema": "ramsey55.final-parent1-column-star-refinement.v1",
+  "source_backbone_record": {
+    "path": "data/order45-final-frontier-primary-backbones.json",
+    "sha256": "a5cf6d340adb421916356b7d815a3143fb958ed0a16d4ccddb07d1131e09018d"
+  },
+  "tail_primary_rescan": {
+    "cases": [
+      {
+        "case": "J297775",
+        "children": 960,
+        "input_sha256": "a2ec35690cd0fdea059bbc75178c936ea8c62a4c34fa88137d79c72bca79bcb1",
+        "parent_index": 14,
+        "results_sha256": "2d89bf5dc01c676368a41d8dbb4b31e2d82e012e411430225649ab2d584cc391",
+        "unknown": 960,
+        "unsat": 0
+      },
+      {
+        "case": "J326185",
+        "children": 960,
+        "input_sha256": "b0008e639a40da7f2beddbed44e96150f0c1c43889665b9c858dc08f5f766e81",
+        "parent_index": 13,
+        "results_sha256": "eca0343bcccf96ce9c8a36ee2563f4af6877d53e13db2f4fd6b12b889bbc5bf3",
+        "unknown": 960,
+        "unsat": 0
+      }
+    ],
+    "per_child_seconds": 5
+  },
+  "tools": {
+    "materialized_auditor_sha256": "f27a8c23222a6cdc4d184115067786945be5b37b9dfebf7bdf6e320cb3dd75ea",
+    "materialized_producer_sha256": "4730f7486a72c94e508dca8d193428f13b71ead5905321c4843f8c630bdabe77",
+    "screen_cube_variables_sha256": "e01a420c12f96a01a25db430f669f6f4ceb686780e2c1e439e4a91e945b9b8fd"
+  }
+}

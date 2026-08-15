@@ -219,6 +219,29 @@ class FixedPairProofAuditTests(unittest.TestCase):
             "INCOMPATIBLE_INTERNAL_ERROR",
         )
 
+    def test_parent1_column_star_record_is_explicitly_partial(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        record = json.loads(
+            (
+                root / "data/order45-final-parent1-column-star-refinement.json"
+            ).read_text()
+        )
+        self.assertIn("neither parent", record["claim"])
+        self.assertEqual(
+            record["schema"],
+            "ramsey55.final-parent1-column-star-refinement.v1",
+        )
+        star = record["parent1_column_star"]
+        self.assertEqual(star["leaf_count"], 32)
+        self.assertEqual(len(star["unsat_leaf_indices"]), 15)
+        self.assertEqual(len(star["unknown_leaf_indices"]), 17)
+        for case in star["cases"]:
+            self.assertEqual(case["verified_unsat"], 15)
+            self.assertEqual(case["unknown"], 17)
+        for case in record["column2_screen"]["cases"]:
+            self.assertEqual(case["unsat"], 0)
+            self.assertEqual(case["unknown"], 680)
+
     def test_selective_freeze_pilot_is_explicit_unknown_telemetry(self) -> None:
         root = Path(__file__).resolve().parents[1]
         pilot = json.loads(

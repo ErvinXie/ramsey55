@@ -1073,6 +1073,37 @@ The combined stable record
 `data/order45-final-frontier-primary-backbones.json` has SHA-256
 `a5cf6d340adb421916356b7d815a3143fb958ed0a16d4ccddb07d1131e09018d`.
 
+Two negative controls delimit what those facts buy by themselves. Adding every
+certified backbone to all 13 affected nondeep J297775 parents and all 12
+affected nondeep J326185 parents left every parent UNKNOWN under both default
+and `--unsat` Kissat at 600 seconds. Conversely, rescanning both polarities of
+all 480 primary variables for five seconds on the two parents that had no
+one-second backbone (J297775 index 14 and J326185 index 13) closed none of
+their 960 children. These are search controls, not certificates of
+satisfiability or UNSAT.
+
+The first column-star refinement gives a certified reduction even though it
+does not yet close a parent. Final parent 1 in both formulas has the same 15
+proved literals on variables congruent to 1 modulo 24. Only variables
+`289, 361, 385, 433, 457` remain free in that 20-edge H--J column. A checked
+32-leaf binary cover enumerates those five bits. Kissat closed exactly the
+same leaf indices
+`0..9, 12, 13, 16, 29, 31` in both formulas; proof-mode reruns and independent
+materialized replay accepted all 15 proofs per formula. The retained compact
+proofs occupy 43,788,436 bytes for J297775 and 39,255,366 bytes for J326185.
+The other 17 leaves remain open, so `parent_cube_unsat=false` and the global
+15/14 frontier count is unchanged; logically, the parent has been reduced to
+those 17 explicitly listed subcases.
+
+A fixed-order continuation was unhelpful. Both polarities of all 20 variables
+in the adjacent J2 column were tested for five seconds on each of the 17 hard
+leaves: all 680 children in each formula remained UNKNOWN. The next
+continuation therefore uses CaDiCaL lookahead to choose an auxiliary split per
+leaf and emits checked DRAT for closed sides. Stable metadata for the
+strengthening controls, 32-leaf cover, 30 checked leaf proofs, and adjacent
+column screen is in
+`data/order45-final-parent1-column-star-refinement.json`.
+
 A structural-split pilot does not support replacing lookahead by a fixed
 cross-edge order. For one hash-bound J297775 hard parent, splitting on the
 first unassigned H--J variable (variable 1 in the primary range 1--480) left
