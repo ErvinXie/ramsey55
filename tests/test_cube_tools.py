@@ -4,6 +4,7 @@ import importlib.util
 import json
 import sys
 import tempfile
+import threading
 import unittest
 from pathlib import Path
 
@@ -42,6 +43,10 @@ MATERIALIZED_PORTFOLIO = load_tool("compose_materialized_cube_portfolio")
 MATERIALIZED_CHAIN = load_tool("run_materialized_proof_chain")
 MATERIALIZED_CHAIN_AUDIT = load_tool("audit_materialized_proof_chain")
 FIXED_PAIR_BUNDLE = load_tool("audit_fixed_pair_proof_bundle")
+ORDER45_FIXED_PROOFS = load_tool("audit_order45_fixed_pair_proofs")
+MATERIALIZE_CNF_CUBE = load_tool("materialize_cnf_cube")
+STRATA_LEAF_PROOFS = load_tool("audit_order45_strata_leaf_proofs")
+STRATA_PROOF_BUNDLE = load_tool("audit_order45_strata_proof_bundle")
 
 
 class ExternalCubeToolTests(unittest.TestCase):
@@ -276,6 +281,46 @@ class MaterializedProofToolTests(unittest.TestCase):
             self.assertFalse(source.exists())
             with self.assertRaisesRegex(RuntimeError, "refusing to overwrite"):
                 MATERIALIZED_PROVER.publish_proof(destination, destination)
+
+    def test_completed_results_does_not_wait_in_input_order(self) -> None:
+        gate = threading.Event()
+
+        def worker(index: int) -> int:
+            if index == 0:
+                if not gate.wait(timeout=5):
+                    raise RuntimeError("test worker timed out")
+            return index
+
+        with MATERIALIZED_PROVER.concurrent.futures.ThreadPoolExecutor(
+            2
+        ) as executor:
+            results = MATERIALIZED_PROVER.completed_results(
+                executor, worker, range(2)
+            )
+            try:
+                first = next(results)
+            finally:
+                gate.set()
+            self.assertEqual(first, 1)
+            self.assertEqual(next(results), 0)
+            with self.assertRaises(StopIteration):
+                next(results)
+
+    def test_completed_results_checkpoints_success_before_failure(self) -> None:
+        def worker(index: int) -> int:
+            if index == 0:
+                raise RuntimeError("expected worker failure")
+            return index
+
+        with MATERIALIZED_PROVER.concurrent.futures.ThreadPoolExecutor(
+            2
+        ) as executor:
+            results = MATERIALIZED_PROVER.completed_results(
+                executor, worker, range(2)
+            )
+            self.assertEqual(next(results), 1)
+            with self.assertRaisesRegex(RuntimeError, "expected worker failure"):
+                next(results)
 
     def test_artifact_rejects_path_traversal(self) -> None:
         with self.assertRaisesRegex(ValueError, "artifact"):
@@ -514,6 +559,138 @@ class MaterializedProofToolTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "segment boundary mismatch"):
                 FIXED_PAIR_BUNDLE.validate_chain_adjacency(
                     replacement, retry, "closed"
+                )
+
+    def test_strata_bundle_binds_formula_manifest_and_forest_roots(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            formula = root / "d20.cnf"
+            formula.write_text("p cnf 4 1\n1 -2 0\n", encoding="ascii")
+            cubes = [
+                {"edges_h": 1, "edges_j": 2, "literals": [1, -2]},
+                {"edges_h": 2, "edges_j": 1, "literals": [-1, 2]},
+            ]
+            formula_manifest = root / "formula-manifest.json"
+            formula_manifest.write_text(
+                json.dumps(
+                    {
+                        "schema": STRATA_LEAF_PROOFS.FORMULA_SCHEMA,
+                        "order": 45,
+                        "files": [
+                            {
+                                "degree": 20,
+                                "path": formula.name,
+                                "variables": 4,
+                                "clauses": 1,
+                                "sha256": MATERIALIZED_PROVER.file_sha256(formula),
+                                "cubes": cubes,
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            source = root / "roots.icnf"
+
+            def write_source(rows: list[list[int]]) -> None:
+                source.write_text(
+                    "\n".join(
+                        [
+                            "c manifest_sha256 "
+                            + MATERIALIZED_PROVER.file_sha256(formula_manifest),
+                            "c cnf_sha256 "
+                            + MATERIALIZED_PROVER.file_sha256(formula),
+                            "c degree 20",
+                            *(
+                                f"{index} {' '.join(map(str, cube))} 0"
+                                for index, cube in enumerate(rows)
+                            ),
+                        ]
+                    )
+                    + "\n",
+                    encoding="ascii",
+                )
+
+            write_source([[1, -2], [-1, 2]])
+            forest_manifest = root / "forest.json"
+
+            def write_forest() -> None:
+                forest_manifest.write_text(
+                    json.dumps(
+                        {
+                            "schema": STRATA_PROOF_BUNDLE.FOREST_SCHEMA,
+                            "source_cubes": {
+                                "path": str(source),
+                                "sha256": MATERIALIZED_PROVER.file_sha256(source),
+                                "count": 2,
+                            },
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+
+            write_forest()
+            _, _, binding = STRATA_PROOF_BUNDLE.formula_and_forest_bindings(
+                formula_manifest, formula, 20, forest_manifest
+            )
+            self.assertEqual(binding["source_cube_count"], 2)
+
+            write_source([[-1, 2], [1, -2]])
+            write_forest()
+            with self.assertRaisesRegex(ValueError, "roots differ"):
+                STRATA_PROOF_BUNDLE.formula_and_forest_bindings(
+                    formula_manifest, formula, 20, forest_manifest
+                )
+
+    def test_strata_bundle_rejects_unbound_root_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            formula = root / "d20.cnf"
+            formula.write_text("p cnf 1 1\n1 0\n", encoding="ascii")
+            formula_manifest = root / "formula-manifest.json"
+            formula_manifest.write_text(
+                json.dumps(
+                    {
+                        "schema": STRATA_LEAF_PROOFS.FORMULA_SCHEMA,
+                        "files": [
+                            {
+                                "degree": 20,
+                                "variables": 1,
+                                "clauses": 1,
+                                "sha256": MATERIALIZED_PROVER.file_sha256(formula),
+                                "cubes": [{"literals": [1]}],
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            source = root / "roots.icnf"
+            source.write_text(
+                "c manifest_sha256 "
+                + MATERIALIZED_PROVER.file_sha256(formula_manifest)
+                + "\nc cnf_sha256 "
+                + MATERIALIZED_PROVER.file_sha256(formula)
+                + "\nc degree 21\n0 1 0\n",
+                encoding="ascii",
+            )
+            forest_manifest = root / "forest.json"
+            forest_manifest.write_text(
+                json.dumps(
+                    {
+                        "schema": STRATA_PROOF_BUNDLE.FOREST_SCHEMA,
+                        "source_cubes": {
+                            "path": str(source),
+                            "sha256": MATERIALIZED_PROVER.file_sha256(source),
+                            "count": 1,
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "metadata mismatch"):
+                STRATA_PROOF_BUNDLE.formula_and_forest_bindings(
+                    formula_manifest, formula, 20, forest_manifest
                 )
 
 

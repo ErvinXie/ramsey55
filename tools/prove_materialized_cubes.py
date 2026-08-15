@@ -71,6 +71,31 @@ def publish_proof(source: Path, destination: Path) -> None:
         raise
 
 
+def completed_results(
+    executor: concurrent.futures.Executor,
+    function: Any,
+    items: Any,
+) -> Any:
+    """Yield successful results as workers finish, then report any failure.
+
+    Waiting in input order can hide already published proofs behind one slow
+    earlier cube and prevents the progress manifest from recording them.  Keep
+    collecting successful futures even if another worker fails so every
+    safely published artifact can be checkpointed before the error escapes.
+    """
+
+    futures = [executor.submit(function, item) for item in items]
+    failure: Exception | None = None
+    for future in concurrent.futures.as_completed(futures):
+        try:
+            yield future.result()
+        except Exception as error:
+            if failure is None:
+                failure = error
+    if failure is not None:
+        raise failure
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("cnf", type=Path)
@@ -358,7 +383,9 @@ def main() -> int:
         with concurrent.futures.ThreadPoolExecutor(
             max_workers=min(arguments.jobs, len(cubes))
         ) as executor:
-            for index, result in executor.map(prove, enumerate(cubes)):
+            for index, result in completed_results(
+                executor, prove, enumerate(cubes)
+            ):
                 with result_lock:
                     results[index] = result
                     completed += 1
