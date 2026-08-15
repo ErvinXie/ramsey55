@@ -946,11 +946,26 @@ The current J297775 and J326185 fixed-pair bundle files have SHA-256 values
 `879398311418464529fcaf0757c760ca55ef5e0d189f6760fd2485a93d190dfd`
 and
 `87a98e744cc8f03d381cf188da98b73a6f024a379b86a3b8f83ba15defa541c2`.
-All newly appended producer, portfolio, composition, and terminal/guard
-segments were replayed independently before adoption. A new from-scratch
-replay of every earlier bundle segment has not yet been run. In particular,
-the bundle auditor must still report each fixed-pair formula incomplete: the
-authoritative open residual counts are 15 and 14, respectively.
+Fresh from-scratch bundle audits now replay every certificate layer, not only
+the newly appended segments. For each bundle the auditor reconstructs the
+16,384-cube initial cover, the proof-forest root refinements, every retained
+DRAT proof, every binary chain refinement, and each exact-cube cross-segment
+boundary. The J297775 audit reconstructed a 16,478-node forest, replayed 348
+closed and 91 open manifests across four and six segments, and ended with a
+complete 8/0 closed side at round 345 and an incomplete 39/15 open side at
+round 87. Its audit-manifest and log SHA-256 values are
+`3db3dd861f26a47f55be9f97030e33dbfe3d34e981679fde17767a9b05027518`
+and
+`00bc9d39e1cf52431fb51c3074d3a4c5c43c050083992c6b9ad3b91e730886e0`.
+The J326185 audit reconstructed a 16,464-node forest, replayed 246 closed and
+100 open manifests across five and five segments, and ended with a complete
+2/0 closed side at round 242 and an incomplete 30/14 open side at round 97.
+Its audit-manifest and log SHA-256 values are
+`142d1320a1ec0bdcc3904ea41da7ea181f52b2a726eea19274f6e27ad59e4a3a`
+and
+`d7856f89f8b3722e8e093f1db827e8a80777f57613169b5142cfa8c10d85228b`.
+Both audit manifests deliberately report `fixed_pair_unsat=false`: the
+authoritative open residual counts remain 15 and 14, respectively.
 
 A structural-split pilot does not support replacing lookahead by a fixed
 cross-edge order. For one hash-bound J297775 hard parent, splitting on the
