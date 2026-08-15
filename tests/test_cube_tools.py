@@ -126,6 +126,13 @@ class ResultMergeTests(unittest.TestCase):
             MATERIALIZED_CHAIN.write_icnf(path, [[1, -2], [-1, 3]])
             self.assertEqual(path.read_text(), "a 1 -2 0\na -1 3 0\n")
 
+    def test_materialized_chain_detects_frontier_growth(self) -> None:
+        self.assertFalse(MATERIALIZED_CHAIN.frontier_grew(4, {"unknown": 4}))
+        self.assertFalse(MATERIALIZED_CHAIN.frontier_grew(4, {"unknown": 3}))
+        self.assertTrue(MATERIALIZED_CHAIN.frontier_grew(4, {"unknown": 5}))
+        with self.assertRaisesRegex(ValueError, "nonnegative"):
+            MATERIALIZED_CHAIN.frontier_grew(-1, {"unknown": 0})
+
     def test_materialized_composition_binds_cross_solver_override(self) -> None:
         kissat = {"path": "kissat", "sha256": "1" * 64, "arguments": []}
         cadical = {"path": "cadical", "sha256": "2" * 64, "arguments": []}

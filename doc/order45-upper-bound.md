@@ -614,8 +614,12 @@ driver now also audits a seed that already claims complete UNSAT before it can
 accept that claim. Within one uninterrupted driver it remembers the manifest
 just replayed at the end of the prior round and does not replay those same
 bytes again as the next seed; a resumed process still starts with an
-independent seed replay. The complete local and ARM Python suites pass 125/125
-after these additions.
+independent seed replay. The optional `--stop-on-frontier-growth` guard now
+audits and retains a candidate round but refuses to advance authoritative
+`state.json` when its UNKNOWN count exceeds the parent count; it writes a
+separate `halted.json` diagnosis instead. This turns the previous manual
+best-frontier freezes into a deterministic production policy. The complete
+ARM Python suite passes 126/126 after these additions.
 
 A 120-second ARM portfolio on frozen hard frontiers found CaDiCaL stronger
 than default Kissat on these residuals. It closed 3/17 J297775 open parents,

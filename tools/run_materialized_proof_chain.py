@@ -55,6 +55,15 @@ def write_icnf(path: Path, cubes: list[list[int]]) -> None:
     )
 
 
+def frontier_grew(previous_unknown: int, next_summary: dict[str, object]) -> bool:
+    """Return whether an audited refinement would enlarge the UNKNOWN frontier."""
+
+    next_unknown = int(next_summary["unknown"])
+    if previous_unknown < 0 or next_unknown < 0:
+        raise ValueError("UNKNOWN counts must be nonnegative")
+    return next_unknown > previous_unknown
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("formula", type=Path)
@@ -88,6 +97,14 @@ def main() -> int:
     parser.add_argument("--fallback-seconds", type=float, default=0.0)
     parser.add_argument("--fallback-solver-argument", action="append", default=[])
     parser.add_argument("--compact-proof", action="store_true")
+    parser.add_argument(
+        "--stop-on-frontier-growth",
+        action="store_true",
+        help=(
+            "retain the current authoritative state and exit after auditing a "
+            "round whose UNKNOWN frontier is larger than its parent frontier"
+        ),
+    )
     parser.add_argument(
         "--scratch-directory",
         type=Path,
@@ -504,6 +521,28 @@ def main() -> int:
         if proof_audit_status:
             raise RuntimeError(f"new proof audit failed at round {round_number}")
         audited_manifest = current_manifest
+        next_summary = json.loads(current_manifest.read_text(encoding="utf-8"))[
+            "summary"
+        ]
+        if arguments.stop_on_frontier_growth and frontier_grew(
+            unknown, next_summary
+        ):
+            halt = {
+                "schema": "ramsey55.materialized-proof-chain-halt.v1",
+                "reason": "frontier_growth",
+                "round": round_number,
+                "parent_manifest": state["current_manifest"],
+                "candidate_manifest": str(current_manifest),
+                "parent_unknown": unknown,
+                "candidate_unknown": int(next_summary["unknown"]),
+            }
+            atomic_json(arguments.workdir / "halted.json", halt)
+            print(
+                f"halted at round {round_number}: frontier grew "
+                f"{unknown}->{next_summary['unknown']}; authoritative state retained",
+                flush=True,
+            )
+            return 0
         round_number += 1
         state.update(
             round=round_number,
@@ -511,9 +550,6 @@ def main() -> int:
             complete=proof_status == 20,
         )
         atomic_json(state_path, state)
-        next_summary = json.loads(current_manifest.read_text(encoding="utf-8"))[
-            "summary"
-        ]
         print(
             f"round {round_number} parents={unknown} "
             f"verified={next_summary['unsat_verified']} "
