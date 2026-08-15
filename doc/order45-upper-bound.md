@@ -469,9 +469,8 @@ values are
 `c40173de4879a0be5c53f3d9cf84980ed4ff8fc8a3046f369f3595c9190072d1`
 and
 `e65c28228279340f78dcb75002df95eb5093d6ec2fb19180a320e248871da894`.
-The deeper chain is therefore independently audited, but it has not yet been
-appended to and replayed through the immutable top-level bundle, and it does
-not reduce the d20 residual count.
+The deeper chain is therefore independently audited and is adopted by the v5
+bundle below, but it does not reduce the d20 residual count.
 
 The immutable v4 bundle extends that same from-scratch audit through the
 frozen open round-36 boundary. Its fourth open segment contains 29 proof
@@ -486,6 +485,19 @@ It again reports all 999 closed leaves complete and the 30 open leaves
 incomplete, so both top-level UNSAT flags remain false. A guarded continuation
 now descends from this boundary without accepting any larger UNKNOWN
 frontier.
+
+The immutable v5 bundle appends the audited round 36--135 segment and was
+again replayed completely from scratch. Across five open segments the auditor
+accepted 140 proof manifests and reconstructed 4,050 refined parents, ending
+at state round 136 with 30 VERIFIED/30 UNKNOWN. It also reconstructed all 28
+initial roots and the 32-node forest, and replayed the four closed segments to
+their complete round-34 terminal. The v5 bundle, audit, and audit-log SHA-256
+values are
+`569139c00e91b5079ca19f53097b620fcee28972667f3a6f34e0bed8311a227f`,
+`1705760ea4d99fe553ed0f9baab47eba73fdb44d372dfce4260fb9347dff5aa7`,
+and `41ada8342153701e43dd3f1a0d8dcd89aeaff1909475e03fd62add61ea84c3d8`.
+Its closed chain is complete, its open chain is incomplete, and both
+`exact_edge_cube_augmentations_unsat` and `mother_formula_unsat` remain false.
 
 Three direct open-frontier controls found no shortcut at the tested depths.
 iGlucose at 300 seconds closed 0/30 original forest-open parents. After the
