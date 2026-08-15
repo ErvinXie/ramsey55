@@ -1037,6 +1037,17 @@ literal before invoking the materialized-proof auditor. The stable record is
 it explicitly records `parent_cube_unsat=false`. These certified backbones
 are a strengthening for the remaining search, not a refutation of the parent.
 
+The same exhaustive primary scan on the deepest, 230-literal J326185
+residual found 22 backbones. They are exactly the intersection of the J297775
+set with variable 38 removed, giving a common fixed-pair pattern rather than
+an isolated branching artifact. Their false polarities produced 3,415,134
+raw DRAT bytes, compacted to 338,902 bytes, and both audit layers accepted
+22/22. Again all surviving sides remained UNKNOWN at 120 seconds and the
+strengthened scan found no additional five-second backbone. The stable record
+`data/order45-j326-c0-primary-backbones.json` has SHA-256
+`68ffa587f5349193e9ee72542518c63f08e0bedc85534eaaa3d74503ff0f9dbb`
+and also reports `parent_cube_unsat=false`.
+
 A structural-split pilot does not support replacing lookahead by a fixed
 cross-edge order. For one hash-bound J297775 hard parent, splitting on the
 first unassigned H--J variable (variable 1 in the primary range 1--480) left

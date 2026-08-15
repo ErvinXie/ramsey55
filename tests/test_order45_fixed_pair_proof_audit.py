@@ -19,14 +19,21 @@ from tools.prove_materialized_cubes import SCHEMA, cube_sha256, file_sha256
 class FixedPairProofAuditTests(unittest.TestCase):
     def test_committed_primary_backbones_do_not_claim_parent_unsat(self) -> None:
         root = Path(__file__).resolve().parents[1]
-        certificate = json.loads(
-            (root / "data/order45-j297-c0-primary-backbones.json").read_text()
-        )
-        self.assertIn("not a proof", certificate["claim"])
-        self.assertFalse(certificate["parent_cube_unsat"])
-        self.assertEqual(len(certificate["backbones"]), 23)
-        self.assertEqual(certificate["certificate"]["proofs_verified"], 23)
-        self.assertEqual(certificate["discovery"]["all_primary_scan"]["unsat"], 23)
+        for name, expected in (("j297", 23), ("j326", 22)):
+            certificate = json.loads(
+                (
+                    root / f"data/order45-{name}-c0-primary-backbones.json"
+                ).read_text()
+            )
+            self.assertIn("not a proof", certificate["claim"])
+            self.assertFalse(certificate["parent_cube_unsat"])
+            self.assertEqual(len(certificate["backbones"]), expected)
+            self.assertEqual(
+                certificate["certificate"]["proofs_verified"], expected
+            )
+            self.assertEqual(
+                certificate["discovery"]["all_primary_scan"]["unsat"], expected
+            )
 
     def test_primary_backbone_structure_binds_false_polarities(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

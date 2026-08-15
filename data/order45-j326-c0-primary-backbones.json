@@ -1,0 +1,61 @@
+{
+  "backbones": [-25, -26, -27, -28, -29, -30, -31, -32, -33, -34, -35, -36, 37, 48, 97, 169, 193, 241, 337, 385, 409, 457],
+  "case": "J326185",
+  "certificate": {
+    "audit_log_sha256": "b0b7fbca093e45e8a400ced9901c7072c33ef7f70b65af93eb55da2c0955e37c",
+    "bad_branches_icnf_sha256": "de614212d661a199c78b82a68217747d21151ea0aba5820d3bf09294f07dee1d",
+    "checker_sha256": "8de9a77e5ddf754f10cce7980a7495810ce9f4328c2df4e55419970ae1858d42",
+    "compact_proof_bytes": 338902,
+    "compacted_proofs": 22,
+    "lineage_sha256": "50d4e5eff34604728e9dc5541ce17bbafe1395c4a7329a55e89cd4f2ea601f8e",
+    "proof_manifest_sha256": "1c2bb602da6abddf44ab7c94e6b4d137f0d87de479f32910ce9c620660d4e929",
+    "proofs_verified": 22,
+    "raw_proof_bytes": 3415134,
+    "solver_sha256": "5d6188420ad85f22304954c4206204d6f371d022346725ba3286cdb104b73ef2",
+    "structural_audit_sha256": "933729b614f90a1d9901c4a8613e269f4d6efe5fc5fb84ff6ed8a59ee6fb38ef"
+  },
+  "claim": "22 certified primary-variable backbones under J326185 final frontier cube 0; not a proof that the parent cube is UNSAT",
+  "discovery": {
+    "all_primary_scan": {
+      "children": 960,
+      "icnf_sha256": "fcad494eeea6536170317bf8c64e5cf2bb0c929e765be2a17689d1c4e5202d9b",
+      "per_cube_seconds": 5,
+      "results_sha256": "9ed8d42829833ec0caf918bc46eabdbe0253acc4ca8206f952959e7f938dd94c",
+      "unknown": 938,
+      "unsat": 22
+    },
+    "strengthened_remaining_scan": {
+      "children": 916,
+      "per_cube_seconds": 5,
+      "results_sha256": "b910f8bf1feb5de601516ebbcbfbaac1bad051c203e7375ec7975a15f836a851",
+      "unknown": 916,
+      "unsat": 0
+    },
+    "survivor_retry": {
+      "children": 22,
+      "per_cube_seconds": 120,
+      "results_sha256": "5f0cd36cd195b29f98e86d018a1f1f4dab33ef1d96aa3591bbc397dfc06693e2",
+      "unknown": 22,
+      "unsat": 0
+    }
+  },
+  "formula": {
+    "path": "build/order45-fixed-pairs/h0-j326185-nosym.cnf",
+    "sha256": "e783d6b1c2f01832151938a6ec88e8e3708705d0a1af8bfd8851522a1dac78d6"
+  },
+  "frontier": {
+    "cube_index": 0,
+    "cube_literals": 230,
+    "cube_sha256": "c0706354a37a2b958b59710ea10d8b04790c5de36cf2c185ae28ab045290961f",
+    "path": "build/order45-fixed-pairs/final-open-cadical-profile-600-v1/j326-r0097-unknown.icnf",
+    "sha256": "0fd175177364b6205ff7cdd441afb08d255dcb98c9a7a7a91e7cc9f3b558372b"
+  },
+  "parent_cube_unsat": false,
+  "primary_variable_maximum": 480,
+  "schema": "ramsey55.j326-primary-backbone-certificate.v1",
+  "tools": {
+    "materialized_auditor_sha256": "f27a8c23222a6cdc4d184115067786945be5b37b9dfebf7bdf6e320cb3dd75ea",
+    "primary_backbone_auditor_sha256": "8a77ac7b788e57eea1918bcc5c780b7bd826393b55379ff1b21d3f06c58a281c",
+    "producer_sha256": "4730f7486a72c94e508dca8d193428f13b71ead5905321c4843f8c630bdabe77"
+  }
+}
