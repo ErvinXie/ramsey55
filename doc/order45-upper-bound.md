@@ -423,6 +423,36 @@ two rounds both ended 30 VERIFIED/30 UNKNOWN rather than widening the
 frontier. Thus this is a much smaller, exactly covered d20 residual with a
 live certified descent, not yet a d20 UNSAT certificate.
 
+The last closed-side residual has now been eliminated. An exact iGlucose
+retry of the round-34 parent returned UNSAT in 505.49 seconds; after proof
+compaction the retained DRAT is 20,530,685 bytes. The producer replay and a
+separate one-row replay both accepted it. UNKNOWN-only composition with the
+round-33 two-row manifest produced 2 VERIFIED/0 UNKNOWN, and a separate full
+replay accepted both proofs. The leaf and combined manifest SHA-256 values are
+`3ff76dc5b452d5160454003bdd5e84563495584f10be424653e462a242c0bb28`
+and `2d2e9f1f6e6848fb21d19473ba92db88d8778e14606cf0b12e4fc585a4741554`;
+the independent leaf/full audit-log hashes are
+`07521dbcbd17729a5484e9074d6fd0768dfdfc6e92c49eab2ccc038b4c25ca8c`
+and `0eee6d01d56ab0f88f6485152c3fb391f0628bd87a45691cea293b1f21a0d90c`.
+A terminal chain invocation independently replayed the complete seed before
+recording `complete=true` at round 34. Consequently all 999 forest-closed
+leaves now have a composable checked proof path. The 30 forest-open branches
+remain, so neither the d20 exact-edge augmentation family nor its mother CNF
+is yet UNSAT.
+
+The immutable v3 top-level bundle then replayed this claim from the beginning.
+It bound the 2,751,846-clause mother CNF and its 28 ordered edge-pair roots,
+reconstructed the 999+30 proof forest, audited four closed-chain segments
+through the complete round-34 exact-cube retry, and audited three open-chain
+segments through the 30-UNKNOWN round-8 checkpoint. Its bundle, audit, and
+audit-log SHA-256 values are
+`4f2f35a8bc65be6fd0b8a8fc34ed1588e30a39b088ed6224bd78eecf75b3f021`,
+`907c4bbafca61c75be695544026c2cb805fca05d5c5fc127c957563aee6e8c6f`,
+and `7bf103c25001c296e61b0fd7f2f7d7bfca029e2a701207cafdc692195b72f25d`.
+The auditor reports the closed chain complete and the open chain incomplete;
+accordingly both `exact_edge_cube_augmentations_unsat` and
+`mother_formula_unsat` remain false.
+
 ### Materialized leaf certificates
 
 A second recovery route no longer depends on completing or replaying one
@@ -714,6 +744,35 @@ chains and both open chains are still running. Therefore neither fixed-pair
 formula, their local edge stratum, nor the order-45 theorem is claimed closed
 here.
 
+At the exact J297775 round-339 boundary, a raw-proof-first 1,800-second
+iGlucose retry closed two of six residual parents in 550.49 and 1,335.01
+seconds. The retained proofs are 374,277,823 and 621,049,922 bytes. A separate
+six-row leaf replay accepted both, UNKNOWN-only composition produced an exact
+8 VERIFIED/4 UNKNOWN twelve-row manifest, and a separate full replay accepted
+all eight retained proofs. The producer and combined manifest SHA-256 values
+are `f603f4f7c725621e965260add3ca16751a905fd0e9e0a6b5144e2486d2429c43`
+and `e627a6ea3a1f3df4efa7fec7eb1286e788c3dd8c7cc45470eebe600906b7121e`;
+the leaf and full audit-log hashes are
+`9c4b78c2fe4255cb49d5027d8b9c5d5783d2da2ae2f6cd2ac8f05a44dba666c4`
+and `ec04b319556d040a1c953ca2fb5302c3969879645dd6fb8000483953be4be0a2`.
+The former continuous chain was recoverably frozen at round 386 with twelve
+UNKNOWN parents. Only after both new audits passed did a fresh CaDiCaL chain
+start from the smaller round-339 boundary; the older artifacts remain intact.
+
+At the exact J326185 round-187 boundary, a 3,600-second iGlucose retry closed
+one of the two remaining parents in 2,332.10 seconds; its checked proof is
+857,920,874 bytes, while the other parent timed out. A separate two-row leaf
+replay accepted the new proof. UNKNOWN-only composition produced an exact
+17 VERIFIED/1 UNKNOWN eighteen-row manifest, and its full independent replay
+accepted all seventeen proofs. The producer/combined manifest hashes are
+`b1a2dc7182de35ecc6d6e2fd361df7a783526c7f8909aceba40eba400ee1af22`
+and `f281a9b022742397cb3a066edbdedefa68887f30e226a638d991032390de00c2`;
+the leaf/full audit-log hashes are
+`ea389d56d1c9bad8343b7ff358048de4fb8c86bdcfccea31df7e26c894a045a9`
+and `19076a8feb7919b1cabe73e1fe2d4b0ba6734023608f22b8d0056d9198652ab7`.
+After both audits passed, the stopped 16/2 Kissat continuation was superseded
+in the bundle by a CaDiCaL quick-four-second chain from the 17/1 boundary.
+
 A structural-split pilot does not support replacing lookahead by a fixed
 cross-edge order. For one hash-bound J297775 hard parent, splitting on the
 first unassigned H--J variable (variable 1 in the primary range 1--480) left
@@ -792,7 +851,7 @@ inequalities, or a different counting identity.
 ## Compute assessment and next bottleneck
 
 The ARM node has 64 logical CPUs and 244 GiB RAM. After retaining the current
-materialized proofs it has about 45 GiB free disk, so proof-log storage is now
+materialized proofs it has about 32 GiB free disk, so proof-log storage is now
 the tighter operational margin. It remains adequate for parallel pilots,
 catalog scans, cube discovery, and certificate replay. More raw cores would
 not fix the present bottleneck:
