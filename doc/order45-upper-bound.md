@@ -453,6 +453,18 @@ The auditor reports the closed chain complete and the open chain incomplete;
 accordingly both `exact_edge_cube_augmentations_unsat` and
 `mother_formula_unsat` remain false.
 
+Three direct open-frontier controls found no shortcut at the tested depths.
+iGlucose at 300 seconds closed 0/30 original forest-open parents. After the
+certified binary chain had descended to its exact round-20 30-parent
+frontier, direct 120-second CaDiCaL and 300-second iGlucose retries again
+closed 0/30, with no SAT result. Their manifest SHA-256 values are
+`a4ded95af63fc7d6521d0aa09e7237a6af820fa2c150d16e3a0ffe11fa23a882`,
+`267cbded321f70af732cf390e0f57d657016a99590dea0879a65d2817aea5b1d`,
+and `22d027adf122502bede3173564f21bdeb58152520bfa35989e98eee1878c991e`.
+The quick-eight-second chain remains preferable and has continued with exactly
+30 UNKNOWN branches; these three partial manifests are negative telemetry,
+not UNSAT certificates.
+
 ### Materialized leaf certificates
 
 A second recovery route no longer depends on completing or replaying one
@@ -686,8 +698,24 @@ and
 the full replay log SHA-256 is
 `5ce37f367304749e9e881593a44d5d8e8dd7307660136fe0391a62b7ca22d603`.
 Only after that replay passed was the 32/34 continuation stopped and a new
-CaDiCaL chain started from the stronger 36/30 seed. In contrast, a 300-second
-pass closed none of the 31 J326185 open parents frozen at round 96. A
+CaDiCaL chain started from the stronger 36/30 seed.
+
+A second, 1,800-second iGlucose retry on those exact 30 residual parents
+closed three more, at about 1,005, 1,261, and 1,667 seconds. The retained
+proofs are 582,216,081, 805,725,591, and 740,793,205 bytes. A separate 30-row
+leaf replay accepted all three; UNKNOWN-only composition produced an exact
+39 VERIFIED/27 UNKNOWN 66-row boundary, and a separate full replay accepted
+all thirty-nine proofs. The producer/combined manifest hashes are
+`c15e7b84b487516a96a13b297138eadc0341cb019fca49bcdcf11575853b534f`
+and `60ece36ce95a2dd92158a5a960826504e0732d62df59b14af8db2b1c626ab6ff`;
+the leaf/full audit-log hashes are
+`c6fcce0b33de3ecd3707588c013ee0c6557cfd3a4754fd8da529efc737fdd3b1`
+and `450cc84efca8e16974cbd758a5cec2d2197a91a7c553c9b0e604949ae55d1aa9`.
+After both audits passed, the bundle switched to this boundary and a new
+CaDiCaL quick-four-second continuation started from round 85.
+
+In contrast, a 300-second pass closed none of the 31 J326185 open parents
+frozen at round 96. A
 raw-proof-first 900-second pass then closed six, at about 320, 563, 578, 608,
 668, and 688 seconds. Producer replay and a separate 31-row leaf audit
 accepted all six. The preceding CaDiCaL scratch segment from rounds 82--96
@@ -703,6 +731,20 @@ the full replay log SHA-256 is
 `d77efa494d0707c340082ebf55868311691d156ef5ed33227883ac35c51e705f`.
 Only after both audits passed was the exploratory round-120 process group
 terminated and a fresh CaDiCaL continuation started from round 96.
+
+A second, 1,800-second iGlucose retry on the exact 25 residual parents closed
+three more, at about 883, 1,572, and 1,790 seconds, retaining 409,486,315-,
+638,466,757-, and 912,750,168-byte proofs. A separate 25-row leaf replay
+accepted all three. UNKNOWN-only composition produced an exact
+40 VERIFIED/22 UNKNOWN 62-row boundary, and a separate full replay accepted
+all forty retained proofs. The producer/combined manifest hashes are
+`e857457accb159e71848759a1bb59e2f81733a78b801bd799b2ca2eaf00babac`
+and `6cceea7387ac18fbcf34f16ec2c63243e47164ebbd9e28067154c366097fe72e`;
+the leaf/full audit-log hashes are
+`68814f573f1f159d821dfc559b4d44ae63ee5d327c00a94c6456a4eaf2a9f254`
+and `5d140fd13d70e4c868be355b29082f12ec86d1de351fef2180dc7a9a64ab8b07`.
+Only after both audits passed was the bundle switched to this boundary and a
+new CaDiCaL quick-four-second continuation started from round 96.
 
 On the seven J326185 closed parents left by the first round-187 composition,
 a 900-second iGlucose pass produced three more compact proofs at about 525,
