@@ -819,6 +819,23 @@ The former continuous chain was recoverably frozen at round 386 with twelve
 UNKNOWN parents. Only after both new audits passed did a fresh CaDiCaL chain
 start from the smaller round-339 boundary; the older artifacts remain intact.
 
+That replacement chain held four residuals through the exact round-345
+boundary before later exploratory rounds widened. A certified 1,800-second
+iGlucose retry on those four parents proved two in 1,075.50 and 1,205.46
+seconds; the retained compact proofs are 209,856,662 and 215,556,817 bytes.
+The producer manifest is 2 VERIFIED/2 UNKNOWN and has SHA-256
+`fe2481b452687e03b01072474902009777973f7524038039af73c0f00ef18636`.
+A separate four-row leaf replay accepted both proofs, with log SHA-256
+`f57494e8b072e0ac00ac8ec7061bbc50c58b50713ef8f4013f6116d740fbd606`.
+UNKNOWN-only composition with the exact round-344 4/4 manifest produced an
+eight-row 6 VERIFIED/2 UNKNOWN boundary. Its manifest SHA-256 is
+`64f5bc201f947385f7c48b9566238b1ab2302e5a28847044ed299353e0f7b91d`,
+and a separate replay accepted all six proofs with log SHA-256
+`8a1e1f0288ea43b3a5e0fe29bee1385fd06dec13c8fc87081e7931f68012b81f`.
+Only after both audits passed did the fixed-pair bundle append this stronger
+seed and start a frontier-growth-guarded continuation from round 345. Two
+closed-side residuals remain, so this is not a fixed-pair UNSAT result.
+
 At the exact J326185 round-187 boundary, a 3,600-second iGlucose retry closed
 one of the two remaining parents in 2,332.10 seconds; its checked proof is
 857,920,874 bytes, while the other parent timed out. A separate two-row leaf
@@ -832,6 +849,35 @@ the leaf/full audit-log hashes are
 and `19076a8feb7919b1cabe73e1fe2d4b0ba6734023608f22b8d0056d9198652ab7`.
 After both audits passed, the stopped 16/2 Kissat continuation was superseded
 in the bundle by a CaDiCaL quick-four-second chain from the 17/1 boundary.
+
+The newly adopted fixed-pair continuations were then frozen at their last
+non-growing states and replayed independently. J326185 closed maintained one
+UNKNOWN parent for 55 consecutive rounds: the round-187--242 audit accepted
+56 manifests, 55 complementary refinements, and 55 refined parents, ending
+at the exact 1 VERIFIED/1 UNKNOWN round-241 manifest. Its final-manifest,
+audit, and audit-log SHA-256 values are
+`8caa1289ba9ce8263465be9afbb9985c7d07d19aee27f0d431ad86145969f31c`,
+`72eb8e391c10487fe44c37e7f95a841bc67253d8538520f125e7116b51b551fd`,
+and `0fa07f9e317396a1202133564546446cc31c20f05595ca39b60560158d44f91e`.
+The next candidate contained two UNKNOWN children and was not adopted.
+
+J326185 open made one non-growing round from its 40/22 seed. Independent
+replay accepted the two manifests and the complementary split of all 22
+parents, ending at 22 VERIFIED/22 UNKNOWN on deeper cubes. Its final-manifest,
+audit, and audit-log hashes are
+`a32baacf321f26b62cac1555282f5da63a607e2822a9998c2a0d398299a58cf5`,
+`68fe4e54cb5a19316aee5cc74cefbf955e4cdc440cf9863529d39b32e8e5e7af`,
+and `51fa8b5f26b9f2d7e4cacee94c6b86ebbce5b68ed8cf5f864dee470ddb1032e1`.
+A guarded next round stopped at 26 UNKNOWN without advancing its state.
+J297775 open similarly maintained 27 UNKNOWN parents for two rounds; its
+three-manifest audit accepted 54 complementary parent refinements and ended
+at 27 VERIFIED/27 UNKNOWN. The final-manifest, audit, and audit-log hashes are
+`c44d6c8e9e7a872a103d273ad9e2fde2c1ab722e13146d155a344f2290dd55ec`,
+`a59b1e6746173e4aaae60e5010a67ae1b3daca6da1c61b89cd799da17473615d`,
+and `be9d166d056db9b97c9b94be8804ac9ec33db74664b5351fccd2f329f605197e`.
+Its following unguarded candidate widened to 32 and was excluded. These
+deeper equal-cardinality boundaries are now the exact sources for long
+certified iGlucose retries; no expanded frontier is part of either bundle.
 
 A structural-split pilot does not support replacing lookahead by a fixed
 cross-edge order. For one hash-bound J297775 hard parent, splitting on the
