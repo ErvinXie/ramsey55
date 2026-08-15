@@ -576,7 +576,8 @@ than an adapter. A two-cube materialized smoke produced and independently
 replayed both compact proofs. On the J297775 closed round-178 frontier, seven
 other 300-second configurations (six CaDiCaL phase/search variants and Kissat
 `--sat`) nevertheless closed none of the two parents, and certified iGlucose
-also left both UNKNOWN. On a ten-parent J326185 round-187 snapshot, iGlucose
+also left both UNKNOWN. A raw-proof-first 1,800-second iGlucose follow-up still
+closed neither parent. On a ten-parent J326185 round-187 snapshot, iGlucose
 instead produced three compact proofs in about 85, 147, and 175 seconds. Each
 passed a separate replay; cross-solver composition raised the exact 18-row
 boundary manifest from 8 VERIFIED/10 UNKNOWN to 11/7, and an independent audit
@@ -587,6 +588,79 @@ not part of the frozen bundle prefix. The frozen Kissat prefix from rounds
 279 refined parents led to the exact 8 VERIFIED/10 UNKNOWN terminal manifest.
 Its audit SHA-256 is
 `e18d93f15b5ae60b8475ef6b79b0b69a6e4edb22d84825133ddd20a716137b8a`.
+
+The next frozen-frontier probes made the solver-diversity gain more concrete.
+Certified iGlucose closed two of the 36 J297775 open parents at round 85 in
+about 185 and 295 seconds. Both compact proofs passed a separate replay, and
+UNKNOWN-only composition changed the exact 66-row boundary from 30
+VERIFIED/36 UNKNOWN to 32/34. A full replay accepted the combined manifest.
+Its SHA-256 is
+`cfd8bdca4029691c641c5e225b4e0f1eb3aed4b15c750ed23645f232aef9a152`.
+The preceding CaDiCaL scratch segment was also independently reconstructed:
+rounds 69--85 contain 17 proof manifests, 16 refinements, and 415 refined
+parents, ending at the exact 30/36 source manifest. Its audit SHA-256 is
+`180f084eb10847edd9cd9cb80850cdb0117f3cbd6c65d0d7654ae1b87d30e2cf`.
+The first open-chain continuation started from that smaller round-85 boundary.
+A longer raw-proof-first 900-second iGlucose pass on its remaining 34 parents
+then closed four more, at about 517, 680, 686, and 707 seconds. The producer
+replayed all four raw proofs, a separate leaf audit accepted them, and a full
+66-row replay accepted the composed 36 VERIFIED/30 UNKNOWN boundary. The
+producer and combined manifest SHA-256 values are
+`ee81b6111c334a74e2e8e6a58fbfe3704d4448ac26c7f9bafe894d982b945f38`
+and
+`f90116b8ca1c50972d6c1fdee2821f0b8619cb85a6c9e20a943b3c452cab8cf7`;
+the full replay log SHA-256 is
+`5ce37f367304749e9e881593a44d5d8e8dd7307660136fe0391a62b7ca22d603`.
+Only after that replay passed was the 32/34 continuation stopped and a new
+CaDiCaL chain started from the stronger 36/30 seed. In contrast, a 300-second
+pass closed none of the 31 J326185 open parents frozen at round 96. A
+raw-proof-first 900-second pass then closed six, at about 320, 563, 578, 608,
+668, and 688 seconds. Producer replay and a separate 31-row leaf audit
+accepted all six. The preceding CaDiCaL scratch segment from rounds 82--96
+also passed whole-chain replay: 15 manifests, 14 refinements, and 365 parents
+end at the exact 31 VERIFIED/31 UNKNOWN source boundary. Its audit SHA-256 is
+`429cd800fa4a293f8963c6ef383e88a67d841d8bc5fb77e1c765807156db649a`.
+UNKNOWN-only composition and a full 62-row replay accepted the stronger 37/25
+boundary. The producer and combined manifest SHA-256 values are
+`423e81201832bd03e6865912fa6f720d6edf9bf1e3e273052500f038dfce9025`
+and
+`c2c8c5bf840bfb44d7dcdd024e065d40d4e1af3b3290d2a0646ac5fa25de363d`;
+the full replay log SHA-256 is
+`d77efa494d0707c340082ebf55868311691d156ef5ed33227883ac35c51e705f`.
+Only after both audits passed was the exploratory round-120 process group
+terminated and a fresh CaDiCaL continuation started from round 96.
+
+On the seven J326185 closed parents left by the first round-187 composition,
+a 900-second iGlucose pass produced three more compact proofs at about 525,
+603, and 897 seconds. The producer and a separate auditor replayed all three;
+UNKNOWN-only composition raised the exact 18-row boundary to 14 VERIFIED/4
+UNKNOWN, and a full replay accepted all fourteen retained proofs. The closed
+manifest SHA-256 is
+`2db59c0c96503cad02ce3ac083496c650d2a94b6b3d0952e6e86a9ce0a45a038`.
+This run also showed that proof compaction, rather than SAT search, can
+dominate completion latency: the largest 479 MB raw DRUP took roughly fifteen
+minutes to compact before a 163 MB proof could be replayed. Longer follow-up
+probes therefore keep raw proofs for immediate checking and defer storage
+compaction.
+
+A raw-proof-first 1,800-second pass on the four remaining parents closed two
+more, at about 916 and 1,798 seconds, retaining 546 MB and 838 MB proofs.
+Producer replay and a separate four-row leaf audit accepted both. UNKNOWN-only
+composition and full 18-row replay accepted the exact 16 VERIFIED/2 UNKNOWN
+boundary. The producer and combined manifest SHA-256 values are
+`a6c98ae97395ceb7e216fd75b2176502a86ddd7594f55e60bf0016a5e3e4550c`
+and
+`72fc2574e528f08cd22fd4b54378357edf5d2ca210217df527476a4a11feafb1`;
+the full replay log SHA-256 is
+`1234a6c66e9d2890cdae7a8e29d542a80a12dad98576bf758713a0566f80cc06`.
+Only after both audits passed was the 14/4 exploratory continuation stopped
+and a fresh Kissat chain started from the stronger round-187 seed.
+
+A production-shaped fallback pilot at J326185 closed round 202 advanced one
+round to an 8 VERIFIED/8 UNKNOWN manifest without invoking iGlucose: the
+primary Kissat stage solved one side of every jointly hard sibling pair, so no
+pair met the fallback trigger. This validates the trigger semantics but gives
+no frontier reduction beyond the ordinary staged round.
 
 The J326185 closed-leaf batch verified 16,746 of 16,756 leaves and left ten
 UNKNOWN, with all 16,746 proofs accepted by a separate 48-way replay. Its
@@ -674,7 +748,7 @@ inequalities, or a different counting identity.
 ## Compute assessment and next bottleneck
 
 The ARM node has 64 logical CPUs and 244 GiB RAM. After retaining the current
-materialized proofs it has about 69 GiB free disk, so proof-log storage is now
+materialized proofs it has about 45 GiB free disk, so proof-log storage is now
 the tighter operational margin. It remains adequate for parallel pilots,
 catalog scans, cube discovery, and certificate replay. More raw cores would
 not fix the present bottleneck:
