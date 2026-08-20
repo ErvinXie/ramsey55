@@ -1188,6 +1188,23 @@ and
 `24da5f48f024814c7f54611371c6e71eea7f7f94ee6a11a0c36201b4710d5907`.
 Both audits explicitly return false completion claims.
 
+A second immutable rescued checkpoint reaches the next two audited growth
+boundaries. J297775 has nine segments through state round 191, comprising 200
+proof manifests and 984 parent refinements and leaving nine UNKNOWN cubes.
+J326185 has seven segments through state round 240, comprising 247 manifests
+and 867 refinements and leaving six UNKNOWN cubes. The chain bundle, stable
+audit, and audit-log hashes are
+`4d8eba0c4a3f0ba6435702cbd70551c22d8b83515fcaf84f750e7b0863cde264`,
+`801348f8958a09022187ca03e1e5dda8622fd17ded12ee55a354d0d09afe156b`,
+and
+`ebe86aae953951fc0504346cb204ed30de96a01dae4961b7b965c7f5a3e9aea6`.
+Its parent-composition bundle, audit, and log hashes are
+`9d4d9833c831d3d3ed71c840ba92f74e848be1e0a29a4a9b37fb198241a5984a`,
+`51f6d5ba5e7aec5c60abd5cd4e3704d4c03d44d2d167436ff9ad7c4d112ffbd8`,
+and
+`38f75440eaf75c230895c1884f2dc70bffa8a6b47bf2e7141a4c5c9f619c0b29`.
+This audit also explicitly returns `all_parents_unsat=false`.
+
 The stable-tree migration for this checkpoint scanned 1,112 JSON documents,
 rewrote 496 paths, propagated 86 dependent hashes, and converged in two
 passes; its relocation-record hash is
