@@ -1223,6 +1223,50 @@ CaDiCaL, and iGlucose independently closed the same child with checked proofs
 of 66,611,040, 54,089,886, and 104,704,389 bytes. These results keep the live
 frontiers from growing at those rounds, but neither parent is yet UNSAT.
 
+A targeted 3,600-second rescue substantially narrowed both round-boundary
+frontiers. For J297775, Kissat closed all seven round-190 UNKNOWN cubes outside
+the guarded growth pair; their checked compact DRATs total 1,178,631,163
+bytes. Their cube rows occurred in reverse order, so the manifest composer now
+has an explicit opt-in mode that maps a unique exact-cube subset independent
+of row order and records both the sorted replaced indices and the secondary to
+primary mapping. Independent replay of the composed 16-row manifest accepted
+14 proofs and left exactly the original pair UNKNOWN. For J326185, Kissat
+first closed all four round-239 UNKNOWN cubes outside its growth pair. CaDiCaL
+and Kissat then independently closed the same member of that pair with checked
+proofs of 195,953,015 and 270,149,972 bytes; the smaller CaDiCaL proof was used.
+Independent replay of the resulting ten-row manifest accepted nine proofs and
+left one UNKNOWN. After relocation, the J297775/J326185 composed-manifest
+hashes are
+`bd7a2421b4d1b6ea2fe83d833be4d7b800804081350429853794905f5f5204d7`
+and
+`1a3c1a3b7df11468656aaa9f85e81032488c742f2406bc7417eb93f0e6445b0e`.
+
+The immutable rescued-v3 checkpoint extends the old chains with these two
+exact-cube retries. J297775 has ten segments through state round 201: 211
+proof manifests and 1,004 parent refinements leave two UNKNOWN descendants.
+J326185 has eight segments through state round 241: 249 manifests and 868
+refinements leave one UNKNOWN descendant. Both new boundaries were classified
+as independently replayed exact-cube retries. The chain bundle, stable audit,
+and audit-log hashes are
+`0456aa753279802681a8a0dc4db013fc3317b55324483243b1daa728acf40be4`,
+`999e416ec2793d775b82d90e848b3550c7f475eb1fa41a22644a4f74a1e3342f`,
+and
+`4c18a322733f8419584f593f55f71135f0d2368f7194dfeb2d8511362c99c7a9`.
+The higher-level original-parent composition again replayed all 193/178
+backbone proofs and has bundle, audit, and log hashes
+`cca282dd0bb3d3a4620e7e944c659a41b9177d3e8f0c9d05f9489a18f80f94bf`,
+`cb1b39113a0d225dd23853df91cc30fe93caeed703fd0e0f7854ddeffae0f8dc`,
+and
+`2d157f5dccbac556ff2ec0afcf86e85d1ee3ac1948f31777633c2b90732eba23`.
+Both completion flags are false. The transactional v9 relocation scanned
+1,587 JSON documents, rewrote 99 paths, propagated 20 hashes in three passes,
+and has record hash
+`5fa5abd2f8dd612f90003a55c1d1a64720b144e4609bd7b5ee0d981d8e937001`.
+After the freeze, the live J297775 chain retained two UNKNOWN cubes through
+round 207 and halted on a guarded `2 -> 3` growth, while the live J326185
+single-cube chain advanced to state round 257. These live increments are not
+part of rescued-v3.
+
 That hedge is now running for all three unified mother formulas with exact
 configuration `30000/128000 conflicts, 1 second lookahead, primary bound 0,
 10 seconds solve`. The logged initial frozen-variable counts are only 16, 18,
