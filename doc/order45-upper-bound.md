@@ -1149,6 +1149,22 @@ relocation record, stable audit manifest, and audit log SHA-256 values are
 and
 `cb5d305802c3106294410be1f26350e03676f6f5af301acbe42187c415132518`.
 
+A higher-level composition now connects that strengthened checkpoint back to
+the original fixed-pair parent 1. It replays all 193 J297775 and 178 J326185
+full-screen false-polarity DRAT proofs, selects the 15 facts whose lineage has
+`parent_index=1`, and checks that strengthened row zero is byte-for-byte the
+original parent cube followed by exactly those 15 survivor literals. It then
+replays the complete chain bundle and requires identical formula, case,
+strengthened-file, and lineage hashes at the join. The result certifies that
+the original J297775/J326185 parent 1 cubes are reduced to six and five
+explicit UNKNOWN descendants. It still reports `all_parents_unsat=false`;
+the other 14/13 fixed-pair residuals and the global order-45 cover are
+unaffected. The composition bundle, audit manifest, and audit log hashes are
+`af11b0c438223d11e5c7ff2dddab5ca9e376b6cb107c24a0c70ecca0146e7e21`,
+`a8be4397e902f50c261a8d2a9fab4199535cfc1786b509a6caa720c125d41d29`,
+and
+`5b1b72e5d146647fa98e2a2bbb3b2df99f22638457fc26d3a45790a4759c7c4a`.
+
 That hedge is now running for all three unified mother formulas with exact
 configuration `30000/128000 conflicts, 1 second lookahead, primary bound 0,
 10 seconds solve`. The logged initial frozen-variable counts are only 16, 18,
