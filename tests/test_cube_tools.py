@@ -53,6 +53,7 @@ STRATA_PROOF_BUNDLE = load_tool("audit_order45_strata_proof_bundle")
 CARTESIAN_CUBES = load_tool("generate_cartesian_cubes")
 SCREEN_VARIABLES = load_tool("screen_cube_variables")
 SCREENED_SPLITS = load_tool("select_screened_binary_splits")
+SCREENED_REFINER = load_tool("refine_screened_binary_cubes")
 SELECTED_REFINEMENT = load_tool("refine_selected_binary_cubes")
 ADOPT_CHAIN_GROWTH = load_tool("adopt_materialized_chain_growth")
 
@@ -240,6 +241,28 @@ class ExternalCubeToolTests(unittest.TestCase):
                     [result(10, 0.1), result(0, 1.0)],
                 ],
             )
+
+    def test_screened_refiner_removes_variables_assigned_by_any_parent(self) -> None:
+        self.assertEqual(
+            SCREENED_REFINER.available_variables(
+                [[1, -3], [-1, 2]], [1, 2, 3, 4, 5]
+            ),
+            [4, 5],
+        )
+
+    def test_materialized_chain_appends_refiner_arguments(self) -> None:
+        command = MATERIALIZED_CHAIN.refiner_command(
+            Path("refiner"),
+            Path("formula.cnf"),
+            Path("parents.icnf"),
+            3,
+            Path("children.icnf"),
+            Path("refine.tsv"),
+            ["--variables=800-1200", "--screen-seconds=1"],
+        )
+        self.assertEqual(
+            command[-2:], ["--variables=800-1200", "--screen-seconds=1"]
+        )
 
     def test_cartesian_variable_parser_retains_exponential_guard(self) -> None:
         with self.assertRaisesRegex(ValueError, r"2\^24"):

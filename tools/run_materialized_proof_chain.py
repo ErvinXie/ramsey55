@@ -64,12 +64,33 @@ def frontier_grew(previous_unknown: int, next_summary: dict[str, object]) -> boo
     return next_unknown > previous_unknown
 
 
+def refiner_command(
+    refiner: Path,
+    formula: Path,
+    parents: Path,
+    jobs: int,
+    children: Path,
+    results: Path,
+    extra_arguments: list[str],
+) -> list[str]:
+    return [
+        str(refiner),
+        str(formula),
+        str(parents),
+        str(jobs),
+        str(children),
+        str(results),
+        *extra_arguments,
+    ]
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("formula", type=Path)
     parser.add_argument("seed_manifest", type=Path)
     parser.add_argument("workdir", type=Path)
     parser.add_argument("--refiner", type=Path, required=True)
+    parser.add_argument("--refiner-argument", action="append", default=[])
     parser.add_argument("--solver", type=Path, required=True)
     parser.add_argument("--checker", type=Path, required=True)
     parser.add_argument("--jobs", type=int, default=8)
@@ -276,14 +297,15 @@ def main() -> int:
             raise RuntimeError("incomplete proof manifest exported no UNKNOWN cubes")
 
         refine_status = run_logged(
-            [
-                str(arguments.refiner),
-                str(arguments.formula),
-                str(parents),
-                str(min(arguments.jobs, unknown)),
-                str(children),
-                str(refine_results),
-            ],
+            refiner_command(
+                arguments.refiner,
+                arguments.formula,
+                parents,
+                min(arguments.jobs, unknown),
+                children,
+                refine_results,
+                arguments.refiner_argument,
+            ),
             refine_log,
         )
         if refine_status == 10:

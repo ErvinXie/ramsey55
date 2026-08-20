@@ -1432,7 +1432,28 @@ fastest jointly observed one-sided contradiction for every parent. It also
 canonicalizes recorded input paths before hashing the report. This last rule
 was added after relocation correctly rejected an otherwise equivalent path
 containing a lexical `..`; no proof artifact was accepted through that failed
-attempt. The local and ARM suites pass 154 tests.
+attempt.
+
+`refine_screened_binary_cubes.py` exposes that selection policy through the
+same six positional arguments as the compiled binary refiner. The normal chain
+runner can now append repeatable `--refiner-argument` options, so every round
+automatically exports the exact UNKNOWN parents, screens every available
+variable with at least two named and hash-bound solver binaries, selects one
+agreed one-sided split per parent, and hands the complete complementary split
+to the existing proof/check/audit stages. The first production run uses the
+800--1200 auxiliary window, one second and 16 workers per CaDiCaL/Kissat
+screen, followed by five-second CaDiCaL proof mode. It automatically completed
+rounds 362--364 on variables 1181, 868, and 1149, retaining one UNKNOWN parent
+at every round. Their checked compact DRATs are 26, 32, and 38 bytes.
+Relocation v25 has hash
+`f585e0e24aa77f51c3445358c73a6131d41ee27c9263e1a4bd6e1909800a302c`.
+Independent stable replay accepted four manifests and three refinements
+through state round 365; its JSON/log hashes are
+`facc89a5c8818e773a22b14b7c5ca3e2e57d5d8b2dffdd5839497f07d267f2fd`
+and
+`44104ef4a459c2a4b8da9c7776e8ba133b91e31eaa9002a321c5cbc41e1a5a74`.
+The live chain has already reached state round 366 and continues. The local
+and ARM suites pass 156 tests.
 
 Certified iGlucose also independently closed the already rescued round-351
 child in 1,798.45 seconds. Its 354,042,170-byte compact DRAT has SHA-256
