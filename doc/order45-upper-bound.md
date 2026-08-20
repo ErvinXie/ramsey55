@@ -1313,11 +1313,18 @@ child by CaDiCaL, Kissat, and iGlucose with compact proofs of 113,045,276,
 replayed, retaining two UNKNOWN cubes through round 243; the guarded round-244
 candidate grows to three and is not adopted. At J326185 round 278, CaDiCaL and
 Kissat independently closed the same child with 94,139,627- and
-101,863,998-byte proofs. The CaDiCaL composition replayed successfully and its
-single-cube continuation has reached at least state round 342 while remaining
-live. These post-freeze results are not part of the rescued-v4 bundle. No
-parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45` theorem is
-claimed.
+101,863,998-byte proofs. The CaDiCaL composition replayed successfully. A
+stable snapshot of its single-cube continuation through state round 351
+independently replays 73 proof manifests and 72 parent refinements, still
+leaving one UNKNOWN cube; its audit JSON/log hashes are
+`d2a08c1e5eeb5d4ea3c5a3510dcd7a2b955574b519039a264148a45d41758dbb`
+and
+`61490d91b3a78f6a582f7a0e61b54d2c2cb950a19e07cbe86fe88198fc623b1e`.
+Relocation v13 bound this snapshot into the stable tree with record hash
+`a47f0cacc54a6fbdc08104463d9206a213a5f633610aaa6e6279d584197d367e`;
+the live chain continues beyond the snapshot. These post-freeze results are
+not part of the rescued-v4 bundle. No parent-1 UNSAT, fixed-pair UNSAT,
+order-45 UNSAT, or `R(5,5) <= 45` theorem is claimed.
 
 That hedge is now running for all three unified mother formulas with exact
 configuration `30000/128000 conflicts, 1 second lookahead, primary bound 0,
