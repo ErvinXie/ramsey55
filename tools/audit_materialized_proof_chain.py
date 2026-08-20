@@ -38,6 +38,7 @@ else:
 
 STATE_SCHEMA = "ramsey55.materialized-proof-chain.v1"
 AUDIT_SCHEMA = "ramsey55.materialized-proof-chain-audit.v1"
+HALT_SCHEMA = "ramsey55.materialized-proof-chain-halt.v1"
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -45,6 +46,57 @@ def load_json(path: Path) -> dict[str, Any]:
     if not isinstance(document, dict):
         raise ValueError(f"expected JSON object: {path}")
     return document
+
+
+def verify_adopted_growth(
+    state: dict[str, Any],
+    final_round: int,
+    parent_manifest: Path | None,
+    parent: dict[str, Any] | None,
+    candidate_manifest: Path,
+    candidate: dict[str, Any],
+) -> None:
+    expected_current_hash = state.get("current_manifest_sha256")
+    if (
+        expected_current_hash is not None
+        and expected_current_hash != file_sha256(candidate_manifest)
+    ):
+        raise ValueError("state current-manifest hash mismatch")
+    growth = state.get("adopted_growth")
+    if growth is None:
+        return
+    if not isinstance(growth, dict) or parent_manifest is None or parent is None:
+        raise ValueError("invalid adopted-growth state")
+    parent_unknown = int(parent["summary"]["unknown"])
+    candidate_unknown = int(candidate["summary"]["unknown"])
+    if candidate_unknown <= parent_unknown:
+        raise ValueError("adopted transition is not frontier growth")
+    expected_growth = {
+        "parent_manifest": str(parent_manifest),
+        "parent_manifest_sha256": file_sha256(parent_manifest),
+        "parent_unknown": parent_unknown,
+        "candidate_manifest": str(candidate_manifest),
+        "candidate_manifest_sha256": file_sha256(candidate_manifest),
+        "candidate_unknown": candidate_unknown,
+    }
+    for key, value in expected_growth.items():
+        if growth.get(key) != value:
+            raise ValueError(f"adopted-growth {key} mismatch")
+    halt_path = Path(growth["halt_path"])
+    if not halt_path.is_file() or growth.get("halt_sha256") != file_sha256(halt_path):
+        raise ValueError("adopted-growth halt hash mismatch")
+    halt = load_json(halt_path)
+    expected_halt = {
+        "schema": HALT_SCHEMA,
+        "reason": "frontier_growth",
+        "round": final_round - 1,
+        "parent_manifest": str(parent_manifest),
+        "candidate_manifest": str(candidate_manifest),
+        "parent_unknown": parent_unknown,
+        "candidate_unknown": candidate_unknown,
+    }
+    if halt != expected_halt:
+        raise ValueError("adopted-growth halt record mismatch")
 
 
 def audit_proof_manifest(
@@ -181,6 +233,8 @@ def main() -> None:
     seed_formula = current["formula"]
     audited_manifests = 0
     refined_parents = 0
+    final_parent_manifest: Path | None = None
+    final_parent: dict[str, Any] | None = None
     for round_number in range(arguments.first_round, final_round):
         audit_proof_manifest(
             current_manifest, arguments.checker, arguments.jobs, audit_tool
@@ -210,11 +264,21 @@ def main() -> None:
         ):
             raise ValueError(f"child proof binding mismatch at round {round_number}")
         refined_parents += len(unknown)
+        final_parent_manifest = current_manifest
+        final_parent = current
         current_manifest = next_manifest
         current = next_document
 
     if current_manifest != final_manifest:
         raise ValueError("state current_manifest does not match reconstructed chain")
+    verify_adopted_growth(
+        state,
+        final_round,
+        final_parent_manifest,
+        final_parent,
+        current_manifest,
+        current,
+    )
     final_audit = audit_proof_manifest(
         current_manifest, arguments.checker, arguments.jobs, audit_tool
     )

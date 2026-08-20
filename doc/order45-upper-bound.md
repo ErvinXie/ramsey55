@@ -1111,6 +1111,44 @@ both children UNKNOWN at 120 seconds. The auxiliary-heavy CaDiCaL lookahead
 splits are retained because their repeated one-easy/one-hard behavior is much
 more useful for certified descent.
 
+A strengthened single-root continuation is now the main parent-1 route. For
+each fixed-pair formula it starts from row zero of the retained full-backbone
+ICNF. The recorded lineage maps that row to fixed-pair parent index 1 and
+lists the same 15 certified primary literals; the one-row root hashes are
+`b8a29a9589e2715a7eaac21151875550eddc7855d7a3ef9c8fadc917e89ee912`
+for J297775 and
+`715b4a45b6397cec09c33dad258a0826e963a01b1a1e72a07a5b2ecd9ca753b9`
+for J326185. This shares every subsequent auxiliary split across the whole
+strengthened parent instead of maintaining 17 independent column-star leaves.
+
+The chain runner retains its last authoritative state whenever a round would
+increase the UNKNOWN frontier. The new growth-adoption record verifies both
+parent and candidate proof schemas and counts, rejects SAT, and binds the halt,
+parent manifest, and candidate manifest by SHA-256. The independent chain
+auditor now checks those bindings against the reconstructed final transition.
+At the first stable checkpoint, the J297775 frontier grew only
+`1 -> 2 -> 3 -> 4 -> 5 -> 6` at state rounds 2, 9, 28, 74, and 132. Its six
+segments replayed 138 proof manifests and 547 complementary parent splits.
+The J326185 frontier grew `1 -> 2 -> 3 -> 4 -> 5` at state rounds 5, 37, 128,
+and 132; its five segments replayed 137 manifests and 358 parent splits.
+Both final manifests are partial, with six and five UNKNOWN cubes.
+
+Those artifacts were copied out of tmpfs and relocated into
+`build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1`.
+The relocation pass rewrote 2,073 absolute paths and iteratively updated 353
+dependent hash fields across 878 JSON documents, converging after two passes.
+A fresh top-level replay from the stable paths checked the two source-lineage
+bindings, every DRAT proof, every UNKNOWN export, every binary split, all
+cross-segment boundaries, and all nine guarded growth adoptions. It reports
+`all_cases_complete_unsat=false`; this is a much narrower certified residual,
+not a proof of either parent or either fixed-pair formula. The bundle,
+relocation record, stable audit manifest, and audit log SHA-256 values are
+`f551668d83f535617914e4d8a54aa5c06a310fdab09f9e4f4c988750bdfa49a8`,
+`2bbd39de58159db1b5ca67461c94befb3a86455018cff187dfd1e1549fecf1fb`,
+`196b65e012a430d78918d34a5cf54f99f2a6a0fd1f0fcc179acc7c7cacd34564`,
+and
+`cb5d305802c3106294410be1f26350e03676f6f5af301acbe42187c415132518`.
+
 That hedge is now running for all three unified mother formulas with exact
 configuration `30000/128000 conflicts, 1 second lookahead, primary bound 0,
 10 seconds solve`. The logged initial frozen-variable counts are only 16, 18,

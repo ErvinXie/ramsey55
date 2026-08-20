@@ -242,6 +242,30 @@ class FixedPairProofAuditTests(unittest.TestCase):
             self.assertEqual(case["unsat"], 0)
             self.assertEqual(case["unknown"], 680)
 
+    def test_parent1_strengthened_chain_bundle_is_explicitly_partial(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        bundle = json.loads(
+            (
+                root
+                / "data/order45-final-parent1-strengthened-lookahead-chain-bundle.json"
+            ).read_text()
+        )
+        self.assertIn("neither parent", bundle["claim"])
+        self.assertEqual(
+            bundle["schema"], "ramsey55.materialized-proof-chain-bundle.v1"
+        )
+        self.assertEqual(
+            [case["case"] for case in bundle["cases"]],
+            ["J297775", "J326185"],
+        )
+        self.assertEqual(
+            [len(case["segments"]) for case in bundle["cases"]], [6, 5]
+        )
+        for case in bundle["cases"]:
+            self.assertFalse(case["complete_unsat"])
+            self.assertEqual(case["fixed_pair_parent_index"], 1)
+            self.assertEqual(case["source_cube_index"], 0)
+
     def test_selective_freeze_pilot_is_explicit_unknown_telemetry(self) -> None:
         root = Path(__file__).resolve().parents[1]
         pilot = json.loads(

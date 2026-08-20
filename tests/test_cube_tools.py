@@ -43,12 +43,14 @@ MATERIALIZED_PORTFOLIO = load_tool("compose_materialized_cube_portfolio")
 MATERIALIZED_CHAIN = load_tool("run_materialized_proof_chain")
 MATERIALIZED_CHAIN_AUDIT = load_tool("audit_materialized_proof_chain")
 FIXED_PAIR_BUNDLE = load_tool("audit_fixed_pair_proof_bundle")
+MATERIALIZED_CHAIN_BUNDLE = load_tool("audit_materialized_proof_chain_bundle")
 ORDER45_FIXED_PROOFS = load_tool("audit_order45_fixed_pair_proofs")
 MATERIALIZE_CNF_CUBE = load_tool("materialize_cnf_cube")
 STRATA_LEAF_PROOFS = load_tool("audit_order45_strata_leaf_proofs")
 STRATA_PROOF_BUNDLE = load_tool("audit_order45_strata_proof_bundle")
 CARTESIAN_CUBES = load_tool("generate_cartesian_cubes")
 SCREEN_VARIABLES = load_tool("screen_cube_variables")
+ADOPT_CHAIN_GROWTH = load_tool("adopt_materialized_chain_growth")
 
 
 class ExternalCubeToolTests(unittest.TestCase):
@@ -84,6 +86,209 @@ class ExternalCubeToolTests(unittest.TestCase):
     def test_screen_variables_rejects_an_assigned_variable(self) -> None:
         with self.assertRaisesRegex(ValueError, "already assigns"):
             SCREEN_VARIABLES.extend_cubes([[1, -2]], [2, 3])
+
+    def test_adopts_hash_bound_guarded_chain_growth(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            parent = root / "parent.json"
+            parent.write_text(
+                json.dumps(
+                    {
+                        "schema": "ramsey55.materialized-cube-proofs.v1",
+                        "summary": {
+                            "complete_unsat": False,
+                            "sat": 0,
+                            "unknown": 2,
+                        },
+                    }
+                )
+            )
+            candidate = root / "candidate.json"
+            candidate.write_text(
+                json.dumps(
+                    {
+                        "schema": "ramsey55.materialized-cube-proofs.v1",
+                        "summary": {
+                            "complete_unsat": False,
+                            "sat": 0,
+                            "unknown": 3,
+                        },
+                    }
+                )
+            )
+            halt = root / "halted.json"
+            halt.write_text(
+                json.dumps(
+                    {
+                        "schema": "ramsey55.materialized-proof-chain-halt.v1",
+                        "reason": "frontier_growth",
+                        "round": 8,
+                        "parent_manifest": str(parent),
+                        "parent_unknown": 2,
+                        "candidate_unknown": 3,
+                        "candidate_manifest": str(candidate),
+                    }
+                )
+            )
+            state = ADOPT_CHAIN_GROWTH.adopt(halt)
+            self.assertEqual(state["round"], 9)
+            self.assertEqual(state["current_manifest"], str(candidate))
+            self.assertEqual(
+                state["current_manifest_sha256"],
+                ADOPT_CHAIN_GROWTH.file_sha256(candidate),
+            )
+            self.assertEqual(
+                state["adopted_growth"]["parent_manifest_sha256"],
+                ADOPT_CHAIN_GROWTH.file_sha256(parent),
+            )
+            self.assertEqual(state["adopted_growth"]["candidate_unknown"], 3)
+
+    def test_rejects_growth_count_not_bound_to_candidate(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            parent = root / "parent.json"
+            parent.write_text(
+                json.dumps(
+                    {
+                        "schema": "ramsey55.materialized-cube-proofs.v1",
+                        "summary": {
+                            "complete_unsat": False,
+                            "sat": 0,
+                            "unknown": 1,
+                        },
+                    }
+                )
+            )
+            candidate = root / "candidate.json"
+            candidate.write_text(
+                json.dumps(
+                    {
+                        "schema": "ramsey55.materialized-cube-proofs.v1",
+                        "summary": {
+                            "complete_unsat": False,
+                            "sat": 0,
+                            "unknown": 4,
+                        },
+                    }
+                )
+            )
+            halt = root / "halted.json"
+            halt.write_text(
+                json.dumps(
+                    {
+                        "schema": "ramsey55.materialized-proof-chain-halt.v1",
+                        "reason": "frontier_growth",
+                        "round": 1,
+                        "parent_manifest": str(parent),
+                        "parent_unknown": 1,
+                        "candidate_unknown": 2,
+                        "candidate_manifest": str(candidate),
+                    }
+                )
+            )
+            with self.assertRaisesRegex(ValueError, "UNKNOWN count"):
+                ADOPT_CHAIN_GROWTH.adopt(halt)
+
+    def test_chain_audit_verifies_adopted_growth_hashes(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            parent = root / "parent.json"
+            candidate = root / "candidate.json"
+            parent_document = {
+                "schema": "ramsey55.materialized-cube-proofs.v1",
+                "summary": {"complete_unsat": False, "sat": 0, "unknown": 1},
+            }
+            candidate_document = {
+                "schema": "ramsey55.materialized-cube-proofs.v1",
+                "summary": {"complete_unsat": False, "sat": 0, "unknown": 2},
+            }
+            parent.write_text(json.dumps(parent_document))
+            candidate.write_text(json.dumps(candidate_document))
+            halt = root / "halted.json"
+            halt.write_text(
+                json.dumps(
+                    {
+                        "schema": "ramsey55.materialized-proof-chain-halt.v1",
+                        "reason": "frontier_growth",
+                        "round": 1,
+                        "parent_manifest": str(parent),
+                        "candidate_manifest": str(candidate),
+                        "parent_unknown": 1,
+                        "candidate_unknown": 2,
+                    },
+                    indent=2,
+                    sort_keys=True,
+                )
+                + "\n"
+            )
+            state = ADOPT_CHAIN_GROWTH.adopt(halt)
+            MATERIALIZED_CHAIN_AUDIT.verify_adopted_growth(
+                state, 2, parent, parent_document, candidate, candidate_document
+            )
+            state["adopted_growth"]["candidate_manifest_sha256"] = "0" * 64
+            with self.assertRaisesRegex(ValueError, "candidate_manifest_sha256"):
+                MATERIALIZED_CHAIN_AUDIT.verify_adopted_growth(
+                    state, 2, parent, parent_document, candidate, candidate_document
+                )
+
+    def test_chain_bundle_binds_exact_selected_root(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            source = root / "source.icnf"
+            source.write_text("a 1 0\na -1 2 0\n")
+            lineage = root / "lineage.json"
+            lineage.write_text(
+                json.dumps(
+                    [
+                        {
+                            "index": 0,
+                            "parent_index": 0,
+                            "parent_literals": 1,
+                            "backbones": [],
+                        },
+                        {
+                            "index": 1,
+                            "parent_index": 7,
+                            "parent_literals": 1,
+                            "backbones": [2],
+                        },
+                    ]
+                )
+            )
+            selected = root / "selected.icnf"
+            selected.write_text("a -1 2 0\n")
+            formula = {
+                "path": "example.cnf",
+                "sha256": "0" * 64,
+                "variables": 2,
+                "clauses": 1,
+            }
+            seed = root / "manifest.json"
+            seed.write_text(
+                json.dumps(
+                    {
+                        "schema": "ramsey55.materialized-cube-proofs.v1",
+                        "formula": formula,
+                        "cubes": {
+                            "path": str(selected),
+                            "sha256": MATERIALIZED_CHAIN_BUNDLE.file_sha256(selected),
+                            "count": 1,
+                        },
+                    }
+                )
+            )
+            binding = MATERIALIZED_CHAIN_BUNDLE.root_binding(
+                {
+                    "source_cubes": str(source),
+                    "source_lineage": str(lineage),
+                    "root_cubes": str(selected),
+                    "source_cube_index": 1,
+                    "fixed_pair_parent_index": 7,
+                },
+                formula,
+                seed,
+            )
+            self.assertTrue(binding["root_is_exact_selected_source_cube"])
 
 
 class ResultMergeTests(unittest.TestCase):
