@@ -1,0 +1,113 @@
+{
+  "artifact_root": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1",
+  "cases": [
+    {
+      "case": "J297775",
+      "complete_unsat": false,
+      "fixed_pair_parent_index": 1,
+      "formula": "build/order45-fixed-pairs/h0-j297775-nosym.cnf",
+      "root_cubes": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-root.icnf",
+      "segments": [
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-chain",
+          "first_round": 0,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-seed/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-chain/state-adopted-v2-r0002.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth1-from-r0001-v1",
+          "first_round": 2,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-chain/r0001-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth1-from-r0001-v1/state-adopted-v2-r0009.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth2-from-r0008-v1",
+          "first_round": 9,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth1-from-r0001-v1/r0008-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth2-from-r0008-v1/state-adopted-v2-r0028.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth3-from-r0027-v1",
+          "first_round": 28,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth2-from-r0008-v1/r0027-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth3-from-r0027-v1/state-adopted-v2-r0074.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth4-from-r0073-v1",
+          "first_round": 74,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth3-from-r0027-v1/r0073-proofs/manifest.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth4-cont-r0124-v1",
+          "first_round": 124,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth4-from-r0073-v1/r0123-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth4-cont-r0124-v1/state-adopted-v2-r0132.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth5-from-r0131-v1",
+          "first_round": 132,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth4-cont-r0124-v1/r0131-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth5-from-r0131-v1/state-adopted-v2-r0134.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth6-from-r0133-v1",
+          "first_round": 134,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth5-from-r0131-v1/r0133-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth6-from-r0133-v1/state-adopted-v2-r0165.json"
+        }
+      ],
+      "source_cube_index": 0,
+      "source_cubes": "build/order45-fixed-pairs/final-frontier-full-backbone-strengthened-600-v1/j297-strengthened.icnf",
+      "source_lineage": "build/order45-fixed-pairs/final-frontier-full-backbone-strengthened-600-v1/j297-lineage.json"
+    },
+    {
+      "case": "J326185",
+      "complete_unsat": false,
+      "fixed_pair_parent_index": 1,
+      "formula": "build/order45-fixed-pairs/h0-j326185-nosym.cnf",
+      "root_cubes": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-root.icnf",
+      "segments": [
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-chain",
+          "first_round": 0,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-seed/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-chain/state-adopted-v2-r0005.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-growth1-from-r0004-v1",
+          "first_round": 5,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-chain/r0004-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-growth1-from-r0004-v1/state-adopted-v2-r0037.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-growth2-from-r0036-v1",
+          "first_round": 37,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-growth1-from-r0004-v1/r0036-proofs/manifest.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-growth2-cont-r0087-v1",
+          "first_round": 87,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-growth2-from-r0036-v1/r0086-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-growth2-cont-r0087-v1/state-adopted-v2-r0128.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-growth3-from-r0127-v1",
+          "first_round": 128,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-growth2-cont-r0087-v1/r0127-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-growth3-from-r0127-v1/state-adopted-v2-r0132.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-rescued-r0131-chain-v1",
+          "first_round": 132,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0131-rescued-kissat-600-v1/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-rescued-r0131-chain-v1/state-adopted-v2-r0163.json"
+        }
+      ],
+      "source_cube_index": 0,
+      "source_cubes": "build/order45-fixed-pairs/final-frontier-full-backbone-strengthened-600-v1/j326-strengthened.icnf",
+      "source_lineage": "build/order45-fixed-pairs/final-frontier-full-backbone-strengthened-600-v1/j326-lineage.json"
+    }
+  ],
+  "claim": "independently replayable partial rescued binary-refinement chains for strengthened final parent 1 through stable state rounds 165/163; neither parent, fixed-pair formula, nor the order-45 problem is proved UNSAT",
+  "schema": "ramsey55.materialized-proof-chain-bundle.v1"
+}

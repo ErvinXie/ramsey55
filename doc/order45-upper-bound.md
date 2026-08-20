@@ -1,6 +1,6 @@
 # Order-45 upper-bound program
 
-Updated: 2026-08-15
+Updated: 2026-08-20
 
 ## Current status
 
@@ -1164,6 +1164,47 @@ unaffected. The composition bundle, audit manifest, and audit log hashes are
 `a8be4397e902f50c261a8d2a9fab4199535cfc1786b509a6caa720c125d41d29`,
 and
 `5b1b72e5d146647fa98e2a2bbb3b2df99f22638457fc26d3a45790a4759c7c4a`.
+
+A separately named rescued checkpoint extends that baseline without changing
+its hashes. J297775 now has eight audited segments through state round 165:
+173 proof manifests and 776 parent refinements leave eight UNKNOWN cubes.
+For J326185, a 600-second Kissat exact-cube retry first closed one of the five
+round-131 children, reducing the frontier to four. That width held through
+round 161; a guarded round-162 growth returned it to five only after
+CaDiCaL, Kissat, and iGlucose each left the responsible sibling pair 2/2
+UNKNOWN at 600 seconds. Its six audited segments through state round 163
+contain 169 proof manifests and 482 parent refinements. The rescued chain
+bundle, stable audit, and audit-log hashes are
+`3ceb22507ecee5eee5b2a1684d79bd15bc2d8fc393760614dfed356711c43b2b`,
+`a640c4dde6e2de4b84ede3f6d443bf9ece4f45c36b1a2b9d9e17fdaf85e36fa8`,
+and
+`ca9325c37f662c8fb47cbb1eeeed061ff0b8a95aaae9b56846601c9cf4c05dda`.
+The corresponding higher-level audit again replays all 371 backbone proofs
+and connects the original parent-1 cubes to the eight/five residuals. Its
+bundle, audit, and log hashes are
+`b4f8e9b6e3aa837ac685795fa1d4ca410cf90cb8e49817773b7d62d1274870fc`,
+`ed9e04eb2690e1049c8fcb4d3c3fc2e86c22c75c034d87b24f1f4ffcfe535d63`,
+and
+`24da5f48f024814c7f54611371c6e71eea7f7f94ee6a11a0c36201b4710d5907`.
+Both audits explicitly return false completion claims.
+
+The stable-tree migration for this checkpoint scanned 1,112 JSON documents,
+rewrote 496 paths, propagated 86 dependent hashes, and converged in two
+passes; its relocation-record hash is
+`365bea1351e2fd507d41a7f8ad5751736e9b7549b43024cb401ff7fd26dbc575`.
+Copying later solver cross-checks exposed that the relocator could partially
+write JSON before rejecting a missing hash-bound file. It now performs all
+path rewriting and virtual hash propagation in memory and writes only after
+full validation; a regression test proves that a rejected relocation leaves
+the tree byte-for-byte unchanged.
+
+The live continuation uses a 600-second Kissat fallback on the rare sibling
+pairs that both survive the 4/120-second CaDiCaL stages. At J297775 round 173,
+Kissat and CaDiCaL independently closed the same child with checked compact
+proofs of 41,294,002 and 62,412,884 bytes. At J326185 round 169, Kissat,
+CaDiCaL, and iGlucose independently closed the same child with checked proofs
+of 66,611,040, 54,089,886, and 104,704,389 bytes. These results keep the live
+frontiers from growing at those rounds, but neither parent is yet UNSAT.
 
 That hedge is now running for all three unified mother formulas with exact
 configuration `30000/128000 conflicts, 1 second lookahead, primary bound 0,

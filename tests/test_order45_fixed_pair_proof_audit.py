@@ -244,45 +244,61 @@ class FixedPairProofAuditTests(unittest.TestCase):
 
     def test_parent1_strengthened_chain_bundle_is_explicitly_partial(self) -> None:
         root = Path(__file__).resolve().parents[1]
-        bundle = json.loads(
-            (
-                root
-                / "data/order45-final-parent1-strengthened-lookahead-chain-bundle.json"
-            ).read_text()
-        )
-        self.assertIn("neither parent", bundle["claim"])
-        self.assertEqual(
-            bundle["schema"], "ramsey55.materialized-proof-chain-bundle.v1"
-        )
-        self.assertEqual(
-            [case["case"] for case in bundle["cases"]],
-            ["J297775", "J326185"],
-        )
-        self.assertEqual(
-            [len(case["segments"]) for case in bundle["cases"]], [6, 5]
-        )
-        for case in bundle["cases"]:
-            self.assertFalse(case["complete_unsat"])
-            self.assertEqual(case["fixed_pair_parent_index"], 1)
-            self.assertEqual(case["source_cube_index"], 0)
+        bundles = {
+            "order45-final-parent1-strengthened-lookahead-chain-bundle.json": [
+                6,
+                5,
+            ],
+            "order45-final-parent1-strengthened-lookahead-chain-bundle-rescued-v1.json": [
+                8,
+                6,
+            ],
+        }
+        for name, segment_counts in bundles.items():
+            with self.subTest(name=name):
+                bundle = json.loads((root / "data" / name).read_text())
+                self.assertIn("neither parent", bundle["claim"])
+                self.assertEqual(
+                    bundle["schema"],
+                    "ramsey55.materialized-proof-chain-bundle.v1",
+                )
+                self.assertEqual(
+                    [case["case"] for case in bundle["cases"]],
+                    ["J297775", "J326185"],
+                )
+                self.assertEqual(
+                    [len(case["segments"]) for case in bundle["cases"]],
+                    segment_counts,
+                )
+                for case in bundle["cases"]:
+                    self.assertFalse(case["complete_unsat"])
+                    self.assertEqual(case["fixed_pair_parent_index"], 1)
+                    self.assertEqual(case["source_cube_index"], 0)
 
     def test_parent1_strengthened_reduction_is_explicitly_partial(self) -> None:
         root = Path(__file__).resolve().parents[1]
-        bundle = json.loads(
-            (
-                root
-                / "data/order45-final-parent1-strengthened-reduction-bundle.json"
-            ).read_text()
-        )
-        self.assertIn("neither parent", bundle["claim"])
-        self.assertEqual(
-            bundle["schema"], "ramsey55.strengthened-parent-chain-bundle.v1"
-        )
-        self.assertEqual(len(bundle["cases"]), 2)
-        for case in bundle["cases"]:
-            self.assertEqual(case["parent_index"], 1)
-            self.assertEqual(case["strengthened_index"], 0)
-            self.assertEqual(case["primary_max"], 480)
+        bundles = {
+            "order45-final-parent1-strengthened-reduction-bundle.json": (
+                "order45-final-parent1-strengthened-lookahead-chain-bundle.json"
+            ),
+            "order45-final-parent1-strengthened-reduction-bundle-rescued-v1.json": (
+                "order45-final-parent1-strengthened-lookahead-chain-bundle-rescued-v1.json"
+            ),
+        }
+        for name, chain_name in bundles.items():
+            with self.subTest(name=name):
+                bundle = json.loads((root / "data" / name).read_text())
+                self.assertIn("neither parent", bundle["claim"])
+                self.assertEqual(
+                    bundle["schema"],
+                    "ramsey55.strengthened-parent-chain-bundle.v1",
+                )
+                self.assertEqual(bundle["chain_bundle"], f"data/{chain_name}")
+                self.assertEqual(len(bundle["cases"]), 2)
+                for case in bundle["cases"]:
+                    self.assertEqual(case["parent_index"], 1)
+                    self.assertEqual(case["strengthened_index"], 0)
+                    self.assertEqual(case["primary_max"], 480)
 
     def test_selective_freeze_pilot_is_explicit_unknown_telemetry(self) -> None:
         root = Path(__file__).resolve().parents[1]

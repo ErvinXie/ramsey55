@@ -83,6 +83,29 @@ class RelocateMaterializedProofTreeTests(unittest.TestCase):
             self.assertGreaterEqual(result["convergence_passes"], 2)
             self.assertNotIn(old, "".join(path.read_text() for path in new.rglob("*.json")))
 
+    def test_missing_hash_bound_file_does_not_partially_relocate(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            temporary = Path(raw)
+            old = "/dev/shm/example-proof-tree"
+            new = temporary / "stable"
+            manifest = new / "manifest.json"
+            write_json(
+                manifest,
+                {
+                    "cubes": {
+                        "path": old + "/missing.icnf",
+                        "sha256": "0" * 64,
+                    }
+                },
+            )
+            original = manifest.read_bytes()
+
+            with self.assertRaisesRegex(ValueError, "does not exist"):
+                RELOCATE.relocate_tree(old, new)
+
+            self.assertEqual(manifest.read_bytes(), original)
+            self.assertIn(old, manifest.read_text())
+
 
 if __name__ == "__main__":
     unittest.main()

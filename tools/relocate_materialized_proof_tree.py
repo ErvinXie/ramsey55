@@ -17,11 +17,13 @@ def file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def json_bytes(value: object) -> bytes:
+    return (json.dumps(value, indent=2, sort_keys=True) + "\n").encode("utf-8")
+
+
 def atomic_json(path: Path, value: object) -> None:
     temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(
-        json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
+    temporary.write_bytes(json_bytes(value))
     temporary.replace(path)
 
 
@@ -66,12 +68,16 @@ def path_for_hash(document: dict[str, Any], hash_key: str) -> str | None:
     return None
 
 
-def update_hash_bindings(value: Any, root: Path) -> int:
+def update_hash_bindings(
+    value: Any, root: Path, virtual_files: dict[Path, bytes] | None = None
+) -> int:
     if isinstance(value, list):
-        return sum(update_hash_bindings(item, root) for item in value)
+        return sum(update_hash_bindings(item, root, virtual_files) for item in value)
     if not isinstance(value, dict):
         return 0
-    changes = sum(update_hash_bindings(item, root) for item in value.values())
+    changes = sum(
+        update_hash_bindings(item, root, virtual_files) for item in value.values()
+    )
     for key in list(value):
         target_string = path_for_hash(value, key)
         if target_string is None:
@@ -79,9 +85,14 @@ def update_hash_bindings(value: Any, root: Path) -> int:
         target = Path(target_string)
         if not target.is_absolute() or not within(target, root):
             continue
-        if not target.is_file():
+        virtual = virtual_files.get(target) if virtual_files is not None else None
+        if virtual is None and not target.is_file():
             raise ValueError(f"hash-bound relocated file does not exist: {target}")
-        expected = file_sha256(target)
+        expected = (
+            hashlib.sha256(virtual).hexdigest()
+            if virtual is not None
+            else file_sha256(target)
+        )
         if value[key] != expected:
             value[key] = expected
             changes += 1
@@ -95,41 +106,44 @@ def relocate_tree(old_root: str, root: Path) -> dict[str, Any]:
     if not old_root or old_root == new_root or not root.is_dir():
         raise ValueError("old and new roots must be distinct existing directories")
     paths = sorted(root.rglob("*.json"))
+    originals = {path: path.read_bytes() for path in paths}
+    documents: dict[Path, Any] = {}
     path_replacements = 0
     for path in paths:
-        document = json.loads(path.read_text(encoding="utf-8"))
+        document = json.loads(originals[path])
         relocated, changes = replace_prefix(document, old_root, new_root)
-        if changes:
-            atomic_json(path, relocated)
-            path_replacements += changes
+        documents[path] = relocated
+        path_replacements += changes
 
     hash_updates = 0
     passes = 0
     for passes in range(1, len(paths) + 2):
+        virtual_files = {
+            path: json_bytes(document) for path, document in documents.items()
+        }
         pass_updates = 0
         for path in paths:
-            document = json.loads(path.read_text(encoding="utf-8"))
-            changes = update_hash_bindings(document, root)
-            if changes:
-                atomic_json(path, document)
-                pass_updates += changes
+            pass_updates += update_hash_bindings(
+                documents[path], root, virtual_files
+            )
         hash_updates += pass_updates
         if not pass_updates:
             break
     else:
         raise RuntimeError("relocated hash bindings did not converge")
 
-    remaining = [
-        str(path)
-        for path in paths
-        if old_root in path.read_text(encoding="utf-8")
-    ]
+    final_files = {
+        path: json_bytes(document) for path, document in documents.items()
+    }
+    remaining = [str(path) for path in paths if old_root.encode() in final_files[path]]
     if remaining:
         raise ValueError(f"old root remains in JSON documents: {remaining[:5]}")
     for path in paths:
-        document = json.loads(path.read_text(encoding="utf-8"))
-        if update_hash_bindings(document, root):
+        if update_hash_bindings(documents[path], root, final_files):
             raise RuntimeError(f"unstable relocated hash binding: {path}")
+    for path in paths:
+        if final_files[path] != originals[path]:
+            atomic_json(path, documents[path])
     return {
         "schema": SCHEMA,
         "old_root": old_root,
