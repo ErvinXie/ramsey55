@@ -8,6 +8,7 @@ import tempfile
 import threading
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -56,9 +57,45 @@ SCREENED_SPLITS = load_tool("select_screened_binary_splits")
 SCREENED_REFINER = load_tool("refine_screened_binary_cubes")
 SELECTED_REFINEMENT = load_tool("refine_selected_binary_cubes")
 ADOPT_CHAIN_GROWTH = load_tool("adopt_materialized_chain_growth")
+SELECT_CUBE_ROWS = load_tool("select_cube_rows")
 
 
 class ExternalCubeToolTests(unittest.TestCase):
+    def test_selects_hash_bound_cube_rows(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            source = root / "source.icnf"
+            source.write_text("a 1 -2 0\na 3 0\na -4 5 0\n", encoding="ascii")
+            output = root / "selected.icnf"
+            manifest = root / "selection.json"
+            old_argv = sys.argv
+            try:
+                sys.argv = [
+                    "select_cube_rows.py",
+                    str(source),
+                    str(output),
+                    "0",
+                    "2",
+                    "--manifest",
+                    str(manifest),
+                ]
+                with mock.patch("builtins.print"):
+                    SELECT_CUBE_ROWS.main()
+            finally:
+                sys.argv = old_argv
+            self.assertEqual(output.read_text(), "a 1 -2 0\na -4 5 0\n")
+            record = json.loads(manifest.read_text())
+            self.assertEqual(record["schema"], SELECT_CUBE_ROWS.SCHEMA)
+            self.assertEqual(record["indices"], [0, 2])
+            self.assertEqual(record["input_count"], 3)
+            self.assertEqual(record["output_count"], 2)
+            self.assertEqual(
+                record["input_sha256"], MATERIALIZED_PROVER.file_sha256(source)
+            )
+            self.assertEqual(
+                record["output_sha256"], MATERIALIZED_PROVER.file_sha256(output)
+            )
+
     def test_finalizes_completed_materialized_progress_with_unknown_placeholders(
         self,
     ) -> None:
@@ -1112,6 +1149,15 @@ class MaterializedProofToolTests(unittest.TestCase):
                 ),
                 "independently replayed exact-cube retry",
             )
+            relocated = json.loads(retry.read_text())
+            relocated["cubes"]["path"] = "relocated/cubes.icnf"
+            retry.write_text(json.dumps(relocated))
+            self.assertEqual(
+                FIXED_PAIR_BUNDLE.validate_chain_adjacency(
+                    replacement, retry, "closed"
+                ),
+                "independently replayed exact-cube retry",
+            )
             changed = json.loads(retry.read_text())
             changed["cubes"]["sha256"] = "0" * 64
             retry.write_text(json.dumps(changed))
@@ -1119,6 +1165,69 @@ class MaterializedProofToolTests(unittest.TestCase):
                 FIXED_PAIR_BUNDLE.validate_chain_adjacency(
                     replacement, retry, "closed"
                 )
+
+    def test_fixed_pair_bundle_binds_rescued_refinement_boundary(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            work = root / "work"
+            work.mkdir()
+            previous_manifest = root / "previous.json"
+            formula = {"path": "formula.cnf", "sha256": "f" * 64}
+            previous_manifest.write_text(
+                json.dumps(
+                    {
+                        "schema": MATERIALIZED_PROVER.SCHEMA,
+                        "formula": formula,
+                        "cubes": {"path": "old.icnf", "sha256": "o" * 64},
+                    }
+                )
+            )
+            children = work / "r0007-children.icnf"
+            children.write_text("a 1 0\na -1 0\n", encoding="ascii")
+            for suffix in (
+                "parents.icnf",
+                "parents.json",
+                "refine.tsv",
+                "refinement.json",
+            ):
+                (work / f"r0007-{suffix}").write_text("placeholder\n")
+            retry = root / "retry.json"
+            retry.write_text(
+                json.dumps(
+                    {
+                        "schema": MATERIALIZED_PROVER.SCHEMA,
+                        "formula": formula,
+                        "cubes": {
+                            "path": "relocated/children.icnf",
+                            "sha256": MATERIALIZED_PROVER.file_sha256(children),
+                            "count": 2,
+                        },
+                    }
+                )
+            )
+            previous = {
+                "final_round": 7,
+                "final_manifest": str(previous_manifest),
+                "workdir": str(work),
+            }
+            with mock.patch.object(
+                FIXED_PAIR_BUNDLE, "verify_frontier", return_value=([0], [[1]])
+            ), mock.patch.object(
+                FIXED_PAIR_BUNDLE, "verify_refinement", return_value=1
+            ):
+                self.assertEqual(
+                    FIXED_PAIR_BUNDLE.validate_rescued_refinement_adjacency(
+                        previous, retry, "closed"
+                    ),
+                    "independently replayed rescued refinement",
+                )
+                changed = json.loads(retry.read_text())
+                changed["cubes"]["count"] = 3
+                retry.write_text(json.dumps(changed))
+                with self.assertRaisesRegex(ValueError, "cube binding mismatch"):
+                    FIXED_PAIR_BUNDLE.validate_rescued_refinement_adjacency(
+                        previous, retry, "closed"
+                    )
 
     def test_strata_bundle_binds_formula_manifest_and_forest_roots(self) -> None:
         with tempfile.TemporaryDirectory() as raw:

@@ -250,14 +250,56 @@ def validate_chain_adjacency(
     previous_manifest = Path(previous["final_manifest"])
     previous_document = load_json(previous_manifest)
     next_document = load_json(next_seed)
-    if (
+    same_proof_problem = (
         previous_document.get("schema") == PROOF_SCHEMA
         and next_document.get("schema") == PROOF_SCHEMA
         and previous_document.get("formula") == next_document.get("formula")
-        and previous_document.get("cubes") == next_document.get("cubes")
-    ):
-        return "independently replayed exact-cube retry"
+    )
+    if same_proof_problem:
+        try:
+            validate_cube_binding(
+                next_document["cubes"],
+                previous_document["cubes"],
+                f"{label} proof-chain segment boundary",
+            )
+        except (AttributeError, KeyError, TypeError, ValueError):
+            pass
+        else:
+            return "independently replayed exact-cube retry"
     raise ValueError(f"{label} proof-chain segment boundary mismatch")
+
+
+def validate_rescued_refinement_adjacency(
+    previous: dict[str, Any], next_seed: Path, label: str
+) -> str:
+    """Verify one omitted chain round whose proof manifest was retried elsewhere."""
+
+    round_number = int(previous["final_round"])
+    previous_manifest = Path(previous["final_manifest"])
+    previous_document = load_json(previous_manifest)
+    prefix = Path(previous["workdir"]) / f"r{round_number:04d}"
+    parents = prefix.with_name(prefix.name + "-parents.icnf")
+    frontier = prefix.with_name(prefix.name + "-parents.json")
+    children = prefix.with_name(prefix.name + "-children.icnf")
+    refine_results = prefix.with_name(prefix.name + "-refine.tsv")
+    refinement = prefix.with_name(prefix.name + "-refinement.json")
+    _, unknown = verify_frontier(
+        previous_manifest, previous_document, parents, frontier
+    )
+    if not unknown:
+        raise ValueError(f"{label} rescued refinement has an empty frontier")
+    if verify_refinement(parents, children, refine_results, refinement) != len(
+        unknown
+    ):
+        raise ValueError(f"{label} rescued refinement count mismatch")
+    next_document = load_json(next_seed)
+    validate_proof_binding(
+        next_document,
+        previous_document["formula"],
+        cube_binding(children, 2 * len(unknown)),
+        f"{label} rescued refinement",
+    )
+    return "independently replayed rescued refinement"
 
 
 def audit_chain_segments(
@@ -271,8 +313,15 @@ def audit_chain_segments(
     for index, spec in enumerate(specs):
         seed = spec["seed_manifest"]
         if audited:
-            boundary = validate_chain_adjacency(audited[-1], seed, label)
-            if int(spec["first_round"]) != int(audited[-1]["final_round"]):
+            previous_round = int(audited[-1]["final_round"])
+            first_round = int(spec["first_round"])
+            if first_round == previous_round:
+                boundary = validate_chain_adjacency(audited[-1], seed, label)
+            elif first_round == previous_round + 1:
+                boundary = validate_rescued_refinement_adjacency(
+                    audited[-1], seed, label
+                )
+            else:
                 raise ValueError(f"{label} proof-chain segment round mismatch")
         else:
             boundary = "initial seed"

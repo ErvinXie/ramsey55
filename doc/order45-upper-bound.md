@@ -1633,3 +1633,112 @@ every remaining clause, and binds both ordered input-ID streams. The committed
 ```bash
 PYTHONPATH=src:tools:. python3 tools/audit_order45_counter_tails.py
 ```
+
+## Rescued-v5 checkpoint and post-checkpoint J297 progress
+
+The rescued-v5 bundle extends the independently replayable strengthened
+parent-1 chains to stable state rounds 317 for J297775 and 365 for J326185.
+The two terminal frontiers still contain two and one UNKNOWN cubes,
+respectively.  J297775 now has 16 segments and J326185 has 19.  Their bundle
+and original-parent reduction-bundle SHA-256 values are
+`202485bd3dace93fc3ed2fd7ccfac113355f04cc7f55fb0f1087ec74e58ddb7c`
+and
+`8b3f6830268b6a818bf685d74ac8cbd2e2fb3a77b8859612bf3f5cd92b186a21`.
+
+Two of the new segment boundaries do not denote an exact-cube retry.  The
+previous immutable state ends immediately before a complete binary
+refinement, while the next seed is the externally retried proof manifest for
+that refinement's children.  The bundle auditor now handles this case only
+when the next `first_round` is exactly one greater than the previous final
+round.  It independently reconstructs the previous UNKNOWN frontier, checks
+the saved binary refinement, and binds the next proof seed to the exact child
+bytes, count, and formula.  Equivalent cube paths may differ lexically, but
+their SHA-256 and row count must match.  Unit tests cover both the relocated
+path case and rejection of a wrong rescued-child count.
+
+The corrected two-layer replay completed successfully.  The chain audit
+covers 332 J297775 and 383 J326185 proof manifests over 316 and 364 recorded
+rounds.  The segment summaries contain 1,234 and 991 refined parents; in
+addition, the
+auditor reconstructs the omitted round-242 and round-278 refinements of two
+and one parents before accepting their rescued child manifests.  The chain
+audit JSON and log hashes are
+`4b41a35ecf77a52dafe5f9e5eb242df7b6f5f78df8ccdb0d134e60b78c735419`
+and
+`b954a36c81a713f05416b6350368b5ec8597bbd1856c7b8ebce741da9c78b29f`.
+Its terminal states are still 2 VERIFIED / 2 UNKNOWN at round 317 and
+1 VERIFIED / 1 UNKNOWN at round 365, so `all_cases_complete_unsat` is false.
+
+The parent-layer replay then checks 193 and 178 backbone proofs, respectively.
+For both cases it accepts all 15 certified backbones, every bad branch, and the
+exact strengthened-parent lineage.  It still reports two/one remaining
+UNKNOWN descendants, `parent_unsat=false`, and `all_parents_unsat=false`.  Its
+JSON and log hashes are
+`49790b42d58b4cfc97d9b30335a27eb63dbd2ba7b91fc1c0b18c657b2d32cf23`
+and
+`682e319acb6f9ac40c1f1eda962bd1fd88e7a4098b8784b0c7f85860470daa4a`.
+
+The first post-v5 J297775 continuation has also been frozen separately.  A
+normal continuation from round 317 through state round 331 replays 15 proof
+manifests and 14 rounds with 28 parent refinements, ending at 2 VERIFIED / 2
+UNKNOWN.  Its audit JSON/log hashes are
+`681129482d6954cba6bf45ed75a76826ed563787b8c3993b3d7052d6b735e751`
+and
+`90e7f3bf7a5354f5b917075e174893f655e880a65fae5a467524046a3f71102c`;
+the final manifest hash is
+`57ee5a5a60d2b8ffbe4f59de2cb24ba60cda3a235dd910f1eca01bcec713f06a`.
+Its automatic round-331 split would grow the frontier from two to three, so it
+was not adopted.
+
+Instead, a complete CaDiCaL/Kissat screen found a contradictory negative
+branch for variable 897 on the first parent and variable 1179 on the second.
+The two compact DRAT files are 14 and 38 bytes with hashes
+`98f892363fc1a247f7600135e5872ff594b33802339e276cb111b5b50a1463a2`
+and
+`5ccee31cd1f48a685b4174656319e4a14b80a3ec3dcea2a67cd10f5c213091b9`.
+The independently replayed one-round chain again ends at 2 VERIFIED / 2
+UNKNOWN.  Its audit JSON/log hashes are
+`0eb2f8c480bf0dfb02ead68c6c347ea562e35da3962bbc0dbaf634ac225420c9`
+and
+`2f11029d4b4e98f9a9414b914a4c3369c09c49af7e5f3bb74c4e28e79cc59fd6`;
+the final manifest hash is
+`17edd156cc11ebcda76b795b85043bb0d151617d3fae2b2c6d8b7bd8b5c23792`.
+The isolated relocation record that contains both checked stages has hash
+`fe5c12f38799f87c4897fab02e788772de58e2e13788d652e6634465519f6963`.
+
+The rejected automatic round-331 candidate supplied a useful independent
+route as well.  Its four children initially had one checked proof and three
+UNKNOWN rows.  CaDiCaL and Kissat independently closed child 2; freezing live
+progress and composing it with the exact four-row candidate restores the
+candidate to 2 VERIFIED / 2 UNKNOWN.  A one-row ICNF selector records the
+source hash, exact row indices, output hash, and both counts so queued
+portfolio rows can be run without losing their position in the original
+candidate.  A fresh replay of the composed four-row manifest passed; its
+audit JSON/log hashes are
+`a4b3f7fced348ccf3eea7924a5dc5ad87eeea6a69a2952ab8bfd80f59fda6d2c`
+and
+`f57494e8b072e0ac00ac8ec7061bbc50c58b50713ef8f4013f6116d740fbd606`.
+Relocation v28 stores both solver sources, the composed manifest, and the
+selected-row lineage in a 646 MiB snapshot while linking to the immutable v27
+candidate.  Its relocation, stable CaDiCaL, stable Kissat, stable composition,
+and relocated selection-manifest hashes are
+`3536c42051206bc804bbbae9c6cb5a12590a73c77a996ef4934ef005cf2bf55e`,
+`15458de05c8ff2df9ac368702aa1a860e7a95deaf71faa10f37b86732f56ada3`,
+`45a23301f90b45d0a1364e4a6f7f2704b2f419cf0d2bbfb9eb0450a9856354b1`,
+`9e98c3913f3550b057aa1ed9068394eb5e3b0e1d427bf18945a427fe476fa55e`,
+and
+`7142438da1d46b1f5f7017fce0243dc5e044bfdf7c9f1d810cc271e8d5ad55b4`.
+Fresh stable-path replays accepted both the selected CaDiCaL proof and the
+larger Kissat cross-check.  Reconstructing the v27 round-331 refinement also
+binds the v28 composition as an independently replayed rescued refinement
+whose next round is exactly 332.  Independent 3,600-second CaDiCaL, Kissat,
+and targeted iGlucose attempts did not close the remaining child 3, so this
+portfolio did not improve the frontier to width one.  That outcome is not a
+prerequisite for the restored, checked width-two boundary.
+
+All 158 repository tests pass on the ARM builder.  The node has 32
+physical / 64 logical CPUs and 244 GiB RAM; at this checkpoint its root volume
+has about 19 GiB free and `/dev/shm` about 98 GiB free.  Storage remains the
+first resource that would need expansion for a substantially wider proof
+portfolio.  None of these partial chains proves strengthened parent 1, either
+fixed-pair formula, the order-45 formula, or `R(5,5) <= 45`.

@@ -261,6 +261,14 @@ class FixedPairProofAuditTests(unittest.TestCase):
                 10,
                 8,
             ],
+            "order45-final-parent1-strengthened-lookahead-chain-bundle-rescued-v4.json": [
+                13,
+                10,
+            ],
+            "order45-final-parent1-strengthened-lookahead-chain-bundle-rescued-v5.json": [
+                16,
+                19,
+            ],
         }
         for name, segment_counts in bundles.items():
             with self.subTest(name=name):
@@ -297,6 +305,12 @@ class FixedPairProofAuditTests(unittest.TestCase):
             ),
             "order45-final-parent1-strengthened-reduction-bundle-rescued-v3.json": (
                 "order45-final-parent1-strengthened-lookahead-chain-bundle-rescued-v3.json"
+            ),
+            "order45-final-parent1-strengthened-reduction-bundle-rescued-v4.json": (
+                "order45-final-parent1-strengthened-lookahead-chain-bundle-rescued-v4.json"
+            ),
+            "order45-final-parent1-strengthened-reduction-bundle-rescued-v5.json": (
+                "order45-final-parent1-strengthened-lookahead-chain-bundle-rescued-v5.json"
             ),
         }
         for name, chain_name in bundles.items():

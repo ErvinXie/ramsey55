@@ -1,0 +1,27 @@
+{
+  "cases": [
+    {
+      "backbone_lineage": "build/order45-fixed-pairs/final-frontier-full-primary-backbones-v1/j297/lineage.json",
+      "backbone_proof_manifest": "build/order45-fixed-pairs/final-frontier-full-primary-backbones-v1/j297/proofs/manifest.json",
+      "case": "J297775",
+      "parent_index": 1,
+      "primary_max": 480,
+      "strengthened_cubes": "build/order45-fixed-pairs/final-frontier-full-backbone-strengthened-600-v1/j297-strengthened.icnf",
+      "strengthened_index": 0,
+      "strengthened_lineage": "build/order45-fixed-pairs/final-frontier-full-backbone-strengthened-600-v1/j297-lineage.json"
+    },
+    {
+      "backbone_lineage": "build/order45-fixed-pairs/final-frontier-full-primary-backbones-v1/j326/lineage.json",
+      "backbone_proof_manifest": "build/order45-fixed-pairs/final-frontier-full-primary-backbones-v1/j326/proofs/manifest.json",
+      "case": "J326185",
+      "parent_index": 1,
+      "primary_max": 480,
+      "strengthened_cubes": "build/order45-fixed-pairs/final-frontier-full-backbone-strengthened-600-v1/j326-strengthened.icnf",
+      "strengthened_index": 0,
+      "strengthened_lineage": "build/order45-fixed-pairs/final-frontier-full-backbone-strengthened-600-v1/j326-lineage.json"
+    }
+  ],
+  "chain_bundle": "data/order45-final-parent1-strengthened-lookahead-chain-bundle-rescued-v5.json",
+  "claim": "compose checked false-polarity backbone proofs with rescued partial strengthened parent-1 chains through stable state rounds 317/365, leaving two/one UNKNOWN descendants; neither parent nor fixed-pair formula is proved UNSAT",
+  "schema": "ramsey55.strengthened-parent-chain-bundle.v1"
+}
