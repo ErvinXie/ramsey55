@@ -1322,9 +1322,35 @@ and
 `61490d91b3a78f6a582f7a0e61b54d2c2cb950a19e07cbe86fe88198fc623b1e`.
 Relocation v13 bound this snapshot into the stable tree with record hash
 `a47f0cacc54a6fbdc08104463d9206a213a5f633610aaa6e6279d584197d367e`;
-the live chain continues beyond the snapshot. These post-freeze results are
-not part of the rescued-v4 bundle. No parent-1 UNSAT, fixed-pair UNSAT,
-order-45 UNSAT, or `R(5,5) <= 45` theorem is claimed.
+the live chain subsequently stopped at the round-351 candidate because its
+UNKNOWN frontier grew from one to two. Relocation v14 preserved that exact
+candidate and halt record with record hash
+`71a0af6a291e30d3b1e2ddc089afee1d549bc1f6f44ccd249ccaf4a3d405e2ff`.
+An independent replay confirmed the one-parent complementary split on
+variable 3189 and the candidate's exact 0 VERIFIED/2 UNKNOWN result. The
+corresponding J297775 round-244 growth candidate was also replayed separately:
+its two parents split on variable 880, with an exact 1 VERIFIED/3 UNKNOWN
+result and a bound 2-to-3 halt record. These post-freeze results are not part
+of the rescued-v4 bundle. No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT,
+or `R(5,5) <= 45` theorem is claimed.
+
+The first jointly hard J297775 round-244 child was subsequently closed by
+Kissat in 1,985.07 seconds. Its 344,533,164-byte compact DRAT has SHA-256
+`a80a1e60572751686ec54dfc38770fc456c33a6ddf06794ff509eec1cfef493c`
+and passed a separate replay. Exact-cube composition with the four-row growth
+candidate restores a 2 VERIFIED/2 UNKNOWN boundary. After relocation v15, the
+source/composed manifest hashes are
+`7e41e32c0286e23609f78454d9541da49000987831a7e681d0a7a941f903c57d`
+and
+`eade331ba216975b8515befc91a9ad8d6d85ecfdb610e2d6a288dab740ccac28`;
+the relocation record hash is
+`aa66ac0e42c231dc12669883716544aa27e21ae4a6054003b5049dd81cbf2e00`.
+A fresh stable-path replay accepted both retained proofs, with audit-log hash
+`f57494e8b072e0ac00ac8ec7061bbc50c58b50713ef8f4013f6116d740fbd606`.
+CaDiCaL independently solved the same child and is finalizing a smaller
+299,667,655-byte compact proof. A guarded continuation from the restored
+width-two boundary starts at round 245. These results remain partial and are
+not yet included in rescued-v4.
 
 That hedge is now running for all three unified mother formulas with exact
 configuration `30000/128000 conflicts, 1 second lookahead, primary bound 0,

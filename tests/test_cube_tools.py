@@ -51,6 +51,7 @@ STRATA_LEAF_PROOFS = load_tool("audit_order45_strata_leaf_proofs")
 STRATA_PROOF_BUNDLE = load_tool("audit_order45_strata_proof_bundle")
 CARTESIAN_CUBES = load_tool("generate_cartesian_cubes")
 SCREEN_VARIABLES = load_tool("screen_cube_variables")
+SELECTED_REFINEMENT = load_tool("refine_selected_binary_cubes")
 ADOPT_CHAIN_GROWTH = load_tool("adopt_materialized_chain_growth")
 
 
@@ -87,6 +88,33 @@ class ExternalCubeToolTests(unittest.TestCase):
     def test_screen_variables_rejects_an_assigned_variable(self) -> None:
         with self.assertRaisesRegex(ValueError, "already assigns"):
             SCREEN_VARIABLES.extend_cubes([[1, -2]], [2, 3])
+
+    def test_screen_variables_accepts_more_than_cartesian_limit(self) -> None:
+        variables = SCREEN_VARIABLES.parse_variables(
+            ",".join(map(str, range(2, 28))), maximum_count=None
+        )
+        children = SCREEN_VARIABLES.extend_cubes([[1]], variables)
+        self.assertEqual(len(children), 2 * len(variables))
+        self.assertEqual(children[0], [1, -2])
+        self.assertEqual(children[-1], [1, 27])
+
+    def test_cartesian_variable_parser_retains_exponential_guard(self) -> None:
+        with self.assertRaisesRegex(ValueError, r"2\^24"):
+            CARTESIAN_CUBES.parse_variables(
+                ",".join(map(str, range(1, 26)))
+            )
+
+    def test_selected_binary_refinement_uses_one_split_per_parent(self) -> None:
+        self.assertEqual(
+            SELECTED_REFINEMENT.refine([[1], [-1, 2]], [3, 4]),
+            [[1, 3], [1, -3], [-1, 2, 4], [-1, 2, -4]],
+        )
+
+    def test_selected_binary_refinement_rejects_bad_splits(self) -> None:
+        with self.assertRaisesRegex(ValueError, "one split variable"):
+            SELECTED_REFINEMENT.refine([[1], [2]], [3])
+        with self.assertRaisesRegex(ValueError, "already assigns"):
+            SELECTED_REFINEMENT.refine([[1, -2]], [2])
 
     def test_adopts_hash_bound_guarded_chain_growth(self) -> None:
         with tempfile.TemporaryDirectory() as raw:

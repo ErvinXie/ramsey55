@@ -63,7 +63,10 @@ def main() -> None:
     parser.add_argument("output", type=Path)
     arguments = parser.parse_args()
     cubes = read_cubes(arguments.cubes)
-    variables = parse_variables(arguments.variables)
+    # This operation grows linearly in the number of variables.  The default
+    # parser limit protects the Cartesian generator, whose output grows as
+    # 2^n, and does not apply here.
+    variables = parse_variables(arguments.variables, maximum_count=None)
     output = extend_cubes(cubes, variables)
     write_cubes(arguments.output, output)
     print(

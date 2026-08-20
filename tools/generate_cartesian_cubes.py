@@ -8,7 +8,7 @@ import itertools
 from pathlib import Path
 
 
-def parse_variables(text: str) -> list[int]:
+def parse_variables(text: str, *, maximum_count: int | None = 24) -> list[int]:
     variables: list[int] = []
     for field in text.split(","):
         if "-" in field:
@@ -23,8 +23,10 @@ def parse_variables(text: str) -> list[int]:
         raise ValueError("variables must be positive")
     if len(set(variables)) != len(variables):
         raise ValueError("variables must be distinct")
-    if len(variables) > 24:
-        raise ValueError("refusing to emit more than 2^24 cubes")
+    if maximum_count is not None and len(variables) > maximum_count:
+        if maximum_count == 24:
+            raise ValueError("refusing to emit more than 2^24 cubes")
+        raise ValueError(f"refusing to use more than {maximum_count} variables")
     return variables
 
 
