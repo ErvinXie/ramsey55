@@ -1347,10 +1347,143 @@ the relocation record hash is
 `aa66ac0e42c231dc12669883716544aa27e21ae4a6054003b5049dd81cbf2e00`.
 A fresh stable-path replay accepted both retained proofs, with audit-log hash
 `f57494e8b072e0ac00ac8ec7061bbc50c58b50713ef8f4013f6116d740fbd606`.
-CaDiCaL independently solved the same child and is finalizing a smaller
-299,667,655-byte compact proof. A guarded continuation from the restored
-width-two boundary starts at round 245. These results remain partial and are
-not yet included in rescued-v4.
+CaDiCaL independently solved the same child and produced a smaller
+299,667,655-byte compact proof. Its relocated manifest hash is
+`6729d76db82b177cba5fe266925a73e70d4e9a58bb4d64083e76a0fdf66b36d6`,
+and a stable-path replay passed with log hash
+`ea389d56d1c9bad8343b7ff358048de4fb8c86bdcfccea31df7e26c894a045a9`.
+A guarded continuation from the restored width-two boundary starts at round
+245. These results remain partial and are not yet included in rescued-v4.
+
+CaDiCaL and Kissat then independently rescued the J326185 round-351 growth
+pair. They closed the same child in 1,335.36 and 1,387.54 seconds, with compact
+proof hashes
+`ca87f0f0742e32489757bce1e4aadfcf728270d462f16b16e79b2703a53aae96`
+and
+`da3953b4fe4c8db1a241bf7bca9c4982c720c39a99dd2424e041869d3c4df1e7`.
+The smaller CaDiCaL proof reduces the exact candidate to one UNKNOWN. The
+stable CaDiCaL source, Kissat cross-check, and composed manifest hashes are
+`fd71c1aafe545ff3346d1ab5ec660c620990200022daf7198807a528aea8df88`,
+`977c048ebe28bdebdd9f9a2568085e82f06384a7b679d9687093de79953d16a0`,
+and
+`6129a9b31f8ccf792f89d2c175ce046f95121e60d68d2c0d6a83d18e9dbf999f`.
+Relocation v16 has record hash
+`9eef9388f9fc62de7f6b524091057590ecc522bddaabd0f7cd927142ceb3f03d`,
+and a fresh stable-path replay accepted the retained proof with log hash
+`ea389d56d1c9bad8343b7ff358048de4fb8c86bdcfccea31df7e26c894a045a9`.
+The new continuation keeps width one through state round 356, where its hard
+candidate grows `1 -> 2`. Relocation v19 has record hash
+`4ddc029b6f7cae72674b2ff00a512f1748be25dd5f4c125f214d76a528a1ffd5`.
+An independent adopted-growth replay accepts six manifests and five
+refinements; its audit JSON/log hashes are
+`74ccbf9bd6bef6bc29b83c9139855e71e1c640bd86af92f9abc5fa9aff188de3`
+and
+`1949a36898609b0ee026d63c3d1c2af94cffbcec1ccab216edfea760161208b9`.
+The exact growth pair is under solver-diverse long retry.
+
+A separate complete screen of auxiliary variables 800--1200 on the same
+round-356 parent tested all 730 signed children for the 365 variables not
+already assigned. At five seconds per child, CaDiCaL found 153 and Kissat 152
+one-sided contradictions; 152 choices agreed exactly, neither solver found a
+variable with both signs contradictory, and their only disagreement was on
+variable 1096. The variable list, exact ICNF, and CaDiCaL/Kissat result hashes
+are `4048bdac6c870267f0a606de2384f44dbf949cbe975977788e934adbcd35bf45`,
+`8437d222403ac9668b268c604ecace7386ef765bef09549098e3855196c507c3`,
+`19fa5b342eefd1b1ce0b4e8695d4c73e2ee119d0ee7b593876ebddc7fcf26fe4`,
+and `a65aedfe0a08763b18741ddd6b73ff075fcb601f096914432ef0496110e16286`.
+The agreed variable 1092 was then used for an exact complementary split. Its
+positive child is contradictory by unit propagation after a 36-byte compact
+DRAT, while its negative child remained UNKNOWN at 120 seconds. The resulting
+manifest has hash
+`80725ad1c3452b5bc363c3b4a920256a2094b16ca65da355685f6828d567228b`.
+Independent proof replay has log hash
+`ea389d56d1c9bad8343b7ff358048de4fb8c86bdcfccea31df7e26c894a045a9`,
+and a one-round chain replay reconstructs the complementary split and ends at
+one UNKNOWN parent. This certified alternative avoids the automatic
+variable-893 `1 -> 2` growth. Complete follow-up screens selected variables
+1183 and 1184 at the next two boundaries. After relocation v23, the three
+selected manifests have stable hashes
+`95943232b429375a03cda7d364558cd249d71763cc7f11e6f87d57dbc850e69b`,
+`d419cbe1cf297a41e6db645691f92de909f8ed27042ac877dbf2244554c02bde`,
+and
+`a68001a1c37658c506685a674f83172507833f033eb3ccfbad661c216d3acc74`.
+Their three independent stable-path chain replays each reconstruct one
+complementary split and end with one UNKNOWN parent. Relocation v23 has hash
+`97dad5166f3183b8ad1f7f40adeb0649696cc407d5ac8521283cd431ede59b4e`.
+Three further rounds selected variables 1199, 933, and 1190, reaching stable
+state round 362 without widening the frontier. Because both screen solvers put
+the contradictory side below 0.1 seconds, these rounds use a five-second
+proof-mode budget: that is enough to generate and replay its compact DRAT
+while retaining the survivor as an explicit UNKNOWN, instead of waiting 120
+seconds merely to rediscover that the survivor is hard. Relocation v24 has
+hash
+`5f9d66a720ec5bc16f0adafc1fdbdc35665d42dd199ac4ee0ddf864cb1d1c7a1`;
+the three new stable manifest hashes are
+`aec42b837ec6a3f1c5709071fa36d63c208cf3337b6d5128eed5b8b21f9a81c9`,
+`935408c9b86e064f4df5fffe69b0437bd15eae3a739801bf2e8fbacb1e79b165`,
+and
+`60836973ba12b5eec02654509e44843143998fa23a31ce807660dcffc3855b67`.
+Independent stable-path chain replays accepted all three one-round segments.
+
+`select_screened_binary_splits.py` makes this choice reproducible. It verifies
+the full parent/variable/polarity layout, hash-binds every input and all solver
+result tables, rejects any SAT result or solver disagreement, and chooses the
+fastest jointly observed one-sided contradiction for every parent. It also
+canonicalizes recorded input paths before hashing the report. This last rule
+was added after relocation correctly rejected an otherwise equivalent path
+containing a lexical `..`; no proof artifact was accepted through that failed
+attempt. The local and ARM suites pass 154 tests.
+
+Certified iGlucose also independently closed the already rescued round-351
+child in 1,798.45 seconds. Its 354,042,170-byte compact DRAT has SHA-256
+`4b50ae1ce636c319051a6980eaf97830d21c86bdc43cb6f0d4b24730235d02df`;
+the relocated partial-manifest hash is
+`49c957e1368bd018f3785a248aae1f879f0255a7658b83f2f5a6bb98b68d8902`.
+A fresh stable-path replay passed with log hash
+`ea389d56d1c9bad8343b7ff358048de4fb8c86bdcfccea31df7e26c894a045a9`.
+This third proof remains a cross-check and is not needed by the authoritative
+CaDiCaL composition.
+
+The J297775 continuation from the rescued round-244 candidate completed
+rounds 245--273 without increasing its two-cube frontier. The guarded
+round-274 candidate leaves three of four children UNKNOWN, so the authoritative
+state correctly remains at round 274. Its stable immutable state has SHA-256
+`71c615ef1bde0b80f21d1c92453e24af38c16ea0ebba244c43183f7caa51252c`;
+relocation v18 has record hash
+`a903cbb6b1447548d6dba15fb7f4b9c079ffaba6b20b4c778ae7707edd99c70a`.
+Independent replay accepts 30 proof manifests and reconstructs 58 parent
+refinements, ending at 2 VERIFIED / 2 UNKNOWN. Its audit JSON/log hashes are
+`8469c9e4d0843654a3506df0fa44e29e6b34b1f3a91c4f25a583e270fc8dd639`
+and
+`be5d8549d42b7d9dbc018b9058308ffb2f91a03a33db84137a79047b2c20f6bd`.
+Default CaDiCaL and Kissat independently closed the same first residual of
+that candidate. Their compact DRATs have sizes 126,165,358 and 135,835,133
+bytes and SHA-256 values
+`8dbc90f2958b54eb418af6a2b7418fd58cde78f8584581f794f6568118858cae`
+and
+`0633299ecb9e3cc6624e17edf065ec78d43a6a6deeca1af431b1d8eaacc0fda7`.
+The progress finalizer freezes completed rows even when a long-running sibling
+prevents the producer from rewriting its final progress file; atomically
+published proof and checker artifacts are rediscovered and validated, while
+all unfinished rows are materialized as explicit UNKNOWN entries. After
+relocations v20 and v21, the CaDiCaL source, exact composed boundary, and
+Kissat cross-check manifests have hashes
+`c1f2b7095bd4973591803ed4a1796b5f86c86a3b46fa6642404c4867dfa133d2`,
+`097d507c6fb0543dd65b9849014cf7a02a779bcb870c222a37874c13ba61c2db`,
+and
+`a4f9094fd97eab8b812c48b26bcb5ca7af2a44f218b5bcd0b272807a92df6127`.
+Fresh stable-path replays accepted the composed two-proof boundary and the
+independent Kissat one-proof cross-check. The restored width-two continuation
+completed rounds 275--284. At round 285, the normal CaDiCaL stage proved one
+child and the 600-second Kissat fallback proved the required child of the other
+parent. Their compact proofs are 13,441,164 and 23,377,701 bytes with hashes
+`599e35f295939ccd920579cd53235ab8d9c679b5479156bb2c962c040521f921`
+and
+`0638db0d1e663130eceb8c0da5695a0230c0b0d30b1a5ad05e0fe720aa1b8087`.
+The exact candidate therefore has 2 VERIFIED / 2 UNKNOWN and was adopted.
+The continuation retains width two through live state round 301. This
+checkpoint and both new rescue boundaries remain outside rescued-v4 until the
+rescued-v5 bundle and its full replay are frozen.
 
 That hedge is now running for all three unified mother formulas with exact
 configuration `30000/128000 conflicts, 1 second lookahead, primary bound 0,

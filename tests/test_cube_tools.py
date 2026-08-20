@@ -40,6 +40,7 @@ BINARY_COVER = load_tool("certify_binary_cube_cover")
 MATERIALIZED_FRONTIER = load_tool("export_materialized_proof_frontier")
 BINARY_REFINEMENT = load_tool("audit_binary_cube_refinement")
 MATERIALIZED_COMPOSE = load_tool("compose_materialized_cube_proofs")
+MATERIALIZED_PROGRESS = load_tool("finalize_materialized_progress")
 MATERIALIZED_PORTFOLIO = load_tool("compose_materialized_cube_portfolio")
 MATERIALIZED_CHAIN = load_tool("run_materialized_proof_chain")
 MATERIALIZED_CHAIN_AUDIT = load_tool("audit_materialized_proof_chain")
@@ -51,11 +52,91 @@ STRATA_LEAF_PROOFS = load_tool("audit_order45_strata_leaf_proofs")
 STRATA_PROOF_BUNDLE = load_tool("audit_order45_strata_proof_bundle")
 CARTESIAN_CUBES = load_tool("generate_cartesian_cubes")
 SCREEN_VARIABLES = load_tool("screen_cube_variables")
+SCREENED_SPLITS = load_tool("select_screened_binary_splits")
 SELECTED_REFINEMENT = load_tool("refine_selected_binary_cubes")
 ADOPT_CHAIN_GROWTH = load_tool("adopt_materialized_chain_growth")
 
 
 class ExternalCubeToolTests(unittest.TestCase):
+    def test_finalizes_completed_materialized_progress_with_unknown_placeholders(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            formula = root / "formula.cnf"
+            formula.write_text("p cnf 2 1\n1 2 0\n", encoding="ascii")
+            cubes = root / "cubes.icnf"
+            cubes.write_text("a -1 0\na 1 0\n", encoding="ascii")
+            solver = root / "solver"
+            checker = root / "checker"
+            solver.write_bytes(b"solver")
+            checker.write_bytes(b"checker")
+            before, after, variables, clauses = EXTERNAL.read_cnf(formula)
+            cube_rows = EXTERNAL.read_cubes(cubes, variables)
+            first_digest = MATERIALIZED_PROVER.cube_sha256(cube_rows[0])
+            first_stem = f"cube-000000-{first_digest[:16]}"
+            proof = root / f"{first_stem}.drat"
+            checker_log = root / f"{first_stem}.checker.log"
+            proof.write_bytes(b"proof")
+            checker_log.write_text("s VERIFIED\n", encoding="utf-8")
+            progress = root / "progress.json"
+            progress.write_text(
+                json.dumps(
+                    {
+                        "schema": MATERIALIZED_PROVER.SCHEMA,
+                        "formula": {
+                            "path": str(formula),
+                            "sha256": MATERIALIZED_PROVER.file_sha256(formula),
+                            "variables": variables,
+                            "clauses": clauses,
+                        },
+                        "cubes": {
+                            "path": str(cubes),
+                            "sha256": MATERIALIZED_PROVER.file_sha256(cubes),
+                            "count": 2,
+                        },
+                        "solver": {
+                            "path": str(solver),
+                            "sha256": MATERIALIZED_PROVER.file_sha256(solver),
+                            "arguments": [],
+                        },
+                        "checker": {
+                            "path": str(checker),
+                            "sha256": MATERIALIZED_PROVER.file_sha256(checker),
+                        },
+                        "per_cube_seconds": 3600,
+                        "compact_proof": False,
+                        "scratch_directory": str(root / "scratch"),
+                        "jobs": 2,
+                        "results": [None, None],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            output = root / "finalized"
+            document = MATERIALIZED_PROGRESS.finalize(progress, output)
+            self.assertEqual(
+                document["summary"],
+                {
+                    "complete_unsat": False,
+                    "sat": 0,
+                    "unknown": 1,
+                    "unsat_verified": 1,
+                },
+            )
+            self.assertEqual(document["results"][1]["status"], 0)
+            self.assertEqual(
+                document["progress_snapshot"]["placeholder_unknown_indices"], [1]
+            )
+            self.assertEqual(
+                document["progress_snapshot"]["discovered_unsat_indices"], [0]
+            )
+            self.assertEqual((output / proof.name).read_bytes(), b"proof")
+            self.assertEqual(
+                (output / checker_log.name).read_bytes(), b"s VERIFIED\n"
+            )
+            self.assertTrue((output / "manifest.json").is_file())
+
     def test_render_cnf_appends_cube_as_units(self) -> None:
         rendered = EXTERNAL.render_cnf("c example", "1 -2 0", 3, 1, [2, -3])
         self.assertEqual(
@@ -97,6 +178,68 @@ class ExternalCubeToolTests(unittest.TestCase):
         self.assertEqual(len(children), 2 * len(variables))
         self.assertEqual(children[0], [1, -2])
         self.assertEqual(children[-1], [1, 27])
+
+    def test_selects_fastest_solver_agreed_one_sided_split(self) -> None:
+        parents = [[1], [-1, 2]]
+        variables = [3, 4]
+        screened = SCREEN_VARIABLES.extend_cubes(parents, variables)
+        result = SCREENED_SPLITS.ScreenResult
+        first = [
+            result(0, 2.0),
+            result(20, 0.4),
+            result(20, 0.2),
+            result(0, 2.0),
+            result(0, 2.0),
+            result(20, 0.3),
+            result(20, 0.5),
+            result(0, 2.0),
+        ]
+        second = [
+            result(0, 2.0),
+            result(20, 0.3),
+            result(20, 0.1),
+            result(0, 2.0),
+            result(0, 2.0),
+            result(20, 0.4),
+            result(20, 0.6),
+            result(0, 2.0),
+        ]
+        selections = SCREENED_SPLITS.choose_splits(
+            parents, variables, screened, [first, second]
+        )
+        self.assertEqual([row["variable"] for row in selections], [4, 3])
+        self.assertEqual(
+            [row["contradictory_literal"] for row in selections], [-4, 3]
+        )
+        self.assertEqual(
+            [row["surviving_literal"] for row in selections], [4, -3]
+        )
+
+    def test_screened_split_selection_rejects_disagreement_and_sat(self) -> None:
+        result = SCREENED_SPLITS.ScreenResult
+        parents = [[1]]
+        variables = [2]
+        screened = SCREEN_VARIABLES.extend_cubes(parents, variables)
+        with self.assertRaisesRegex(ValueError, "no agreed"):
+            SCREENED_SPLITS.choose_splits(
+                parents,
+                variables,
+                screened,
+                [
+                    [result(20, 0.1), result(0, 1.0)],
+                    [result(0, 1.0), result(20, 0.1)],
+                ],
+            )
+        with self.assertRaisesRegex(ValueError, "SAT result"):
+            SCREENED_SPLITS.choose_splits(
+                parents,
+                variables,
+                screened,
+                [
+                    [result(10, 0.1), result(0, 1.0)],
+                    [result(10, 0.1), result(0, 1.0)],
+                ],
+            )
 
     def test_cartesian_variable_parser_retains_exponential_guard(self) -> None:
         with self.assertRaisesRegex(ValueError, r"2\^24"):
