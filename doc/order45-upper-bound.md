@@ -1262,10 +1262,62 @@ Both completion flags are false. The transactional v9 relocation scanned
 1,587 JSON documents, rewrote 99 paths, propagated 20 hashes in three passes,
 and has record hash
 `5fa5abd2f8dd612f90003a55c1d1a64720b144e4609bd7b5ee0d981d8e937001`.
-After the freeze, the live J297775 chain retained two UNKNOWN cubes through
-round 207 and halted on a guarded `2 -> 3` growth, while the live J326185
-single-cube chain advanced to state round 257. These live increments are not
-part of rescued-v3.
+The immutable rescued-v4 checkpoint absorbs those live increments and four
+further exact-cube rescues. For J297775, an older checked CaDiCaL proof closes
+one member of the round-207 growth candidate; a second existing CaDiCaL proof
+does the same at round 218. At round 238, CaDiCaL and Kissat independently
+closed the same child with checked compact proofs of 100,709,025 and
+86,486,471 bytes. These retries keep the authoritative frontier at two cubes
+through state round 242. For J326185, a 255,751,469-byte Kissat proof reduces
+the round-257 growth pair back to one cube. At round 277, a checked
+80,547,438-byte Kissat proof was reused from an exact-cube hedge; a later
+70,463,276-byte CaDiCaL proof independently confirmed that closure. The
+authoritative checkpoint therefore retains one cube through state round 278.
+
+The rescued-v4 chain bundle has 13 J297775 segments and ten J326185 segments.
+Independent replay accepts 255/288 proof manifests and reconstructs
+1,086/905 parent refinements, leaving exactly two/one UNKNOWN descendants.
+The chain-bundle, chain-audit, and chain-audit-log hashes are
+`ff0fcba4f7c031ad9a9b31d8f701339bd5e53f12d1119a4dd40eb732b61adc59`,
+`24a0698ab9534c191843fdae04cf0fca349dbde448ef4a11cce1bdc3b8e5542c`,
+and
+`2e7bbe571f3bd973b21bc264ea1a67b4bae785c89e1cb465e6b634330e99f9eb`.
+The original-parent composition again checks all 193/178 backbone proofs and
+the 15 selected strengthening literals per case. Its bundle, audit, and log
+hashes are
+`37048cf7b639839a782370d82eb204022010b872cba377dbb658309b77f89ce1`,
+`968bbbe6b878b13dcd13732ef45fec4a98e601dcc54bfeafa947419ff7d33c34`,
+and
+`a6f03058d08ca618a39928ee50d403aa31346ae5ec0bd502eda79c2d09492536`.
+Both audit layers explicitly return false completion claims.
+
+This continuation exposed two checkpoint-integrity edge cases. The proof
+producer now atomically flushes every collected worker result before
+propagating a worker exception or signal, so a short portfolio cannot lose a
+valid proof merely because it has not reached its periodic checkpoint count.
+The proof-tree relocator now propagates hash bindings for repository-relative
+paths and leaves earlier relocation records immutable. The chain auditor
+compares resolved artifact paths while preserving all content and hash checks,
+so equivalent repository-relative and absolute spellings do not cause a false
+state mismatch. The complete local and ARM suites pass 147 tests. Relocation
+v10 remains byte-identical with hash
+`bab0d6c0d80e708c9d3d0162488d732a86381faffcf0cb2b8362f57fcc46181c`;
+the corrective v11 and post-freeze v12 records have hashes
+`bd1edf2f184758df070641cc3748e15b57a33e3aa18a951d6f7f1ac99b8f0d6c`
+and
+`9225ceb31619f92e83ef9c74bdbd9b98cfa2ea2e0abd569b5f7eb54bde5efca5`.
+
+After the v4 freeze, J297775 round 242 was independently closed on the same
+child by CaDiCaL, Kissat, and iGlucose with compact proofs of 113,045,276,
+112,210,091, and 308,181,693 bytes. The smaller Kissat proof was composed and
+replayed, retaining two UNKNOWN cubes through round 243; the guarded round-244
+candidate grows to three and is not adopted. At J326185 round 278, CaDiCaL and
+Kissat independently closed the same child with 94,139,627- and
+101,863,998-byte proofs. The CaDiCaL composition replayed successfully and its
+single-cube continuation has reached at least state round 342 while remaining
+live. These post-freeze results are not part of the rescued-v4 bundle. No
+parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45` theorem is
+claimed.
 
 That hedge is now running for all three unified mother formulas with exact
 configuration `30000/128000 conflicts, 1 second lookahead, primary bound 0,

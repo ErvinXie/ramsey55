@@ -69,21 +69,32 @@ def path_for_hash(document: dict[str, Any], hash_key: str) -> str | None:
 
 
 def update_hash_bindings(
-    value: Any, root: Path, virtual_files: dict[Path, bytes] | None = None
+    value: Any,
+    root: Path,
+    virtual_files: dict[Path, bytes] | None = None,
+    relative_root: Path | None = None,
 ) -> int:
+    if relative_root is None:
+        relative_root = Path.cwd().resolve()
     if isinstance(value, list):
-        return sum(update_hash_bindings(item, root, virtual_files) for item in value)
+        return sum(
+            update_hash_bindings(item, root, virtual_files, relative_root)
+            for item in value
+        )
     if not isinstance(value, dict):
         return 0
     changes = sum(
-        update_hash_bindings(item, root, virtual_files) for item in value.values()
+        update_hash_bindings(item, root, virtual_files, relative_root)
+        for item in value.values()
     )
     for key in list(value):
         target_string = path_for_hash(value, key)
         if target_string is None:
             continue
         target = Path(target_string)
-        if not target.is_absolute() or not within(target, root):
+        if not target.is_absolute():
+            target = (relative_root / target).resolve()
+        if not within(target, root):
             continue
         virtual = virtual_files.get(target) if virtual_files is not None else None
         if virtual is None and not target.is_file():
@@ -105,15 +116,22 @@ def relocate_tree(old_root: str, root: Path) -> dict[str, Any]:
     new_root = str(root)
     if not old_root or old_root == new_root or not root.is_dir():
         raise ValueError("old and new roots must be distinct existing directories")
-    paths = sorted(root.rglob("*.json"))
-    originals = {path: path.read_bytes() for path in paths}
+    candidates = sorted(root.rglob("*.json"))
+    originals: dict[Path, bytes] = {}
     documents: dict[Path, Any] = {}
     path_replacements = 0
-    for path in paths:
-        document = json.loads(originals[path])
+    for path in candidates:
+        original = path.read_bytes()
+        document = json.loads(original)
+        # A relocation record is immutable provenance for an earlier pass,
+        # not an input artifact whose historical old_root should be rewritten.
+        if isinstance(document, dict) and document.get("schema") == SCHEMA:
+            continue
+        originals[path] = original
         relocated, changes = replace_prefix(document, old_root, new_root)
         documents[path] = relocated
         path_replacements += changes
+    paths = list(documents)
 
     hash_updates = 0
     passes = 0

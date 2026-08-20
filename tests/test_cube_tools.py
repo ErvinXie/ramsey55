@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 import sys
 import tempfile
 import threading
@@ -581,6 +582,51 @@ class MaterializedProofToolTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "expected worker failure"):
                 next(results)
 
+    def test_worker_failure_flushes_partial_progress(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            formula = root / "formula.cnf"
+            cubes = root / "cubes.icnf"
+            solver = root / "solver"
+            checker = root / "checker"
+            output = root / "proofs"
+            formula.write_text("p cnf 2 0\n", encoding="ascii")
+            cubes.write_text("a 1 0\na -1 0\n", encoding="ascii")
+            solver.write_text("placeholder\n", encoding="ascii")
+            checker.write_text("placeholder\n", encoding="ascii")
+
+            def fake_completed_results(*_args: object) -> object:
+                yield 1, {"index": 1, "status": 0}
+                raise RuntimeError("expected worker failure")
+
+            original_argv = sys.argv
+            original_completed_results = MATERIALIZED_PROVER.completed_results
+            MATERIALIZED_PROVER.completed_results = fake_completed_results
+            sys.argv = [
+                "prove_materialized_cubes.py",
+                str(formula),
+                str(cubes),
+                str(output),
+                "--solver",
+                str(solver),
+                "--checker",
+                str(checker),
+            ]
+            try:
+                with self.assertRaisesRegex(
+                    RuntimeError, "expected worker failure"
+                ):
+                    MATERIALIZED_PROVER.main()
+            finally:
+                MATERIALIZED_PROVER.completed_results = original_completed_results
+                sys.argv = original_argv
+
+            progress = json.loads(
+                (output / "progress.json").read_text(encoding="utf-8")
+            )
+            self.assertIsNone(progress["results"][0])
+            self.assertEqual(progress["results"][1], {"index": 1, "status": 0})
+
     def test_complete_chain_seed_is_audited_before_acceptance(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)
@@ -737,6 +783,14 @@ class MaterializedProofToolTests(unittest.TestCase):
                 MATERIALIZED_CHAIN_AUDIT.verify_refinement(
                     parents, children, results, manifest
                 )
+
+    def test_chain_state_accepts_repo_relative_current_manifest(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            manifest = Path(raw).resolve() / "chain" / "manifest.json"
+            relative = Path(os.path.relpath(manifest, Path.cwd()))
+            self.assertTrue(
+                MATERIALIZED_CHAIN_AUDIT.same_path(manifest, relative)
+            )
 
     def test_exports_only_hash_bound_unknown_results(self) -> None:
         cubes = [[1], [-1, 2], [-1, -2]]

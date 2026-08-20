@@ -48,6 +48,11 @@ def load_json(path: Path) -> dict[str, Any]:
     return document
 
 
+def same_path(left: Path, right: Path) -> bool:
+    """Compare artifact paths independently of absolute/repo-relative spelling."""
+    return left.resolve() == right.resolve()
+
+
 def verify_adopted_growth(
     state: dict[str, Any],
     final_round: int,
@@ -269,7 +274,7 @@ def main() -> None:
         current_manifest = next_manifest
         current = next_document
 
-    if current_manifest != final_manifest:
+    if not same_path(current_manifest, final_manifest):
         raise ValueError("state current_manifest does not match reconstructed chain")
     verify_adopted_growth(
         state,

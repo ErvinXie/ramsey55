@@ -383,22 +383,31 @@ def main() -> int:
         with concurrent.futures.ThreadPoolExecutor(
             max_workers=min(arguments.jobs, len(cubes))
         ) as executor:
-            for index, result in completed_results(
-                executor, prove, enumerate(cubes)
-            ):
+            try:
+                for index, result in completed_results(
+                    executor, prove, enumerate(cubes)
+                ):
+                    with result_lock:
+                        results[index] = result
+                        completed += 1
+                        if (
+                            completed % arguments.checkpoint_every == 0
+                            or result["status"] == 10
+                        ):
+                            atomic_json(progress_path, document)
+                    print(
+                        f"finished {completed}/{len(cubes)} "
+                        f"cube={index} status={result['status']}",
+                        flush=True,
+                    )
+            except BaseException:
+                # Small portfolios often finish fewer rows than the periodic
+                # checkpoint interval before another worker fails.  Preserve
+                # every safely collected result so published proofs remain
+                # recoverable from the progress document.
                 with result_lock:
-                    results[index] = result
-                    completed += 1
-                    if (
-                        completed % arguments.checkpoint_every == 0
-                        or result["status"] == 10
-                    ):
-                        atomic_json(progress_path, document)
-                print(
-                    f"finished {completed}/{len(cubes)} "
-                    f"cube={index} status={result['status']}",
-                    flush=True,
-                )
+                    atomic_json(progress_path, document)
+                raise
 
     if any(result is None for result in results):
         raise RuntimeError("missing cube result")

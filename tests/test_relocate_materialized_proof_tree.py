@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -105,6 +106,64 @@ class RelocateMaterializedProofTreeTests(unittest.TestCase):
 
             self.assertEqual(manifest.read_bytes(), original)
             self.assertIn(old, manifest.read_text())
+
+    def test_updates_repo_relative_hash_binding(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            temporary = Path(raw)
+            project = temporary / "project"
+            old = "/dev/shm/example-proof-tree"
+            new = project / "build" / "stable"
+            halted = new / "chain" / "halted.json"
+            write_json(halted, {"current_manifest": old + "/candidate.json"})
+            state = new / "chain" / "state.json"
+            write_json(
+                state,
+                {
+                    "adopted_growth": {
+                        "halt_path": str(halted.relative_to(project)),
+                        "halt_sha256": sha256(halted),
+                    }
+                },
+            )
+
+            previous = Path.cwd()
+            os.chdir(project)
+            try:
+                RELOCATE.relocate_tree(old, new)
+            finally:
+                os.chdir(previous)
+
+            document = json.loads(state.read_text())
+            self.assertEqual(
+                document["adopted_growth"]["halt_sha256"], sha256(halted)
+            )
+
+    def test_preserves_previous_relocation_record(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            temporary = Path(raw)
+            old = "/dev/shm/example-proof-tree"
+            new = temporary / "stable"
+            previous = new / "relocation-v1.json"
+            write_json(
+                previous,
+                {
+                    "schema": RELOCATE.SCHEMA,
+                    "old_root": old,
+                    "new_root": str(new),
+                },
+            )
+            manifest = new / "manifest.json"
+            write_json(manifest, {"path": old + "/artifact"})
+            record = previous.read_bytes()
+
+            result = RELOCATE.relocate_tree(old, new)
+
+            self.assertEqual(previous.read_bytes(), record)
+            self.assertEqual(result["json_documents"], 1)
+            self.assertEqual(
+                json.loads(manifest.read_text())["path"],
+                str((new / "artifact").resolve()),
+            )
 
 
 if __name__ == "__main__":
