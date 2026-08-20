@@ -332,6 +332,32 @@ class ResultMergeTests(unittest.TestCase):
                 primary, [{"cube": [1], "status": 20}]
             )
 
+    def test_materialized_retry_maps_unique_unordered_unknown_subset(self) -> None:
+        primary = [
+            {"cube": [1], "status": 20},
+            {"cube": [-1, 2], "status": 0},
+            {"cube": [-1, -2, 3], "status": 0},
+            {"cube": [-1, -2, -3], "status": 0},
+        ]
+        secondary = [
+            {"cube": [-1, -2, -3], "status": 20},
+            {"cube": [-1, 2], "status": 20},
+        ]
+        self.assertEqual(
+            MATERIALIZED_COMPOSE.unordered_unknown_replacements(
+                primary, secondary
+            ),
+            [3, 1],
+        )
+        with self.assertRaisesRegex(ValueError, "not unique"):
+            MATERIALIZED_COMPOSE.unordered_unknown_replacements(
+                primary, [secondary[0], secondary[0]]
+            )
+        with self.assertRaisesRegex(ValueError, "not an UNKNOWN"):
+            MATERIALIZED_COMPOSE.unordered_unknown_replacements(
+                primary, [{"cube": [1], "status": 20}]
+            )
+
     def test_long_retry_selects_only_double_unknown_siblings(self) -> None:
         cubes = [[1], [-1], [2], [-2], [3], [-3]]
         results = [

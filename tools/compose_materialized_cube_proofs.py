@@ -87,6 +87,34 @@ def ordered_unknown_replacements(
     return indices
 
 
+def unordered_unknown_replacements(
+    primary_results: list[dict[str, Any]], secondary_results: list[dict[str, Any]]
+) -> list[int]:
+    """Map a uniquely keyed secondary subset to UNKNOWN primary result rows."""
+
+    if any(int(row["status"]) == 10 for row in primary_results + secondary_results):
+        raise ValueError("SAT result requires investigation")
+    unknown: dict[tuple[int, ...], int] = {}
+    for index, row in enumerate(primary_results):
+        if int(row["status"]) != 0:
+            continue
+        cube = tuple(int(literal) for literal in row["cube"])
+        if cube in unknown:
+            raise ValueError("primary UNKNOWN cubes are not unique")
+        unknown[cube] = index
+    replacements: list[int] = []
+    seen: set[tuple[int, ...]] = set()
+    for row in secondary_results:
+        cube = tuple(int(literal) for literal in row["cube"])
+        if cube in seen:
+            raise ValueError("secondary cubes are not unique")
+        seen.add(cube)
+        if cube not in unknown:
+            raise ValueError("secondary cube is not an UNKNOWN primary cube")
+        replacements.append(unknown[cube])
+    return replacements
+
+
 def copy_bound_artifact(
     source_root: Path,
     source_name: object,
@@ -111,6 +139,14 @@ def main() -> None:
     parser.add_argument("primary_manifest", type=Path)
     parser.add_argument("secondary_manifest", type=Path)
     parser.add_argument("output_directory", type=Path)
+    parser.add_argument(
+        "--allow-unordered-secondary",
+        action="store_true",
+        help=(
+            "match a uniquely keyed UNKNOWN subset regardless of secondary "
+            "row order; the strict default requires an ordered subsequence"
+        ),
+    )
     arguments = parser.parse_args()
 
     primary = json.loads(arguments.primary_manifest.read_text(encoding="utf-8"))
@@ -136,7 +172,11 @@ def main() -> None:
         raise ValueError("primary result/cube mismatch")
     if [row["cube"] for row in secondary_results] != secondary_cubes:
         raise ValueError("secondary result/cube mismatch")
-    replacements = ordered_unknown_replacements(primary_results, secondary_results)
+    replacements = (
+        unordered_unknown_replacements(primary_results, secondary_results)
+        if arguments.allow_unordered_secondary
+        else ordered_unknown_replacements(primary_results, secondary_results)
+    )
 
     output = arguments.output_directory
     output.mkdir(parents=True, exist_ok=True)
@@ -203,7 +243,11 @@ def main() -> None:
     combined["results"] = combined_results
     combined["summary"] = expected_summary(combined_results)
     combined["composition"] = {
-        "kind": "ordered UNKNOWN-only retry",
+        "kind": (
+            "exact unordered UNKNOWN-subset retry"
+            if arguments.allow_unordered_secondary
+            else "ordered UNKNOWN-only retry"
+        ),
         "primary_manifest": {
             "path": str(arguments.primary_manifest),
             "sha256": file_sha256(arguments.primary_manifest),
@@ -212,8 +256,10 @@ def main() -> None:
             "path": str(arguments.secondary_manifest),
             "sha256": file_sha256(arguments.secondary_manifest),
         },
-        "replaced_indices": replacements,
+        "replaced_indices": sorted(replacements),
     }
+    if arguments.allow_unordered_secondary:
+        combined["composition"]["secondary_to_primary_indices"] = replacements
     manifest = output / "manifest.json"
     manifest.write_text(
         json.dumps(combined, indent=2, sort_keys=True) + "\n", encoding="utf-8"
