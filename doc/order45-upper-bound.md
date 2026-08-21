@@ -4245,5 +4245,24 @@ on earlier exact ancestors in tmpfs.  Persistent large-proof production is
 deferred until one of them reports UNSAT because the ARM root filesystem has
 only about 4.8 GB free.
 
+The same two self-contained chains then advanced another 16 rounds per case
+without increasing either frontier.  A one-second screen first moved them to
+states 633/657; five 0.25-second rounds reached 638/662; ten 0.15-second
+rounds reached 648/672.  Every round independently refined one parent into
+both signed children, replayed the contradictory-side compact DRAT, and
+retained exactly one UNKNOWN.  Across the final ten-round batch, proof sizes
+were 8--332 bytes and the selected contradictions took at most 0.079 seconds
+under both screen solvers.  The state-648/state-672 terminal manifest hashes
+are
+`84290c9eb8c150e5ae7b13f4aa5c665e6d508396324d8f1610a1f02029f02484`
+and
+`9a5ae30a2454b6ff96063218fd258138d4899536b9f1b5395dc390be3a51d15a`.
+Fresh whole-prefix replay reports 18 J297 and 17 J326 residual rounds; its
+audit hash is
+`8d39c339b01a8dc2d65e356c61582598dd3343edbb00049d144b6ba59ef9b73e`.
+The corresponding selective-residual join audit hash is
+`5eef4ce0b2cb0eb374ab5f042656ca7bcbe3aae8fabac67a00a647f7e1df3faf`.
+It still reports one effective UNKNOWN in each case.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
