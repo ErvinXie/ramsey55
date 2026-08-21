@@ -2035,7 +2035,7 @@ hash
 `0eee6d01d56ab0f88f6485152c3fb391f0628bd87a45691cea293b1f21a0d90c`.
 Regression tests also cover a search timeout and an UNSAT-candidate proof
 rerun timeout; both remain UNKNOWN without exposing an unchecked proof.  The
-ARM regression suite passes all 163 tests in 35.615 seconds.
+ARM regression suite passes all 165 tests in 35.319 seconds.
 
 The same 11-configuration portfolio was relaunched with deferred proof for
 7,200 seconds: iGlucose plus CaDiCaL and Kissat at seeds 0 through 4.  The
@@ -2044,6 +2044,20 @@ single J326 cube uses 11 solver processes and the two J297 cubes use 22, for
 tree occupied only 88 MiB and contained materialized CNFs rather than growing
 raw proofs.  The screened parents remain stopped so these solvers receive
 their full wall-time CPU share.
+
+`tools/analyze_screened_split_budget.py` independently hash-checks the stored
+screen tables and replays them at a smaller candidate range and time cutoff.
+For J326 rounds 529--545 and J297 rounds 414--430, a 0.1-second replay over
+variables 450--700 remains feasible for all 51 parent occurrences, with at
+least seven solver-agreed one-sided contradictions per parent.  The analysis
+JSON and stdout-log hashes are
+`86ca692aca6dc4a7f112739a0c04a04328fda7834d99a7b0a2fdbd132ca42f4c`
+and
+`a0e53768238d06ea120f8afe70e47a9f70f3d8fac57621a947f78f87d0fff55c`.
+Together with the observed 0.05--0.08-second checked contradiction proofs,
+this supports a next chain segment using a 0.1-second screen and the existing
+0.2-second proof quick pass.  This is a reproducible scheduling optimization,
+not an UNSAT result.
 
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
