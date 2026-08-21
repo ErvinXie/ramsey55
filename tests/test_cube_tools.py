@@ -55,6 +55,9 @@ SELECTIVE_ANCESTOR_CLOSURES = load_tool("audit_selective_ancestor_closures")
 SELECTIVE_ANCESTOR_CLOSURES_EXTENSION = load_tool(
     "audit_selective_ancestor_closures_extension"
 )
+SELECTIVE_RESIDUAL_CHAIN_BUNDLE = load_tool(
+    "audit_selective_residual_chain_bundle"
+)
 STRENGTHENED_PARENT_BUNDLE_EXTENSION = load_tool(
     "audit_strengthened_parent_chain_bundle_extension"
 )
@@ -1002,6 +1005,56 @@ class ExternalCubeToolTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "ancestor cube hash mismatch"):
                 SELECTIVE_ANCESTOR_CLOSURES_EXTENSION.certificate_ancestor(
                     closure, {"variables": 3}
+                )
+
+    def test_selective_residual_keeps_only_uncovered_unknown_rows(self) -> None:
+        cubes = [[1, 2], [1, -2], [-1, 3]]
+        terminal = {
+            "results": [
+                {"index": index, "status": status, "cube": cube}
+                for index, (cube, status) in enumerate(
+                    zip(cubes, (0, 20, 0), strict=True)
+                )
+            ]
+        }
+        case = {
+            "selectively_closed_unknown_indices": [0],
+            "remaining_unknown": 1,
+        }
+        self.assertEqual(
+            SELECTIVE_RESIDUAL_CHAIN_BUNDLE.remaining_unknown_indices(
+                case, terminal, cubes
+            ),
+            [2],
+        )
+
+    def test_selective_residual_validates_exact_projection(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            source = root / "source.icnf"
+            output = root / "output.icnf"
+            source.write_text("a 1 2 0\na -1 3 0\n", encoding="ascii")
+            output.write_text("a -1 3 0\n", encoding="ascii")
+            selection = {
+                "schema": SELECT_CUBE_ROWS.SCHEMA,
+                "input_sha256": MATERIALIZED_PROVER.file_sha256(source),
+                "input_count": 2,
+                "indices": [1],
+                "output": str(output),
+                "output_sha256": MATERIALIZED_PROVER.file_sha256(output),
+                "output_count": 1,
+            }
+            selected_path, cubes = (
+                SELECTIVE_RESIDUAL_CHAIN_BUNDLE.validate_selection(
+                    selection, source, [[1, 2], [-1, 3]], [1], 3
+                )
+            )
+            self.assertEqual(selected_path, output)
+            self.assertEqual(cubes, [[-1, 3]])
+            selection["indices"] = [0]
+            with self.assertRaisesRegex(ValueError, "exact effective frontier"):
+                SELECTIVE_RESIDUAL_CHAIN_BUNDLE.validate_selection(
+                    selection, source, [[1, 2], [-1, 3]], [1], 3
                 )
 
     def test_chain_bundle_extension_accepts_recursive_audit_checkpoint(self) -> None:
