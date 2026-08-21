@@ -2716,6 +2716,44 @@ by Kissat seed 16 and CaDiCaL seed 17 on this audited deeper leaf.  This is a
 certified subchain, but it remains exploratory until its leaf closes and the
 selective subtree is joined back to the state-599 cover.
 
+The same selective procedure peeled the two children of the other original
+J297 parent.  For child 2, nine consecutive lookahead rounds each closed one
+sibling while retaining exactly one UNKNOWN, advancing the subchain from
+state 600 to state 609 before the next 1--2 candidate was rejected.  The
+explicit zero-proof seed, final manifest, and frozen state hashes are
+`b8209f1ec0e23338ca4ec38de61834163aa7438583dff99d108d443750d94a25`,
+`d74dcb3beeb7b041f707164ec959c6c059e9790afc5495706340d13853f363bc`,
+and
+`2899bbf1189505784d40b9fa51903786418639452b92c558fd89f74e9f5a6c86`.
+Independent replay accepted ten manifests and nine refinements with audit
+JSON/log hashes
+`bd37f324884ebf7309ba9fc252b4fbb538e7f2721380119c7c26e572817456ab`
+and
+`e9b9db5d7a6cb452e92af1dea899ea9a7542a16bcb0eaabe0d2ac0930ce898d8`.
+The remaining state-609 leaf has ICNF/frontier hashes
+`37dc2dd2dd27ba1d947f3a23939d3bdb00c7228041fc5933452143154b342d4b`
+and
+`6854e705ab00d7928542169459cda5f9cb4983db236fb804003bd3c2840b6ccc`.
+
+For child 3, one lookahead round closed one sibling and retained one UNKNOWN
+through subchain state 601; the next split grew 1--2 and was rejected.  Its
+seed/final/state hashes are
+`ff4574a413f918e6391999bf2c9e79374b451235ef4786dbdfddb9b10d30b804`,
+`bfd0d2152b58189c7fac8bcf7293f7cb383890d6ba598031645ff7fb3c9e51bd`,
+and
+`4905839de278fb167a1d1bbcc7faae329d33f6fcb0a6ea122a1373e7ae9404eb`.
+The independent one-round audit JSON/log hashes are
+`94e41336075131cbb7ebdb2215e3968afb0ab2ebd857f637110546bba074773d`
+and
+`f07777881d6ae3a0d3c2b9dd54832c9cbaf437b6dff6a5eec4f499a8ac335cea`;
+the state-601 leaf ICNF/frontier hashes are
+`6ec8766a8ed330df3f40fa3ba661f1f2c7ea5ca2f1e3e9db2e01b043eb114eca`
+and
+`045652a77fb03d27b215f375565bce2c41aff6e00268843579269df2b2e590ae`.
+Each of the state-609/state-601 leaves now has a low-priority Kissat/CaDiCaL
+pair.  These certificates remove shallow siblings but do not by themselves
+reduce the three UNKNOWN leaves of the current selective state-600 family.
+
 The older 7,200-second CaDiCaL seed-7 comparisons also finished.  J297 state
 595 remained zero VERIFIED / two UNKNOWN, with manifest/audit-log hashes
 `669a551bbcfa823ba4dbf39bc2ff4f0904691b2da2a5e448d0d7273edb3bc59e`
