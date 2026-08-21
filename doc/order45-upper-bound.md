@@ -1955,13 +1955,33 @@ two VERIFIED / two UNKNOWN at round 418; its hashes are
 `94cf2d6807634430aceec4b2dac5e8d31ca1d28b9a37c45968da6b466afe19cd`
 and
 `fb7e9d2fe92aa5a067b95929693806f8c0f066b4c75326a27ce083f81bb977c8`.
-A new three-engine 3,600-second portfolio is active on the single J326 cube
-and both J297 cubes.  The first wrappers exited during argument validation
+A new three-engine 3,600-second portfolio ran on the single J326 cube and
+both J297 cubes.  The first wrappers exited during argument validation
 because their scratch directories did not yet exist; no solver ran in that
 attempt.  Those launch-error logs were retained before the directories were
-created and the six wrappers relaunched under fresh PIDs.  After the
-rescued-v6 strengthened-parent audit completed, both live screened runners
-were resumed from states 522/418 and began their next proof batches.
+created and the six wrappers relaunched under fresh PIDs.  All nine solver
+attempts ultimately returned UNKNOWN without a proof.  Result relocations v39
+and v40 have record hashes
+`192fa3de21356e15ce010f75f135adcbee96b9ba59f636d6f899e8484b615e00`
+and
+`49177fb29db10fede9e34e8226f7f4270d5964ca2b4bf49a75eb3b014a91b321`.
+The stable J326 iGlucose, CaDiCaL, and Kissat manifest hashes are
+`95272b5bd34b163da63f91f3e8de5b9457e1b0b62cfd2ca00adf80a06434556d`,
+`65894fc28379abf1c9693200a514c56a36b3fd6a61027bcef3b24eabb8d66fbb`,
+and
+`cc57ba9843631ebad4a2a45b606bfda31b61346fd2a5d2392d68740396e1cdb1`;
+their audit logs each report zero VERIFIED / one UNKNOWN and have hash
+`3d9c660d9fe1ad748481036a6378c600bbec37efa5e948ac800d08be7a4e6508`.
+The corresponding J297 manifest hashes are
+`a4070bc4346463e063e3d4fb26ea421f9d8ea93eca6a7515a6432138bcc3214f`,
+`9e3b8f9958dfa870724cfa1bd117d47711774f0888beac7bb303ea8a787aafec`,
+and
+`504cfbf136f432886a369934d8762f7c9889ea322cd5d51207649a0d32834ac5`;
+their logs report zero VERIFIED / two UNKNOWN and have hash
+`3f8f88e02ae9c2005b178d357544c6a7f2b807f8201e8e9f794c8ea16a08961b`.
+After the rescued-v6 strengthened-parent audit completed, both live screened
+runners were resumed from states 522/418 and advanced at constant width
+through at least J326/J297 states 544/430.
 
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
