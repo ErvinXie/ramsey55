@@ -3419,5 +3419,62 @@ The accepted production checkpoint is now J297/J326 37/36 segments at states
 612/635, with two/one UNKNOWN descendants.  Another expanded J297 screen and
 the exact J326 residual portfolio continue remotely.
 
+The next expanded J297 screen selected variables `1583` and `1455`.
+Fourteen- and 20-byte compact DRATs, with hashes
+`3399cdde2d814a5949ac4e4acc08e5f33b51904c7358a07aaefe3fefc6c466cb`
+and
+`f474f289405ceace62b410984d1b873e40cdd247430b8dfcfbba4f1c0784ad1a`,
+again closed one sibling per parent.  The selection, refinement, terminal,
+state, and chain-audit JSON/log hashes are
+`e82ca2034597dd6e0665b77f5db300e2a9953677d982d50fcf35538cfbc8e42e`,
+`d7fa5a335c4255a40d6e170272d62e746b8cb4239d5c858136de2664e915e50c`,
+`125b9117bae9b592f2acf01053eaa6df409d26d604421087a5508cef8e4e84e6`,
+`44efdb3f44cc15138e7bf4ebadda594f346f16ee1dc7e4266ad11fc2d05b16a0`,
+and
+`4d3c19bc84ca75323deb7b8c3f7c0a1b02e1974dc4dfd17f8736a0f51da3f166` /
+`e36ee3a0c4d295add9c1fc41d08c2f7c22aecbb89b1832ea6540f236766593bc`.
+This advances J297 to state 613 at two VERIFIED / two UNKNOWN.  Recursive
+v27-to-v28 replay passed; the chain/parent bundle hashes are
+`66cfe3f20242d221b83e4e9dfbb030e8095b96b4cd9834386ac515b4313a2c0b` /
+`08ed69cab6a51bb958aef6d842b202c7dd1e82fe2ec3b314da19c09ee8a8845e`,
+the chain JSON/log hashes are
+`e06eded6e037e6acb0512c72a44952869965c9a8ad264d64811cc9c91ce68301` /
+`a343534af08af09f22bb5c28a1a9223174eefaa6a44945f189ba097ec3abe9c3`,
+and the parent JSON/log hashes are
+`5dca51b53b709c75c107b443e3cc126186d28bcfd423550c016ebb35352c27a4` /
+`ce30f0f35ee36f07cb8fadd984e78d1dfa54b6b6ac2842a0f7b8ef1e7013fd0e`.
+
+Kissat seed 35 certified child 0 of the rejected J326 state-635 split after
+3,314.625 seconds.  Its 179,265,033-byte compact DRAT has hash
+`9f38b46a6ccf0a5e36b5a2d726fc008584ed33236e9a261691a6687a452d390c`.
+The frozen one-VERIFIED/one-UNKNOWN checkpoint manifest has hash
+`eaf74d0b8b8f374170f5402b0ed82b4a112c2b4a5394509533a294ab872430da`;
+its independent replay passed with audit-log hash
+`ea389d56d1c9bad8343b7ff358048de4fb8c86bdcfccea31df7e26c894a045a9`.
+Exact composition on split variable `6309`
+advances J326 to state 636 at one VERIFIED / one UNKNOWN.  Its refinement,
+terminal, state, and chain-audit JSON/log hashes are
+`537b1b6acf31708b1b098a29432ec65837618333f8f4d8930f5d96e3076bb98e`,
+`37535a8974c13bac672018559995b225c563071bc44734d6034d118de91d912b`,
+`5e3e074f6e84ee4a1ed4fd815aca2455ea121c4646b2c1be09ce371e12a165f8`,
+and
+`aa550f7d4b6d6474f5d498fc3c58d6adbad4c5a9fe387f57928a235c5514ff0c` /
+`d9c1a60c521741d3ae80bab2dd20065126b5bb4f712d31745aed3cdae51a951a`.
+
+Recursive v28-to-v29 replay passed with chain JSON/log hashes
+`f66705d3efa7cc4b7478f5fc29031de0cd6953d478397b35d35c0da077ca2abe` /
+`b324956ba482f1c50e86f92a7531e83945135330d6adac98e97c24fa7dfa7bd0`;
+the strengthened-parent extension passed with JSON/log hashes
+`255611e47880ad6430a8e5735bdb989bbb4b0322f94edb11138b64628d92ad97` /
+`61ce6c5f3c2cd357e9c696fc0e8c7d3ea4f158a957da4c0abe0b56ffebf3c1bd`.
+The v29 chain and parent bundle hashes are
+`d9dcfa29c5f3f8715b8c7d4168fc85d2a9ed970e29693868f458d447ace7dde5`
+and
+`9dcd6562b8f483b9374c17b02fe4edecebc853d73a47602c8b830bd24d4e62ac`.
+The accepted production checkpoint is now J297/J326 38/37 segments at states
+613/636, with two/one UNKNOWN descendants.  The next expanded J297 screen,
+the remaining exact J326 child searches, and the J297 parent-0 proof
+compaction continue remotely.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
