@@ -3218,9 +3218,69 @@ candidate, and halt hashes are
 and
 `56ccb13f1425896f417b1a8b123d7e8128586f258b7c6cf9a083f0516f9933f1`.
 A three-engine four-hour portfolio now searches those two exact children,
-while the unsplit-parent searches continue.  A separate solver-agreed
-screened refinement is also evaluating variables 1--1200 from the exact
-state-630 parent.
+while the unsplit-parent searches continue.  A separate solver-agreed screen
+tested both polarities of all 859 unassigned variables in 1--1200 with
+CaDiCaL and Kissat.  All 1,718 cubes remained UNKNOWN to both solvers at one
+second, so the screen produced no alternative split and changed no state.
+
+CaDiCaL seed 31 then certified child 0 of the J297 row-3 subfamily with an
+80,755,357-byte compact DRAT of hash
+`c7c1f6a674a8a1fe54ffbc141917b9bdb12652392b238bc5e73be30e81cb0da7`.
+The frozen one-VERIFIED/one-UNKNOWN checkpoint manifest has hash
+`ea50f94a70a879f47f11d4320ccff5fd6fec9e00d9d481559e8c57744cba06eb`;
+its independent replay passed.  Composing this result into the rejected
+four-child family retains the existing 3,583-byte row-1 proof and advances
+the authoritative J297 chain to state 608 at two VERIFIED / two UNKNOWN.
+Its refinement, terminal, state, and chain-audit JSON/log hashes are
+`89288d65e2fa64efecd17c96d1b825677056fda314dd0dc36ca517775b2cce7c`,
+`a74a6847a36c6dd77f0aaed780f7945d453d14cd6dd24e7e609583a50e64cce6`,
+`bd3d6b6753a6e80a8915c7d01926d5dd43d880f8866a74060dda123fc31d1794`,
+and
+`dd4278504511987e65e02218670bfe01f57d7eca2502b8ac3c01fb99b387ae51` /
+`dcbf278cce7f00800688c6236de307bf2a5c40708ed99dd0c3d354666e1c0fdb`.
+The next guarded continuation split the two residuals on variables `1049`
+and `-747`.  An 8-byte proof closed child 0, but the 2--3 growth was rejected.
+Child-family/refinement/candidate/halt hashes are
+`87f5931923329adb19f241a72eb5200872db2de816997c94ed9aafe3463abe59`,
+`e45bb8915b4181e6047cbc3a6f986be4a00af4884b13a4c9b4ef530debb04dda`,
+`c8b3f7d71ed6538e44e9b1a0ad75b620d1ff5255ad35b98b81902b6d0c233139`,
+and
+`d4bb84c00a0e9d8611d6aed69d1ac1912865522b85a4e048e957a173e462344e`.
+Three engines now search the exact three-UNKNOWN family of hash
+`2c07ca6a0341c0e6a69af67521e9bc5c2a1997c535fd8e0589465b18f403414c`;
+closing any one row restores width two.
+
+Kissat seed 33 independently certified child 0 of the J326 state-630 split
+with a 90,228,187-byte compact DRAT of hash
+`b0c1ddb5fc361ede34a779bee9dd6ac44a463f413b976dd8edb19cbe597b69c4`.
+The frozen checkpoint manifest has hash
+`18d77a42163cb51b8094236bfa581c96afe2d3d8e30d433aa3d3c88d57eba9b5`
+and its independent replay passed.  Exact composition advances J326 to
+state 631 at one VERIFIED / one UNKNOWN.  Refinement, terminal, state, and
+chain-audit JSON/log hashes are
+`a0cbad3784118eca3bd382f66bf8d0dd8e79c820f7c2394e9bbe9379317469a3`,
+`a300c8bede14a64254cbdb110111f06136dfff98caf24123f35a765a84809afd`,
+`95d1799a7532fd360b489d8435535871d42fc93d8d47cf2a61df2b31b275b805`,
+and
+`b434b23387f4ff315e5749aeaca3878037a5bf3524bfbdab8c1be5fe5ce31b64` /
+`334074eac183f078656e9624941fb84a298e6d2a0a4a7b51f72500da5175cea4`.
+
+The v23 chain and strengthened-parent bundle hashes are
+`bb7645286c69524a0314c171afc0b579049f1c03b67811bf4cfa6049a0f1c813`
+and
+`379ae8be338d86a02b27b3f914caeabef9113f150a8b9e714eff517ba9ae0779`.
+Recursive v22-to-v23 replay checked exactly one new segment in each case;
+its JSON/log hashes are
+`4c2075a692f97f7d6314ffad541617f253dc99e84ab1d9c3c4f4f9ea4509b79f`
+and
+`c7aebd2635e16ae3a65206743bbc83659f9946e9aaf28a659dafb55d5ef699c3`.
+The strengthened-parent extension passed with JSON/log hashes
+`2aabbd05f67198d3e204a7f99bce482ff3b5ce48647d27bc3ddc14a57a1c602d`
+and
+`163e73d9c793299a062f16d5a6beeff5f7031a15b718fab0ed942dde9a1e026d`.
+The accepted production checkpoint is therefore J297/J326 33/35 segments at
+states 608/631, with two/one UNKNOWN descendants.  A guarded J326 state-631
+continuation is running while all exact residual portfolios continue.
 
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
