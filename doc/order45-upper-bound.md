@@ -2066,5 +2066,36 @@ the standard complementary-refinement audit and fresh materialized DRAT check
 still establish every accepted step.  Thus the queue is a scheduling hint and
 cannot turn a stale screen result into a proof claim.
 
+The state-545/state-430 screens yielded two disjoint reusable ranges:
+variables 450--700 supplied 29 queued J326 splits and at least 36 for each
+J297 parent, while 701--800 supplied another 17 and at least 22.  Their replay
+analysis JSON hashes are
+`28c4c7e40ffe70a13ac5a498c4a8359476b6ff53a6f48c0d4e283790001e3239`
+and
+`e6a8a307346ef3530f32260a71365cdecb5e9099ee08c2974b69570112d5f49a`.
+Every queued split was then rerun in proof mode, compacted, and checked.  Two
+stable segments advanced J326 to states 574 and 591, retaining one UNKNOWN;
+their audit JSON/log hashes are `0f3ef8b5...f6a2` / `4367814f...6aec` and
+`29550bc2...ba61` / `e3fc21b2...f950`.  The matching relocations v43/v45 have
+hashes `077b8c3f...c1eb5` / `27d66247...55d1f`.  J297 similarly reached states
+466 and 488, retaining two UNKNOWNs; its audit hashes are
+`7f7a2aad...0801` / `ae653aaf...bf29` and `042ba075...6d5` /
+`fd8993dd...2a5e`, with relocation-v44/v46 hashes `3e835d99...0c9c` /
+`29d5355d...3998`.
+
+The deeper exported frontier hashes are
+`dd6e4889c10333c494706e82cc751ab026e3d0e6179f557424614bd8a7b5b6e5`
+for the one J326 cube and
+`375ed2ee5061ee92489d00bf8f25a6b08e3ae685062b78cf30f0ce7abb2a5479`
+for the two J297 cubes.  Their export-manifest hashes are
+`e5bf1be1e254960fe0fd1b2c750693021889eee5806aa4825a262fec1185508f`
+and
+`0195b6d095adb4cf06ae68b45c2d3533ec609800dc191e3b6ce43d70c141f237`.
+The shallower state-545/state-430 v2 portfolio was superseded after about 34
+minutes with no manifest or deferred proof rerun; its PID and runner logs were
+retained.  The identical 11-configuration portfolio is now running at states
+591/488 as v3: 22 wrappers drive 33 single-core solver processes, with proof
+generation still deferred until an UNSAT candidate appears.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
