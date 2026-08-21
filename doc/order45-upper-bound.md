@@ -4343,8 +4343,8 @@ The v8 selective-residual join also passed with bundle/audit/log hashes
 `6f0f7417e816b4cebd0f27915c44d8a3ec082bd0a92c64ccc64c2dde230925d1` /
 `a02f9113d6f84193a20712e4d3e6cdbdd575085fbd2ed07e2bdc08d197f56e08`.
 Both cases still have one effective UNKNOWN leaf.  A further 50-round batch
-has started from the independently audited 738/762 checkpoint while all six
-diversified long probes continue.
+has started from the independently audited 738/762 checkpoint while all ten
+diversified solver probes continue.
 
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
