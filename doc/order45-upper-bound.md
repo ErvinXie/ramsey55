@@ -2033,7 +2033,9 @@ and
 All three independent audit logs report two VERIFIED / zero UNKNOWN and have
 hash
 `0eee6d01d56ab0f88f6485152c3fb391f0628bd87a45691cea293b1f21a0d90c`.
-The ARM regression suite passes all 161 tests in 20.704 seconds.
+Regression tests also cover a search timeout and an UNSAT-candidate proof
+rerun timeout; both remain UNKNOWN without exposing an unchecked proof.  The
+ARM regression suite passes all 163 tests in 35.615 seconds.
 
 The same 11-configuration portfolio was relaunched with deferred proof for
 7,200 seconds: iGlucose plus CaDiCaL and Kissat at seeds 0 through 4.  The
