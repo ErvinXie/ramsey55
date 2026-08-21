@@ -4346,5 +4346,15 @@ Both cases still have one effective UNKNOWN leaf.  A further 50-round batch
 has started from the independently audited 738/762 checkpoint while all ten
 diversified solver probes continue.
 
+The exact audited UNKNOWN leaves at states 738/762 were additionally exported
+to tmpfs with ICNF hashes
+`8f7af087e3913343b962721798999a40d9e1565d5dc3e036ee5b60069a2d7883`
+and
+`971eb11de255d399e622c225057d3beb99456fc0fe770ee7f1365effe58ddd42`.
+Four lowest-priority four-hour CaDiCaL/Kissat no-proof probes search these
+deeper leaves.  This brings the diversified long-running solver count to 14;
+the new jobs consume only scheduling gaps left by proof-chain screening.  An
+UNSAT result can be certified separately and joined directly to the v8 audit.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
