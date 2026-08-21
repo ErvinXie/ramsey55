@@ -982,7 +982,6 @@ class ExternalCubeToolTests(unittest.TestCase):
                     "base_segment_count": 3,
                     "total_segment_count": 4,
                     "complete_unsat": False,
-                    "terminal": {"final_unknown": 1},
                     "extension": {
                         "segment_count": 1,
                         "segments": [{"final_unknown": 1}],

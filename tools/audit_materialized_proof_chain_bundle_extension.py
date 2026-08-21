@@ -60,6 +60,10 @@ def audited_chain_summary(
     elif audit_schema == AUDIT_SCHEMA:
         extension = audited_case.get("extension")
         terminal = audited_case.get("terminal")
+        if isinstance(extension, dict) and terminal is None:
+            segments = extension.get("segments")
+            if isinstance(segments, list) and segments:
+                terminal = segments[-1]
         if not isinstance(extension, dict) or not isinstance(terminal, dict):
             raise ValueError(f"base extension audit has no {label} chain")
         chain = {

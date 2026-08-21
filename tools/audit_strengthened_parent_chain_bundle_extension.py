@@ -122,6 +122,8 @@ def validate_parent_extension_layout(
                 raise ValueError(f"recursive parent baseline is invalid for {label}")
         new_segments = extension.get("segments")
         terminal = extension_case.get("terminal")
+        if terminal is None and isinstance(new_segments, list) and new_segments:
+            terminal = new_segments[-1]
         if not isinstance(new_segments, list) or not isinstance(terminal, dict):
             raise ValueError(f"extension has no terminal binding for {label}")
         if int(extension_case.get("base_segment_count", -1)) != base_segment_count:
