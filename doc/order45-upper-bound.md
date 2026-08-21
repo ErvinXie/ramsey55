@@ -4149,8 +4149,62 @@ coverage, SAT rows, and formula/cube/hash mismatches are rejected.  All 81
 `tests.test_cube_tools` tests pass on the ARM builder.  The direct overlay
 bundle has hash
 `f9d570ec0dbedde29a8723cd2f7f92efee7339aab5c27b481fc285e3f2def7e0`.
-Neither pending replay has yet been accepted as a selective overlay, so the
-authoritative strengthened parent-1 endpoint remains unchanged.
+At that checkpoint neither pending replay had yet been accepted as a selective
+overlay, so the authoritative strengthened parent-1 endpoint was unchanged.
+
+Both pending ancestor checks have now completed.  The strict state-623
+composition passed a zero-round whole-chain replay with `complete_unsat=true`
+and `final_unknown=0`; its JSON/log hashes are
+`bb450765f2fa51d01de803ff6058f29af0b496ff848382e4e1f68e6325eaed09`
+and
+`c31ea08fb77c9f7ba8c9043290d9d416aa6683a76a2f0ae3c63eb432d8b10f75`.
+The full seven-segment selective chain was then replayed from its one-cube
+ancestor through the complete state-623 terminal.  The resulting overlay
+audit and log hashes are
+`c364ad0c0a6d2fa96dd19cab7c7518f429c6f65dd6befe067a485a5e1cfdbe64`
+and
+`6353f92a1d9cb06237224b319542fc0b6a67aab131e4c4cc0a208d47bbcb1f0a`.
+It proves that J297 v57 UNKNOWN index 0 extends a complete 717-literal
+ancestor and reduces the effective J297 residual from two rows to one.  The
+independent replay of the shallower 601,296,897-byte CaDiCaL proof also passed
+with `audited 2/2 verified=1`; its log hash is
+`ea389d56d1c9bad8343b7ff358048de4fb8c86bdc43cb6f0d4b24730235d02df`.
+That direct proof is an independent cross-check, not an additional reduction
+of the same descendant.
+
+`audit_selective_ancestor_closures_extension.py` makes this result usable at
+later production checkpoints without replaying the 489 MB proof again.  It
+requires an accepted selective audit and a separately replayed exact-prefix
+chain extension, reconstructs the certificate's ancestor cube, and recomputes
+the extended terminal UNKNOWN descendants.  It rejects checker, bundle,
+audit-join, formula, cube, row, hash, or overlap mismatches.  All 83 cube-tool
+tests pass on the ARM builder.
+
+Six additional screened rounds advanced the ordinary production chains.
+J297 selected `1917/1568`, `2042/1382`, and `1225/1441`, with compact proof
+sizes `476/28`, `238/20`, and `20/448` bytes.  J326 selected `1671`, `2103`,
+and `1410`, with 26-, 14-, and 32-byte proofs.  Recursive v63 replay therefore
+ends at J297/J326 states 630/655 with 55/56 segments and ordinary UNKNOWN
+counts two/one.  The chain and strengthened-parent bundle hashes are
+`ecfd41d52e653b9a846ccdfcd294bbf5c2033c9a589dcbfd0f59bd020ded3ddb`
+and
+`97ed5589aa661d2955998b12021127b17b8e1c5aa19cbee98bf842861d710416`.
+The latest chain/parent extension audit hashes are
+`9588bc41a20e2b19954474975cefdde511b6bc7952ba32319ded05320029da90`
+and
+`bb12e41f11dfdd0db1950ad4c48f9491f1b6c9d8a816c8bce9f58f328a9332a2`.
+
+A direct v57-to-v63 suffix replay has hash
+`43f024c33f4cabc95a00f92294010808641df9e9dac4faadbd1b539462e7e37f`.
+Propagating the accepted selective closure across that exact suffix closes
+v63 J297 UNKNOWN index 1 and leaves index 2; the propagation JSON/log hashes
+are
+`911afa6a14de2bc654784481cf9f0488160178501a5744f38b17210b44826364`
+and
+`2faec5be95552f603495125327a8b45287ec479a07ce79381efb67dd71fe017a`.
+The current effective strengthened-parent residual is consequently one J297
+cube and one J326 cube.  This is a certified reduction, not a proof of either
+strengthened parent.
 
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
