@@ -53,6 +53,11 @@ def same_path(left: Path, right: Path) -> bool:
     return left.resolve() == right.resolve()
 
 
+def recorded_path_matches(value: object, expected: Path) -> bool:
+    """Accept equivalent certificate paths without weakening their hash binding."""
+    return isinstance(value, str) and same_path(Path(value), expected)
+
+
 def verify_adopted_growth(
     state: dict[str, Any],
     final_round: int,
@@ -84,7 +89,12 @@ def verify_adopted_growth(
         "candidate_manifest_sha256": file_sha256(candidate_manifest),
         "candidate_unknown": candidate_unknown,
     }
+    for key in ("parent_manifest", "candidate_manifest"):
+        if not recorded_path_matches(growth.get(key), Path(expected_growth[key])):
+            raise ValueError(f"adopted-growth {key} mismatch")
     for key, value in expected_growth.items():
+        if key in {"parent_manifest", "candidate_manifest"}:
+            continue
         if growth.get(key) != value:
             raise ValueError(f"adopted-growth {key} mismatch")
     halt_path = Path(growth["halt_path"])
@@ -100,6 +110,10 @@ def verify_adopted_growth(
         "parent_unknown": parent_unknown,
         "candidate_unknown": candidate_unknown,
     }
+    for key in ("parent_manifest", "candidate_manifest"):
+        if not recorded_path_matches(halt.get(key), Path(expected_halt[key])):
+            raise ValueError("adopted-growth halt record mismatch")
+        halt[key] = expected_halt[key]
     if halt != expected_halt:
         raise ValueError("adopted-growth halt record mismatch")
 
@@ -157,7 +171,12 @@ def verify_frontier(
         "output_sha256": file_sha256(parents),
         "output_cube_count": len(unknown),
     }
-    if load_json(lineage_path) != expected:
+    recorded = load_json(lineage_path)
+    for key in ("source_manifest", "output"):
+        if not recorded_path_matches(recorded.get(key), Path(expected[key])):
+            raise ValueError(f"frontier lineage mismatch: {lineage_path}")
+        recorded[key] = expected[key]
+    if recorded != expected:
         raise ValueError(f"frontier lineage mismatch: {lineage_path}")
     return indices, unknown
 
@@ -191,7 +210,19 @@ def verify_refinement(
         "splits": list(splits),
         "complete_binary_refinement": True,
     }
-    if load_json(manifest_path) != expected:
+    recorded = load_json(manifest_path)
+    for key, path in (
+        ("parents", parents_path),
+        ("children", children_path),
+        ("results", results_path),
+    ):
+        binding = recorded.get(key)
+        if not isinstance(binding, dict) or not recorded_path_matches(
+            binding.get("path"), path
+        ):
+            raise ValueError(f"binary-refinement manifest mismatch: {manifest_path}")
+        binding["path"] = str(path)
+    if recorded != expected:
         raise ValueError(f"binary-refinement manifest mismatch: {manifest_path}")
     return len(parents)
 
@@ -263,7 +294,7 @@ def main() -> None:
         if next_document["formula"] != seed_formula:
             raise ValueError(f"formula binding changed at round {round_number}")
         if (
-            next_document["cubes"]["path"] != str(children)
+            not recorded_path_matches(next_document["cubes"].get("path"), children)
             or next_document["cubes"]["sha256"] != file_sha256(children)
             or int(next_document["cubes"]["count"]) != 2 * len(unknown)
         ):

@@ -566,6 +566,34 @@ class ExternalCubeToolTests(unittest.TestCase):
             MATERIALIZED_CHAIN_AUDIT.verify_adopted_growth(
                 state, 2, parent, parent_document, candidate, candidate_document
             )
+            relative_state = json.loads(json.dumps(state))
+            for key, path in (
+                ("parent_manifest", parent),
+                ("candidate_manifest", candidate),
+            ):
+                relative_state["adopted_growth"][key] = os.path.relpath(
+                    path, Path.cwd()
+                )
+            halt_document = json.loads(halt.read_text(encoding="utf-8"))
+            halt_document["parent_manifest"] = os.path.relpath(parent, Path.cwd())
+            halt_document["candidate_manifest"] = os.path.relpath(
+                candidate, Path.cwd()
+            )
+            halt.write_text(json.dumps(halt_document), encoding="utf-8")
+            relative_state["adopted_growth"]["halt_path"] = os.path.relpath(
+                halt, Path.cwd()
+            )
+            relative_state["adopted_growth"]["halt_sha256"] = (
+                MATERIALIZED_CHAIN_AUDIT.file_sha256(halt)
+            )
+            MATERIALIZED_CHAIN_AUDIT.verify_adopted_growth(
+                relative_state,
+                2,
+                parent.absolute(),
+                parent_document,
+                candidate.absolute(),
+                candidate_document,
+            )
             state["adopted_growth"]["candidate_manifest_sha256"] = "0" * 64
             with self.assertRaisesRegex(ValueError, "candidate_manifest_sha256"):
                 MATERIALIZED_CHAIN_AUDIT.verify_adopted_growth(
@@ -1421,11 +1449,89 @@ class MaterializedProofToolTests(unittest.TestCase):
                 ),
                 1,
             )
+            for binding, path in (
+                (expected["parents"], parents),
+                (expected["children"], children),
+                (expected["results"], results),
+            ):
+                binding["path"] = os.path.relpath(path, Path.cwd())
+            manifest.write_text(json.dumps(expected))
+            self.assertEqual(
+                MATERIALIZED_CHAIN_AUDIT.verify_refinement(
+                    parents.absolute(),
+                    children.absolute(),
+                    results.absolute(),
+                    manifest,
+                ),
+                1,
+            )
             expected["splits"] = [-2]
             manifest.write_text(json.dumps(expected))
             with self.assertRaisesRegex(ValueError, "manifest mismatch"):
                 MATERIALIZED_CHAIN_AUDIT.verify_refinement(
                     parents, children, results, manifest
+                )
+
+    def test_chain_frontier_accepts_relative_path_spelling(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            source_manifest = root / "source.json"
+            cubes_path = root / "cubes.icnf"
+            parents = root / "parents.icnf"
+            lineage = root / "parents.json"
+            cubes = [[1], [-1]]
+            cubes_path.write_text("a 1 0\na -1 0\n", encoding="ascii")
+            parents.write_text("a -1 0\n", encoding="ascii")
+            source = {
+                "formula": {"variables": 2},
+                "cubes": {
+                    "path": str(cubes_path),
+                    "sha256": MATERIALIZED_PROVER.file_sha256(cubes_path),
+                    "count": 2,
+                },
+                "results": [
+                    {
+                        "index": index,
+                        "cube": cube,
+                        "cube_sha256": MATERIALIZED_PROVER.cube_sha256(cube),
+                        "status": status,
+                    }
+                    for index, (cube, status) in enumerate(zip(cubes, (20, 0)))
+                ],
+            }
+            source_manifest.write_text(json.dumps(source), encoding="utf-8")
+            recorded = {
+                "schema": MATERIALIZED_CHAIN_AUDIT.FRONTIER_SCHEMA,
+                "source_manifest": os.path.relpath(source_manifest, Path.cwd()),
+                "source_manifest_sha256": MATERIALIZED_PROVER.file_sha256(
+                    source_manifest
+                ),
+                "source_cubes_sha256": source["cubes"]["sha256"],
+                "source_cube_count": 2,
+                "verified_unsat_count": 1,
+                "unknown_indices": [1],
+                "output": os.path.relpath(parents, Path.cwd()),
+                "output_sha256": MATERIALIZED_PROVER.file_sha256(parents),
+                "output_cube_count": 1,
+            }
+            lineage.write_text(json.dumps(recorded), encoding="utf-8")
+            self.assertEqual(
+                MATERIALIZED_CHAIN_AUDIT.verify_frontier(
+                    source_manifest.absolute(),
+                    source,
+                    parents.absolute(),
+                    lineage,
+                ),
+                ([1], [[-1]]),
+            )
+            recorded["output_sha256"] = "0" * 64
+            lineage.write_text(json.dumps(recorded), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "lineage mismatch"):
+                MATERIALIZED_CHAIN_AUDIT.verify_frontier(
+                    source_manifest.absolute(),
+                    source,
+                    parents.absolute(),
+                    lineage,
                 )
 
     def test_chain_state_accepts_repo_relative_current_manifest(self) -> None:
