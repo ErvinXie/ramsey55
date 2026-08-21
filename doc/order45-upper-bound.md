@@ -4376,5 +4376,23 @@ The terminal cubes still leave 935/933 unassigned candidates in the screened
 1201--2400 range, so a third 50-round batch continues from the audited
 788/812 checkpoint.  Both cases still have one effective UNKNOWN leaf.
 
+A third 50-round batch preserved width one through states 838/862, bringing
+the residual-chain lengths to 208/207.  Its new compact DRATs total
+2,126/1,624 bytes.  Terminal manifest/state hashes are
+`3258aefc2612aa46193586c90765d0e3d3687ffe02fb02a42158b0ca8c390b63` /
+`63ec07ac919cf802a7efd9c680e34d7fe3a05b37c331e4bdc2cd8895154ad2a6`
+and
+`5979652a11f990f07dcd8829d6f6dea2c0e0cd5092c125d1ad776afdf8d62911` /
+`8ee972f2ccaab81fc63920474cdf94e780a77ef2a36cab7e8ec43ae878674c76`.
+Whole-prefix replay passed with JSON/log hashes
+`c4250c8e5f0b5e3da4d17931353cb799e970f183d3b96eb3dcd28ac14c96b115` /
+`810b5c33161c712ba20c859f144cd0514a8737a14616fca6ac33c976dc6d1377`.
+The v10 selective-residual join passed with bundle/audit/log hashes
+`5861c56ca3ac409f3f06c437e1893bec13793ebca1e9eab977ccfdc54262be06` /
+`2d62a609962b08dfb7e586404b23e531a4bdc5b13a161456add0abc449192cab` /
+`d86543f648afc03bbba3cdd5a42d1c0f5466e9f2bbdadd7bfe7ccf9d1410e19e`.
+The terminal cubes retain 885/883 screened candidates.  A fourth 50-round
+batch continues from 838/862; all 14 long probes remain live without a result.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
