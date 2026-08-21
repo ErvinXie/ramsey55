@@ -3344,5 +3344,80 @@ The accepted production checkpoint is now J297/J326 34/36 segments at states
 609/635, with two/one UNKNOWN descendants.  The guarded J297 state-609
 continuation and all exact residual portfolios continue remotely.
 
+The solver-agreed J297 screen over variables 1--1200 then completed all 3,296
+polarised cubes but found a one-sided split only for the first parent.  The
+authoritative state therefore remained 609.  Expanding the screen to
+variables 1201--2400 found variables `2211` and `2389`; 100- and 38-byte
+compact DRATs closed one sibling of each parent.  Their hashes are
+`a5731127be04c91714a6ff67acf80a6ec03c4e6bd6b49d3cb082f65a85f5a5af`
+and
+`0e9e28c51e210b5068a0380850962aa7ad7d68711959b55288fd53f9a1e83dae`.
+The first attempted chain replay correctly rejected a reused frontier-lineage
+file whose embedded output path named the screening directory.  No state was
+accepted from that attempt.  A fresh export and exact proof composition bound
+all paths to the authoritative directory and passed independently.  Its
+refinement, terminal, state, and chain-audit JSON/log hashes are
+`aeac611d7bae598235ebb1166d38c499c44d5d4338bcae93697e9ca79ea76b5a`,
+`68bd0fa696ac5fa9f81a8bacf43f4dc28551261902d59efd72249a01389c35a1`,
+`64b76087d3792e4bef8ffc9bef068628b8250727c4c6f97dbd8a3c7a72ec0dbc`,
+and
+`91dc1bc2a6b90c43db0dabcdd0919ff457671aedc99f0c81676e84d38b1d9934` /
+`78b329b3a41766e3ff9ecae32b29e0ee01669aa9cc463d168f4368c605817719`.
+This advances J297 to state 610 at two VERIFIED / two UNKNOWN.
+
+Two further expanded screens preserved the same frontier width.  Splits
+`1813`/`2390` produced 28- and 32-byte compact DRATs, and splits
+`2104`/`2394` produced 8- and 326-byte compact DRATs.  The state-611
+selection/refinement/terminal/state and chain-audit JSON/log hashes are
+`62b65d8ef90a3fa99a9856ae5a8241864f08d720ab329e8f9149e065362d4630`,
+`bf02ff3fae57647199c63329a511d54363ecd64a9ab281720f07d63a111f3493`,
+`158a6145e83e9ebdbd5a03d16fe8e41a006c1d792f07c6db7bce1e20df3705e3`,
+`2ed07b5b8509b0b05f01c8fdb89c06a9ca4ac9a4e8e2246d27e2b98a8ce58def`,
+and
+`6bd1006575261d65b78abb03d8ef3594b84b9e9b5acd2c27c48ebe3f75093a04` /
+`67343acec250f75c29439a4df56a2592c607c1510c4776c208277b58f89f849c`.
+The corresponding state-612 hashes are
+`2f5c3cfaeb582a378480fbaf34b4ed2500568cb294dee259adf2422ab8be6a86`,
+`2fceeec747d356d273f09def35eaf80ae59a97916fa18276f560a1bae6b88f7d`,
+`a28d639144a259a1bfd589ab4306a31241d845f5af53b7a9946bd7a232664308`,
+`0837624c56c3334cae50452d4e84834e66bab25505f660d4368376b7f29d962e`,
+and
+`7b6a7586f4b4284205dec5e2c801135ebcbb9ce1d862d099889f9181731f8dc2` /
+`acc6b10936e3e4139bc56c50acb30fa3a243e1dde1d0bb4e4cb3da577989022d`.
+
+Recursive v24-to-v25, v25-to-v26, and v26-to-v27 extension replay accepted
+these three J297 segments without changing the J326 endpoint.  The v27 chain
+and strengthened-parent bundle hashes are
+`e4299cddb3888f9ff546bfdcc38c42d9e369dce9e331022535b770db71c8704e`
+and
+`ec2c30d61ce56726d664c336c39f9d8b3a2068b972df68e788668df2acaaf0f9`.
+The intermediate v25 chain/parent bundle hashes are
+`d5111eec362f086720b8f4f8a9ddc1ac84c3a1d68fff6021dae9e5859c7e3f4b` /
+`322e311ada04fc157ab8669aea0cc8fd37b3aa137721fbda827c54187d558e33`,
+and the v26 hashes are
+`dc7718af4c765a066d849bcee906718c930b8e39e3f2fafef4cd6c731d095a6a` /
+`0a7c42b5c69bb0c117ea2979560583547315491e47991526ce1ffee4a0f6ee8c`.
+Their chain JSON/log hashes are
+`b74d52eca98d97640c29ab7eec182d84dd65f24ef5fe6120432210de53a6dbd5` /
+`d3fc99ef7dec1db1159e049f7113976064d6e3e8a73f6c2a2d3bb524391be739`
+and
+`d2420cdfcf413b1178b6b6961a343705f50c35ae50edb381c50d1a0684027bfc` /
+`030822660ac6fc57a59c2b66b7ef185280496deb20fca7e4758a19db719d69be`;
+the parent JSON/log hashes are
+`666a98bc340bbe1b9647e1e7e1a9fce0e8fa6ee07a388bb07d97ad9acfd07793` /
+`9133b8357624467c1d485e7b57c1a522d106c028c77118160a5054d1af8119be`
+and
+`91fc047c2b1adebfd201d37438e9822cdbc479a9db9754ac694beaba2a295153` /
+`a8d1e85148127230f230f98078852a608710d6bc6f96f3a9fe50e757777c0ccf`.
+The final v26-to-v27 chain JSON/log hashes are
+`40645e4318204c7c69dd22c2517e8791be77528297cf8c6b5247fbf4b549292f` /
+`3a32187a87baf802dedbeb9e6d466128c74c58eca10e25c52a594d65ccf97b85`;
+the strengthened-parent JSON/log hashes are
+`f3d93063681d8b281efd3dbbb043b036fa0f61781bd26d340797dd2f85515cac` /
+`9b41dadbb6f703247fd82c804d031601e65d617940117d824981e229baec34c3`.
+The accepted production checkpoint is now J297/J326 37/36 segments at states
+612/635, with two/one UNKNOWN descendants.  Another expanded J297 screen and
+the exact J326 residual portfolio continue remotely.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
