@@ -2035,7 +2035,7 @@ hash
 `0eee6d01d56ab0f88f6485152c3fb391f0628bd87a45691cea293b1f21a0d90c`.
 Regression tests also cover a search timeout and an UNSAT-candidate proof
 rerun timeout; both remain UNKNOWN without exposing an unchecked proof.  The
-ARM regression suite passes all 165 tests in 35.319 seconds.
+ARM regression suite passes all 166 tests in 33.949 seconds.
 
 The same 11-configuration portfolio was relaunched with deferred proof for
 7,200 seconds: iGlucose plus CaDiCaL and Kissat at seeds 0 through 4.  The
@@ -2058,6 +2058,13 @@ Together with the observed 0.05--0.08-second checked contradiction proofs,
 this supports a next chain segment using a 0.1-second screen and the existing
 0.2-second proof quick pass.  This is a reproducible scheduling optimization,
 not an UNSAT result.
+
+For candidates already exposed by one of these complete screens,
+`tools/refine_queued_binary_cubes.py` avoids screening the same variables
+again.  It merely chooses the first unassigned queued split for each parent;
+the standard complementary-refinement audit and fresh materialized DRAT check
+still establish every accepted step.  Thus the queue is a scheduling hint and
+cannot turn a stale screen result into a proof claim.
 
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.

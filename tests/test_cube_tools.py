@@ -55,6 +55,7 @@ CARTESIAN_CUBES = load_tool("generate_cartesian_cubes")
 SCREEN_VARIABLES = load_tool("screen_cube_variables")
 SCREENED_SPLITS = load_tool("select_screened_binary_splits")
 SCREENED_REFINER = load_tool("refine_screened_binary_cubes")
+QUEUED_REFINER = load_tool("refine_queued_binary_cubes")
 SELECTED_REFINEMENT = load_tool("refine_selected_binary_cubes")
 ADOPT_CHAIN_GROWTH = load_tool("adopt_materialized_chain_growth")
 SELECT_CUBE_ROWS = load_tool("select_cube_rows")
@@ -286,6 +287,15 @@ class ExternalCubeToolTests(unittest.TestCase):
             ),
             [4, 5],
         )
+
+    def test_queued_refiner_uses_first_unassigned_variable_per_parent(self) -> None:
+        parents = [[1, -3], [-2, 4]]
+        queues = [[1, 3, 5, 7], [2, 4, 6, 8]]
+        self.assertEqual(QUEUED_REFINER.choose_splits(parents, queues), [5, 6])
+        with self.assertRaisesRegex(ValueError, "exhausted"):
+            QUEUED_REFINER.choose_splits(parents, [[1, 3], [6]])
+        with self.assertRaisesRegex(ValueError, "one variable queue"):
+            QUEUED_REFINER.choose_splits(parents, [[5]])
 
     def test_materialized_chain_appends_refiner_arguments(self) -> None:
         command = MATERIALIZED_CHAIN.refiner_command(
