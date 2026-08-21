@@ -4326,5 +4326,25 @@ second certified run, compact DRAT generation, and checker replay entirely in
 tmpfs.  These diversify the existing CaDiCaL/Kissat probes without consuming
 root-disk certificate space.
 
+The relocated 50-round continuation completed without frontier growth,
+advancing J297/J326 to states 738/762 and total residual-chain lengths
+108/107.  Exactly one sibling per round has a checked compact DRAT; the new
+proofs total 1,382/1,938 bytes.  Terminal manifest/state-snapshot hashes are
+`88a2351ed1cd12034aff93678d73b6eafff30f0dbffd1960d4167dd71deb69e6` /
+`bb4eb819155e871814d3735de15bddf93c2937a391d8ebd01c9ef3528266658d`
+and
+`832692d5051da40c552438b9f9aa39ebbef759a93335abcc26558ee69c37f135` /
+`5abe2f9aa5b2600db6aee93bb3acd04eb471f48299cb6434470510bc9564e87f`.
+Fresh whole-prefix replay passed with JSON/log hashes
+`d06b786915dd20cf29b9726315d4f5841bc530a5efdb6cd4b32749c33fb8210d` /
+`d5ff13a2d9f8803103eea5f8d57b0bd3d04902e2842611a8b8e2f4bebb1f2f3e`.
+The v8 selective-residual join also passed with bundle/audit/log hashes
+`df090add36e2645371f86298130b1b92653b6fb543956680c75c6d31c82e9749` /
+`6f0f7417e816b4cebd0f27915c44d8a3ec082bd0a92c64ccc64c2dde230925d1` /
+`a02f9113d6f84193a20712e4d3e6cdbdd575085fbd2ed07e2bdc08d197f56e08`.
+Both cases still have one effective UNKNOWN leaf.  A further 50-round batch
+has started from the independently audited 738/762 checkpoint while all six
+diversified long probes continue.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
