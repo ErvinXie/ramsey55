@@ -4264,5 +4264,29 @@ The corresponding selective-residual join audit hash is
 `5eef4ce0b2cb0eb374ab5f042656ca7bcbe3aae8fabac67a00a647f7e1df3faf`.
 It still reports one effective UNKNOWN in each case.
 
+Twenty further 0.15-second screened rounds per case also preserved constant
+width.  J297 now ends at state 668 after 38 residual rounds; J326 ends at
+state 692 after 37.  The new 20-proof batches total only 426 and 966 bytes,
+respectively.  Terminal manifest/state hashes are
+`882a5dffab1bbd238316fd1bd0dc90921ae2a2f586b907eb049a90c7c7706866` /
+`c7cd8dfc152df7f24b06ac5346d6a5e809c02e2d9ee684bc4ddc618e23a88412`
+for J297 and
+`4a37e994e0692d133c0ad4a80c3f01df18a489db319bbf8e628ce075028898a3` /
+`5a4aab5b31ee64acdc1e7fe6bff3b2ad187261582e79b2560d643a9cf313561e`
+for J326.  Whole-prefix audit and selective-residual join hashes are
+`5abbb178a67ec914928c3889aec25673403ee9bbc953a77966a7e18f2a247635`
+and
+`a80ff39df4c9ef1c75138dd3f265d1a0a61603faa21d3f8cf7128efd7fd4b593`.
+Both still report one UNKNOWN.
+
+The exact current UNKNOWN leaves were exported to tmpfs with hashes
+`cea6423b5bbdf96b21b4e8971329c7f2379f88df2da4ddf9ca89b10fb086756c`
+and
+`cca3f8732b44d1cb669a108e60c3ff45e9c69859a1b04466bcd4f09252e85d24`.
+Fresh four-hour CaDiCaL/Kissat no-proof probes now search these deeper leaves
+in parallel with the earlier ancestor probes.  An UNSAT result on a deep leaf
+would require only that terminal proof plus the already replayed residual
+chain to close the corresponding effective case.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
