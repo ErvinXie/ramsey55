@@ -2203,11 +2203,58 @@ segment through J297 state 593 and J326 state 616; its hash is
 `cb4047e1a5581c621b2e90eecbfc5943ad83df57c59dae533ff42c82dd2eb9da`.
 The matching strengthened-parent candidate has hash
 `ed0ad6ee801d49cc58c196ece68ff1df3039d705d5491b70c274153bd90ff9f0`.
-A fresh whole-chain replay is running at nice 10.  A second hash-gated replay
-will compose the backbone certificates only if the chain audit reaches the
-exact J297 1 VERIFIED / 3 UNKNOWN and J326 0 / 2 terminal frontiers.  The
-intermediate v8 replay was stopped before it emitted a manifest, avoiding a
-full duplicate audit of a bundle already superseded by this guarded growth.
+The intermediate v8 replay was stopped before it emitted a manifest, avoiding
+a full duplicate audit of a bundle already superseded by this guarded growth.
+
+Dynamic CaDiCaL lookahead then found useful auxiliary-variable splits outside
+the screened primary range.  From J326 state 616, three consecutive rounds
+each closed one child of both parents, keeping the frontier at two VERIFIED /
+two UNKNOWN through state 619.  The state hash is
+`9e4f37698018df336752bfd9f5897f6eebb348c1c4ca4aacd18dbdb8c7e07e15`;
+the independent audit JSON/log hashes are
+`42bcc27b3a6e8b7c5cb515cf73bc43a2a676b255babfdf0c694bb2cd7995e89b`
+and
+`7115a317563bf71f951386b987939f0f9e33df58560b900cbf582a354508c886`.
+The next round grew two parents to one VERIFIED / three UNKNOWN and was
+guarded before adoption.  Its explicit adopted state and audit JSON/log hashes
+are
+`5f64f90d6a2d0b01a7da5b9771cd878557aacffc18abd1fb41fe92b91a597b84`,
+`8ec8b0494ad3298ac7bd4c2dd836336577d63b43af21ffcb7d078e193a3022c1`,
+and
+`75a7038d6a3b8878c6d3abe59407fe9d673272875ab457979e04c9ae6f2691b4`.
+
+J297 similarly stayed at three VERIFIED / three UNKNOWN for two rounds from
+state 593, then the third guarded round produced one VERIFIED / five UNKNOWN.
+The adopted state-596 and independent audit JSON/log hashes are
+`9cf105c3b6c284be893989a60edf9a0b4309442e5b5a33a3f29d6de00ca7fef0`,
+`323588f825ab6a459ecaea30febca9589bc7d8084e7d2bd21c4c3bc54750dc2e`,
+and
+`5551970e478d110f836a6f3fa96ba02e84d081f698be003f3be4f950122e15d2`.
+This establishes an exact eight-leaf cover across the two strengthened roots;
+it does not establish that any of those eight leaves is UNSAT.
+
+The v9 whole-chain replay was stopped after about six minutes, before it
+emitted a manifest, because these newer segments superseded its endpoint.  The
+current v10 chain and strengthened-parent candidate hashes are
+`e866fb2df2a1ce55ff80fbc8963b8cdbf820a2402d4b61334c676ffbc6a717c9`
+and
+`cfda033cc086ad073f21f2380a3d1a3ab9e5b7caeab21528803f32dcd6cd8aff`.
+A fresh whole-chain replay is running at nice 10; the parent replay is gated
+on exact terminal rounds 596/620 and counts J297 1 VERIFIED / 5 UNKNOWN and
+J326 1 / 3.
+
+The final J326 ICNF/frontier-manifest hashes are
+`0ab3839e36b4a319f443b694ab51ca6bbcff088a0af491bad34c678ebb315574`
+and
+`4a244289d9e0a29181132ed110ae9ad81870441bd1f41a0ade7415a81d606304`;
+the J297 hashes are
+`a88d7a86a7134a9cbb1d1abc50540d73dea9be38fda862d09bcdba7f75cfde8e`
+and
+`4a86b9650888d238c32f0ccf58b0cad81e78bebe749b8b30a2a223033c6d1ffb`.
+The original v5 portfolio remains live.  A nice-15 CaDiCaL seed-5 run searches
+the earlier 2/3 leaves, while a nice-15 Kissat seed-5 run searches the final
+3/5 leaves.  These 13 comparison children use deferred proof and have not yet
+reported UNSAT or started a proof rerun.
 
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
