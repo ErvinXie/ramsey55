@@ -3608,5 +3608,100 @@ parent JSON/log hashes are
 The accepted production checkpoint is now J297/J326 44/38 segments at states
 619/637, with two/one UNKNOWN descendants.
 
+The next J297 screen selected `1553`/`1641`.  Its 8/26-byte compact DRAT
+hashes are
+`c33bd0083d8e9f0d4d777ee7cd41fe91ac67f638f4b1ad4ea3d7897734cbb4f0` /
+`3c061805f534c4c85c3f0a40f0fe3905694c23db1160bbcdc9e66b286c5bd477`.
+Selection/refinement/terminal/state and local-chain JSON/log hashes are
+`b8b7e163be3c3d312c285e8d2b020b82a5457c0fdc88e22414b3e065b7fa5d47`,
+`36062a6f42b3345a5896e98e9589cf4f1cdd1163642a49f1337cc032f7e04246`,
+`152f61afedd871d32a6fa707c7afcf3512c728a31c70f1b27ed4786d175283d6`,
+`6b832355e836dfb3fd80de3b8e132132a3a38b398e51139852c4642f68d8a30a`,
+and
+`b7f53d8812404ae29a3ef5d4fc5b75e8b0a96e73a20640a03df1d24e2b747c2e` /
+`1d2c1655b2d657aa79952a10bc0bda9f585495f43bc4d8452ad4342631fc889f`.
+Recursive v34-to-v35 replay accepted J297 state 620.  Chain/parent bundle
+hashes are
+`198f19b6ede2d9185c0f5db952a4b8a5e46148b7809d97842343eb53d44cb0ee` /
+`50c779c13103e36558453f9afef07c95827f20fcb690a5fe46800c0992e7a4bd`;
+chain JSON/log hashes are
+`f41b9536d8184df8f430bd633c0f3ca5d696c3d8afa270719d2764131d7bc54b` /
+`f3d0c65f5d12c45840f801897e412ed1404f8fa0b8e29f12a4c8ef42d06c77da`;
+parent JSON/log hashes are
+`e626043943febe1839eff5bd1570aa150f85e91f09b5239c7e49d1c26ddf7522` /
+`1ce48090a4370d1ba34baccd0dec089e6ce7989fd97634a1c631403900be17e6`.
+
+Three consecutive J326 screens selected `1704`, `1553`, and `1688`, keeping
+one VERIFIED / one UNKNOWN through states 638--640.  Their 26-, 8-, and
+212-byte compact DRAT hashes are
+`38ea661998ddc6efad56c324662d9a6a886bd4c13d521176a9c2aa9f577eeeca`,
+`c33bd0083d8e9f0d4d777ee7cd41fe91ac67f638f4b1ad4ea3d7897734cbb4f0`,
+and
+`4674ff1532a490dcc9eca7640319740810c48cd9d8b88ad7645ab5ff43152c8e`.
+The state-638 terminal/state/local-chain hashes are
+`e1191e4cb9d4bab10fe8cc5099a8e085b3158054f40cb19c9d0662159b714541`,
+`952fa8dae8c9e8cfe7557ee02b2a390fe52d42ff2fbcc24b5fdaa04ada139e98`,
+and
+`5786f62604755d3037e2147237c9f410f0ed19a16c681521bcca09dd0f8909ba` /
+`1432e785a78174d7693d123e250e752c4bfb1fd8a532a4ac31c857d75022a16f`.
+The state-639 hashes are
+`35bf1924690ea1ef8d56dcb7d2cf78ac1176a7f965e2aa691ce15c8fbf7c8df3`,
+`9b09ad4129994d14ba248b551ff7fa3c378fb9c280183909a719a1c47518d065`,
+and
+`32ce9fd75b2fc1a134e152dcf2d8b0d5975005afa6df21127eeba31f7964c383` /
+`13376b4c4a132e1a6868b2f105a71995dcbf6ca813595e2b89ec7a51e1c5e4c8`.
+The state-640 hashes are
+`6d72881cf02e4001edd5720830b0e5ad0c660aa3f523204120504ef2c316b600`,
+`819a22b15c0a4a35b8bc93d4e4e5b56f81bb4710373b9258fe5528fcf81d049f`,
+and
+`b7f2fc20b24bc42599fe813d167ee92306a7f3baee6fea23de1691d254e808c1` /
+`5b8c277059efeb4c8e1fc6122a15de9c3b4ceb82d92020453981cfbfa26d79dd`.
+
+Recursive v35-to-v36, v36-to-v37, and v37-to-v38 replay accepted the three
+J326 segments.  Their chain JSON/log hashes are
+`468420c5aa719f2b1c9c8ad84ffc96e62bd060d68208cf231f7b6049f742323a` /
+`4f812b407472b2a07a78d980ee84911cc8f1908de6f48b299ab5f34004711f2d`,
+`e0b56ad84cad0d3b7eccbc459491bdd3641031d59fd7e9fbddeea0b6023871cd` /
+`58a5c14e7cbe6530a31f0e3237e31df9acd9faf267d679912baa8bbbcbc4e8a0`,
+and
+`d24197d450f344d081f68c4383b1abe58c06082ab74838672ee5eab9cc45dace` /
+`6253fb1af99526d28869afbf1f61eadc5591db82716884c1a048e8840eaaf96c`.
+The matching parent JSON/log hashes are
+`e529766f512ab7891648dedb27e184deb84be300ae55fe0e4de4778ca765c8fa` /
+`4e1f2eeb40eed7e1a3861240f43275c848770569d7e777510eefba8e9858d3c0`,
+`4207f2722b31bbf2f5f36f66cda0bd0b16e16328be001dd5c3e40e12a25aee6b` /
+`b82ec0cebc7b6c08f0f4146744f7cec873025f620a94b915dec25b0220c3f7e6`,
+and
+`4a69cee115bf1704860677dcad7265fbd4a0ba13b7108815797d6ab660d1553b` /
+`af72789687e87d11e5e7fa78b7273a9ef1d68412e0762b4835e3ed29a008369b`.
+The v38 chain/parent bundle hashes are
+`f9e932f9e7a55169a95e89697808c72a9a3d48c72bfd0b9088ce29360d6b7da5` /
+`39b9c10191174fa49c208c47a36201a8ec9371fbdbbd860c9fac1724c41cfc6d`.
+The accepted production checkpoint is now J297/J326 45/41 segments at states
+620/640, with two/one UNKNOWN descendants.
+
+The next J326 screen selected `1339`.  Its 8-byte compact DRAT has hash
+`dcff6ff893524ab8d3a9b00a5e987d99e68d9910fdc1a53ac7137124e98962c5`.
+Selection/refinement/terminal/state and local-chain JSON/log hashes are
+`1478884a5309785d6ec52ca0ff9b3949632a51ab2ef9ea86a82238ed0343acb5`,
+`7536c86d4c88919e06253c2e460e608a883aee9b77c0546b9559093211af81e3`,
+`2ae78b4ead100d0e4756c7c4768f2a8d08a575451a0315e6cb8e7bb72c79d54a`,
+`419aa3fe1e921d069efc9e2071c56c1c749283f445d00d0961f49a8469a54091`,
+and
+`19a05f83baf03996cf00a1d11b8c6cacb1a0b0dd613bd2600e64aff2cbb84af3` /
+`91496de86810a5810af2397f4fa1b867ecd242b0ea8a26a95295e1dfdf30e206`.
+Recursive v38-to-v39 replay accepted state 641.  Chain/parent bundle hashes
+are
+`cf20cfc5561e471c6c4c01171ed6c346f3a12fd4d8d7a42ae573e6b4bcd35a19` /
+`6263f4cf9e411515a65c97e23da1c64d1c42c13e83b936927fad2c4eb3487d79`;
+chain JSON/log hashes are
+`73ac0680551647615fbcb4e0d4ce6bce19edad8db469d62193364476359d7ec1` /
+`d40d484ec0abb95bdb8e1e0266ae19fbbd7871398cae315d17dc6d45bd288632`;
+parent JSON/log hashes are
+`d3348e6db71dc153684bb7dc9b8b17a7293d43cd17c4f7eb18c3064982ed713b` /
+`b6e44bfdeee6c4dd09ffc6e6c401333e14275859aeb18df63e80770d31a10943`.
+The accepted production checkpoint is now J297/J326 45/42 segments at states
+620/641, with two/one UNKNOWN descendants.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
