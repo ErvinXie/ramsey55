@@ -2425,6 +2425,18 @@ terminal rounds 595/621, VERIFIED counts 2/3, and UNKNOWN counts 2/3.
 strengthened-parent audit, which independently replays this chain again and
 checks the false-polarity backbone composition.
 
+That v12 strengthened-parent audit completed successfully.  Its audit JSON
+and stdout-log hashes are
+`ddc04bfe1fc7cc259c9e960a105d27a9c1f71041e2ed8fa00f9d810cb9839336`
+and
+`a2ce27448fe8ee397f2fccd52d1a14057792242603fe131c98d3648f3476db52`.
+It independently verifies all 193 J297 and 178 J326 false-polarity backbone
+proofs, confirms that both strengthened cubes are exactly the corresponding
+parent plus 15 certified backbone literals, and replays the 25/28 chain
+segments.  The remaining terminal counts are still J297 two UNKNOWN and J326
+three UNKNOWN, so both `parent_unsat` fields and `all_parents_unsat` are
+false.
+
 The state-620 Kissat seed-5 comparison subsequently closed two of the three
 J326 UNKNOWN parents.  Their compact DRATs are 174,534,017 and 176,834,884
 bytes with hashes
@@ -2472,9 +2484,68 @@ The resulting v13 chain and strengthened-parent candidate hashes are
 `01996f776c5a211442532e1ee7521bbb454389fffa19d3e4fa2438f469b02ad7`
 and
 `28845912c868616ce387bd258e0a3b3a1289761287c9a2260fd31b1df4ae5f9e`.
-A fresh whole-chain audit is in progress; it is expected to reproduce J297
-at two UNKNOWN leaves and J326 at one.  Until that replay passes, v12 remains
-the latest whole-chain-audited candidate.
+A fresh whole-chain audit passed with audit JSON/log hashes
+`ae4e7cb2bfa6fc79ba8270979dc720df363c62e2ec99999c7173ae394e502a74`
+and
+`8299797ef795dee9a0fdad5a9c5dee46d3795cb12a4837d8600105c16f05d18d`.
+It independently replayed all 25/28 J297/J326 chain segments and reproduced
+the exact terminal gate: J297 state 595 with two VERIFIED / two UNKNOWN, and
+J326 state 621 with one VERIFIED / one UNKNOWN.  The bundle hash recorded by
+the audit is the expected `01996f77...2ad7`, and
+`all_cases_complete_unsat` is false.  The exact-count gate then started the
+v13 strengthened-parent audit; v12 remains the latest parent-audited bundle
+until that second replay completes.
+
+An independent CaDiCaL seed-5 comparison also closed the first child of the
+earlier J326 state-616 two-child growth family.  Its 227,111,943-byte compact
+DRAT has hash
+`8d29f3afc46582a26bfb390525166039e64529f28f8ce91dcf9019092f697190`;
+the final manifest and independent audit-log hashes are
+`b7632ad25faffbdc08c2a06fd6b30808311c8b84e6753492581ed053cd808318`
+and
+`ea389d56d1c9bad8343b7ff358048de4fb8c86bdcfccea31df7e26c894a045a9`.
+The replay reports one VERIFIED / one UNKNOWN.  This is useful ancestor
+corroboration, but the current J326 UNKNOWN follows the other state-616 child,
+so it does not shrink the authoritative one-leaf frontier.
+
+On the alternative J297 state-596 family, Kissat seed 5 later closed a third
+nontrivial child with a 256,128,846-byte compact DRAT of hash
+`2aa0eaa9dfa5bce85b02b7d34aba5f8ef47a04ab5400b95c7b36251df5907a10`.
+The five-child comparison manifest and its independent audit-log hashes are
+`9bfa356374fc978a3557e38888d6de994a75ba07a23cc8429e037ab170e8e655`
+and
+`78cce30ee069247720e71202dff0c1082ec61b4e230729b8865d22dba53fafb9`;
+the replay reports three VERIFIED / two UNKNOWN.  Exact-cube composition with
+the six-child primary family gives a four VERIFIED / two UNKNOWN seed manifest
+of hash
+`a80e3eeed712e6eb63c66c7c3d7c31c9d48ae718b2347725194ee296684d2582`.
+
+A guarded continuation from that composed seed retained two UNKNOWN leaves
+for three complete binary refinements through state 599, then rejected the
+next 2--4 growth.  Its state/final-manifest/halt hashes are
+`a3a069075d881bb68e640e949026c9a2ff2bfcb8ac053483e056fba0a14dbcfb`,
+`b130bfac8a59431512099fd757f4743091d7b7fcc4d971491dd2ca1af0584c24`,
+and
+`c5dcf2de5457c70e591e7c105155575290bdb700009761344f0ae5c8fa516394`.
+Independent seed-and-chain replay checked four manifests and six refinements;
+its JSON/log hashes are
+`518a5f5d61c4c7124352456468ad573771e2637589cd73c347ddfdeac4011bd9`
+and
+`e9d2bb8b9fba9c0b5a8aba13ef53656277e572005e221c7c1eb113d3ed8c6233`.
+This is a deeper two-leaf alternative to the state-595 formal endpoint, not a
+reduction in leaf count.  The state-599 ICNF/frontier hashes are
+`112c1dfff4f10f4a4a3366ad688ae9938cba15116864e9c2ad4b7a19024c629e`
+and
+`444783cd4d172ee86d587fc83751b393f3bf3a120c73abf08d4620f8d769a3e1`;
+iGlucose, Kissat seed 11, and CaDiCaL seed 11 now search both leaves.
+The v14 chain/strengthened-parent candidates that replace v13's final J297
+segment by this audited alternative have hashes
+`d292cc97dc5bcfa975c0514e26ab172fec813c116496be1a4d4ecc1b2c83d94d`
+and
+`29611d8b6b61391e5cfe94952aa155f3f1e7f51100b04bd64588d16b94b0320e`.
+Their replay is deliberately deferred until the already running v13 parent
+audit releases its proof-checking capacity; these are candidates, not yet
+accepted full-chain or parent audits.
 
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
