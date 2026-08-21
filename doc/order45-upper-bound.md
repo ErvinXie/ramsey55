@@ -4356,5 +4356,25 @@ deeper leaves.  This brings the diversified long-running solver count to 14;
 the new jobs consume only scheduling gaps left by proof-chain screening.  An
 UNSAT result can be certified separately and joined directly to the v8 audit.
 
+The next 50-round batch again preserved width one and advanced J297/J326 to
+states 788/812, extending their effective residual chains to 158/157 rounds.
+The new compact proofs total 2,728/1,242 bytes.  Terminal manifest/state hashes
+are
+`c83df79fc05ac2f1cc79dbe5cbc3b07ea05f9a3d9dd3143dcbab790d2a4e29b3` /
+`d576534bfd1d80d2dffc32d84fbe218b58e3066eb7850ec09f47590311fe7278`
+and
+`d039a7e988ac2211bd3789fa655301dbc716aedeeb7068d6a9abc2c2861f3960` /
+`cff99ca850ec76d4ba04b49dc969c57110a11fd140bb314c62850e8c4b4ed137`.
+Fresh whole-prefix replay passed with JSON/log hashes
+`d718dc1f8956e39a3c2c6e512d153a9437e909517f02932636c7d726cd6ec9b7` /
+`fb22625e633806d5a6172d6a3506689d51bbf71d473afdffa989cb576c08f198`.
+The v9 selective-residual join passed with bundle/audit/log hashes
+`bd1f2ac59c78956dbc82c10734b7307a16e85d745a2b4c280aafd442fc049d69` /
+`a861e529046d1c59d41913febdc5661202d497ffa00ea9bf41ef3a84c0a4c583` /
+`0ade4ef0f98c26317a906e980e481f5bfa6f2919592ce253faf0f9700c7b077d`.
+The terminal cubes still leave 935/933 unassigned candidates in the screened
+1201--2400 range, so a third 50-round batch continues from the audited
+788/812 checkpoint.  Both cases still have one effective UNKNOWN leaf.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
