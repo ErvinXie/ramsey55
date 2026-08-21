@@ -2394,5 +2394,23 @@ A clean whole-chain replay gates the parent audit on terminal rounds 595/621,
 VERIFIED counts 2/3, and UNKNOWN counts 2/3.  Later same-width refinements do
 not supersede this frozen candidate.
 
+One further diagnostic continuation immediately enlarged the already wider
+families from five to six J326 leaves and from four to five J297 leaves.  They
+were not continued.  The remaining logical CPUs instead run low-priority
+CaDiCaL seed-7 searches on the frozen J297 two-leaf and J326 three-leaf
+frontiers, alongside their Kissat searches and the exploratory J297 iGlucose
+run.
+
+The clean v12 whole-chain replay passed after about 54 minutes.  The audit
+JSON and stdout-log hashes are
+`42b677efb145bbb90c2001433371dce2bdd26e2fc721d4de912f19e40d3bee0a`
+and
+`0500d3813cdcd383979d1732f189e053c81cb9566404c021c969112e9356d320`.
+It independently checks 25 J297 and 28 J326 segments and reproduces exact
+terminal rounds 595/621, VERIFIED counts 2/3, and UNKNOWN counts 2/3.
+`all_cases_complete_unsat` is false.  The exact-count gate then started the
+strengthened-parent audit, which independently replays this chain again and
+checks the false-polarity backbone composition.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
