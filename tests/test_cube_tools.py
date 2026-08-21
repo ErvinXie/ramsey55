@@ -60,9 +60,57 @@ QUEUED_REFINER = load_tool("refine_queued_binary_cubes")
 SELECTED_REFINEMENT = load_tool("refine_selected_binary_cubes")
 ADOPT_CHAIN_GROWTH = load_tool("adopt_materialized_chain_growth")
 SELECT_CUBE_ROWS = load_tool("select_cube_rows")
+FREEZE_CHAIN_STATE = load_tool("freeze_materialized_chain_state")
 
 
 class ExternalCubeToolTests(unittest.TestCase):
+    def test_freezes_hash_bound_materialized_chain_state(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            manifest = root / "manifest.json"
+            document = {
+                "schema": FREEZE_CHAIN_STATE.PROOF_SCHEMA,
+                "results": [{"status": 20}, {"status": 0}],
+                "summary": {
+                    "unsat_verified": 1,
+                    "unknown": 1,
+                    "sat": 0,
+                    "complete_unsat": False,
+                },
+            }
+            manifest.write_text(json.dumps(document) + "\n", encoding="utf-8")
+            state = FREEZE_CHAIN_STATE.freeze(manifest, 17)
+            self.assertEqual(state["schema"], FREEZE_CHAIN_STATE.STATE_SCHEMA)
+            self.assertEqual(state["round"], 17)
+            self.assertEqual(state["current_manifest"], str(manifest))
+            self.assertEqual(
+                state["current_manifest_sha256"],
+                FREEZE_CHAIN_STATE.file_sha256(manifest),
+            )
+            self.assertFalse(state["complete"])
+
+    def test_rejects_inconsistent_materialized_chain_summary(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            manifest = Path(raw) / "manifest.json"
+            manifest.write_text(
+                json.dumps(
+                    {
+                        "schema": FREEZE_CHAIN_STATE.PROOF_SCHEMA,
+                        "results": [{"status": 0}],
+                        "summary": {
+                            "unsat_verified": 1,
+                            "unknown": 0,
+                            "sat": 0,
+                            "complete_unsat": True,
+                        },
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "summary disagrees"):
+                FREEZE_CHAIN_STATE.freeze(manifest, 18)
+
     def test_selects_hash_bound_cube_rows(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)
