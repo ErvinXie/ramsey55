@@ -3180,5 +3180,47 @@ Three-engine portfolios now attack the exact two-child row-3 subfamily and
 the single surviving row-1 child while the corresponding unsplit ancestor
 searches continue.
 
+CaDiCaL seed 30 certified child 0 of the rejected J326 state-629 split with
+an 87,761,516-byte compact DRAT of hash
+`1364aad27416acd858570bc261961cce65f6511a8c348bbd6a084bf62d9daaf3`.
+The frozen one-VERIFIED/one-UNKNOWN checkpoint manifest has hash
+`da8103d76f73e881b3507dd9297397be9b856556350ec492cc3903d7366c4396`;
+its independent replay passed.  Exact-family composition advances the J326
+chain to state 630.  The refinement, terminal, state, and independent
+chain-audit hashes are
+`f702e9a80cf53c394c3a7fe4c4a316a995b88420dfcd28157e18714606507d7d`,
+`618a9743528d84b77de4ddff9476cd454d304083146b4d2d022ef137f6a22f3a`,
+`135477998407f390aa168bc0f582fd57c54e9e11445eb8c3d94868d88847e71f`,
+and
+`57637156447e17202a694eeacad25581cfa092d8271fcfb84ac3356290c7e86d`;
+the chain-audit log hash is
+`9312e1199fb382e0756192f2a08abeb0863c5e5531b359fbbf915912aba99078`.
+The v22 chain and strengthened-parent bundles have hashes
+`85f930c9555add0a889976ecb0890c4e26631e54ae4a59981e5ae3e89973b9cf`
+and
+`5817313d2f30b12a38a13473b880d88ac725f265eba55cc5c18b1826f5261f8b`.
+Their recursive v21-to-v22 extension audits passed with JSON/log hashes
+`08afabe977a9ad34fee61bb708b9a5d37c89e51a0679d827ce758fa0a9160af1` /
+`43f91ea240f4ef0d4bd81d2d92886a56080f8d033124b6f31851c7f079367d3f`
+and
+`09627428ebc56aa34ca5eadc2cf7d6036b391e0712fe9883c17a75e614dc878d` /
+`d7701e0cf904251e5ab774e61696ba98bc69a7fe3cdff09e55a2590872d81400`.
+The accepted production checkpoint therefore has 32 J297 and 34 J326
+segments at states 607 and 630, with two and one UNKNOWN cubes respectively.
+
+The guarded state-630 continuation split the remaining J326 cube on variable
+`-1155`; both exact children remained UNKNOWN after the one- and five-second
+stages, so the 1--2 growth was rejected.  Its child-family, refinement,
+candidate, and halt hashes are
+`d0ef7c980b03db63f159ba8cf72607e4b0054a8334317bdcbf570d8d6c128f96`,
+`275cff9c4eedad91ef1002c5ae5153e8625d8f59d604dd66d61ec9a34ca89994`,
+`a6996efdc66652cd5503ff3fb1f56f74266879a0e0bf18be4c9e4d3637e9869f`,
+and
+`56ccb13f1425896f417b1a8b123d7e8128586f258b7c6cf9a083f0516f9933f1`.
+A three-engine four-hour portfolio now searches those two exact children,
+while the unsplit-parent searches continue.  A separate solver-agreed
+screened refinement is also evaluating variables 1--1200 from the exact
+state-630 parent.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
