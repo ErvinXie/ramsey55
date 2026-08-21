@@ -648,13 +648,19 @@ exact segment-prefix extension, independently replays every appended segment,
 and checks the old-terminal/new-seed boundary with the same identical-manifest,
 exact-cube retry, or rescued-refinement rules as the full auditor.  Its output
 explicitly remains dependent on the named baseline audit; it does not claim to
-have replayed the prefix again.  The companion
+have replayed the prefix again.  An extension audit can itself be the next
+hash-bound baseline, so later checkpoints replay only their genuinely new
+suffix rather than every suffix since the last full audit.  The companion
 `tools/audit_strengthened_parent_chain_bundle_extension.py` similarly reuses
 the hash-bound, already checked strengthening and false-polarity backbone
 layer only when the parent metadata is unchanged and the chain extension is
-bound to the exact old and new chain bundles.  Prefix mutation, round gaps,
+bound to the exact old and new chain bundles.  Parent extensions are likewise
+recursive, retaining the original full strengthening/backbone audit as the
+root of the hash chain.  A bundle may append segments to only one case; the
+other case's exact terminal summary is carried forward without replay.
+Prefix mutation, round gaps,
 incomplete base backbone proofs, and inconsistent terminal counts are covered
-by rejection tests.  The complete Python suite passes 174 tests after these
+by rejection tests.  The complete Python suite passes 177 tests after these
 additions.
 
 The immutable-state path was exercised on the J297775 pre-switch snapshot:
@@ -2844,6 +2850,29 @@ and
 The deep endpoint still has one UNKNOWN; direct parent and rejected-child
 portfolios therefore remain search work, not a proof of this original child.
 
+All three rejected-child engines later proved child 0 of the state-623 split.
+The smallest retained result is CaDiCaL's 17,610,953-byte compact DRAT with
+hash
+`022906692ff648e56107fa97a9b2241e6c7d791f28045a9724f21b96520d4cbf`.
+The live progress snapshot was frozen with child 1 as an explicit UNKNOWN and
+independently replayed at one VERIFIED / one UNKNOWN; its manifest/audit-log
+hashes are
+`fd4252a21a6ab60056a8739514cf113671c4e25bd5aab0ba5e6a534cdd55fa5c`
+and
+`ea389d56d1c9bad8343b7ff358048de4fb8c86bdcfccea31df7e26c894a045a9`.
+Composition with the complete state-623 refinement advances this selective
+subchain to state 624.  Terminal/state/refinement hashes are
+`d710adce3514db9611015b01a24d1e28f9986208018570e76e4cad8c872ab2e0`,
+`afcb3542d2d66c33c693cf65d56691bda713e253f88042ee0baeac6d3e7c3f20`,
+and
+`7ad056d0644eb4f0a67ab502e62af8c9e4db5aef838366b6b3dd69d0ee75e2c5`.
+Fresh one-round chain replay passed with JSON/log hashes
+`3cfd45827418be978b87cabe533c14ddabd22d2aab260362952eeb7d9b7c1658`
+and
+`cfc8d4569ec7aa980118e7490d2cde9e2af1c003dedd0577269c619937903a67`.
+The three still-running child-1 searches now target the exact state-624 leaf,
+so they remain useful rather than redundant ancestor work.
+
 The same selective procedure peeled the two children of the other original
 J297 parent.  For child 2, nine consecutive lookahead rounds each closed one
 sibling while retaining exactly one UNKNOWN, advancing the subchain from
@@ -3008,6 +3037,52 @@ and
 `0dd010f05fafd97c14531fd94f7486b17a99e1a1fa86a96ef7972d0ed1ec87f6`.
 This is a certified common J297 frontier advance from state 600 to state 602,
 but its two remaining UNKNOWN leaves keep the case incomplete.
+
+A guarded common continuation next rejected a 2--3 candidate at round 602.
+Its two hard children under the row-1 parent exactly match the earlier v95
+family, whose child-0 proof was already independently checked; the row-3
+parent's child 0 received a new 67-byte DRAT in the same attempted round.
+Composing those two results with the exact common child family restores width
+two and advances the common J297 frontier to state 603.  Its terminal/state/
+refinement hashes are
+`528fdb2038c04e2dd40aff7b697e333b3292241c03b00f136874db9b468cf080`,
+`7c1fe0ac06ac3c1b3622392f3bbaffba855ffe00bc3527a8d31fd70b81f28b0d`,
+and
+`c2ba700987c84dba79797c0ec6a6539a4323eb97ec9bd4256d2cd75556e9b244`.
+Fresh replay checked the state-602 seed, both parent refinements, and both
+terminal DRATs; its audit JSON hash is
+`4a38798bc6065821b5165d5e5a1a920d162a90fb756a79151bcc1dc896f94efa`;
+the replay-log hash is
+`940b6cd27d3000211414c581a5a34070f534bb8ff7d239d91767683252335b48`.
+The terminal counts remain two VERIFIED / two UNKNOWN, so this is another
+depth advance rather than a width reduction.
+
+The common continuation retained the same two-by-two terminal counts for two
+more rounds through state 605, then rejected a 2--3 growth at round 605.  The
+two hard children under the row-1 parent exactly matched the earlier v101
+family, where a 4,919,499-byte child-0 proof was already checked; the row-3
+parent's child-0 proof was generated directly in the common run.  Recomposition
+therefore advances the common chain through three fully replayed rounds to
+state 606.  Its terminal/state/last-refinement hashes are
+`c0f66544277c34625e93712e9afa79b10964596c5c1d75395347b252cafd52d8`,
+`9bc64df07d0581ceab2dcfa1b49fe6fcf804659d9415bc52290241658cb42f24`,
+and
+`385b83c43e3b9850f3ed3275ea881e5c01117e36e0d65ba9b1afd24d6c6a781d`.
+The independent audit checked four manifests and six parent refinements,
+ending at two VERIFIED / two UNKNOWN; its JSON/log hashes are
+`e22c84f368866aa27f553dfd8e6df3fdedf41ef500d4e1a0788a79097837ddfb`
+and
+`df57396e702fd8c59c0b772218394e10a3376fba3b9879c1a7391f4a22c8fc73`.
+The next guarded round closed the row-1 child 0 with a 67-byte proof but left
+both row-3 children UNKNOWN, so its 2--3 candidate was rejected.  Candidate,
+halt, and refinement hashes are
+`53095a8571f81c0390f57815d720199c7ff56130cd386c2143fc5de542e1ad5b`,
+`abf5a91896ad979a679c214ee5f62046c687e29c6f6e0e9425e957d893858a5c`,
+and
+`2466710376cb6bf113e08379ead0277a9cd63db4759321f10642ffcd637acb5d`.
+The exact row-3 child family is already under three-engine proof search; the
+common authoritative state remains 606 until one of those proofs is published
+and independently replayed.
 
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.

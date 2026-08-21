@@ -59,7 +59,8 @@ def validate_parent_extension_layout(
         raise ValueError("unexpected base strengthened-parent bundle schema")
     if extended_bundle.get("schema") != BUNDLE_SCHEMA:
         raise ValueError("unexpected extended strengthened-parent bundle schema")
-    if base_parent_audit.get("schema") != PARENT_AUDIT_SCHEMA:
+    parent_audit_schema = str(base_parent_audit.get("schema"))
+    if parent_audit_schema not in (PARENT_AUDIT_SCHEMA, AUDIT_SCHEMA):
         raise ValueError("unexpected base strengthened-parent audit schema")
     if chain_extension_audit.get("schema") != CHAIN_EXTENSION_AUDIT_SCHEMA:
         raise ValueError("unexpected chain extension-audit schema")
@@ -84,39 +85,51 @@ def validate_parent_extension_layout(
         label = str(base_case.get("case", f"case-{index}"))
         if extension_case.get("case") != base_case.get("case"):
             raise ValueError(f"parent and chain-extension labels differ for {label}")
-        strengthening = base_case.get("strengthening")
-        backbone_audit = base_case.get("backbone_proof_audit")
-        base_chain = base_case.get("chain")
         extension = extension_case.get("extension")
-        if not all(
-            isinstance(value, dict)
-            for value in (strengthening, backbone_audit, base_chain, extension)
-        ):
-            raise ValueError(f"base or extension audit is incomplete for {label}")
-        if (
-            strengthening.get("bad_branches_complete_unsat") is not True
-            or backbone_audit.get("complete_unsat") is not True
-        ):
-            raise ValueError(f"base backbone audit is incomplete for {label}")
-        base_segments = base_chain.get("segments")
+        if not isinstance(extension, dict):
+            raise ValueError(f"extension audit is incomplete for {label}")
+        if parent_audit_schema == PARENT_AUDIT_SCHEMA:
+            strengthening = base_case.get("strengthening")
+            backbone_audit = base_case.get("backbone_proof_audit")
+            base_chain = base_case.get("chain")
+            if not all(
+                isinstance(value, dict)
+                for value in (strengthening, backbone_audit, base_chain)
+            ):
+                raise ValueError(f"base audit is incomplete for {label}")
+            if (
+                strengthening.get("bad_branches_complete_unsat") is not True
+                or backbone_audit.get("complete_unsat") is not True
+            ):
+                raise ValueError(f"base backbone audit is incomplete for {label}")
+            base_segments = base_chain.get("segments")
+            if not isinstance(base_segments, list) or not base_segments:
+                raise ValueError(f"base chain has no terminal segment for {label}")
+            base_segment_count = int(base_chain.get("segment_count", -1))
+            base_unsat = bool(base_chain.get("complete_unsat", False))
+            base_remaining = int(base_case.get("remaining_unknown_cubes", -1))
+            if bool(
+                base_case.get("parent_unsat", False)
+            ) != base_unsat or base_remaining != int(
+                base_segments[-1].get("final_unknown", -2)
+            ):
+                raise ValueError(f"base parent terminal summary differs for {label}")
+        else:
+            base_segment_count = int(base_case.get("total_segment_count", -1))
+            base_unsat = bool(base_case.get("parent_unsat", False))
+            base_remaining = int(base_case.get("remaining_unknown_cubes", -1))
+            if base_segment_count <= 0 or base_remaining < 0:
+                raise ValueError(f"recursive parent baseline is invalid for {label}")
         new_segments = extension.get("segments")
-        if not isinstance(base_segments, list) or not base_segments:
-            raise ValueError(f"base chain has no terminal segment for {label}")
-        if not isinstance(new_segments, list) or not new_segments:
-            raise ValueError(f"extension has no terminal segment for {label}")
-        if int(extension_case.get("base_segment_count", -1)) != int(
-            base_chain.get("segment_count", -2)
-        ):
+        terminal = extension_case.get("terminal")
+        if not isinstance(new_segments, list) or not isinstance(terminal, dict):
+            raise ValueError(f"extension has no terminal binding for {label}")
+        if int(extension_case.get("base_segment_count", -1)) != base_segment_count:
             raise ValueError(f"chain base segment count differs for {label}")
         if int(extension_case.get("total_segment_count", -1)) != int(
-            base_chain["segment_count"]
+            base_segment_count
         ) + int(extension.get("segment_count", -1)):
             raise ValueError(f"chain total segment count differs for {label}")
-        base_unsat = bool(base_chain.get("complete_unsat", False))
-        if bool(base_case.get("parent_unsat", False)) != base_unsat or int(
-            base_case.get("remaining_unknown_cubes", -1)
-        ) != int(base_segments[-1].get("final_unknown", -2)):
-            raise ValueError(f"base parent terminal summary differs for {label}")
         parent_unsat = bool(extension_case.get("complete_unsat", False))
         if parent_unsat != bool(extension.get("complete_unsat", False)):
             raise ValueError(f"extension completion differs for {label}")
@@ -124,16 +137,18 @@ def validate_parent_extension_layout(
             {
                 "case": label,
                 "base_parent_unsat": base_unsat,
-                "base_remaining_unknown_cubes": int(
-                    base_case["remaining_unknown_cubes"]
-                ),
-                "base_segment_count": int(base_chain["segment_count"]),
+                "base_remaining_unknown_cubes": base_remaining,
+                "base_segment_count": base_segment_count,
                 "extension_segment_count": int(extension["segment_count"]),
                 "total_segment_count": int(extension_case["total_segment_count"]),
-                "remaining_unknown_cubes": int(new_segments[-1]["final_unknown"]),
+                "remaining_unknown_cubes": int(terminal["final_unknown"]),
                 "parent_unsat": parent_unsat,
             }
         )
+    if bool(base_parent_audit.get("all_parents_unsat", False)) != all(
+        bool(case.get("parent_unsat", False)) for case in base_cases
+    ):
+        raise ValueError("base parent aggregate completion mismatch")
     return joined
 
 
@@ -164,16 +179,34 @@ def main() -> None:
     base_chain_audit = load_json(arguments.base_chain_audit)
     extended_bundle = load_json(arguments.extended_bundle)
     chain_extension_audit = load_json(arguments.chain_extension_audit)
-    if base_chain_audit.get("schema") != CHAIN_AUDIT_SCHEMA:
-        raise ValueError("unexpected standalone base chain-audit schema")
-    if base_parent_audit.get("bundle_sha256") != file_sha256(arguments.base_bundle):
+    base_parent_schema = base_parent_audit.get("schema")
+    if base_parent_schema == PARENT_AUDIT_SCHEMA:
+        if base_chain_audit.get("schema") != CHAIN_AUDIT_SCHEMA:
+            raise ValueError("unexpected standalone base chain-audit schema")
+        parent_bundle_hash = base_parent_audit.get("bundle_sha256")
+        if base_parent_audit.get("chain_audit") != base_chain_audit:
+            raise ValueError("base parent and standalone chain audits differ")
+    elif base_parent_schema == AUDIT_SCHEMA:
+        if base_chain_audit.get("schema") != CHAIN_EXTENSION_AUDIT_SCHEMA:
+            raise ValueError("unexpected recursive base chain-audit schema")
+        parent_bundle_hash = base_parent_audit.get("extended_bundle_sha256")
+        if base_parent_audit.get("chain_extension_audit_sha256") != file_sha256(
+            arguments.base_chain_audit
+        ):
+            raise ValueError("recursive parent and chain audits differ")
+    else:
+        raise ValueError("unexpected base strengthened-parent audit schema")
+    if parent_bundle_hash != file_sha256(arguments.base_bundle):
         raise ValueError("base parent audit is not bound to its bundle")
-    if base_parent_audit.get("chain_audit") != base_chain_audit:
-        raise ValueError("base parent and standalone chain audits differ")
     base_chain_bundle = required_path(base_bundle, "chain_bundle")
     extended_chain_bundle = required_path(extended_bundle, "chain_bundle")
+    audited_chain_bundle_hash = (
+        base_parent_audit.get("chain_bundle_sha256")
+        if base_parent_schema == PARENT_AUDIT_SCHEMA
+        else base_parent_audit.get("extended_chain_bundle_sha256")
+    )
     if (
-        base_parent_audit.get("chain_bundle_sha256") != file_sha256(base_chain_bundle)
+        audited_chain_bundle_hash != file_sha256(base_chain_bundle)
         or chain_extension_audit.get("base_bundle_sha256")
         != file_sha256(base_chain_bundle)
         or chain_extension_audit.get("base_audit_sha256")

@@ -52,6 +52,28 @@ def without_keys(document: dict[str, Any], *keys: str) -> dict[str, Any]:
     return {key: value for key, value in document.items() if key not in keys}
 
 
+def audited_chain_summary(
+    audited_case: dict[str, Any], audit_schema: str, label: str
+) -> dict[str, Any]:
+    if audit_schema == BASE_AUDIT_SCHEMA:
+        chain = audited_case.get("chain")
+    elif audit_schema == AUDIT_SCHEMA:
+        extension = audited_case.get("extension")
+        terminal = audited_case.get("terminal")
+        if not isinstance(extension, dict) or not isinstance(terminal, dict):
+            raise ValueError(f"base extension audit has no {label} chain")
+        chain = {
+            "segment_count": audited_case.get("total_segment_count"),
+            "segments": [terminal],
+            "complete_unsat": audited_case.get("complete_unsat"),
+        }
+    else:
+        raise ValueError("unexpected base chain-audit schema")
+    if not isinstance(chain, dict):
+        raise ValueError(f"base audit has no {label} chain")
+    return chain
+
+
 def validate_extension_layout(
     base_bundle: dict[str, Any],
     base_audit: dict[str, Any],
@@ -63,7 +85,8 @@ def validate_extension_layout(
         raise ValueError("unexpected base chain-bundle schema")
     if extended_bundle.get("schema") != BUNDLE_SCHEMA:
         raise ValueError("unexpected extended chain-bundle schema")
-    if base_audit.get("schema") != BASE_AUDIT_SCHEMA:
+    audit_schema = str(base_audit.get("schema"))
+    if audit_schema not in (BASE_AUDIT_SCHEMA, AUDIT_SCHEMA):
         raise ValueError("unexpected base chain-audit schema")
     if without_keys(base_bundle, "claim", "cases") != without_keys(
         extended_bundle, "claim", "cases"
@@ -123,19 +146,17 @@ def validate_extension_layout(
         if extended_segments[: len(base_segments)] != base_segments:
             raise ValueError(f"extended bundle changed the {label} segment prefix")
         suffix = extended_segments[len(base_segments) :]
-        if not suffix:
-            raise ValueError(f"extended bundle appended no {label} segment")
 
-        chain = audited_case.get("chain")
-        if not isinstance(chain, dict):
-            raise ValueError(f"base audit has no {label} chain")
+        chain = audited_chain_summary(audited_case, audit_schema, label)
         audited_segments = chain.get("segments")
-        if (
-            not isinstance(audited_segments, list)
-            or len(audited_segments) != len(base_segments)
-            or int(chain.get("segment_count", -1)) != len(base_segments)
-        ):
+        if not isinstance(audited_segments, list) or int(
+            chain.get("segment_count", -1)
+        ) != len(base_segments):
             raise ValueError(f"base audit {label} segment count mismatch")
+        if audit_schema == BASE_AUDIT_SCHEMA and len(audited_segments) != len(
+            base_segments
+        ):
+            raise ValueError(f"base audit {label} replay count mismatch")
         if not audited_segments or not isinstance(audited_segments[-1], dict):
             raise ValueError(f"base audit {label} has no terminal segment")
         if (
@@ -157,6 +178,8 @@ def validate_extension_layout(
         )
     if bool(base_audit.get("all_cases_complete_unsat", False)) != all(base_completion):
         raise ValueError("base audit aggregate completion mismatch")
+    if not any(extension["suffix"] for extension in extensions):
+        raise ValueError("extended bundle appended no segment")
     return extensions
 
 
@@ -201,7 +224,12 @@ def main() -> None:
     base_bundle = load_json(arguments.base_bundle)
     base_audit = load_json(arguments.base_audit)
     extended_bundle = load_json(arguments.extended_bundle)
-    if base_audit.get("bundle_sha256") != file_sha256(arguments.base_bundle):
+    audit_bundle_hash = (
+        base_audit.get("bundle_sha256")
+        if base_audit.get("schema") == BASE_AUDIT_SCHEMA
+        else base_audit.get("extended_bundle_sha256")
+    )
+    if audit_bundle_hash != file_sha256(arguments.base_bundle):
         raise ValueError("base audit is not bound to the supplied base bundle")
     checker = base_audit.get("checker")
     if not isinstance(checker, dict) or checker.get("sha256") != file_sha256(
@@ -215,27 +243,42 @@ def main() -> None:
     audited: list[dict[str, Any]] = []
     for extension in extensions:
         label = extension["label"]
-        specs = chain_specs({"segments": extension["suffix"]}, f"{label} extension")
-        for spec in specs:
-            spec["seed_manifest"] = absolute_preserving_symlinks(spec["seed_manifest"])
-            spec["chain_workdir"] = absolute_preserving_symlinks(spec["chain_workdir"])
-            if spec["state"] is not None:
-                spec["state"] = absolute_preserving_symlinks(spec["state"])
-        suffix_audit = audit_chain_segments(
-            specs,
-            label,
-            arguments.checker,
-            arguments.jobs,
-            chain_tool,
-            arguments.segment_jobs,
-        )
-        first_boundary = bind_first_extension_boundary(
-            extension["base_terminal"],
-            int(specs[0]["first_round"]),
-            specs[0]["seed_manifest"],
-            label,
-        )
-        suffix_audit["segments"][0]["boundary_from_previous"] = first_boundary
+        if extension["suffix"]:
+            specs = chain_specs({"segments": extension["suffix"]}, f"{label} extension")
+            for spec in specs:
+                spec["seed_manifest"] = absolute_preserving_symlinks(
+                    spec["seed_manifest"]
+                )
+                spec["chain_workdir"] = absolute_preserving_symlinks(
+                    spec["chain_workdir"]
+                )
+                if spec["state"] is not None:
+                    spec["state"] = absolute_preserving_symlinks(spec["state"])
+            suffix_audit = audit_chain_segments(
+                specs,
+                label,
+                arguments.checker,
+                arguments.jobs,
+                chain_tool,
+                arguments.segment_jobs,
+            )
+            first_boundary = bind_first_extension_boundary(
+                extension["base_terminal"],
+                int(specs[0]["first_round"]),
+                specs[0]["seed_manifest"],
+                label,
+            )
+            suffix_audit["segments"][0]["boundary_from_previous"] = first_boundary
+            terminal = suffix_audit["segments"][-1]
+        else:
+            suffix_audit = {
+                "segment_count": 0,
+                "segments": [],
+                "complete_unsat": bool(
+                    extension["base_chain"].get("complete_unsat", False)
+                ),
+            }
+            terminal = extension["base_terminal"]
         complete = bool(suffix_audit["complete_unsat"])
         if complete != bool(extension["extended_case"].get("complete_unsat", False)):
             raise ValueError(f"{label} completion claim mismatch")
@@ -244,6 +287,7 @@ def main() -> None:
                 "case": label,
                 "base_segment_count": int(extension["base_chain"]["segment_count"]),
                 "extension": suffix_audit,
+                "terminal": terminal,
                 "total_segment_count": int(extension["base_chain"]["segment_count"])
                 + int(suffix_audit["segment_count"]),
                 "complete_unsat": complete,

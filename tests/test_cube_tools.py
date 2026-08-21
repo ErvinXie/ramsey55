@@ -876,6 +876,80 @@ class ExternalCubeToolTests(unittest.TestCase):
                     previous, 7, seed, "J"
                 )
 
+    def test_chain_bundle_extension_accepts_recursive_audit_checkpoint(self) -> None:
+        segment = {"first_round": 3, "seed_manifest": "seed"}
+        appended = {"first_round": 4, "seed_manifest": "next"}
+        case = {"case": "J", "complete_unsat": False, "segments": [segment]}
+        base_bundle = {
+            "schema": MATERIALIZED_CHAIN_BUNDLE.BUNDLE_SCHEMA,
+            "cases": [case],
+        }
+        extended_case = {**case, "segments": [segment, appended]}
+        extended_bundle = {**base_bundle, "cases": [extended_case]}
+        previous = {
+            "final_round": 4,
+            "final_manifest": "terminal",
+            "final_manifest_sha256": "a" * 64,
+        }
+        recursive_audit = {
+            "schema": MATERIALIZED_CHAIN_BUNDLE_EXTENSION.AUDIT_SCHEMA,
+            "all_cases_complete_unsat": False,
+            "cases": [
+                {
+                    "case": "J",
+                    "total_segment_count": 1,
+                    "complete_unsat": False,
+                    "terminal": previous,
+                    "extension": {
+                        "segments": [previous],
+                        "complete_unsat": False,
+                    },
+                }
+            ],
+        }
+        extensions = MATERIALIZED_CHAIN_BUNDLE_EXTENSION.validate_extension_layout(
+            base_bundle, recursive_audit, extended_bundle
+        )
+        self.assertEqual(extensions[0]["base_chain"]["segment_count"], 1)
+        self.assertEqual(extensions[0]["base_terminal"], previous)
+
+    def test_chain_bundle_extension_allows_an_unchanged_case(self) -> None:
+        first = {"case": "A", "complete_unsat": False, "segments": [{"x": 1}]}
+        second = {"case": "B", "complete_unsat": False, "segments": [{"x": 2}]}
+        base = {
+            "schema": MATERIALIZED_CHAIN_BUNDLE.BUNDLE_SCHEMA,
+            "cases": [first, second],
+        }
+        extended = json.loads(json.dumps(base))
+        extended["cases"][0]["segments"].append({"x": 3})
+        audit = {
+            "schema": MATERIALIZED_CHAIN_BUNDLE.AUDIT_SCHEMA,
+            "all_cases_complete_unsat": False,
+            "cases": [
+                {
+                    "case": label,
+                    "complete_unsat": False,
+                    "chain": {
+                        "segment_count": 1,
+                        "segments": [
+                            {
+                                "final_round": 1,
+                                "final_manifest": "m",
+                                "final_manifest_sha256": "a" * 64,
+                            }
+                        ],
+                        "complete_unsat": False,
+                    },
+                }
+                for label in ("A", "B")
+            ],
+        }
+        layout = MATERIALIZED_CHAIN_BUNDLE_EXTENSION.validate_extension_layout(
+            base, audit, extended
+        )
+        self.assertEqual(len(layout[0]["suffix"]), 1)
+        self.assertEqual(layout[1]["suffix"], [])
+
     def test_parent_bundle_extension_reuses_only_complete_base_layers(self) -> None:
         parent_case = {
             "case": "J",
@@ -908,6 +982,7 @@ class ExternalCubeToolTests(unittest.TestCase):
                     "base_segment_count": 3,
                     "total_segment_count": 4,
                     "complete_unsat": False,
+                    "terminal": {"final_unknown": 1},
                     "extension": {
                         "segment_count": 1,
                         "segments": [{"final_unknown": 1}],
@@ -920,6 +995,7 @@ class ExternalCubeToolTests(unittest.TestCase):
             base_bundle,
             {
                 "schema": "ramsey55.strengthened-parent-chain-bundle-audit.v1",
+                "all_parents_unsat": False,
                 "cases": [parent_case],
             },
             extended_bundle,
@@ -935,11 +1011,60 @@ class ExternalCubeToolTests(unittest.TestCase):
                 base_bundle,
                 {
                     "schema": "ramsey55.strengthened-parent-chain-bundle-audit.v1",
+                    "all_parents_unsat": False,
                     "cases": [incomplete],
                 },
                 extended_bundle,
                 chain_extension,
             )
+
+    def test_parent_bundle_extension_accepts_recursive_checkpoint(self) -> None:
+        base_bundle = {
+            "schema": "ramsey55.strengthened-parent-chain-bundle.v1",
+            "chain_bundle": "base-chain.json",
+            "cases": [{"case": "J"}],
+        }
+        extended_bundle = {
+            **base_bundle,
+            "chain_bundle": "extended-chain.json",
+        }
+        base_parent_audit = {
+            "schema": STRENGTHENED_PARENT_BUNDLE_EXTENSION.AUDIT_SCHEMA,
+            "all_parents_unsat": False,
+            "cases": [
+                {
+                    "case": "J",
+                    "total_segment_count": 4,
+                    "remaining_unknown_cubes": 1,
+                    "parent_unsat": False,
+                }
+            ],
+        }
+        chain_extension = {
+            "schema": MATERIALIZED_CHAIN_BUNDLE_EXTENSION.AUDIT_SCHEMA,
+            "cases": [
+                {
+                    "case": "J",
+                    "base_segment_count": 4,
+                    "total_segment_count": 5,
+                    "complete_unsat": False,
+                    "terminal": {"final_unknown": 1},
+                    "extension": {
+                        "segment_count": 1,
+                        "segments": [{"final_unknown": 1}],
+                        "complete_unsat": False,
+                    },
+                }
+            ],
+        }
+        joined = STRENGTHENED_PARENT_BUNDLE_EXTENSION.validate_parent_extension_layout(
+            base_bundle,
+            base_parent_audit,
+            extended_bundle,
+            chain_extension,
+        )
+        self.assertEqual(joined[0]["base_segment_count"], 4)
+        self.assertEqual(joined[0]["total_segment_count"], 5)
 
 
 class ResultMergeTests(unittest.TestCase):
