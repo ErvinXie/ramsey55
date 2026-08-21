@@ -48,6 +48,12 @@ MATERIALIZED_CHAIN = load_tool("run_materialized_proof_chain")
 MATERIALIZED_CHAIN_AUDIT = load_tool("audit_materialized_proof_chain")
 FIXED_PAIR_BUNDLE = load_tool("audit_fixed_pair_proof_bundle")
 MATERIALIZED_CHAIN_BUNDLE = load_tool("audit_materialized_proof_chain_bundle")
+MATERIALIZED_CHAIN_BUNDLE_EXTENSION = load_tool(
+    "audit_materialized_proof_chain_bundle_extension"
+)
+STRENGTHENED_PARENT_BUNDLE_EXTENSION = load_tool(
+    "audit_strengthened_parent_chain_bundle_extension"
+)
 ORDER45_FIXED_PROOFS = load_tool("audit_order45_fixed_pair_proofs")
 MATERIALIZE_CNF_CUBE = load_tool("materialize_cnf_cube")
 STRATA_LEAF_PROOFS = load_tool("audit_order45_strata_leaf_proofs")
@@ -788,6 +794,151 @@ class ExternalCubeToolTests(unittest.TestCase):
             self.assertEqual(
                 result["segments"][1]["boundary_from_previous"],
                 "identical terminal manifest",
+            )
+
+    def test_chain_bundle_extension_preserves_prefix_and_binds_boundary(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            terminal = root / "terminal.json"
+            terminal.write_text("terminal\n", encoding="utf-8")
+            base_segment = {"first_round": 0, "seed_manifest": "seed"}
+            new_segment = {"first_round": 5, "seed_manifest": str(terminal)}
+            case = {
+                "case": "J",
+                "formula": "formula.cnf",
+                "complete_unsat": False,
+                "segments": [base_segment],
+            }
+            base_bundle = {
+                "schema": MATERIALIZED_CHAIN_BUNDLE.BUNDLE_SCHEMA,
+                "artifact_root": "artifacts",
+                "claim": "base",
+                "cases": [case],
+            }
+            extended_case = dict(case)
+            extended_case["segments"] = [base_segment, new_segment]
+            extended_bundle = {
+                **base_bundle,
+                "claim": "extended",
+                "cases": [extended_case],
+            }
+            previous = {
+                "final_round": 5,
+                "final_manifest": str(terminal),
+                "final_manifest_sha256": MATERIALIZED_PROVER.file_sha256(terminal),
+                "complete_unsat": False,
+            }
+            base_audit = {
+                "schema": MATERIALIZED_CHAIN_BUNDLE.AUDIT_SCHEMA,
+                "all_cases_complete_unsat": False,
+                "cases": [
+                    {
+                        "case": "J",
+                        "chain": {
+                            "segment_count": 1,
+                            "segments": [previous],
+                            "complete_unsat": False,
+                        },
+                    }
+                ],
+            }
+            extensions = (
+                MATERIALIZED_CHAIN_BUNDLE_EXTENSION.validate_extension_layout(
+                    base_bundle, base_audit, extended_bundle
+                )
+            )
+            self.assertEqual(extensions[0]["suffix"], [new_segment])
+            self.assertEqual(
+                MATERIALIZED_CHAIN_BUNDLE_EXTENSION.bind_first_extension_boundary(
+                    previous, 5, terminal, "J"
+                ),
+                "identical terminal manifest",
+            )
+
+            tampered = json.loads(json.dumps(extended_bundle))
+            tampered["cases"][0]["segments"][0]["first_round"] = 1
+            with self.assertRaisesRegex(ValueError, "changed the J segment prefix"):
+                MATERIALIZED_CHAIN_BUNDLE_EXTENSION.validate_extension_layout(
+                    base_bundle, base_audit, tampered
+                )
+
+    def test_chain_bundle_extension_rejects_round_gap(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            seed = Path(raw) / "seed.json"
+            seed.write_text("seed\n", encoding="utf-8")
+            previous = {
+                "final_round": 5,
+                "final_manifest": str(seed),
+                "final_manifest_sha256": MATERIALIZED_PROVER.file_sha256(seed),
+            }
+            with self.assertRaisesRegex(ValueError, "extension round mismatch"):
+                MATERIALIZED_CHAIN_BUNDLE_EXTENSION.bind_first_extension_boundary(
+                    previous, 7, seed, "J"
+                )
+
+    def test_parent_bundle_extension_reuses_only_complete_base_layers(self) -> None:
+        parent_case = {
+            "case": "J",
+            "strengthening": {"bad_branches_complete_unsat": True},
+            "backbone_proof_audit": {"complete_unsat": True},
+            "chain": {
+                "segment_count": 3,
+                "segments": [{"final_unknown": 2}],
+                "complete_unsat": False,
+            },
+            "remaining_unknown_cubes": 2,
+            "parent_unsat": False,
+        }
+        base_bundle = {
+            "schema": "ramsey55.strengthened-parent-chain-bundle.v1",
+            "chain_bundle": "base-chain.json",
+            "claim": "base",
+            "cases": [{"case": "J", "parent_index": 1}],
+        }
+        extended_bundle = {
+            **base_bundle,
+            "chain_bundle": "extended-chain.json",
+            "claim": "extended",
+        }
+        chain_extension = {
+            "schema": MATERIALIZED_CHAIN_BUNDLE_EXTENSION.AUDIT_SCHEMA,
+            "cases": [
+                {
+                    "case": "J",
+                    "base_segment_count": 3,
+                    "total_segment_count": 4,
+                    "complete_unsat": False,
+                    "extension": {
+                        "segment_count": 1,
+                        "segments": [{"final_unknown": 1}],
+                        "complete_unsat": False,
+                    },
+                }
+            ],
+        }
+        joined = STRENGTHENED_PARENT_BUNDLE_EXTENSION.validate_parent_extension_layout(
+            base_bundle,
+            {
+                "schema": "ramsey55.strengthened-parent-chain-bundle-audit.v1",
+                "cases": [parent_case],
+            },
+            extended_bundle,
+            chain_extension,
+        )
+        self.assertEqual(joined[0]["remaining_unknown_cubes"], 1)
+        self.assertEqual(joined[0]["total_segment_count"], 4)
+
+        incomplete = json.loads(json.dumps(parent_case))
+        incomplete["backbone_proof_audit"]["complete_unsat"] = False
+        with self.assertRaisesRegex(ValueError, "base backbone audit is incomplete"):
+            STRENGTHENED_PARENT_BUNDLE_EXTENSION.validate_parent_extension_layout(
+                base_bundle,
+                {
+                    "schema": "ramsey55.strengthened-parent-chain-bundle-audit.v1",
+                    "cases": [incomplete],
+                },
+                extended_bundle,
+                chain_extension,
             )
 
 

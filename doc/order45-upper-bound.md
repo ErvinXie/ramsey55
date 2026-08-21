@@ -640,6 +640,23 @@ proof per cube, binds every source manifest and selected source index, and
 keeps all per-solver provenance needed by the leaf auditor. A real eight-cube
 ARM composition retained three proofs and a separate replay accepted all
 three.
+
+Repeated full-bundle replay is no longer required after an immutable baseline
+has been accepted.  `tools/audit_materialized_proof_chain_bundle_extension.py`
+binds the old bundle and its audit by SHA-256, requires the new bundle to be an
+exact segment-prefix extension, independently replays every appended segment,
+and checks the old-terminal/new-seed boundary with the same identical-manifest,
+exact-cube retry, or rescued-refinement rules as the full auditor.  Its output
+explicitly remains dependent on the named baseline audit; it does not claim to
+have replayed the prefix again.  The companion
+`tools/audit_strengthened_parent_chain_bundle_extension.py` similarly reuses
+the hash-bound, already checked strengthening and false-polarity backbone
+layer only when the parent metadata is unchanged and the chain extension is
+bound to the exact old and new chain bundles.  Prefix mutation, round gaps,
+incomplete base backbone proofs, and inconsistent terminal counts are covered
+by rejection tests.  The complete Python suite passes 174 tests after these
+additions.
+
 The immutable-state path was exercised on the J297775 pre-switch snapshot:
 54 manifests and 53 refinement rounds through round 55 were replayed, covering
 443 refined parents and ending at the recorded 17 VERIFIED/17 UNKNOWN
@@ -2955,6 +2972,42 @@ and
 Those two closed leaves are already subsumed by the stronger state-620
 ancestor proofs, so this is independent solver corroboration rather than a
 new frontier reduction.
+
+The two surviving children of the common J297 state-600 family were then
+advanced together, rather than only inside their separate exploratory
+subchains.  The first complete binary refinement closed one sibling below
+each parent and retained two VERIFIED / two UNKNOWN at state 601.  Its
+terminal/state/refinement hashes are
+`2f743376750ace0aacb15488f7d967e5caec45cc96fb7e50d4500c15a6f53c02`,
+`87f7a411f16c8559e8ecf7daabeee7b1840889dc7055f4af59d3883ff37e4408`,
+and
+`16609e19a81feac7a92246162326e4fa51117dea18ce171396216c01b4b2a10c`.
+Independent replay checked both the state-600 seed and new terminal manifest,
+plus both parent refinements; its audit JSON/log hashes are
+`f963cf9e6285e417c142e6879099fb04cf69a56eec154762ee8292451fa03387`
+and
+`27d7d31cf4b1fef9681ed558546096cc75ab2c9824062675a036633911913416`.
+
+The next ordinary staged run produced one VERIFIED / three UNKNOWN and was
+therefore rejected by the no-growth guard.  Its candidate/halt hashes are
+`c26b1b560f81d3143805b357629de3670958777dd5be599aecc65e79db684ce3`
+and
+`0cd6eb2117faaa9d484d0cef4746ac9d446644b65540ccba27a411ba0d9bab0b`.
+An already independently checked row-3 proof closes one of those three
+children.  Rebinding that proof to the exact common-family paths and composing
+it with the other result yields state 602 at two VERIFIED / two UNKNOWN.  The
+terminal/state/refinement hashes are
+`226c0b55c63f222a676b82cd2a1dd8d71a6651965c4ae7ee610e685dad81d16a`,
+`a3d1f0577a0beea5012c17859fc21a66faf9cd36061983e18b5c237a8b264f1b`,
+and
+`61530a89cd78fbe14cad070699da2c7a422d96cf08cebe351ca049fd86222320`.
+A fresh whole-segment replay again checked two manifests and both refinements;
+its audit JSON/log hashes are
+`4e857890cc3d7f2e18d7298d1b78975f519f26131b16eecb675ffb65940fc3b6`
+and
+`0dd010f05fafd97c14531fd94f7486b17a99e1a1fa86a96ef7972d0ed1ec87f6`.
+This is a certified common J297 frontier advance from state 600 to state 602,
+but its two remaining UNKNOWN leaves keep the case incomplete.
 
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
