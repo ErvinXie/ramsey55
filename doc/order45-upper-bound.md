@@ -4288,5 +4288,20 @@ in parallel with the earlier ancestor probes.  An UNSAT result on a deep leaf
 would require only that terminal proof plus the already replayed residual
 chain to close the corresponding effective case.
 
+One final 20-round batch per case advanced the constant-width chains to
+states 688/712, or 58/57 residual rounds.  The batch proofs total 728 bytes
+for J297 and 278 bytes for J326.  Terminal manifest/state hashes are
+`ee253ce8c5aa24d809ae0a85cdd3584f9d9ad2be32ca9f4f3c76b46b9e4dc2d0` /
+`3ad6d531ea3c592163ccbc8553eb8e7e4204ef7ef1bc8eac3f2d754c4e88e828`
+and
+`792b2f330f05aae9e2d9b9f81ea1a2b1267cf4401b837f06b8b4804bac35275e` /
+`a938ec7e30d31ed5c4b3c188a774ed261820a5af7ee7041f273b218cdd406bff`.
+Whole-prefix replay has hash
+`132c1a693203a1e8c557ab8bda279875daf0a494909f789a488682efa85fe162`;
+the v7 selective-residual join audit has hash
+`bf022cedc123d7845e97879efe632e60bdb29b4d9a86eadeb63b941529116412`.
+Further screened expansion is paused with about 3.3 GB left on the root
+filesystem; all eight old and deep no-proof probes continue in tmpfs.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
