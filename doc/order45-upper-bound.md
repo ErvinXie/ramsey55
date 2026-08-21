@@ -4421,6 +4421,10 @@ side, not closures of the remaining J297 residual.  Both complete proof
 directories, plus the completed v144 Kissat directory, were checksum-migrated
 to `/data` behind unchanged repository-path symlinks, restoring root-disk
 headroom.  Fresh low-priority replays of the two v135 proofs are running.
+The 827,999,955-byte Kissat proof has now passed its fresh replay with
+`audited 1/1 verified=1`; the replay log hash is
+`07521dbcbd17729a5484e9074d6fd0768dfdfc6e92c49eab2ccc038b4c25ca8c`.
+The independent CaDiCaL replay remains in progress.
 
 The fifth 50-round residual batch preserved width one through states 938/962,
 bringing the chain lengths to 308/307.  Its compact proofs total 1,736/920
