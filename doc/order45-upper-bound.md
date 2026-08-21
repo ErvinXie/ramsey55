@@ -2012,12 +2012,12 @@ two VERIFIED / two UNKNOWN; its hashes are
 and
 `b85b9044bb7957a2e49be124852704cdca6eb55350e63aefba00af2d2fad2dce`.
 
-A CPU-isolated 7-configuration portfolio is active on each new frontier for
-7,200 seconds: iGlucose plus CaDiCaL and Kissat at seeds 0, 1, and 2.  The
-single J326 cube uses seven solver processes and the two J297 cubes use
-fourteen, for 21 single-core instances in total.  All 14 wrappers were
-verified running; the screened parents remain stopped so these solvers receive
-their full wall-time CPU share.
+A CPU-isolated 11-configuration portfolio is active on each new frontier for
+7,200 seconds: iGlucose plus CaDiCaL and Kissat at seeds 0 through 4.  The
+single J326 cube uses 11 solver processes and the two J297 cubes use 22, for
+33 single-core instances in total.  All 22 wrappers were verified running;
+the screened parents remain stopped so these solvers receive their full
+wall-time CPU share.
 
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
