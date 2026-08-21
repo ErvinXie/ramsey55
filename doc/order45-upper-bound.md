@@ -2279,7 +2279,7 @@ valid deferred metadata on an individual result even when the top-level
 producer was not globally deferred; the auditor now checks that combination
 while continuing to reject missing metadata from globally deferred verified
 rows.  Focused regression tests exercise all three cases, and the full local
-and ARM Python suites pass 168 tests.
+and ARM Python suites passed 168 tests at that checkpoint.
 
 The final-five-leaf Kissat comparison independently closed both children of
 the same ancestor.  The compact proof hashes are
@@ -2323,6 +2323,31 @@ and
 Whole-chain replay is in progress and gates the parent replay on exact terminal
 counts J297 2 VERIFIED / 2 UNKNOWN and J326 1 / 3.  The v10 replay continues
 independently so already spent checking work is retained.
+
+The v10 replay eventually stopped without an audit manifest at the J297 v38
+segment.  This was a certificate-path spelling defect rather than a proof or
+cover mismatch: the recorded manifest, cube, parent, and proof hashes and all
+counts matched, but the lineage stored its source and output paths relative to
+the repository while the bundle auditor supplied the identical absolute
+paths.  The parent gate saw no accepted chain manifest and correctly refused
+to run.
+
+The chain auditor now compares a recorded path with the expected artifact by
+resolved identity and then continues to require exact content hashes, counts,
+cube order, refinement structure, and DRAT replay.  The same rule is applied
+to frontier lineage, binary-refinement manifests, child bindings, and adopted
+growth/halt records.  New tests cover all three certificate layers; both the
+local and ARM full suites pass 169 tests.  A real absolute-path replay of the
+previously rejected v38 segment passed and reproduced state 593 at 1 VERIFIED
+/ 3 UNKNOWN.  Its audit JSON/log hashes are
+`3bf8be5f1aab454dc4e6deb9b9e783c8e1c6bcc6940971ad7306b3e21e79d39a`
+and
+`98e0f8bb1b275b216ca08288b027853e84d7715022f404a7799587af2aabae72`.
+
+The first v11 run crossed this audit-code update while in progress, so it is
+retained only as diagnostic work and cannot trigger its parent audit.  A fresh
+v11-normalized-v2 replay, started entirely from commit `22e0f7f`, gates a new
+parent replay on the same exact terminal rounds and counts.
 
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
