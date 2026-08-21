@@ -2349,5 +2349,50 @@ retained only as diagnostic work and cannot trigger its parent audit.  A fresh
 v11-normalized-v2 replay, started entirely from commit `22e0f7f`, gates a new
 parent replay on the same exact terminal rounds and counts.
 
+Further guarded continuations produced deeper constant-width boundaries.  For
+J326, one round split all three state-620 parents and checked one child of each,
+ending state 621 at 3 VERIFIED / 3 UNKNOWN; the next candidate had five
+UNKNOWNs and was rejected.  The state and terminal-manifest hashes are
+`290b834d46ebfa25a654cd9140d51a4233957d62166ac8af6430317e1b7cefba`
+and
+`714fae25f648422343d75ebaa8f50a4c24481ae7294a17afd81b9c01506ee4a4`.
+Independent audit JSON/log hashes are
+`da8d2cddbc0818e2dc97ee03cfaf38d43f946df5725b2fb78139253a58b05c91`
+and
+`91e2825b0b9e02671d3f571b69c0997a68833e08dcb346e26456dbdb6b6bd006`.
+The three-leaf ICNF/frontier-manifest hashes are
+`5b7e202134bb2f007e670168cb653faae63a58b994f51d1b421722e065e9b57a`
+and
+`3de094e27c5385a06a85b207fbd6e68d381b28caf366f1802109576ca732af25`;
+a Kissat seed-6 deferred portfolio now searches them.
+
+The alternative J297 three-leaf growth candidate remained at width three for
+three rounds through state 599 and then rejected a four-leaf candidate.  Its
+state/terminal-manifest hashes are
+`86a4977bc513e4252a8fd12d77bf9a1ecd8ea9518e93f2b87b962d58c39a8621`
+and
+`42188f501e4725b377023fa675fa6fd08ed8b171dcb3bd9517431a46581df596`;
+audit JSON/log hashes are
+`b928e3cc74ac3673e1b3f5eb43c10981896e97a78ebb4a15da5f93932bc76f7c`
+and
+`99b9bf9851a6ffc850cc42d9401f7f2a6c6f20f37f37b00f735e071e5bed2de1`.
+This does not replace the smaller two-leaf state-595 boundary.  Its exploratory
+three-leaf ICNF/frontier-manifest hashes are
+`f540cd9983f0b546faea71151622b094f17598f492ca31026d6fecaa0296c2a6`
+and
+`dd3bfddb09ea2af3869fa3ab7a9e8a117ebecdc76e49b71f5947b9895a243fe4`;
+an iGlucose deferred portfolio searches those descendants.
+
+The stable formal candidate is therefore frozen at v12 with J297 state 595
+and J326 state 621.  The earlier v11 replays were stopped before emitting a
+manifest, and their logs/PIDs were retained as superseded.  The v12 chain and
+strengthened-parent candidate hashes are
+`99e186141f5957c40d0d68eca061146dd5de3a1046e8230f684a802f7505edb5`
+and
+`c8b7a07dc207597c07dfeb3ca5ff4496b705890e8f950a53bf349f4911e22f1e`.
+A clean whole-chain replay gates the parent audit on terminal rounds 595/621,
+VERIFIED counts 2/3, and UNKNOWN counts 2/3.  Later same-width refinements do
+not supersede this frozen candidate.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
