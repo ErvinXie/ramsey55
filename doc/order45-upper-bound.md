@@ -4123,9 +4123,34 @@ produced a 489,119,715-byte compact DRAT with hash
 its complete one-cube manifest has hash
 `e2bed74b14384b28f9a7c8f8d44c483a57e34ebafcac69c2823d6a1abf0dad5c`.
 The producer replayed both the 1,619,892,057-byte source proof and retained
-compact proof to `s VERIFIED`.  A fresh independent manifest replay is still
-running, so this result is not yet composed into the selective parent-0
-cover and does not change the authoritative strengthened parent-1 endpoint.
+compact proof to `s VERIFIED`.  A fresh independent manifest replay then
+reported `audited 1/1 verified=1`; its log hash is
+`07521dbcbd17729a5484e9074d6fd0768dfdfc6e92c49eab2ccc038b4c25ca8c`.
+Strict ordered UNKNOWN-only composition replaced row 1 of the hash-bound
+state-623 manifest.  The resulting two-row complete manifest, frozen state,
+and composition-log hashes are
+`725ce3272506693831155ba1ff7d36f55b3c5be04a71811c882ad366c18bbecc`,
+`54ef201ddbcbe25b43f07da33a1ad0fff730dd253a9569cb60b01ccb36f6e137`,
+and
+`8e3d08389d4cc9d6590dd9a5f8972b8c6b7a490bbbebf35080abb5a8c7ae8571`.
+The 489,119,715-byte artifact is hard-linked rather than copied.  A zero-round
+chain replay of this composed manifest is running before acceptance.
+
+The current J297 v57 terminal has UNKNOWN rows 0 and 2.  The former is the
+unique descendant of both the 717-literal parent-0 row-1 ancestor above and a
+shallower 716-literal state-599 ancestor.  CaDiCaL and Kissat have each
+produced and producer-checked a direct compact DRAT for that shallower
+ancestor; an independent replay of the 601,296,897-byte CaDiCaL version is
+running.  `tools/audit_selective_ancestor_closures.py` now formalizes this
+overlay: it binds the base chain bundle/audit, replays either a complete
+selective chain or one verified direct proof row, and removes only terminal
+UNKNOWN cubes that literally extend the certified ancestor.  Duplicate
+coverage, SAT rows, and formula/cube/hash mismatches are rejected.  All 81
+`tests.test_cube_tools` tests pass on the ARM builder.  The direct overlay
+bundle has hash
+`f9d570ec0dbedde29a8723cd2f7f92efee7339aab5c27b481fc285e3f2def7e0`.
+Neither pending replay has yet been accepted as a selective overlay, so the
+authoritative strengthened parent-1 endpoint remains unchanged.
 
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
