@@ -4012,6 +4012,58 @@ parent JSON/log hashes are
 The accepted production checkpoint is now J297/J326 48/53 segments at states
 623/652, with two/one UNKNOWN descendants.
 
+The next J297 screen selected `1994` and `1915`.  Both compact DRATs are
+8 bytes, with hashes
+`cf94b18722492664aa4e5b92709b4075a3537937e480a9a882d11486c6773ad8`
+and
+`c706bd047633bc83dee06e2e41aa6e85e4f4574e15643b81bf10eab5508cc808`.
+Selection/refinement/terminal/state and local-chain JSON/log hashes are
+`995bb578b478f04867c8ec051102202adda0640d38b3e850870b9753985962d6`,
+`c4465a8ae60fc0ff20c14034cce0580eaca061eb3a5eef16de952ab7c6f6362e`,
+`d2df75a4792cb263898f8befa4db1d31510f8e7b9f3e8c8a733496c4bf846bbc`,
+`214c06218222eec8331c150585c35f15219c07a2d5c08fdd07940e8109d3fe94`,
+and
+`fc37a9a30ee17d0d60323f6bfd099fbb6d47dc03ccb4df4a0526eb4427a562ff` /
+`ef970e845c84d2fbcca47ce34692d6dc8272a337ecab3b356692425530106039`.
+Recursive v53-to-v54 replay accepted J297 state 624.  Chain/parent bundle
+hashes are
+`47a685dfdf9a36f756100a1589d2d2eb2b285ff8b344939aa9b54f5ac73e539e` /
+`c60f63fba88dd9b78c326d9b7097b9bfad43b1220bdee7e291252f6c622bab2b`;
+chain JSON/log hashes are
+`a84ca07847b730ec0d610529d226ece22903a0581fa9b539bc148c98a2e413c7` /
+`a8a77dcc06e20eb3046d11ee41cadf065c7a7a1f11a4e804e77df8cf7ba8201b`;
+parent JSON/log hashes are
+`9c08a1a06c10d71fe8723f70b5e5e18315f67c6984bd1edd2e6e732d2c79847f` /
+`4cd6004a2fba6cfe0f04090ec79dda59ceef00d4d444e5c1a7e54bea57987913`.
+The accepted production checkpoint is now J297/J326 49/53 segments at states
+624/652, with two/one UNKNOWN descendants.
+
+The following J297 screen selected `1410` and `1899`.  The two contradictory
+negative-polarity children have 32-byte and 38-byte compact DRATs with hashes
+`8653b2a536bc6f133e61bcaab8c77c17746c5fa20bce6a1416e5270a33d5980e`
+and
+`630a82d7f4fe3e7e0d5751b7721ea461ab033cd50054a965cc261e92df9e3300`.
+Selection/refinement/terminal/state and local-chain JSON/log hashes are
+`7852312cd224d9900fa8f30a2a4c363b8aab381b30bbc24c77c4a5c181684340`,
+`a736bed92f70011a80010cd07f8c57cdf5e74bdb1efe473897d04f9da01f920d`,
+`eaf66fda6e9cd8676bc309f540fa5282da682b33502a2d238ffb0cfe184c8da0`,
+`14135d3f70564008c89eaf8017a8ee7fe113c245b3191f2b70aac090254517f9`,
+and
+`978e9e919b4e3871387518e7370ac621425bfd4341c4e477586d869ebe5a60ec` /
+`3156094eb8e387fe62cc507ed85c493bc5aa7c6f0b44145ed4605870343f8309`.
+Recursive v54-to-v55 replay accepted J297 state 625.  Chain/parent bundle
+hashes are
+`1be98c00026b5f71c978f0296e91c67ab797b552c09155eade7820cff8f2ff39` /
+`3ec100e6c97b15eb9d4902c9a03f6d32fe162fc16290ffec7268ed48347ddfec`;
+chain JSON/log hashes are
+`57ff0ce4cf83515e15969c11185f923417980e492c5a1e8e8a977e815e92e471` /
+`9226b3c3eb79847c63f165b827ecaecb12b7971e3505891ced8e09afba5faa96`;
+parent JSON/log hashes are
+`342c8892cce5debabb4325d1fe8d99106fd88484ab6819b4e415111d4259ff60` /
+`86ef31071c6033cee0b29d82bfd3c0bbe63721aa1ca520595121ed35d8800592`.
+The accepted production checkpoint is now J297/J326 50/53 segments at states
+625/652, with two/one UNKNOWN descendants.
+
 A separate exact J297 parent-0 state-623 leaf search completed.  CaDiCaL
 produced a 489,119,715-byte compact DRAT with hash
 `685e9722c01c062c010381cf457b8b91c91798dc414076bdb9603467dc8ee818`;
