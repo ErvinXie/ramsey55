@@ -2166,13 +2166,48 @@ No solver has yet produced a result manifest or triggered its deferred proof
 rerun.  The one-round state-592 J297 checkpoint is retained, but the v5
 portfolio was not restarted for that single extra unit constraint.
 
-An independent candidate complete-chain replay is also running over the
-committed rescued bundle plus the earlier queued segments through J326 state
-591 and J297 state 488.  Its uncommitted candidate-bundle hash is
-`136074dbfc712a0debc9423d0c42f048ad5b937a3ecbcb9e4d57a1f9e51a7d1b`.
-Even if that replay passes, the bundle must be regenerated and replayed again
-with the newer checked segments through states 615/592 before it can become
-the current complete-chain record.
+An independent four-segment/four-proof-job replay of the candidate chain
+through J326 state 591 and J297 state 488 has passed.  The candidate-bundle,
+audit JSON, and stdout-log hashes are
+`136074dbfc712a0debc9423d0c42f048ad5b937a3ecbcb9e4d57a1f9e51a7d1b`,
+`99e3b82cf096a45a9fe858de36ae61db9b2b9af18cc1e4c5d695779db4ef1dda`,
+and
+`8766afca28de2ad193e9207ccd7d3f1ddcf30a3ffccdca1cc1594398436e9ee4`.
+The terminal frontiers are two VERIFIED / two UNKNOWN for J297 and one / one
+for J326, so `all_cases_complete_unsat` is false.
+
+The one-sided failed-literal route was then replaced by one explicitly guarded
+frontier-growth round.  CaDiCaL lookahead selected variable 5581 for the J326
+cube in 0.196 seconds.  Both children remained UNKNOWN after the staged
+one/five-second proof attempts, so the complete binary cover was adopted as
+state 616 with two UNKNOWNs.  Its state and independent audit JSON/log hashes
+are
+`fa87326d4e7c98ebf8631abfbb80e1a07181b2e7d2d6976b50f73a777be3c128`,
+`99ddd8e6e76db24821a853c1d2cbe717ac900a66f8fb5f30ce21a07e5d934666`,
+and
+`b6d766dc06a590db26b72c0f1edda4e0e49ae0d8f64310723948723ebf668db6`.
+For J297, lookahead selected variables 7264 and -1140 for the two parents.
+The positive 7264 child closed in 0.118 seconds with compact DRAT hash
+`49bfd2097786f5ca1b5b651d3fc6d2aa694a495d579ccecbefb4cc14640ca54b`;
+the other three children remained UNKNOWN.  The adopted state-593 and audit
+JSON/log hashes are
+`13397257a60c60eeea83b18c9f948c878e976e3823047db4c07310f3a26bcdad`,
+`b1328db490b8a01740c9985c171179802116aa6e1e37a84a62f1aed4d8274899`,
+and
+`1327294758f4fd1b17faf80bff9e4aad308e22d9f4ee68cbdb5302707bc0e244`.
+Both one-round segment replays verify the guarded-growth record, binary cover,
+and every available proof.
+
+The current candidate whole-chain bundle now includes every queued and growth
+segment through J297 state 593 and J326 state 616; its hash is
+`cb4047e1a5581c621b2e90eecbfc5943ad83df57c59dae533ff42c82dd2eb9da`.
+The matching strengthened-parent candidate has hash
+`ed0ad6ee801d49cc58c196ece68ff1df3039d705d5491b70c274153bd90ff9f0`.
+A fresh whole-chain replay is running at nice 10.  A second hash-gated replay
+will compose the backbone certificates only if the chain audit reaches the
+exact J297 1 VERIFIED / 3 UNKNOWN and J326 0 / 2 terminal frontiers.  The
+intermediate v8 replay was stopped before it emitted a manifest, avoiding a
+full duplicate audit of a bundle already superseded by this guarded growth.
 
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
