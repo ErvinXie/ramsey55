@@ -18,6 +18,7 @@ from typing import Any
 if __package__:
     from tools.audit_fixed_pair_proof_bundle import (
         absolute_preserving_symlinks,
+        audit_proof_manifest,
         audit_chain_segments,
         chain_specs,
         cube_binding,
@@ -33,11 +34,12 @@ if __package__:
         AUDIT_SCHEMA as CHAIN_EXTENSION_AUDIT_SCHEMA,
         audited_chain_summary,
     )
-    from tools.prove_materialized_cubes import file_sha256
+    from tools.prove_materialized_cubes import cube_sha256, file_sha256
     from tools.solve_external_cubes import read_cnf, read_cubes
 else:
     from audit_fixed_pair_proof_bundle import (
         absolute_preserving_symlinks,
+        audit_proof_manifest,
         audit_chain_segments,
         chain_specs,
         cube_binding,
@@ -53,7 +55,7 @@ else:
         AUDIT_SCHEMA as CHAIN_EXTENSION_AUDIT_SCHEMA,
         audited_chain_summary,
     )
-    from prove_materialized_cubes import file_sha256
+    from prove_materialized_cubes import cube_sha256, file_sha256
     from solve_external_cubes import read_cnf, read_cubes
 
 
@@ -94,6 +96,22 @@ def descendant_unknown_indices(
         for index in validated_unknown_indices(terminal, cubes)
         if cubes[index][: len(ancestor)] == ancestor
     ]
+
+
+def verified_ancestor(
+    document: dict[str, Any], cubes: list[list[int]], index: int
+) -> list[int]:
+    """Return one manifest row only when it is a hash-bound verified proof row."""
+
+    validated_unknown_indices(document, cubes)
+    if index < 0 or index >= len(cubes):
+        raise ValueError("direct selective proof index is out of range")
+    row = document["results"][index]
+    if int(row["status"]) != 20:
+        raise ValueError("direct selective proof row is not verified UNSAT")
+    if row.get("cube_sha256") != cube_sha256(cubes[index]):
+        raise ValueError("direct selective proof cube hash mismatch")
+    return cubes[index]
 
 
 def base_audit_bundle_hash(audit: dict[str, Any]) -> object:
@@ -193,6 +211,7 @@ def main() -> None:
 
     root = Path(__file__).resolve().parents[1]
     chain_tool = root / "tools" / "audit_materialized_proof_chain.py"
+    proof_audit_tool = root / "tools" / "audit_materialized_cube_proofs.py"
     output_cases: list[dict[str, Any]] = []
     for label, (case, audited_case) in cases_by_label.items():
         chain = audited_chain_summary(
@@ -227,32 +246,75 @@ def main() -> None:
         covered: set[int] = set()
         audited_closures: list[dict[str, Any]] = []
         for closure_index, closure in enumerate(closure_specs.get(label, [])):
-            ancestor_path = required_path(closure, "ancestor_cubes")
-            ancestors = read_cubes(ancestor_path, int(formula["variables"]))
-            if len(ancestors) != 1:
+            has_chain = "segments" in closure
+            has_direct = "proof_manifest" in closure
+            if has_chain == has_direct:
                 raise ValueError(
-                    f"{label} selective closure {closure_index} must bind one ancestor"
+                    f"{label} selective closure {closure_index} must choose "
+                    "exactly one of segments or proof_manifest"
                 )
-            specs = normalize_specs(
-                closure, f"{label} selective closure {closure_index}"
-            )
-            seed = load_json(specs[0]["seed_manifest"])
-            validate_proof_binding(
-                seed,
-                formula,
-                cube_binding(ancestor_path, 1),
-                f"{label} selective ancestor seed",
-            )
-            closure_audit = audit_chain_segments(
-                specs,
-                f"{label} selective closure {closure_index}",
-                arguments.checker,
-                arguments.jobs,
-                chain_tool,
-                arguments.segment_jobs,
-            )
-            if not closure_audit["complete_unsat"]:
-                raise ValueError(f"{label} selective ancestor chain is incomplete")
+            if has_chain:
+                ancestor_path = required_path(closure, "ancestor_cubes")
+                ancestors = read_cubes(ancestor_path, int(formula["variables"]))
+                if len(ancestors) != 1:
+                    raise ValueError(
+                        f"{label} selective closure {closure_index} must bind "
+                        "one ancestor"
+                    )
+                specs = normalize_specs(
+                    closure, f"{label} selective closure {closure_index}"
+                )
+                seed = load_json(specs[0]["seed_manifest"])
+                validate_proof_binding(
+                    seed,
+                    formula,
+                    cube_binding(ancestor_path, 1),
+                    f"{label} selective ancestor seed",
+                )
+                closure_audit = audit_chain_segments(
+                    specs,
+                    f"{label} selective closure {closure_index}",
+                    arguments.checker,
+                    arguments.jobs,
+                    chain_tool,
+                    arguments.segment_jobs,
+                )
+                if not closure_audit["complete_unsat"]:
+                    raise ValueError(f"{label} selective ancestor chain is incomplete")
+                certificate = {
+                    "kind": "complete materialized proof chain",
+                    "ancestor_cubes": str(ancestor_path),
+                    "ancestor_cubes_sha256": file_sha256(ancestor_path),
+                    "chain": closure_audit,
+                }
+            else:
+                proof_path = required_path(closure, "proof_manifest")
+                proof = load_json(proof_path)
+                if proof.get("formula") != formula:
+                    raise ValueError(f"{label} direct selective proof formula mismatch")
+                proof_cubes_path = Path(proof["cubes"]["path"])
+                if file_sha256(proof_cubes_path) != proof["cubes"]["sha256"]:
+                    raise ValueError(f"{label} direct selective cube hash mismatch")
+                proof_cubes = read_cubes(
+                    proof_cubes_path, int(formula["variables"])
+                )
+                if len(proof_cubes) != int(proof["cubes"]["count"]):
+                    raise ValueError(f"{label} direct selective cube count mismatch")
+                proof_index = int(closure["proof_result_index"])
+                ancestors = [verified_ancestor(proof, proof_cubes, proof_index)]
+                proof_audit = audit_proof_manifest(
+                    proof_path,
+                    arguments.checker,
+                    arguments.jobs,
+                    proof_audit_tool,
+                )
+                certificate = {
+                    "kind": "direct verified materialized proof row",
+                    "proof_manifest": str(proof_path),
+                    "proof_manifest_sha256": file_sha256(proof_path),
+                    "proof_result_index": proof_index,
+                    "proof_audit": proof_audit,
+                }
             descendants = descendant_unknown_indices(
                 terminal, terminal_cubes, ancestors[0]
             )
@@ -268,11 +330,10 @@ def main() -> None:
             covered.update(descendants)
             audited_closures.append(
                 {
-                    "ancestor_cubes": str(ancestor_path),
-                    "ancestor_cubes_sha256": file_sha256(ancestor_path),
                     "ancestor_literal_count": len(ancestors[0]),
+                    "ancestor_cube_sha256": cube_sha256(ancestors[0]),
                     "covered_terminal_unknown_indices": descendants,
-                    "chain": closure_audit,
+                    "certificate": certificate,
                     "complete_unsat": True,
                 }
             )

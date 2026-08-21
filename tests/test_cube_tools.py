@@ -912,6 +912,31 @@ class ExternalCubeToolTests(unittest.TestCase):
                 terminal, cubes, [1]
             )
 
+    def test_selective_closure_selects_only_verified_direct_row(self) -> None:
+        cubes = [[1, -2], [-1, 3]]
+        terminal = {
+            "results": [
+                {
+                    "index": 0,
+                    "status": 20,
+                    "cube": cubes[0],
+                    "cube_sha256": MATERIALIZED_PROVER.cube_sha256(cubes[0]),
+                },
+                {
+                    "index": 1,
+                    "status": 0,
+                    "cube": cubes[1],
+                    "cube_sha256": MATERIALIZED_PROVER.cube_sha256(cubes[1]),
+                },
+            ]
+        }
+        self.assertEqual(
+            SELECTIVE_ANCESTOR_CLOSURES.verified_ancestor(terminal, cubes, 0),
+            cubes[0],
+        )
+        with self.assertRaisesRegex(ValueError, "not verified UNSAT"):
+            SELECTIVE_ANCESTOR_CLOSURES.verified_ancestor(terminal, cubes, 1)
+
     def test_chain_bundle_extension_accepts_recursive_audit_checkpoint(self) -> None:
         segment = {"first_round": 3, "seed_manifest": "seed"}
         appended = {"first_round": 4, "seed_manifest": "next"}
