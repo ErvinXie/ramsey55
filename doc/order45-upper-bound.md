@@ -2657,6 +2657,65 @@ an identical terminal manifest.  A fresh v16 whole-chain audit is running at
 nice 10; neither v16 nor its strengthened-parent bundle is accepted until
 that replay and its exact terminal-count gate pass.
 
+The next guarded J326 round split the state-623 leaf on variable 5945.  Both
+children remained UNKNOWN after the staged one/five-second checks, so the
+driver rejected the 1--2 growth and retained state 623.  The candidate
+manifest/refinement/halt hashes are
+`566048d887b658b35c83294dedd0f4861481f2eb789136637b7b7db6e0ba89b9`,
+`4843c51c155ee72dbc2b0eae7b90c12ef60092ced6639320dcd4c25e807f4b63`,
+and
+`7ce4afe0f8f8e0812af145973681a90a8b6b6cd4b770c1f47d938e0d9c698043`.
+The complete two-child family has ICNF/selection hashes
+`fa87f65defb5a431884aae8b7156c4a6610a9ad4d0499e96cea19808852e678b`
+and
+`3845229eed7cd1b5dcdaceb3aa6b7e0eccc7d76a0efdfaba4025d4032e3aa178`;
+certified iGlucose, Kissat seed 15, and CaDiCaL seed 15 search both leaves at
+nice 19.
+
+On J297, Kissat seed 15 closed child 0 of the previously rejected state-599
+2--4 growth in 17.740 seconds and reproduced the result in 17.767 seconds.
+The 3,906,881-byte compact DRAT has hash
+`66dd7b972cffee7bd25953a3339feb728ae5ebf4cdc59b464118cbb569192995`.
+Its frozen one-VERIFIED/three-UNKNOWN checkpoint manifest and independent
+audit-log hashes are
+`477b64a321ff94767c0bb1f0cbbb62e494418386f6ca35b25c2d9b2c1890c17a`
+and
+`d4663a77837b6d8bb809e059514e16beab078d460156ddbc68ee7ac2a57c698b`;
+exact-family composition has manifest hash
+`8f68b0b5ffd1effd5de7bae6a0004ccb5f40394bea295e58e05891d05e87a12a`.
+Three children remain UNKNOWN, so this does not replace the authoritative
+two-leaf state 599.
+
+The complementary child of the same original J297 parent was then isolated
+as a one-leaf subproblem.  A zero-proof progress finalization was correctly
+rejected, so a 0.001-second solver run produced an explicit zero-VERIFIED /
+one-UNKNOWN seed manifest instead; its hash is
+`f1c3b80ea76d0f252dc6b1cb3bcf289986bd3faf23f186883f576cf0f492e172`.
+Guarded lookahead from that seed closed one sibling at each of variables 6316
+and 6870 with compact DRATs of 47,971 and 2,836 bytes, hashes
+`eec1f044014213323ad414f05777b1954f7ac199dec276f837c18b4027e70dfc`
+and
+`d64449c5f663b8b189d0c2b0c0b46969ed4e9dd14d50aa5038a95b7ab6473cc9`.
+It retained a single deep UNKNOWN through subchain state 602, then rejected a
+variable--1140 1--2 growth.  The state/final-manifest/halt hashes are
+`f88fffc687924536f8fa237adb896406100a36d9526182874c72740f29d12de0`,
+`c5238f6bd3765c282f86b3298d533c5dcec50a06ac4aac31244321afa8762d2a`,
+and
+`236d525745a23143de7e8c61fb096f8e1f66a9c8f75ab51b23437f9f7a3f5d86`.
+Independent replay accepted three manifests and two refinements with audit
+JSON/log hashes
+`78c8f78372499a47bc6d1229a3b4efa1bd7b2cd73c46147f9b2c580804063518`
+and
+`3cbcad7db9aeb25dabd9b7a89455ce87cdaa93b1069066f3e8808371722f8bbb`.
+The deep-leaf ICNF/frontier hashes are
+`22bc2fec7d66374efcdc0546103447cfb9726d4653eb8b98917c60781ed87d3a`
+and
+`62fdcd9bd259d739acaca602fccd8966822c4a7c882f1365c8a3986a934fe4c4`.
+Two ancestor-only comparison processes were stopped and replaced one-for-one
+by Kissat seed 16 and CaDiCaL seed 17 on this audited deeper leaf.  This is a
+certified subchain, but it remains exploratory until its leaf closes and the
+selective subtree is joined back to the state-599 cover.
+
 The older 7,200-second CaDiCaL seed-7 comparisons also finished.  J297 state
 595 remained zero VERIFIED / two UNKNOWN, with manifest/audit-log hashes
 `669a551bbcfa823ba4dbf39bc2ff4f0904691b2da2a5e448d0d7273edb3bc59e`
