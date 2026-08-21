@@ -2425,5 +2425,56 @@ terminal rounds 595/621, VERIFIED counts 2/3, and UNKNOWN counts 2/3.
 strengthened-parent audit, which independently replays this chain again and
 checks the false-polarity backbone composition.
 
+The state-620 Kissat seed-5 comparison subsequently closed two of the three
+J326 UNKNOWN parents.  Their compact DRATs are 174,534,017 and 176,834,884
+bytes with hashes
+`18d4ca9953c4996fea9dfbe465ad0eb4748dc8a7f8ba237f14d7d37f98ff3742`
+and
+`6277c86f2da94f4aef796c8de29e46078db35b35132253d687e4525d538c5dbd`.
+The persistent checkpoint manifest and its independent audit-log hashes are
+`9abf9211351ea35537ab42ffefd3f142558a14ce35ba350117084f672846522e`
+and
+`ef6e9aab2129af37b68d6a323e710f1204f35ba38566a6564df2168ebc0d15ad`;
+the exact-family composition with the audited state-620 primary manifest has
+hash
+`e71c5ea159d088b0a8fd382cd7ecae2b687ba5d8af21a0ad2e0f919df2894692`
+and leaves three VERIFIED / one UNKNOWN.
+
+Restarting the guarded chain from that composition split the sole remaining
+parent on variable 6498.  One child closed with a 79,371-byte compact DRAT of
+hash
+`cbafb9b8e5382bb4467765162e2d598525bcf8e892629c2e1d5cf82cae65dfd9`;
+the other remains UNKNOWN.  The state and terminal-manifest hashes are
+`4b3d488acb04b9a5319bce8a774ca53cea7ee88a63a2be042817e73b5c1e8ca3`
+and
+`7d657b87ee71ef185bac43eaa6ae6fdc21dc02aaa21f394639b6efef65eebc67`.
+An independent one-round chain replay checked both the exact-cube retry and
+the complete binary refinement; its JSON/log hashes are
+`2e76182425a370ff0a0ae341953c3cc652d5c1cbd5e699840044bac853975b6b`
+and
+`d99f98e72d96eb75479592363572ed7a08100452a6f83e1a45c418ce7f780ac8`.
+Thus the certified J326 frontier has been reduced from three UNKNOWN leaves
+to one, but J326 is not yet UNSAT.
+
+The previous state-621 split of the same remaining parent used variable 9448
+and left cube `2ff9dd8e...` UNKNOWN; the new split leaves the distinct cube
+`8f640a56...` UNKNOWN.  Both are now searched independently.  The selected
+old-leaf ICNF/selection-manifest hashes are
+`3075767422be32691a67c0142ceabb31b66c70e40d23bf18a980bc1a4d0c8264`
+and
+`c1f3c74359dafbda2c039edee09f91cb83524ea5a831964b22a88adf88bc0c52`;
+the new-leaf ICNF/frontier-manifest hashes are
+`d97568c428257cdf27ddc0e9238ec0c4b6bc6ca116ea90dc578fddea8ec50234`
+and
+`e4553bcc908a21d97b2a46cd7272ffd7b800fa73d5e91f0f223c5e080091e488`.
+
+The resulting v13 chain and strengthened-parent candidate hashes are
+`01996f776c5a211442532e1ee7521bbb454389fffa19d3e4fa2438f469b02ad7`
+and
+`28845912c868616ce387bd258e0a3b3a1289761287c9a2260fd31b1df4ae5f9e`.
+A fresh whole-chain audit is in progress; it is expected to reproduce J297
+at two UNKNOWN leaves and J326 at one.  Until that replay passes, v12 remains
+the latest whole-chain-audited candidate.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
