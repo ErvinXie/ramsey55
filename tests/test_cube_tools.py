@@ -51,6 +51,7 @@ MATERIALIZED_CHAIN_BUNDLE = load_tool("audit_materialized_proof_chain_bundle")
 MATERIALIZED_CHAIN_BUNDLE_EXTENSION = load_tool(
     "audit_materialized_proof_chain_bundle_extension"
 )
+SELECTIVE_ANCESTOR_CLOSURES = load_tool("audit_selective_ancestor_closures")
 STRENGTHENED_PARENT_BUNDLE_EXTENSION = load_tool(
     "audit_strengthened_parent_chain_bundle_extension"
 )
@@ -875,6 +876,41 @@ class ExternalCubeToolTests(unittest.TestCase):
                 MATERIALIZED_CHAIN_BUNDLE_EXTENSION.bind_first_extension_boundary(
                     previous, 7, seed, "J"
                 )
+
+    def test_selective_closure_matches_only_unknown_descendants(self) -> None:
+        cubes = [[1, -2, 3], [1, 2, 4], [-1, 5]]
+        terminal = {
+            "results": [
+                {"index": 0, "status": 0, "cube": cubes[0]},
+                {"index": 1, "status": 20, "cube": cubes[1]},
+                {"index": 2, "status": 0, "cube": cubes[2]},
+            ]
+        }
+        self.assertEqual(
+            SELECTIVE_ANCESTOR_CLOSURES.descendant_unknown_indices(
+                terminal, cubes, [1, -2]
+            ),
+            [0],
+        )
+        self.assertEqual(
+            SELECTIVE_ANCESTOR_CLOSURES.descendant_unknown_indices(
+                terminal, cubes, [-1]
+            ),
+            [2],
+        )
+
+    def test_selective_closure_rejects_result_cube_mismatch(self) -> None:
+        cubes = [[1, -2], [-1, 3]]
+        terminal = {
+            "results": [
+                {"index": 0, "status": 0, "cube": cubes[1]},
+                {"index": 1, "status": 0, "cube": cubes[0]},
+            ]
+        }
+        with self.assertRaisesRegex(ValueError, "result/cube mismatch"):
+            SELECTIVE_ANCESTOR_CLOSURES.descendant_unknown_indices(
+                terminal, cubes, [1]
+            )
 
     def test_chain_bundle_extension_accepts_recursive_audit_checkpoint(self) -> None:
         segment = {"first_round": 3, "seed_manifest": "seed"}
