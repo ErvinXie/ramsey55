@@ -3282,5 +3282,67 @@ The accepted production checkpoint is therefore J297/J326 33/35 segments at
 states 608/631, with two/one UNKNOWN descendants.  A guarded J326 state-631
 continuation is running while all exact residual portfolios continue.
 
+Kissat seed 34 then certified row 1 of the exact three-UNKNOWN J297 family
+with a 111,143,175-byte compact DRAT of hash
+`35150257178a366f01655ddaa89006bb78a00ccabbae3300643988f6ee3f8d38`.
+The frozen one-VERIFIED/two-UNKNOWN checkpoint manifest has hash
+`cda3cde5daf42f1ce341842df5e06113fbfec86e10ce090ec068d9336f284168`;
+its independent audit log has hash
+`920c23df17293ab33b634b630e4acfd3e6fc34342cd13f46b9b11ae063c30ad5`.
+Composing it with the existing 8-byte row-0 proof advances J297 to state 609
+at two VERIFIED / two UNKNOWN.  The composed refinement, terminal, state,
+and independent chain-audit JSON/log hashes are
+`ae496280db9494cac004536be9b0cacfe281c7c7dfa46d32a8307f1e91e1c7f3`,
+`b9c33495e4649419f5b57f5c501fee3ae18843f3bacd46a36b0420d10c9eded0`,
+`9f3a7dc2ec1924235f20b42641bb1e21ea4f226d513b6f7a6e5e6e325cedcc58`,
+and
+`a9bd206595a92a7b35d6cecf69f62360a9d30b089fe616e98ddddac6b1d2ebe7` /
+`2b433d165d927e74df2157a6823efdbc3d03d8e2c8945cde9eece3ee07f0846c`.
+
+The guarded J326 state-631 continuation retained width one through four
+successive splits on variables `5393`, `6862`, `7044`, and `-7409`.  Their
+8-, 58,366-, 14,941-, and 67-byte compact DRAT hashes are respectively
+`11a717bb687cdafd9b51feba7f44bc4c37793e47f27910e3c57709bae20f5760`,
+`598d468229e327697119e5d7c8fb26b9936c68e95843a806668929a1c28be718`,
+`f44674a1fe253c9ce6103e5e394a6ed1c11b84b0d9fbd297817b77e9e367608c`,
+and
+`896fb8552e0ab250899c690e861f942a7327db1fd58e5b5c7e37b3061b839eb4`.
+The four refinement hashes are
+`6d0b7a973a2f67f97d6f836c605f757e84f2f79bdcbeb6bdd84826c8aa2842d2`,
+`25eb8e0c122da73b2c2261bc61fb53a3e8c6fd75a4180a80ac5da6eeace2448c`,
+`f00bffde7dafc99efcdf754c87538229ec378c9e60213c4c8fc1d0477f1576f7`,
+and
+`a7c2de5b904375115eddfe031213d92c8245e0691e4a8d21e7842aa5fad18718`.
+The resulting state-635 terminal/state hashes are
+`fb861dfe79b5a6ed7429a821426d2e4ccf8ca120afefdf67d763979812e3ca3c`
+and
+`09a8e3b78bb1309f6c903adbd3afdc07d5f1ab377656b83060692a3e7bb30d73`;
+the four-round chain-audit JSON/log hashes are
+`efa4b963b2355da06347030e4d54bb72576c7ab5b2877ed585d15d18faff3bae` /
+`2837828418b8d3d57e963327445c726e3550a78b06509a5a59b6a7516f75fe5f`.
+Splitting the remaining cube on variable `6309` left both children UNKNOWN,
+so the 1--2 growth was rejected.  Its child-family, refinement, candidate,
+and halt hashes are
+`95100f8cb6f366f6dd1f84e83c219e4d198646a87f1314479dda9c2d7c8766fc`,
+`88d53dd01a3e07f6fe1047cc47f74c647b6e46ad0c6df8802b46516192f7fa9f`,
+`ab0d284cab47f8a2bea42dd0cd4b10bd0e3411c9347ec655c061c7c0a3be676f`,
+and
+`e4d1ad02104d04c022361792a312f8f35427b9d4eb6e58f9a65842470b5ea03f`.
+A seed-35 three-engine portfolio is searching the exact two-child family.
+
+The v24 chain and strengthened-parent bundle hashes are
+`0598d24201fa68175521466acc3e7d7b99a6586b8d4eebbf018033ff5e78c2df`
+and
+`66b045a0aba2cc394e80ff486344ea0b98a7b89e5de7e312ef0df3878269fada`.
+Recursive v23-to-v24 replay passed with chain JSON/log hashes
+`51bcf8e1122caaef8f7b9e336e2e01537a349c8ec36b013984cddd234945c425` /
+`9ce698ff81827e7f8febb217ba684210057d3f0ac03fcbd76fa23a1b63264f87`;
+the strengthened-parent extension passed with JSON/log hashes
+`86b847849f72e519cafb4c79fbfe7412b41f19d1346cb82c6e64ffcd84751cba` /
+`3d08e6335bcc424d935badc091aeb9562a098baf4ae1992115ecb7f15114c6e4`.
+The accepted production checkpoint is now J297/J326 34/36 segments at states
+609/635, with two/one UNKNOWN descendants.  The guarded J297 state-609
+continuation and all exact residual portfolios continue remotely.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
