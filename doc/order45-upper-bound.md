@@ -4315,5 +4315,16 @@ the links produced the exact same JSON/log hashes
 Future residual telemetry therefore writes to `/data` while all manifest
 paths and audit identities remain unchanged.
 
+A 50-round continuation batch was resumed through those links.  In parallel,
+two iGlucose deferred-proof jobs were launched on exact later leaves exported
+from J297 state 697 and J326 state 721.  Their ICNF hashes are
+`878aff96e0eac5d04c3918548a22ea6c05407728c9842cfb5b22809635d3c4c3`
+and
+`ce9946a6f2fa35f2b287ae8e3ebd5786922531fd6709f88d03be5f3dc3fb4db5`.
+Each first searches without retaining a raw proof; an UNSAT result triggers a
+second certified run, compact DRAT generation, and checker replay entirely in
+tmpfs.  These diversify the existing CaDiCaL/Kissat probes without consuming
+root-disk certificate space.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
