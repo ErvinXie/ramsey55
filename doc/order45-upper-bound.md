@@ -4303,5 +4303,17 @@ the v7 selective-residual join audit has hash
 Further screened expansion is paused with about 3.3 GB left on the root
 filesystem; all eight old and deep no-proof probes continue in tmpfs.
 
+The ARM builder also exposes a separate 2 TB `/data` filesystem with about
+1.7 TB free.  The four v199--v202 residual root/work directories were copied
+there with hard links preserved.  Per-directory checksum dry-runs reported
+zero changes and identical file counts.  Their original repository paths are
+now symbolic links to `/data/ramsey55/...`; the verified duplicate root-disk
+copies were removed, restoring about 1 GB.  A fresh 58/57-round replay through
+the links produced the exact same JSON/log hashes
+`132c1a693203a1e8c557ab8bda279875daf0a494909f789a488682efa85fe162` /
+`8b52e9fe8d790ec5a3b9cd85e567d29721f24fd0aeb8da38ee7ca66c92d5add9`.
+Future residual telemetry therefore writes to `/data` while all manifest
+paths and audit identities remain unchanged.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
