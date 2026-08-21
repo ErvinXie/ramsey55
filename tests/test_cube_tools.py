@@ -52,6 +52,9 @@ MATERIALIZED_CHAIN_BUNDLE_EXTENSION = load_tool(
     "audit_materialized_proof_chain_bundle_extension"
 )
 SELECTIVE_ANCESTOR_CLOSURES = load_tool("audit_selective_ancestor_closures")
+SELECTIVE_ANCESTOR_CLOSURES_EXTENSION = load_tool(
+    "audit_selective_ancestor_closures_extension"
+)
 STRENGTHENED_PARENT_BUNDLE_EXTENSION = load_tool(
     "audit_strengthened_parent_chain_bundle_extension"
 )
@@ -936,6 +939,70 @@ class ExternalCubeToolTests(unittest.TestCase):
         )
         with self.assertRaisesRegex(ValueError, "not verified UNSAT"):
             SELECTIVE_ANCESTOR_CLOSURES.verified_ancestor(terminal, cubes, 1)
+
+    def test_selective_closure_extension_propagates_descendants(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            ancestor_path = root / "ancestor.icnf"
+            ancestor_path.write_text("a 1 -2 0\n", encoding="ascii")
+            ancestor = [1, -2]
+            closures = [
+                {
+                    "ancestor_literal_count": 2,
+                    "ancestor_cube_sha256": MATERIALIZED_PROVER.cube_sha256(
+                        ancestor
+                    ),
+                    "certificate": {
+                        "kind": "complete materialized proof chain",
+                        "ancestor_cubes": str(ancestor_path),
+                        "ancestor_cubes_sha256": MATERIALIZED_PROVER.file_sha256(
+                            ancestor_path
+                        ),
+                        "chain": {"complete_unsat": True},
+                    },
+                    "complete_unsat": True,
+                }
+            ]
+            cubes = [[1, -2, 3], [1, 2, 4], [1, -2, -3]]
+            terminal = {
+                "results": [
+                    {"index": index, "status": status, "cube": cube}
+                    for index, (cube, status) in enumerate(
+                        zip(cubes, (0, 0, 20), strict=True)
+                    )
+                ]
+            }
+            propagated, covered = (
+                SELECTIVE_ANCESTOR_CLOSURES_EXTENSION.propagate_closures(
+                    closures, terminal, cubes, {"variables": 4}
+                )
+            )
+            self.assertEqual(covered, {0})
+            self.assertEqual(
+                propagated[0]["covered_extended_terminal_unknown_indices"], [0]
+            )
+
+    def test_selective_closure_extension_rejects_tampered_ancestor(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            ancestor_path = Path(raw) / "ancestor.icnf"
+            ancestor_path.write_text("a 1 -2 0\n", encoding="ascii")
+            closure = {
+                "ancestor_literal_count": 2,
+                "ancestor_cube_sha256": "0" * 64,
+                "certificate": {
+                    "kind": "complete materialized proof chain",
+                    "ancestor_cubes": str(ancestor_path),
+                    "ancestor_cubes_sha256": MATERIALIZED_PROVER.file_sha256(
+                        ancestor_path
+                    ),
+                    "chain": {"complete_unsat": True},
+                },
+                "complete_unsat": True,
+            }
+            with self.assertRaisesRegex(ValueError, "ancestor cube hash mismatch"):
+                SELECTIVE_ANCESTOR_CLOSURES_EXTENSION.certificate_ancestor(
+                    closure, {"variables": 3}
+                )
 
     def test_chain_bundle_extension_accepts_recursive_audit_checkpoint(self) -> None:
         segment = {"first_round": 3, "seed_manifest": "seed"}
