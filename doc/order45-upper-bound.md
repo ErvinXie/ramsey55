@@ -1,6 +1,6 @@
 # Order-45 upper-bound program
 
-Updated: 2026-08-20
+Updated: 2026-08-21
 
 ## Current status
 
@@ -3135,9 +3135,50 @@ halt, and refinement hashes are
 `abf5a91896ad979a679c214ee5f62046c687e29c6f6e0e9425e957d893858a5c`,
 and
 `2466710376cb6bf113e08379ead0277a9cd63db4759321f10642ffcd637acb5d`.
-The exact row-3 child family is already under three-engine proof search; the
-common authoritative state remains 606 until one of those proofs is published
-and independently replayed.
+Kissat seed 29 later certified row-3 child 0 with a 276,221,984-byte compact
+DRAT of hash
+`d33c50a72378d7ade9b809e6c5c429d0473f4be0bd8fa8c16021fcd8ed36e4c7`.
+The frozen one-VERIFIED/one-UNKNOWN checkpoint manifest has hash
+`34852ea7277eae5c966cb6bc2740abbce55f04bd37fcde7ade3b547b4297c08a`,
+and its independent replay passed.  Exact-family composition advances the
+selective row-3 chain to state 607; its refinement/terminal/state hashes are
+`7e0e9138406028aa67126cfda6c5a7c25bb6da131201d88f8b7726f7008c4911`,
+`1adb009d0b433ddb4fb0e9efe61fbc59c6bf3c680141a28e362b384b007fe168`,
+and
+`4736cd31819c112a3dd7c033b12d9371cb5fc534c01d0665028f6154e0e86764`;
+the one-round audit JSON hash is
+`7d72d38deec0bb3e0637cf0f536a83d5d88b8896e92485bfe35c6e4500fd45d2`.
+Composing the same row-3 result into the rejected four-child common family
+retains its 67-byte row-1 proof and advances the authoritative common J297
+chain to state 607 at two VERIFIED / two UNKNOWN.  Its refinement, terminal,
+state, and independent chain-audit hashes are
+`1c6d3a6dcaa9632f3e696dde92981769dfedfe800c2f9878b08b584d20354136`,
+`5cf5c04d2cc7f899a890398b1e22bbb900ddb4f307bddc1d5e67feb7ea1d2aa2`,
+`70de1bbb19d0aa8cc96d4c06d0816c582c070c624577875e0ac92a4080996469`,
+and
+`091a13936e4fa7a8505233cb5d8a98a88e1070a02944c56311f2acf455e62e6c`.
+The v21 bundle appends this single J297 segment while carrying the J326
+state-629 terminal unchanged.  Its recursive chain and parent-extension audit
+hashes are
+`1c31ff24774cb619c02878cd4c5987bcd6b7caf8ab88ddfdb87ae15b99a05242`
+and
+`315b551ae7d40331ef20d58be040019a8f9fb2a2243d6dc1103671ffdd7aa1c0`.
+The accepted production checkpoint therefore has 32 J297 and 33 J326
+segments, with two and one UNKNOWN cubes respectively.
+
+A guarded continuation from the exact J297 state-607 seed closed the first
+row-1 child with a 3,583-byte DRAT of hash
+`7b1b2045a13eb63b4b8dddeaf974dedcc598d8068c9087b04c91266f61ebfa87`
+but left the other row-1 child and both row-3 children UNKNOWN, so the 2--3
+growth was rejected.  Child-family/refinement/candidate/halt hashes are
+`6484955eb57de7d547e5475ed8d2d8b5a3af6b0d9b11ffa6cff2e24ef820fac8`,
+`e9574eaa88b0473607b4b3a4248d1338264f3e56c54dbe3bdc4d4001a86a9c9a`,
+`613daaeb41e116d7d8fd26cc4083a8635ce864d4f0913d4d9eb0734f01ddde0c`,
+and
+`27066b3f086d19a99196f11076f02a1575ae8e6b10c663b82fe57765e7aab549`.
+Three-engine portfolios now attack the exact two-child row-3 subfamily and
+the single surviving row-1 child while the corresponding unsplit ancestor
+searches continue.
 
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
