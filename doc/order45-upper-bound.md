@@ -2726,6 +2726,25 @@ and
 The remaining child is still UNKNOWN and is being searched directly while a
 guarded continuation replays the new seed.
 
+That continuation retained exactly one VERIFIED / one UNKNOWN for four more
+rounds through J326 state 628, then rejected the next 1--2 growth.  The
+terminal/state/halt hashes are
+`13de057394d117da8fa0621a88a9f9fb7dc68665ec9165c00147cb38e6e6d652`,
+`3cf03d5c89b55201dd11fb111a6731373728b1ace6cd5a5c6792d6ce5cbc4266`,
+and
+`f9e3cdc1633cb4ec68833ec2b4d2225169f1a3e9138012a624ca3e579d207972`.
+Independent four-round replay checked five manifests and four refinements;
+its JSON/log hashes are
+`8be61a539d2d5c5f4f0acbe1a36ab9b585e199f2da501868acc06cfd9758c677`
+and
+`313dd20f88075ffb55813afaef2446217510d2a6e77c77f0a4c1ee84eb611fe7`.
+The rejected round-628 children/refinement hashes are
+`f635572791fb4faac13facfd4fc44255fa38a3ed5f5c0cd103711f962946607c`
+and
+`fb81acd5a827eabba1dbbd032db4fcdcbdceb7938e419049acaf5165200dc16c`.
+Ancestor-only state-623/state-624 searches without proofs were stopped and
+their six cores moved to this deeper two-child family.
+
 On J297, Kissat seed 15 closed child 0 of the previously rejected state-599
 2--4 growth in 17.740 seconds and reproduced the result in 17.767 seconds.
 The 3,906,881-byte compact DRAT has hash
@@ -2899,6 +2918,25 @@ and
 `b11ead002a87857ec5e570eef1b5ae1b802d2b51f4e1eec2aa49084fbd5ee8ce`.
 The row-3 right child remains UNKNOWN; direct three-engine search and a
 guarded dynamic continuation run in parallel.
+
+The guarded row-3 continuation then retained one VERIFIED / one UNKNOWN for
+four rounds through selective state 606 before rejecting a 1--2 growth.  Its
+terminal/state/halt hashes are
+`aea915854da99023dd8c096a51e0482c2e0abf85c2d0335ba4d2ad26e29146b6`,
+`5a1441e78f80363d2c69fe77c7d2447c4b0c1b9aecaf38b48215da1abbd07697`,
+and
+`cf4b345eda7254c8b31872ea65bd286153737aac6f9c32a32451904d87db9b5a`.
+Independent replay checked five manifests/four refinements with JSON/log
+hashes
+`0d614453e9f2b73fd363f1f524d9661976ac5c2b9a0a0819ccee33433d6f571f`
+and
+`f0011daf25c374ff8e44421f06ff958c29583b51883023dc56d0d549416fded0`.
+The rejected child-family/refinement hashes are
+`5b686aa5c9bceab31fbf43c6a02669c174bce7eba31400f92e96007a90daa094`
+and
+`b5d3b600754876722d9faaa3c5b451c000df881c039ed3b633cb6563107d94ab`.
+The three old state-602 searches produced no proof and were replaced by
+three two-way portfolios on these deeper children.
 
 The older 7,200-second CaDiCaL seed-7 comparisons also finished.  J297 state
 595 remained zero VERIFIED / two UNKNOWN, with manifest/audit-log hashes
