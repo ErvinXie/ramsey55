@@ -2152,8 +2152,8 @@ a scheduling boundary for those probes, not an exhaustion of either branch.
 
 The state-591/488 v3 and state-613/512 v4 deferred portfolios were superseded
 after deeper checked frontiers became available, with their PID and runner
-logs retained.  The current v5 portfolio searches J326 state 615 and J297
-state 591 using 22 wrappers and 33 single-core solver processes.  The J326
+logs retained.  The v5 portfolio searched J326 state 615 and J297 state 591
+using 22 wrappers and 33 single-core solver processes.  The J326
 ICNF/export-manifest hashes are
 `0e82380295183629f344394a91e2d6fb8de5915a54c208153f0510d80bedc7e4`
 and
@@ -2162,9 +2162,21 @@ the J297 hashes are
 `2f7919edfc974d1de6ec27b12f0b0f070e24d4a24587253bbacb4bdcca11275c`
 and
 `dbe98b1954dac937351e0085e4095d50df6687e54eb8e7fb0ccfb1f30245dd81`.
-No solver has yet produced a result manifest or triggered its deferred proof
-rerun.  The one-round state-592 J297 checkpoint is retained, but the v5
-portfolio was not restarted for that single extra unit constraint.
+All 33 attempts reached their 7200-second limits without reporting UNSAT, so
+no deferred proof rerun was triggered: J326 remains 0 VERIFIED / 1 UNKNOWN and
+J297 remains 0 / 2 in this portfolio.  The 22 terminal manifests were copied
+from tmpfs into the persistent `runs/` directories and independently audited.
+Their two 11-source composed manifests have hashes
+`162bc246d80fe92073799c614c5db673e151cc5d3d581da72f9a0aa99e1be503`
+and
+`0b4923d220c0f6734f79e341196a6eb5423e80628883853b2132fad8cbc43707`;
+the composed audit-log hashes are
+`3d9c660d9fe1ad748481036a6378c600bbec37efa5e948ac800d08be7a4e6508`
+and
+`3f8f88e02ae9c2005b178d357544c6a7f2b807f8201e8e9f794c8ea16a08961b`.
+The attempts total 80,721.433701 J326 solver-seconds and 161,442.883602
+J297 solver-seconds.  The one-round state-592 J297 checkpoint is retained,
+but the v5 portfolio was not restarted for that single extra unit constraint.
 
 An independent four-segment/four-proof-job replay of the candidate chain
 through J326 state 591 and J297 state 488 has passed.  The candidate-bundle,
@@ -2251,10 +2263,11 @@ the J297 hashes are
 `a88d7a86a7134a9cbb1d1abc50540d73dea9be38fda862d09bcdba7f75cfde8e`
 and
 `4a86b9650888d238c32f0ccf58b0cad81e78bebe749b8b30a2a223033c6d1ffb`.
-The original v5 portfolio remains live.  A nice-15 CaDiCaL seed-5 run searches
-the earlier 2/3 leaves, while a nice-15 Kissat seed-5 run searches the final
-3/5 leaves.  These 13 comparison children use deferred proof and have not yet
-reported UNSAT or started a proof rerun.
+The original v5 portfolio subsequently ended with all 33 attempts UNKNOWN, as
+recorded above.  A nice-15 CaDiCaL seed-5 run searches the earlier 2/3 leaves,
+while a nice-15 Kissat seed-5 run searches the final 3/5 leaves.  These
+comparison runs use deferred proof; subsequent verified results are recorded
+below.
 
 The seed-5 CaDiCaL comparison then closed one of the three earlier J297 leaves.
 Its deferred search and proof rerun took 207.942122 and 135.185220 seconds;
