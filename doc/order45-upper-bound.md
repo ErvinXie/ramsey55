@@ -1983,5 +1983,41 @@ After the rescued-v6 strengthened-parent audit completed, both live screened
 runners were resumed from states 522/418 and advanced at constant width
 through at least J326/J297 states 544/430.
 
+Running both `screen-jobs=16` refiners concurrently can saturate all 64
+logical CPUs.  To avoid diluting the next wall-time solver portfolio, both
+runner parents were stopped again after their in-flight refiners completed.
+The next exported frontiers are J326 state 545 and J297 state 430.  Their
+ICNF/original-lineage hashes are
+`ebb59be362cb698ed76375c487e0587af13b34cc7ca9fb00be5a92830487a04e` /
+`ea2af0f204dc6d8b9c46d4262ebd62df80afd7af95ec053406bb1c04c50d6d84`
+and
+`a66d154e8347af1e1797acd61490f63e38853e7ada49a264cb509be90b9f6549` /
+`1d6029608cc0a1d69dbf0978c9badec3a9c066c13821ccf2fcd87b17672ff937`.
+Relocations v41/v42 have record hashes
+`7068a6c227687f348498376150c4be2237a46941f1dddcca021f4db1636473b8`
+and
+`20aaf6bbe7ffd184faf7033ebb47bdaa33a7273fff383d3e7ffe1751c4ac05ac`;
+the stable lineage hashes are
+`d5c1ac15aa095b52127de25a0c5d51fee7eee54d0afb723ef73419b523c4618b`
+and
+`049f5b15d0497dd5bf6b0c204b20974daa31bc0f41894ce25dde69b846cf57b8`.
+Stable-path replay of J326 checked 183 rounds, 184 manifests, and 183 parent
+refinements, ending one VERIFIED / one UNKNOWN; its JSON/log hashes are
+`2b62b6cac76c7a472ff44c1a03404ac3a535527b35cb4090e55c4564be04e909`
+and
+`0b964ed7dfcb4be93512a06655eba0c283fd01192babf66df438ca9a87fc4db8`.
+The J297 replay checked 99 rounds, 100 manifests, and 198 refinements, ending
+two VERIFIED / two UNKNOWN; its hashes are
+`d131a44d10a313890d8d9d12db666d3c8f5fdbeaa80aba6a90a2d7f1c05dcc06`
+and
+`b85b9044bb7957a2e49be124852704cdca6eb55350e63aefba00af2d2fad2dce`.
+
+A CPU-isolated 7-configuration portfolio is active on each new frontier for
+7,200 seconds: iGlucose plus CaDiCaL and Kissat at seeds 0, 1, and 2.  The
+single J326 cube uses seven solver processes and the two J297 cubes use
+fourteen, for 21 single-core instances in total.  All 14 wrappers were
+verified running; the screened parents remain stopped so these solvers receive
+their full wall-time CPU share.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
