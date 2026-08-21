@@ -666,6 +666,22 @@ to the chain-local children file only after checking the identical SHA-256 and
 ordered cube family.  The complete Python suite passes 178 tests after these
 additions.
 
+The first production extension audit binds the accepted v16 chain bundle and
+full audit (`7bd3c89b...6a51` / `cfeee700...6f61`) to v18 bundle
+`64721cdf...5d5c`.  It independently replays three appended J297 segments and
+two appended J326 segments, reaching states 602 and 628; its JSON/log hashes
+are `d85da4f0...ea4e` / `8e54486d...a5d`.  The corresponding parent extension
+audit (`405303d9...5a79`) retains the original full strengthening/backbone
+audit as its hash root and reports two and one remaining UNKNOWN cubes.  The
+separate v17 full replay also passed with JSON/log hashes
+`4e02e9e6...6820` / `d18c1d2d...e93b`; it is a useful whole-prefix cross-check
+through states 600 and 624, but no longer needs a duplicate full parent replay.
+The next recursive extension to v19 replays only two appended J297 segments
+and carries J326 unchanged.  Its chain JSON/log hashes are
+`4e438396...a6d8` / `f0ec261d...9154`; the recursive parent-extension hash is
+`5515122f...79bb`.  The resulting hash chain ends at J297 state 606 with two
+UNKNOWN cubes and J326 state 628 with one UNKNOWN cube.
+
 The immutable-state path was exercised on the J297775 pre-switch snapshot:
 54 manifests and 53 refinement rounds through round 55 were replayed, covering
 443 refined parents and ending at the recorded 17 VERIFIED/17 UNKNOWN
@@ -2770,6 +2786,22 @@ and
 `fb81acd5a827eabba1dbbd032db4fcdcbdceb7938e419049acaf5165200dc16c`.
 Ancestor-only state-623/state-624 searches without proofs were stopped and
 their six cores moved to this deeper two-child family.
+
+Kissat seed 18 subsequently certified child 0 of that exact state-628
+two-child family.  The retained 209,926,094-byte compact DRAT has SHA-256
+`f7163b62f9b5dd339af577239610fcd67a9fbcd5c192bab7aa5fee392901ceee`.
+The frozen one-VERIFIED/one-UNKNOWN checkpoint manifest has hash
+`bb30565ce4b71c392779bf2ff6c2e85483e86dfffa623ccc42e59cd0d8a7c83f`;
+an independent replay accepted it.  Exact-family composition and a separate
+one-round chain replay advance the authoritative J326 endpoint to state 629.
+The refinement, terminal-manifest, state, and chain-audit hashes are
+`69df6169d3b477e480979a4650b1e5b088ec76cb95e8ef260daad2210e47ceb4`,
+`bcc8e20f9c8d03d183eb4f85df902b08ff4ea3167bb610d2c24614ca156cf394`,
+`a3cd162f249e62b6bab68de7d828f80faf077cb7b07726ce328bb684f446b65e`,
+and
+`ca4c8b9f622fa33cb530451425d5f84e4642f5f5f377c55e5be5837a76f293e`.
+The surviving child remains UNKNOWN, so this is another certified frontier
+advance rather than a J326 UNSAT result.
 
 On J297, Kissat seed 15 closed child 0 of the previously rejected state-599
 2--4 growth in 17.740 seconds and reproduced the result in 17.767 seconds.
