@@ -3476,5 +3476,31 @@ The accepted production checkpoint is now J297/J326 38/37 segments at states
 the remaining exact J326 child searches, and the J297 parent-0 proof
 compaction continue remotely.
 
+That J297 screen selected variables `1858` and `2157`; 14- and 50-byte
+compact DRATs of hashes
+`59714a49e448df2a5cdc0b9f6fe9c440ed0c0942b834999f07162c969e89e5f7`
+and
+`300913fa6885ab1c4409210418478d432ff77a3f621321d042b70a40a7eefa91`
+again preserved two VERIFIED / two UNKNOWN at state 614.  Selection,
+refinement, terminal, state, and chain-audit JSON/log hashes are
+`3d2cd5f5df7ce851c7b4c4de1e49d01aeaf2271af7a682edfbafef5eb65d5df1`,
+`0ca78f9c55d7fa53589c2fee3a6c2c58f941eaaf248633a4e9c557bedc3e73f1`,
+`2374e56d40099d34239e4dc8190ab08f1f9af6d23bdbf678df28f955fd790cdd`,
+`a3c67d6d2ec689af3114984c4f6f0784ce80bd93ab7464cfbe42156bdd114bab`,
+and
+`8f2583cdc4d890da15833cbc61e8f9d9bc0fb366eadd0e16e54e81e432a0ac7c` /
+`7ad93b114f57c383a7a6d482293eb87640891a2641ac7ad29339580b2275b4f1`.
+Recursive v29-to-v30 replay passed.  Chain/parent bundle hashes are
+`4bd57eb96f9876aa423e8775ac7248e1b03de80b247c32c9e7c0d81b8a12b0e2` /
+`cc403eabc7554be272c12eb11b4a837ccc948d6d50f4c1a49182a8d2f9784050`;
+chain JSON/log hashes are
+`6c4592bc69ed64015b3222a2254db20772589e662c975b93168e5d2a54502dda` /
+`55e4c56aaee03c97ad006b28e32b3c1e6cdefb7677729dcbf648c8e6c95e1c73`;
+parent JSON/log hashes are
+`8675553adde3ba20e22231f93fedb396e316fd570e2652690dffaf83b6f17382` /
+`7eb0636210a1dcd4284a4a9b02945ae24f7edccdf17c38d54928c724a76d8a60`.
+The accepted production checkpoint is now J297/J326 39/37 segments at states
+614/636, with two/one UNKNOWN descendants.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
