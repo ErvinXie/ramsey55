@@ -2544,7 +2544,18 @@ reduction in leaf count.  The state-599 ICNF/frontier hashes are
 `112c1dfff4f10f4a4a3366ad688ae9938cba15116864e9c2ad4b7a19024c629e`
 and
 `444783cd4d172ee86d587fc83751b393f3bf3a120c73abf08d4620f8d769a3e1`;
-iGlucose, Kissat seed 11, and CaDiCaL seed 11 now search both leaves.
+iGlucose, Kissat seed 11, and CaDiCaL seed 11 each subsequently exhausted
+7,200 seconds on both leaves without a proof.  Their final zero-VERIFIED /
+two-UNKNOWN manifest hashes are
+`8ae55e41dae9a285db523c6f33286385cccd4a5ef916d5cb63c602bab978bc4a`,
+`6dac685e4dd87978a98ec17adb5ce35329944705e08825ddd577a6c756126439`,
+and
+`f60e2fd43e969ffb2e53f56e55ebe8d32901751ed3ee2f4055d24ea9107ff8b6`.
+Exact-family composition and independent replay have hashes
+`430091bb42ff15c98b79c036611e3db1e989d4c968c7497e7fa0bb65b0b93862`
+and
+`3f8f88e02ae9c2005b178d357544c6a7f2b807f8201e8e9f794c8ea16a08961b`;
+this is negative search telemetry, not a certificate for either leaf.
 The v14 chain/strengthened-parent candidates that replace v13's final J297
 segment by this audited alternative have hashes
 `d292cc97dc5bcfa975c0514e26ab172fec813c116496be1a4d4ecc1b2c83d94d`
@@ -2646,16 +2657,38 @@ and
 the original three state-623 searches remain live, with Kissat/CaDiCaL seed 14
 single-leaf comparisons added at nice 19.
 
-Candidate v16 fixes the J297 v42 seed and appends the audited J326 state-623
+Version 16 fixes the J297 v42 seed and appends the audited J326 state-623
 segment.  Its chain/strengthened-parent bundle hashes are
 `7bd3c89b12d04270523e5210725b29d54b9339b715a188504d47a1bb0ff46a51`
 and
 `ca7ef4d50346ddbf18a45c4a420966c4c13a626fbe86e13975cb90c56f10c306`.
 Cheap boundary preflight classifies the J297 v42-to-v61 transition as an
 independently replayed exact-cube retry and the J326 v67-to-v71 transition as
-an identical terminal manifest.  A fresh v16 whole-chain audit is running at
-nice 10; neither v16 nor its strengthened-parent bundle is accepted until
-that replay and its exact terminal-count gate pass.
+an identical terminal manifest.  Fresh whole-chain replay accepted all 26
+J297 segments through state 599 at two VERIFIED / two UNKNOWN and all 30 J326
+segments through state 623 at one VERIFIED / one UNKNOWN.  The chain-audit
+JSON/log hashes are
+`cfeee70083975cdeeca65285e8d7bef713aaf71c4082b0e625206b17006b6f61`
+and
+`9d6d8bc66d48c27cfdbd8223f73094e608e26784c53001b6e7678479e1fdc244`.
+The gated strengthened-parent replay then rechecked all 193/178 bad-backbone
+DRATs, both exact parent-plus-15-backbone bindings, and the same terminal
+counts.  Its JSON/log hashes are
+`4857a6df4f4662976326e0e4a106037cce0633d69bdef447a6f927e6e962121c`
+and
+`1e5b518c0d2f8c94fc4a3596b0227a7086225f947884dbf2c85ffa221a271760`.
+Version 16 is therefore the latest accepted full-chain and parent-audited
+baseline.  It remains incomplete because those three terminal UNKNOWN leaves
+are not yet proved UNSAT.
+
+Appending the independently audited J297 state-600 and J326 state-624
+segments gives v17 chain/strengthened-parent candidate hashes
+`8760cdc03213f6bd5d564657db7d64c1041797c6fbd4df586dc1563619c96d0e`
+and
+`26000e7b4f46865322394114877cdd4af9b0f083ba2e5c96de9954bc78c6c2ed`.
+The candidate contains 27/31 segments with exact terminal gates 600:2/2 and
+624:1/1.  A fresh whole-chain replay and gated parent watcher are running;
+v17 is not accepted until both complete.
 
 The next guarded J326 round split the state-623 leaf on variable 5945.  Both
 children remained UNKNOWN after the staged one/five-second checks, so the
@@ -2671,6 +2704,27 @@ and
 `3845229eed7cd1b5dcdaceb3aa6b7e0eccc7d76a0efdfaba4025d4032e3aa178`;
 certified iGlucose, Kissat seed 15, and CaDiCaL seed 15 search both leaves at
 nice 19.
+
+All three engines later proved child 0 of that variable-5945 split.  The
+smallest retained certificate is Kissat's 220,191,720-byte compact DRAT with
+hash
+`84406e874e45314749cc6539b21b92c276d350829e023187b45077fbdb98705a`.
+Its one-VERIFIED/one-UNKNOWN manifest and independent replay-log hashes are
+`7317a18121d073f887743c46fd6dec2a6f2019f2eb77427aef17026449068c5b`
+and
+`ea389d56d1c9bad8343b7ff358048de4fb8c86bdcfccea31df7e26c894a045a9`.
+Composition with the complete binary refinement and another full one-round
+replay advance J326 to state 624.  The terminal/state/refinement hashes are
+`7db9340bd9633f42acc8d7073b151bc4c894b94c21b92da2018fbf520991fbe4`,
+`954c73c523aca9a5992769503e18859c48a5ed058fc64b1a645477f63dfcde81`,
+and
+`8117d57e4cf32d2fdeb489e942582af618f6d622917c23264a41e25beb3866f3`;
+the chain-audit JSON/log hashes are
+`c55300e515e1b6b3cb1938ed70d5d73e431eb21c8a92f4940e11fff9aa05b9b8`
+and
+`7daa29f48670a7ddc2f709f204c2512240dcbe10e104bb7936ed836b7f87c33a`.
+The remaining child is still UNKNOWN and is being searched directly while a
+guarded continuation replays the new seed.
 
 On J297, Kissat seed 15 closed child 0 of the previously rejected state-599
 2--4 growth in 17.740 seconds and reproduced the result in 17.767 seconds.
@@ -2716,6 +2770,44 @@ by Kissat seed 16 and CaDiCaL seed 17 on this audited deeper leaf.  This is a
 certified subchain, but it remains exploratory until its leaf closes and the
 selective subtree is joined back to the state-599 cover.
 
+That same J297 child later advanced substantially.  A Kissat proof for one
+side of the rejected state-602 split was composed into state 603, after which
+guarded CaDiCaL rounds retained one UNKNOWN through states 605 and 606.  The
+state-603 manifest/state and audit JSON/log hashes are
+`235c0f2a1f01ffed38e5c1eb79abef8b2ba87b8cf0b32255a9976afc2ddc75a6`,
+`b00ebecab6c5f05b00426c2568cbd4e5a87694e21e063fc5490a717975744044`,
+`39ea05de96f4a2ed89b87f0bbf6207fb542ae529d934520827802bc65663df5d`,
+and
+`4a65ab71b9cb705126c041237cab7b5ca4aacedcc6448a5272040fe065514d33`.
+The state-605 audit JSON/log hashes are
+`f921c9ab705fd09a9182b391f712ba38a5cd38b6b8d2d91fe8fdf9975406d560`
+and
+`dddfd6232a9af334cc2f9bc2d86ed80dabe17c77b2ebe3925dc5d8ce2146dc67`;
+the next composed state-606 manifest/state and audit JSON/log hashes are
+`4a9a259b425e0f75ab8380f71600a3340c6fe87d996a80ab27e67b1f166fafb3`,
+`472d92b633d3ebe194ae242a3ac04311520f48499f2ed12d30be296eb7073c8f`,
+`44241413571bdaac166c969278d3af7e8cb5f64e79e04b0b08f39e28f7b6c4ed`,
+and
+`9ca71eaaddab1787602ba5736e25ac6490036504a9bcb0356fed6e3afa6b2bfe`.
+
+Ten more audited rounds kept exactly one VERIFIED / one UNKNOWN through state
+616; a further seven did the same through state 623 before the next split grew
+1--2 and was rejected.  State-616 terminal/state and audit JSON/log hashes are
+`0366f4f087940afcd7458d50761206071e88e2516d811599ff4c4852153d0418`,
+`0741f8c9240352e0ebdf703b70ce4de449d83cb1518c724fc527903978253c71`,
+`18324409791f1cce1d7397083c9984f4f945f5dfaa4fe9a54110f4dcdba68c4e`,
+and
+`b1f0505b6588b68d38bc692575d73219807a62e742f7412c779014f1dcfc55f4`.
+State-623 terminal/state/halt and audit JSON/log hashes are
+`706a3f9db410bc51d7b5e6388d841b640214c891f77c4b25144ca536b5202e21`,
+`9add1b95931a322ec36dd8d01d204590a06f041b99873d1601245a24005dca97`,
+`5db417b9d1c19474eb75c597bc01c6477e24833490432b0dc0af39135578401f`,
+`2d053dd19dc8e9a3366927aaaa7dc5b91b37cf8d41a2c164a440cb6c37cd6392`,
+and
+`f8e8e354e9173d1613edf4c9ccc9dc31794fff4196bea655008edb2436a77af4`.
+The deep endpoint still has one UNKNOWN; direct parent and rejected-child
+portfolios therefore remain search work, not a proof of this original child.
+
 The same selective procedure peeled the two children of the other original
 J297 parent.  For child 2, nine consecutive lookahead rounds each closed one
 sibling while retaining exactly one UNKNOWN, advancing the subchain from
@@ -2735,6 +2827,40 @@ The remaining state-609 leaf has ICNF/frontier hashes
 and
 `6854e705ab00d7928542169459cda5f9cb4983db236fb804003bd3c2840b6ccc`.
 
+Kissat seed 15 subsequently proved this original child 2 directly in the
+four-child state-599 refinement.  The 232,878,779-byte compact DRAT has hash
+`d1ac202beeec99c735995468620de8ec14bb724aab2de46c3490bbdedfcb5fe0`.
+Together with the earlier child-0 proof, the source portfolio has manifest
+hash
+`d74f57d7e2e99adf97341cdc20912338a3b89497a7a8ee0274a30555b62922d8`
+and fresh independent replay has log hash
+`f57494e8b072e0ac00ac8ec7061bbc50c58b50713ef8f4013f6116d740fbd606`,
+reporting two VERIFIED / two UNKNOWN.  Exact-family composition and complete
+one-round chain replay advance the common J297 endpoint to state 600 with
+manifest/state/refinement hashes
+`68b95471dd1a74c3b401a87e2dd1e656228be38a12f562ea155f10706dabfa35`,
+`29788dd6deb7c876f5fbb2431a5015fa6e1f16cf47afd7bdc8a1dcef1d1cf123`,
+and
+`12a361ae9a7dd49e057ef1d398c5d451466ca980cb04635d12b321bd892b2954`.
+The chain-audit JSON/log hashes are
+`d43a6732ec86342ff8fc9be0310237aeb1c2ab436d5548ac1f1234bf00fb6d31`
+and
+`72f255f33f96724487e7fd4aa9d255878d2ca538c974ef561a184c27ab86a0e7`.
+This closes child 2 at the shallowest available level, but the two other
+children remain UNKNOWN.
+
+Three deeper certificates independently corroborate the same child-2
+closure.  Kissat completed both sides of rejected binary splits at states
+610, 612, and 615; the respective manifest hashes are
+`5b47f0578f7e7b355976a62acf6ba0779c0aedacbde0c264e2fe608379da8fe9`,
+`145cf3a739fe7c5a1bf32872af95cb9ab22bf746f95556e0886ad5e9eb4bfee3`,
+and
+`52e519ea89f9a5de63073c6ad7bbbcbaed4695ab69a72e6d6f5e797bda208c6b`.
+Fresh complete-family replay accepted all three with common summary-log hash
+`0eee6d01d56ab0f88f6485152c3fb391f0628bd87a45691cea293b1f21a0d90c`.
+They are redundant checks because the direct state-600 certificate is
+shallower and smaller as a chain dependency.
+
 For child 3, one lookahead round closed one sibling and retained one UNKNOWN
 through subchain state 601; the next split grew 1--2 and was rejected.  Its
 seed/final/state hashes are
@@ -2753,6 +2879,26 @@ and
 Each of the state-609/state-601 leaves now has a low-priority Kissat/CaDiCaL
 pair.  These certificates remove shallow siblings but do not by themselves
 reduce the three UNKNOWN leaves of the current selective state-600 family.
+
+The row-3 rejected split later gained a 241,287,898-byte Kissat child-0 DRAT
+with hash
+`6e7f0891fa6d2984824297e427c24fe7683d70b22015651849419cb60956e4e8`.
+Its source manifest and fresh independent replay-log hashes are
+`c3752bf3b5b4643118830dbb3ad375df3f113f8249174122f5289ab709c2a5a4`
+and
+`ea389d56d1c9bad8343b7ff358048de4fb8c86bdcfccea31df7e26c894a045a9`.
+Composition and complete one-round replay advance this selective subtree to
+state 602 at one VERIFIED / one UNKNOWN.  Terminal/state/refinement hashes are
+`96c61a50c839ed198cbd9e2c94016d89a6c68105d3c0e71766ed388593aee21d`,
+`214770048af0f0d0d46a542402535309ebcc62d329c0a2bad4dabfb5a9f9f170`,
+and
+`c1e6c78de30b1d78308992abc96c73aa3010b091390e07290f1166bc62bed1d1`;
+chain-audit JSON/log hashes are
+`6dc5d8271d63eb12bbef3ef661928faf2cde7fc358c4be7da9856d5f9ce21ffd`
+and
+`b11ead002a87857ec5e570eef1b5ae1b802d2b51f4e1eec2aa49084fbd5ee8ce`.
+The row-3 right child remains UNKNOWN; direct three-engine search and a
+guarded dynamic continuation run in parallel.
 
 The older 7,200-second CaDiCaL seed-7 comparisons also finished.  J297 state
 595 remained zero VERIFIED / two UNKNOWN, with manifest/audit-log hashes
