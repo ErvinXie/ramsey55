@@ -2256,5 +2256,73 @@ the earlier 2/3 leaves, while a nice-15 Kissat seed-5 run searches the final
 3/5 leaves.  These 13 comparison children use deferred proof and have not yet
 reported UNSAT or started a proof rerun.
 
+The seed-5 CaDiCaL comparison then closed one of the three earlier J297 leaves.
+Its deferred search and proof rerun took 207.942122 and 135.185220 seconds;
+the 28,442,046-byte compact DRAT has hash
+`2cac4b7776c7ef7ce550b5c477b91a1ab4cc4326f0f509627d077caccdcfac2c`.
+The stable producer checkpoint and its independent replay log have hashes
+`7e71ac80178debe22337ff8aaf62bdca9839ae5e7c149f58d3c33bc8c50d5388`
+and
+`920c23df17293ab33b634b630e4acfd3e6fc34342cd13f46b9b11ae063c30ad5`.
+Exact-family composition with the state-593 primary manifest raises that
+boundary from one to two VERIFIED rows and leaves two UNKNOWN.  The composed
+manifest and independent audit-log hashes are
+`48438b33566956ef8558c3b3889fde91a90e5236b744340e577f92569ec55d6d`
+and
+`f57494e8b072e0ac00ac8ec7061bbc50c58b50713ef8f4013f6116d740fbd606`.
+
+This exposed two provenance bugs before they could enter a stable bundle.
+`finalize_materialized_progress.py` now copies a completed row's deferred
+search log, and both proof composers copy and rename that log together with
+the selected proof and checker records.  A mixed composed manifest may carry
+valid deferred metadata on an individual result even when the top-level
+producer was not globally deferred; the auditor now checks that combination
+while continuing to reject missing metadata from globally deferred verified
+rows.  Focused regression tests exercise all three cases, and the full local
+and ARM Python suites pass 168 tests.
+
+The final-five-leaf Kissat comparison independently closed both children of
+the same ancestor.  The compact proof hashes are
+`a2df8c7c2f2347b4a52f42f75548d044978e96cfed1a3f5072aa0b68e877a952`
+and
+`7be0d1c2ed7210af40c5642411dba40ed311741ab4d387e74f5b2bc2aacfb8f5`;
+their sizes are 4,023,290 and 33,892,870 bytes.  The second used 170.466188
+seconds for search and 234.160600 seconds for its deterministic proof rerun.
+Checkpoint v3 has manifest hash
+`e3e4ccb9d5a10a50d304057489d016288d8c05cac45b06308f25a0ea2b9f1c4f`,
+and a separate replay accepts its exact 2 VERIFIED / 3 UNKNOWN summary.  Both
+child proofs are independent corroboration but are redundant for frontier
+size because the CaDiCaL ancestor proof already closes their union.
+
+Restarting dynamic refinement from the stronger composed ancestor boundary
+kept J297 at 2 VERIFIED / 2 UNKNOWN for two rounds through state 595.  The
+next fully checked candidate had three UNKNOWN descendants, so the growth
+guard retained state 595.  The state, terminal manifest, and halt-record
+hashes are
+`4df3cb425880c277c51bd871d81e781306217afdad22416b479b50222f1a8652`,
+`564e6003bd2b7a894abe912acb8aced7a2191a69b7dd28aef68feb1d201354e3`,
+and
+`a8767ec37a64401ceb88d656ac4824a31c70f56aa79698131c6651e4c76ebef4`.
+An independent replay checked three manifests, two refinements, and four
+refined parents; its JSON/log hashes are
+`872d5a740483597527be18b8002d58d1bc52804ad3e1d45fb0d3d881b3d87d58`
+and
+`92d307e013c573df7ea40cb80aaaf71c8794501a2a8a3dc7e4f2be9a4667dad2`.
+The resulting two-leaf ICNF/frontier-manifest hashes are
+`429c551b028a6d231fb351952a0536afbcb01260637a007818fb51ca66d2f1b6`
+and
+`c8cbc477c3a2d61c65b3f54e52a801cc694bd4ac52282e2f6b4c3d7aed7e6f89`;
+a new seed-6 Kissat deferred run searches both leaves.
+
+The v11 candidate replaces the wider J297 endpoint by this independently
+replayed exact-cube retry and continuation while retaining the J326 state-620
+endpoint.  Its chain and strengthened-parent bundle hashes are
+`4dac9958ffc1049667e81ce4bcd2dc73a629bd7bb17cb1a85777a273937e7c1d`
+and
+`93ec676244cde08f8e2529902d79e948d785bf86022d8ccabd9e61c44d3492e9`.
+Whole-chain replay is in progress and gates the parent replay on exact terminal
+counts J297 2 VERIFIED / 2 UNKNOWN and J326 1 / 3.  The v10 replay continues
+independently so already spent checking work is retained.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
