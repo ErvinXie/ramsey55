@@ -2588,8 +2588,17 @@ and
 `e0717fb22e54ffd1c34758509b66234e72b64f57006d7998a03d19e47d0549e6`.
 They supersede v14 before audit.  After the v13 parent replay passed, the v15
 whole-chain replay and all of its live descendants were promoted from nice 16
-to nice 10; v15 is not yet an accepted full-chain or strengthened-parent
-audit.
+to nice 10.  That replay later failed closed without emitting an audit JSON:
+the v42 J297 segment was accidentally paired with the two-UNKNOWN v47 retry
+manifest, although v42 was generated from the three-UNKNOWN v38 manifest.
+The auditor detected the resulting `UNKNOWN frontier mismatch` before
+accepting the segment.  Replaying v42 separately from its correct v38 seed
+passed three rounds and nine binary refinements; its audit JSON/log hashes are
+`323588f825ab6a459ecaea30febca9589bc7d8084e7d2bd21c4c3bc54750dc2e`
+and
+`5551970e478d110f836a6f3fa96ba02e84d081f698be003f3be4f950122e15d2`.
+Thus v15 is rejected as a bundle-construction error, not as a failed DRAT or
+mathematical claim, and v13 remains the latest accepted full parent audit.
 
 One further guarded J326 lookahead split the state-622 leaf on variable 676.
 Both children remained UNKNOWN after the staged six-second CaDiCaL check, so
@@ -2601,6 +2610,52 @@ and
 `3f70fdd657e8341917dfef667331542ca342ea4614976e00a61fe2564cd3a51d`.
 Certified iGlucose and Kissat seed 13 now search both rejected children; they
 are exploratory routes back to a one-leaf frontier, not adopted chain state.
+
+Kissat seed 13 and CaDiCaL seed 13 subsequently and independently proved the
+same variable-676 child UNSAT.  Kissat used 330.942 seconds for search and
+318.344 seconds for the certified rerun; its 59,869,386-byte compact DRAT has
+hash
+`281e126ff5cc6d112d8235f083bb156feb4c6d0c807d3f9d69304409ac693d28`,
+and its frozen one-VERIFIED/one-UNKNOWN checkpoint manifest has hash
+`b7640280069471d1d9713d36544ce6119af972dd4ca136a4260a008c71010a7a`.
+CaDiCaL used 569.137/562.470 seconds and retained an 83,167,625-byte compact
+DRAT with hash
+`89aedabf4e9165fc9f86c19e3c3e06d943400f93b4e83b6d8ef92987a1db1ed8`;
+its checkpoint manifest hash is
+`a0558636854fdda497a7fc3bfd6cbb0d6ea0d3613c02aa99db3d6c4e251560cb`.
+Fresh external `drat-trim` processes replayed both checkpoints as one VERIFIED
+/ one UNKNOWN; their identical summary-log hash is
+`ea389d56d1c9bad8343b7ff358048de4fb8c86bdcfccea31df7e26c894a045a9`.
+
+The smaller Kissat certificate was composed with the complete variable-676
+binary refinement.  After correcting the directory name to record the actual
+solver provenance, the composed manifest/state/refinement hashes are
+`6e322353c54f46f1561581337938166bf235b6457bc6862388487401d407223f`,
+`45ae9abe8f7952a76df25559c3040195005fe5b4b1e8f63aec8158b2fa1cd385`,
+and
+`acc4aba4df41be66843ed6178795a295945b90f1904f37d0886262dc31729d13`.
+Independent seed, proof, frontier, and refinement replay advanced the chain to
+state 623 at one VERIFIED / one UNKNOWN.  Its audit JSON/log hashes are
+`8d267890c408e185398071c286cad37d8c06f15c0c728d06c5e22a4cde83516c`
+and
+`14b8819f434f6a2fa22292d6f803a63df808ce85d390cc3df7b9d2b38cf1a0d6`.
+The remaining-leaf ICNF/frontier hashes are
+`896290bd4ca35ec501da0f6a86a9829841c72a3577222fc1af8423419355c409`
+and
+`b986c2123925120f8ae6ca4df44af390d33948596b5644124067c39c7cc0bf8e`;
+the original three state-623 searches remain live, with Kissat/CaDiCaL seed 14
+single-leaf comparisons added at nice 19.
+
+Candidate v16 fixes the J297 v42 seed and appends the audited J326 state-623
+segment.  Its chain/strengthened-parent bundle hashes are
+`7bd3c89b12d04270523e5210725b29d54b9339b715a188504d47a1bb0ff46a51`
+and
+`ca7ef4d50346ddbf18a45c4a420966c4c13a626fbe86e13975cb90c56f10c306`.
+Cheap boundary preflight classifies the J297 v42-to-v61 transition as an
+independently replayed exact-cube retry and the J326 v67-to-v71 transition as
+an identical terminal manifest.  A fresh v16 whole-chain audit is running at
+nice 10; neither v16 nor its strengthened-parent bundle is accepted until
+that replay and its exact terminal-count gate pass.
 
 The older 7,200-second CaDiCaL seed-7 comparisons also finished.  J297 state
 595 remained zero VERIFIED / two UNKNOWN, with manifest/audit-log hashes
