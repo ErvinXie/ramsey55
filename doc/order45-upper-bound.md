@@ -2097,5 +2097,82 @@ retained.  The identical 11-configuration portfolio is now running at states
 591/488 as v3: 22 wrappers drive 33 single-core solver processes, with proof
 generation still deferred until an UNSAT candidate appears.
 
+A one-second replay of the earlier complete screens recovered another 22 J326
+splits and at least 24 splits per J297 parent.  Each selected split was rerun
+in proof mode and independently replayed after relocation.  This advanced J326
+from state 591 to 613, retaining one UNKNOWN, with audit JSON/log hashes
+`b9268c7c2df861fefb9941dcf60397f35b54b62730342941f78e7abb337e9e44`
+and
+`b0d70b5dd57989529db2b9e001d28afe098ff404e0b1f87e005f822304f09853`;
+relocation v47 has hash
+`70bc01b86e476f06ab6d4b7db05ee82ac7f32e50ec728d2e103c71978ba96a63`.
+J297 advanced from state 488 to 512, retaining two UNKNOWNs, with audit
+JSON/log hashes
+`638c9e8aa8393794f824d0a585336bea189683487089c98391562d133ce7c957`
+and
+`ca3929b17f45144abc44b131d4f7b0c38a1575991703fbb18847399fa52678aa`;
+relocation v48 has hash
+`ea72c39ac270084c603ceb42ed0f8d190173bb9a8415e871466303ae82a06f40`.
+The source screen-analysis JSON/log hashes are
+`fd209349241a85fce2798cdd169b99dd9be9bc7a390695e447adf3dc1088fd98`
+and
+`b44d837f9c9aaf6a2f1492115af8304de2b962000160d6a37f496c341d2976a6`.
+
+New 0.3-second screens at states 613/512 found two common J326 candidates and
+118/79 candidates for the two J297 parents.  Their combined analysis JSON/log
+hashes are
+`953b8c9c4a0bcdd3a5c8e3f1b632bb185f10dab9c503c989827c8f8bf181f21d`
+and
+`4effa3d18e3c6a2b9cc42ebf478fd8b54beabf5e3be0dd19258d8f345ee394ba`.
+Fresh checked segments advanced J326 from 613 to 615 and J297 from 512 to 591.
+The J326 audit JSON/log hashes are
+`e7b352b89f685746cd26216c6a7ff20a96f52c2dc411bfd05861220d137ac559`
+and
+`0f9f8a7c608aec0313b4650ff874ea068806215afa12dd5044810a2f15e204ad`;
+relocation v49 has hash
+`e2422c77c86184562664ded43227061dbf7e9cd7e38842f6c791c1598dbc4cbb`.
+The J297 audit JSON/log hashes are
+`414605d39d08c9c46e9811012afefbe679f9c6c9df90200a7398b54e52cb3d1d`
+and
+`ad266ffb6484ba06fa3a9fe15e1241c3d5fab62d1410a641ae0577fc5718adf2`;
+relocation v50 has hash
+`a985e515620637f14019f2eff8eeef937c1a380ccbbb4e63223d407becc667b4`.
+
+A targeted state-591 J297 screen supplied one additional common split.  The
+resulting checked round reached state 592 with two VERIFIED / two UNKNOWN;
+its audit JSON/log hashes are
+`5f65a4487867d4329613e068d046ccb1f8d94c36c6165e00fe27837aa9aa9c6e`
+and
+`1523ca6f434c91c68b03efaf81c5ecf117d076c6e82a88df383540c844fa9e7f`,
+and relocation v51 has hash
+`c5f5812c1f42c74dfd5e6e0fe3c8867b5b409b2ee46aa8af55309bc6e21319b7`.
+A subsequent 0.3-second screen found no agreed candidate for its harder
+parent; J326 state 615 likewise had no candidate at that cutoff.  This is only
+a scheduling boundary for those probes, not an exhaustion of either branch.
+
+The state-591/488 v3 and state-613/512 v4 deferred portfolios were superseded
+after deeper checked frontiers became available, with their PID and runner
+logs retained.  The current v5 portfolio searches J326 state 615 and J297
+state 591 using 22 wrappers and 33 single-core solver processes.  The J326
+ICNF/export-manifest hashes are
+`0e82380295183629f344394a91e2d6fb8de5915a54c208153f0510d80bedc7e4`
+and
+`3dfa1bcf37a78ac8fa8ee445d0b18cfd32d1af4c85d671f6b03df19133bbc707`;
+the J297 hashes are
+`2f7919edfc974d1de6ec27b12f0b0f070e24d4a24587253bbacb4bdcca11275c`
+and
+`dbe98b1954dac937351e0085e4095d50df6687e54eb8e7fb0ccfb1f30245dd81`.
+No solver has yet produced a result manifest or triggered its deferred proof
+rerun.  The one-round state-592 J297 checkpoint is retained, but the v5
+portfolio was not restarted for that single extra unit constraint.
+
+An independent candidate complete-chain replay is also running over the
+committed rescued bundle plus the earlier queued segments through J326 state
+591 and J297 state 488.  Its uncommitted candidate-bundle hash is
+`136074dbfc712a0debc9423d0c42f048ad5b937a3ecbcb9e4d57a1f9e51a7d1b`.
+Even if that replay passes, the bundle must be regenerated and replayed again
+with the newer checked segments through states 615/592 before it can become
+the current complete-chain record.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
