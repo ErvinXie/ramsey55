@@ -941,6 +941,75 @@ class MaterializedProofToolTests(unittest.TestCase):
             self.assertIsNone(progress["results"][0])
             self.assertEqual(progress["results"][1], {"index": 1, "status": 0})
 
+    def test_deferred_proof_search_reruns_only_an_unsat_candidate(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            formula = root / "formula.cnf"
+            cubes = root / "cubes.icnf"
+            solver = root / "solver"
+            checker = root / "checker"
+            scratch = root / "scratch"
+            output = root / "proofs"
+            formula.write_text("p cnf 1 1\n1 0\n", encoding="ascii")
+            cubes.write_text("a -1 0\n", encoding="ascii")
+            solver.write_text("placeholder\n", encoding="ascii")
+            checker.write_text("placeholder\n", encoding="ascii")
+            scratch.mkdir()
+            solver_calls: list[list[str]] = []
+
+            def fake_run(command: list[str], **_kwargs: object):
+                if command[0] == str(solver):
+                    solver_calls.append(command)
+                    if command[-1] != os.devnull:
+                        Path(command[-1]).write_text("0\n", encoding="ascii")
+                    return MATERIALIZED_PROVER.subprocess.CompletedProcess(
+                        command, 20, "s UNSATISFIABLE\n"
+                    )
+                return MATERIALIZED_PROVER.subprocess.CompletedProcess(
+                    command, 0, "s VERIFIED\n"
+                )
+
+            original_argv = sys.argv
+            with mock.patch.object(
+                MATERIALIZED_PROVER.subprocess, "run", side_effect=fake_run
+            ):
+                sys.argv = [
+                    "prove_materialized_cubes.py",
+                    str(formula),
+                    str(cubes),
+                    str(output),
+                    "--solver",
+                    str(solver),
+                    "--checker",
+                    str(checker),
+                    "--scratch-directory",
+                    str(scratch),
+                    "--deferred-proof",
+                ]
+                try:
+                    self.assertEqual(MATERIALIZED_PROVER.main(), 20)
+                finally:
+                    sys.argv = original_argv
+
+            self.assertEqual(len(solver_calls), 2)
+            self.assertEqual(solver_calls[0][-1], os.devnull)
+            self.assertTrue(solver_calls[1][-1].endswith(".raw.drat"))
+            manifest = json.loads(
+                (output / "manifest.json").read_text(encoding="utf-8")
+            )
+            self.assertTrue(manifest["deferred_proof"])
+            result = manifest["results"][0]
+            self.assertEqual(result["status"], 20)
+            self.assertEqual(result["deferred_proof"]["proof_status"], 20)
+            MATERIALIZED_AUDIT.validate_deferred_proof(
+                output, result, 0, required=True
+            )
+            result["deferred_proof"]["proof_status"] = 0
+            with self.assertRaisesRegex(ValueError, "status mismatch"):
+                MATERIALIZED_AUDIT.validate_deferred_proof(
+                    output, result, 0, required=True
+                )
+
     def test_complete_chain_seed_is_audited_before_acceptance(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)

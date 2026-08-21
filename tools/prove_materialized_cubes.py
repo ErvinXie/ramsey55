@@ -128,6 +128,14 @@ def main() -> int:
         help="retain a smaller independently replayed binary DRAT core when possible",
     )
     parser.add_argument(
+        "--deferred-proof",
+        action="store_true",
+        help=(
+            "search with the proof stream discarded, then deterministically "
+            "rerun any UNSAT candidate to generate and check its proof"
+        ),
+    )
+    parser.add_argument(
         "--scratch-directory",
         type=Path,
         help="place transient CNFs and raw/compact proof candidates here",
@@ -191,6 +199,7 @@ def main() -> int:
         },
         "per_cube_seconds": arguments.seconds,
         "compact_proof": arguments.compact_proof,
+        "deferred_proof": arguments.deferred_proof,
         "scratch_directory": (
             str(arguments.scratch_directory)
             if arguments.scratch_directory is not None
@@ -224,23 +233,28 @@ def main() -> int:
             checker_log = output / f"{stem}.checker.log"
             compact_log = output / f"{stem}.compact.log"
             sat_log = output / f"{stem}.sat.log"
+            search_log = output / f"{stem}.search.log"
             if (
                 proof.exists()
                 or publish_part.exists()
                 or checker_log.exists()
                 or compact_log.exists()
                 or sat_log.exists()
+                or search_log.exists()
             ):
                 raise RuntimeError(f"refusing to overwrite artifacts for cube {index}")
             started = time.monotonic()
             try:
                 try:
+                    search_proof = (
+                        Path(os.devnull) if arguments.deferred_proof else proof_part
+                    )
                     process = subprocess.run(
                         [
                             str(arguments.solver),
                             *arguments.solver_argument,
                             str(formula),
-                            str(proof_part),
+                            str(search_proof),
                         ],
                         stdout=subprocess.PIPE,
                         stderr=subprocess.STDOUT,
@@ -283,6 +297,63 @@ def main() -> int:
                         f"solver exited {process.returncode} on cube {index}: "
                         f"{process.stdout[-2000:]}"
                     )
+                deferred_proof: dict[str, Any] | None = None
+                if arguments.deferred_proof:
+                    search_seconds = seconds
+                    search_log.write_text(process.stdout, encoding="utf-8")
+                    proof_started = time.monotonic()
+                    try:
+                        proof_process = subprocess.run(
+                            [
+                                str(arguments.solver),
+                                *arguments.solver_argument,
+                                str(formula),
+                                str(proof_part),
+                            ],
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT,
+                            text=True,
+                            timeout=arguments.seconds or None,
+                            check=False,
+                        )
+                    except subprocess.TimeoutExpired:
+                        proof_seconds = round(time.monotonic() - proof_started, 6)
+                        proof_part.unlink(missing_ok=True)
+                        return index, {
+                            "index": index,
+                            "cube": cube,
+                            "cube_sha256": cube_digest,
+                            "augmented_cnf_sha256": augmented_sha256,
+                            "status": 0,
+                            "seconds": round(search_seconds + proof_seconds, 6),
+                            "deferred_proof": {
+                                "method": "search-to-null-then-proof-rerun",
+                                "search_seconds": search_seconds,
+                                "search_returncode": 20,
+                                "search_log": search_log.name,
+                                "search_log_sha256": file_sha256(search_log),
+                                "proof_seconds": proof_seconds,
+                                "proof_status": 0,
+                            },
+                        }
+                    proof_seconds = round(time.monotonic() - proof_started, 6)
+                    if proof_process.returncode != 20:
+                        proof_part.unlink(missing_ok=True)
+                        raise RuntimeError(
+                            "deferred proof rerun exited "
+                            f"{proof_process.returncode} on cube {index}: "
+                            f"{proof_process.stdout[-2000:]}"
+                        )
+                    seconds = round(search_seconds + proof_seconds, 6)
+                    deferred_proof = {
+                        "method": "search-to-null-then-proof-rerun",
+                        "search_seconds": search_seconds,
+                        "search_returncode": 20,
+                        "search_log": search_log.name,
+                        "search_log_sha256": file_sha256(search_log),
+                        "proof_seconds": proof_seconds,
+                        "proof_status": 20,
+                    }
                 if not proof_part.is_file() or proof_part.stat().st_size == 0:
                     raise RuntimeError(f"solver emitted no proof for cube {index}")
                 source_proof_bytes = proof_part.stat().st_size
@@ -375,6 +446,8 @@ def main() -> int:
                 }
                 if compaction is not None:
                     result["compaction"] = compaction
+                if deferred_proof is not None:
+                    result["deferred_proof"] = deferred_proof
                 return index, result
             finally:
                 formula.unlink(missing_ok=True)

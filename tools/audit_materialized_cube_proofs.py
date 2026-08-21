@@ -57,6 +57,38 @@ def validate_compaction(root: Path, result: dict[str, Any], index: int) -> None:
         raise ValueError(f"proof-compaction log hash mismatch at cube {index}")
 
 
+def validate_deferred_proof(
+    root: Path,
+    result: dict[str, Any],
+    index: int,
+    required: bool,
+) -> None:
+    deferred = result.get("deferred_proof")
+    if not required:
+        if deferred is not None:
+            raise ValueError(f"unexpected deferred-proof metadata at cube {index}")
+        return
+    if deferred is None:
+        if int(result["status"]) == 20:
+            raise ValueError(f"missing deferred-proof metadata at cube {index}")
+        return
+    if (
+        not isinstance(deferred, dict)
+        or deferred.get("method") != "search-to-null-then-proof-rerun"
+        or int(deferred.get("search_returncode", 0)) != 20
+        or float(deferred.get("search_seconds", -1)) < 0
+        or float(deferred.get("proof_seconds", -1)) < 0
+        or int(deferred.get("proof_status", -1)) not in (0, 20)
+    ):
+        raise ValueError(f"invalid deferred-proof metadata at cube {index}")
+    search_log = artifact(root, deferred["search_log"])
+    if file_sha256(search_log) != deferred["search_log_sha256"]:
+        raise ValueError(f"deferred-proof search-log hash mismatch at cube {index}")
+    status = int(result["status"])
+    if (status == 20) != (int(deferred["proof_status"]) == 20):
+        raise ValueError(f"deferred-proof status mismatch at cube {index}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("manifest", type=Path)
@@ -74,6 +106,7 @@ def main() -> None:
     if arguments.jobs <= 0:
         parser.error("--jobs must be positive")
     validate_tool_bindings(document, arguments.checker)
+    deferred_proof = bool(document.get("deferred_proof", False))
 
     formula_entry = document["formula"]
     cubes_entry = document["cubes"]
@@ -126,6 +159,7 @@ def main() -> None:
             if file_sha256(augmented) != result["augmented_cnf_sha256"]:
                 raise ValueError(f"augmented CNF hash mismatch at cube {index}")
             status = int(result["status"])
+            validate_deferred_proof(root, result, index, deferred_proof)
             if status == 10:
                 raise ValueError(f"SAT result at cube {index} requires investigation")
             if status == 0:

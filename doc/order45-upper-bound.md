@@ -2012,12 +2012,36 @@ two VERIFIED / two UNKNOWN; its hashes are
 and
 `b85b9044bb7957a2e49be124852704cdca6eb55350e63aefba00af2d2fad2dce`.
 
-A CPU-isolated 11-configuration portfolio is active on each new frontier for
+The first CPU-isolated 11-configuration launch used the normal proof-first
+path.  Its 33 solver processes produced 5.4 GiB of incomplete raw DRAT in
+about four minutes, projecting tmpfs exhaustion before the 7,200-second
+limit.  All 22 process groups were stopped.  Their explicitly named,
+incomplete output and scratch directories were removed, while PID and runner
+logs were retained with `proof-first-aborted` suffixes.
+
+The materialized prover now supports `--deferred-proof`: the search phase
+discards its proof stream to `/dev/null`, and only a solver that reports UNSAT
+is deterministically rerun to produce, compact, and check a proof.  Its
+manifest binds the search log, search and proof-phase times, and rerun status;
+the independent auditor validates these fields and rejects inconsistent
+metadata.  Real two-cube smoke tests passed under iGlucose, CaDiCaL, and
+Kissat.  Their manifest hashes are
+`8fd97583a8e05e2fd164f5e3b5540b2f1fb717410850bd34b30d4c60ffca07de`,
+`18cde70933db4aafddf73e137224b620d99bb2cee1105e49aedd2cf6ec423fee`,
+and
+`cf6e652d880df342e40898530ad14d4d2bfb70fb1b897951819f494e1e959ded`.
+All three independent audit logs report two VERIFIED / zero UNKNOWN and have
+hash
+`0eee6d01d56ab0f88f6485152c3fb391f0628bd87a45691cea293b1f21a0d90c`.
+The ARM regression suite passes all 161 tests in 20.704 seconds.
+
+The same 11-configuration portfolio was relaunched with deferred proof for
 7,200 seconds: iGlucose plus CaDiCaL and Kissat at seeds 0 through 4.  The
 single J326 cube uses 11 solver processes and the two J297 cubes use 22, for
-33 single-core instances in total.  All 22 wrappers were verified running;
-the screened parents remain stopped so these solvers receive their full
-wall-time CPU share.
+33 single-core instances under 22 wrappers.  After 15 seconds their scratch
+tree occupied only 88 MiB and contained materialized CNFs rather than growing
+raw proofs.  The screened parents remain stopped so these solvers receive
+their full wall-time CPU share.
 
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
