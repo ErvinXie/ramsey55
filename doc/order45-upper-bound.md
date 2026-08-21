@@ -681,6 +681,10 @@ and carries J326 unchanged.  Its chain JSON/log hashes are
 `4e438396...a6d8` / `f0ec261d...9154`; the recursive parent-extension hash is
 `5515122f...79bb`.  The resulting hash chain ends at J297 state 606 with two
 UNKNOWN cubes and J326 state 628 with one UNKNOWN cube.
+The v19-to-v20 extension then carries J297 unchanged and independently
+replays one J326 segment through state 629.  Its chain/parent extension hashes
+are `cdbb6097...376c` / `9f472619...0001`; the terminal widths remain two and
+one, respectively.
 
 The immutable-state path was exercised on the J297775 pre-switch snapshot:
 54 manifests and 53 refinement rounds through round 55 were replayed, covering
@@ -2802,6 +2806,22 @@ and
 `ca4c8b9f622fa33cb530451425d5f84e4642f5f5f377c55e5be5837a76f293e`.
 The surviving child remains UNKNOWN, so this is another certified frontier
 advance rather than a J326 UNSAT result.
+
+The recursively audited v20 checkpoint appends exactly this one J326 segment
+to v19 while carrying J297 unchanged.  Chain and parent extension hashes are
+`cdbb6097143c86ae98af5a9a008f90f5f3f1bddfd009444d853a4ba65360376c`
+and
+`9f47261932bb97a37ff043418667cc26479ff1a591cc1f01ba6e6f38beeb0001`.
+Thus the hash-rooted production chain currently has 31 J297 segments ending
+at state 606 with two UNKNOWN cubes and 33 J326 segments ending at state 629
+with one UNKNOWN cube.  A guarded continuation rejected its next 1--2 split;
+the exact child-family/refinement/halt hashes are
+`203055cb91f29c65c46b91782539dfb6f272d98dea8cadcea028d87077e54cb7`,
+`190b8c944b5110edda8390be46f6a93f4228ab80970b9315c5e5f5cda7c88e8e`,
+and
+`4902a9e7a500b069a766186d1c9f7f3491ed8e0d57b6201dc3a93cc4f15af5ff`.
+Direct and two-child solver portfolios continue from this same certified
+leaf without changing the authoritative state.
 
 On J297, Kissat seed 15 closed child 0 of the previously rejected state-599
 2--4 growth in 17.740 seconds and reproduced the result in 17.767 seconds.
