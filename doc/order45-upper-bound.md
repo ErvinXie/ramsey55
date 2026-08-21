@@ -4422,5 +4422,22 @@ directories, plus the completed v144 Kissat directory, were checksum-migrated
 to `/data` behind unchanged repository-path symlinks, restoring root-disk
 headroom.  Fresh low-priority replays of the two v135 proofs are running.
 
+The fifth 50-round residual batch preserved width one through states 938/962,
+bringing the chain lengths to 308/307.  Its compact proofs total 1,736/920
+bytes.  Terminal manifest/state hashes are
+`77f135208d2f05eee7cec66e7c47cac4de4d667811b0a9574899ad378670aa88` /
+`6a1f7e3fdb4ff2672e7e473b5ba7cbac3a17790b5ddf6a1547044e36f6d2261d`
+and
+`014298bf219f864c3a5f798d307bd70507589197e1d24f8ff6e4d092f4ad2901` /
+`6ce8661a1253312af25aa1c0f4135937bac67d48d5dab188ed9dfd3813dc38e3`.
+Whole-prefix replay passed with JSON/log hashes
+`ed154ae86418536ae5810cced57de7321645b61a78cbe33fa56e1ffd116cbb92` /
+`24ede01d98f7a402f0d8ea81aa46f9b675c84d4fee6ae6577ea4874cb45a06a6`.
+The v12 selective-residual join passed with bundle/audit/log hashes
+`02f52f9b10cc7401ace1db7f478943691528c2f70969cdb0a25659aa8dda5b83` /
+`202f72be68969a43afb3f97e6e48f7819f1d17b45a220868672f7542e31c36c3` /
+`f87c47b57a5d667483868520daf079f593be7d89e2b6a5143f9d5c39e7e4f286`.
+Both cases retain one UNKNOWN; a sixth 50-round batch continues from 938/962.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
