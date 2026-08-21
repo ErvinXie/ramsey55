@@ -65,9 +65,8 @@ def validate_deferred_proof(
 ) -> None:
     deferred = result.get("deferred_proof")
     if not required:
-        if deferred is not None:
-            raise ValueError(f"unexpected deferred-proof metadata at cube {index}")
-        return
+        if deferred is None:
+            return
     if deferred is None:
         if int(result["status"]) == 20:
             raise ValueError(f"missing deferred-proof metadata at cube {index}")

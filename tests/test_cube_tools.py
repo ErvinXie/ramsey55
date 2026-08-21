@@ -1141,6 +1141,11 @@ class MaterializedProofToolTests(unittest.TestCase):
             MATERIALIZED_AUDIT.validate_deferred_proof(
                 output, result, 0, required=True
             )
+            # A composed non-deferred manifest may contain a proof selected
+            # from a deferred source.  Its per-result record remains binding.
+            MATERIALIZED_AUDIT.validate_deferred_proof(
+                output, result, 0, required=False
+            )
             result["deferred_proof"]["proof_status"] = 0
             with self.assertRaisesRegex(ValueError, "status mismatch"):
                 MATERIALIZED_AUDIT.validate_deferred_proof(
