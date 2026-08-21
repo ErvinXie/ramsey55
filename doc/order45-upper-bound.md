@@ -3842,5 +3842,28 @@ parent JSON/log hashes are
 The accepted production checkpoint is now J297/J326 45/49 segments at states
 620/648, with two/one UNKNOWN descendants.
 
+The following J326 screen selected `2005`.  Its 14-byte compact DRAT has hash
+`23d1812b39f8e72f993a89daaafbfb3831c9830f42098a03a616405f4db18e66`.
+Selection/refinement/terminal/state and local-chain JSON/log hashes are
+`b076bd4f267b29c6fa6da0850b5d4cc718a1832cc5016ba0d664b22c8116405c`,
+`6ea8146de4c34163925b1b3611e9a0b5d7a887e2fe0148c1f66becb3d10293cb`,
+`d72fb0cfca3509467285e78b1707785a37e7779069903de6bbddcc36f9f65889`,
+`12078de6f1bfb504786b1d77e9437aa12691e06440325b6f31c65bbaebe2486c`,
+and
+`ab211b7381b6f1f1df78e5b6ca9618f38fb712002df9bfe3959edcc76b83079a` /
+`54c0ba8989c2f6b58fa01736997fb5ac2d01fc06dba7735961b6c2cfb83ba4c6`.
+Recursive v46-to-v47 replay accepted state 649.  Chain/parent bundle hashes
+are
+`974e920aff0cb08c54c903834a0865550f0e317aab20dd02552dc625ab4e3c9a` /
+`eee597e9620ca336dcb4dcbd76dbec531ec671ac6cb6c68b533b39ae6a8d6e4d`;
+chain JSON/log hashes are
+`7c8c319ead3f0d5fee646ffb6b86edfad56e599daff43d4a774d62798c175880` /
+`410cd62e48e788d6022769d38f36259a8d91b973b6415f7c7b75d21623b3e54b`;
+parent JSON/log hashes are
+`5520cf11063476975fa47c6854f3b524525322ab8666d6499b9a01dfb9d13c2b` /
+`48653ab28a3669f89b728f95bdc60fc65a41594b62423cf5a87b8a5debdf1acb`.
+The accepted production checkpoint is now J297/J326 45/50 segments at states
+620/649, with two/one UNKNOWN descendants.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
