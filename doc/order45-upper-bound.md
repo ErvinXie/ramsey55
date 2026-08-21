@@ -4443,5 +4443,80 @@ The v12 selective-residual join passed with bundle/audit/log hashes
 `f87c47b57a5d667483868520daf079f593be7d89e2b6a5143f9d5c39e7e4f286`.
 Both cases retain one UNKNOWN; a sixth 50-round batch continues from 938/962.
 
+The 0.15-second dual-solver screen did not reach the nominal end of that
+batch.  It safely stopped at J297 state 957 and J326 state 984 because no
+candidate variable had an agreed one-sided UNSAT result from both screen
+solvers.  The failed rounds are retained as immutable diagnostic artifacts.
+Their parent hashes are
+`9fdce2bb99585baa88d4639c60d184b38b250f482eb9da271665bd61d5a5823e`
+and
+`bee64dd0f60908d47b698403ecaef7a562d22d5818894aafb6c91d051fbee5fe`.
+At J297 round 957, CaDiCaL returned 57 UNSAT and 1,475 UNKNOWN results while
+Kissat returned 1,532 UNKNOWN results; the TSV hashes are
+`ec2271ccd048eee35f17201d31765fb6a9d630ce77f4221ce5abefa8c4aff707`
+and
+`e73917bf38ace69c2d7c52a1b0e2d176e6cc129082f067ff51c37454fb0b9689`.
+At J326 round 984, the corresponding counts are 70/1,452 and 0/1,522, with
+TSV hashes
+`690cb83a2040045e53eb0764f6ab0c6c94a95fe1863405bdafdb5eef4c861474`
+and
+`84b1f42704dd1ec9beb4679e5e09f4a073720c1f0a4660d91bf31ba9fae1d3fa`.
+The identical refinement-log hash is
+`3c81285006992e13542629503084d139d2434bd663cffc7de02eafb421f57111`.
+
+Fresh v203/v204 segments continued from the exact checked `r0956`/`r0983`
+manifests with a 0.5-second agreement screen.  Their first screens contained
+64/58 dual-solver-agreed one-sided candidates, not merely the single candidate
+chosen by the ordinary refiner.  The existing queued refiner replayed every
+candidate as a new complete binary split.  The proof producer then generated,
+compacted, and checked the contradictory sibling under the progressively
+stronger exact parent; the heuristic screen results therefore do not enter
+the proof trusted base.  All 64/58 rounds retained frontier width one and
+reached states 1021/1042 in about six minutes.  Their compact proofs total
+87,070/56,624 bytes.  Terminal manifest/state hashes are
+`60d3c30e3c1ce37d186b329bdda0e5f7928d1788187daa57187044d52117e0c0` /
+`4e033fef0c7417577cbba5cbe9c262cea69bfa21818f0d45d5c133f7c44df5ca`
+and
+`6dc1e131324d1ccde5a9ee6c471992c558ce9d74183b93f64cfbdefe3f4871d7` /
+`9f9149648ce2ec16f1a65367843b582274c66105a15a4b035fca3e67f8bd3651`.
+
+The v4 whole-chain replay checked all four segments from the exact
+state-630/state-655 roots, including `identical terminal manifest` equality at
+both 957/984 joins.  Its bundle/audit/log hashes are
+`0db93e32c0ce2d8c2f2c4d511ea649eb40c226d72cc8e8b32449409429a88478` /
+`47b341555b3a691da792bd9884645e68555ce6a56e8286facc449c71005c0591` /
+`4582fdc437e575925aff297eab9352fd7be097e0ec72744a59a90d4c2f4336a9`.
+The v13 selective-residual join passed with bundle/audit/log hashes
+`8146b9782383a407178ed3e39da6a3631573bb41ccab39f790ae9fb33d96a0f2` /
+`e5276b1da00f4e836ea11f65905bf290e03d543f8e85582ea5f054d55b9d5de5` /
+`ca21dff2a4fc8ba6278a74f5bb28867dfb3e0ff89bcc4a844add7214711d35a5`.
+It still projects exactly one effective UNKNOWN for each fixed-pair case.
+The superseded v203/v204 screen processes were stopped at checked states
+979/1006; no force signal was required and all partial-round artifacts remain
+available as diagnostics.
+
+A second screen-only batch at states 1021/1042 supplied 8/19 more agreed
+variables.  Their queued proof chains reached states 1029/1061, with terminal
+manifest/state hashes
+`7caca66138a84f66e7d0c6e5cd4408283478782d9b1b3807b8303d83dce520e3` /
+`8c5f2944ebed90a219bbaeb1633fbd467ac039a68d19e17494b67853811f3322`
+and
+`3670556a5f88ffcb1556614a1577ec3dc18c3fa98e65b9fe21da97804a0e0bfb` /
+`803f400d8395253f8df4cea490a46548782eb4d0cf96fd7e9d6501825dfc1fc2`.
+The v5 whole-chain replay passed with JSON/log hashes
+`c48163bd8a7f1200a477ec62423c2104bb23cb4c791818ec833b7927962b405b` /
+`fd480eee468a8b3bed770f7465a7f8958ec217da8223a7e5c30d966effd6bcc1`.
+A one-second screen then supplied 1/2 further variables; their checked queued
+steps reached runtime states 1030/1063.  A two-second screen-only batch is
+searching the remaining candidates before the next whole-chain replay and
+selective join.
+
+The independent replay of the 579,664,879-byte v135 CaDiCaL proof also passed
+with `audited 1/1 verified=1`.  Its log content is identical to the independent
+Kissat replay, hence the same
+`07521dbcbd17729a5484e9074d6fd0768dfdfc6e92c49eab2ccc038b4c25ca8c`
+hash.  The four oldest diversified four-hour no-proof probes returned UNKNOWN;
+this is only a timeout result and contributes no proof claim.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
