@@ -4394,5 +4394,33 @@ The v10 selective-residual join passed with bundle/audit/log hashes
 The terminal cubes retain 885/883 screened candidates.  A fourth 50-round
 batch continues from 838/862; all 14 long probes remain live without a result.
 
+The fourth 50-round batch reached states 888/912 at constant width one,
+extending the residual chains to 258/257 rounds.  Its compact DRATs total only
+964/1,306 bytes.  Terminal manifest/state hashes are
+`917d0bb68dc4abf1d48b1af4ca1a3018913f6082d750d0216945a6de9d918432` /
+`077f2900eaf0a80474d3d53dd7badc0a556318aa8f0c2412e1aa251203e56994`
+and
+`4fe5a4ffb472e5bc597dd2f6cb1e903eeef91116fb1e3ac4ce18ec579359db7a` /
+`6c9c0b8c8e94fddf12490f35b3ac2994e89d1d2b135b0de0d0c509fb9640b667`.
+Whole-prefix replay passed with JSON/log hashes
+`9085d8b7e5d05df9a453d1de5d475da52aee963f847350e607e2fe57f639b7ee` /
+`d25439c4e08fa1cc83791f6084ec00ecd0e821e19d9a5fe99093792f0a920600`.
+The v11 selective-residual join passed with bundle/audit/log hashes
+`71fc6615bc50c052c4babfa4d32e8e61fc22e144bac993504a64ac12c810c475` /
+`03ea805857cbeacf36651af6341c8bad6c7ee80501d093423a42f17ec806c8bf` /
+`a8bbd9036b2af04348a2f88945adbf537fbae81cefbb0c7db3bd97b5a0c903e1`.
+A fifth 50-round batch continues from the audited 888/912 checkpoint.
+
+Two older long searches also published complete proofs for the exact
+state-607 J297 row-1 child-1 cube (`ee349df8...9c9a`): a 579,664,879-byte
+CaDiCaL DRAT (`7c650e1a...a2d`) and an 827,999,955-byte Kissat DRAT
+(`ceee9990...e70`).  Exact prefix comparison shows that cube extends the
+other state-629 UNKNOWN and conflicts with the current effective root in one
+literal.  Thus these are independent cross-checks for the selective-overlay
+side, not closures of the remaining J297 residual.  Both complete proof
+directories, plus the completed v144 Kissat directory, were checksum-migrated
+to `/data` behind unchanged repository-path symlinks, restoring root-disk
+headroom.  Fresh low-priority replays of the two v135 proofs are running.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
