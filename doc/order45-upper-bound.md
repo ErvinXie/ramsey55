@@ -4206,5 +4206,44 @@ The current effective strengthened-parent residual is consequently one J297
 cube and one J326 cube.  This is a certified reduction, not a proof of either
 strengthened parent.
 
+`audit_selective_residual_chain_bundle.py` makes that reduced frontier a
+reusable production boundary.  It verifies an exact, hash-bound projection
+of every effective residual, replays a normal one-root materialized chain,
+and joins the result back to the selective audit.  It rejects a projection,
+seed, lineage, formula, checker, case order, or terminal hash that is not the
+one claimed.  All 85 cube-tool tests pass on the ARM builder; the
+implementation is commit `4a26e0f`.
+
+The first J297 residual continuation selected variables `1443` and `1225` in
+two rounds.  Its contradictory sides have 212- and 38-byte compact DRATs,
+ending at state 632 with one UNKNOWN.  The terminal manifest and state hashes
+are
+`b5ca189e4460a40476819a45e39f484b6201d311e068fb9d39aceaac649112d1`
+and
+`20d07933d8fdbee8d460cc944abf8945cc63754d9f4f73e7c9f18119bc42895a`.
+The J326 residual was independently projected to the one-row root
+`ea3d87dea2477d30ade3559a9a4be49ede27ca626bf9ee04c3153fc92c3a6b6d`
+and given an audited one-millisecond UNKNOWN seed.  Its self-contained next
+round selected `1842`; a 20-byte compact DRAT closed the negative side and
+left one UNKNOWN at state 656.  Its terminal manifest/state hashes are
+`fe8cfda8b1ec27dab9ec9a65c3a5608b5ff3c718825078b0c32c9cfe15605722`
+and
+`93129060c9922f14537da609ccc0f901535b1db3390ad131402e83630903cebc`.
+
+Two deliberately strict audit failures prevented reuse of a two-row seed and
+then of a frontier manifest bound to that old seed.  Recomputing the J326
+round in a fresh one-root work directory removed both mismatches.  The final
+two-case residual chain bundle and audit hashes are
+`761bf6bff5f1597b045f9aa5ba2bda286e69002be85c7b8afd6b41c49ddc3008`
+and
+`f6963bc519da8442ee309877aec3cd8a69d968d1ebc6876aee9123f286581a6c`.
+The final selective-residual join audit has hash
+`368f1ff9ecc1a82fa4ef2e5a1ec9b7ae619d259dcdc2658a91ad0be67173c747`;
+it binds both projected roots and reports J297/J326 state 632/656 with one
+remaining UNKNOWN each.  Four-hour no-proof CaDiCaL/Kissat probes continue
+on earlier exact ancestors in tmpfs.  Persistent large-proof production is
+deferred until one of them reports UNSAT because the ARM root filesystem has
+only about 4.8 GB free.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
