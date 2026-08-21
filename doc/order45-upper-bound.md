@@ -2543,9 +2543,46 @@ segment by this audited alternative have hashes
 `d292cc97dc5bcfa975c0514e26ab172fec813c116496be1a4d4ecc1b2c83d94d`
 and
 `29611d8b6b61391e5cfe94952aa155f3f1e7f51100b04bd64588d16b94b0320e`.
-Their replay is deliberately deferred until the already running v13 parent
-audit releases its proof-checking capacity; these are candidates, not yet
-accepted full-chain or parent audits.
+They were superseded before replay by the stronger v15 candidate below.
+
+The iGlucose search on the rejected J326 state-622 two-child growth first
+reported UNSAT for child 0 in about 72 seconds, but its original launcher had
+not enabled iGlucose's certified mode for the deferred rerun.  The resulting
+six-byte output was rejected by `drat-trim` and was not admitted.  A corrected
+`-certified` retry reproduced the search result and generated a 96,074,160-byte
+raw DRAT, compacted to 30,387,786 bytes with hash
+`6c6d0413937c8e5a88dfa78a78c204bc4240532fd018763372d3e3efd52513c8`.
+The one-child proof manifest and independent audit-log hashes are
+`ea2a5140b8a573162d1cf66b9de159f9379e5c603837caefbf6fd3dbad4b5d2a`
+and
+`07521dbcbd17729a5484e9074d6fd0768dfdfc6e92c49eab2ccc038b4c25ca8c`.
+
+Composing that proof into the complete variable-913 binary split advances the
+alternative J326 chain to state 622 at one VERIFIED / one UNKNOWN.  Its
+terminal-manifest/state hashes are
+`d05b91b51e239d8849bdf1f53273964986a9e6a89edaa7175ebc0cf83c54dbee`
+and
+`65324d323e1818986c07c9e52d74978e4806f1b7e82988fb6b533fe6af0b7609`.
+Independent seed, frontier, refinement, and proof replay passed with JSON/log
+hashes
+`54ae9423766f4915540367f90173d24f28bc544cb5d63ebea1f57770ffb68630`
+and
+`980e3bb5517abef666f710f89fb4e4e8fd3c57001a954558a538d831fb0afdda`.
+The new single-leaf ICNF/frontier hashes are
+`0e399f0ccc20fc64bbccff90c09aa653e306bee783e0028bfda806b1bef4acae`
+and
+`ab696fdd46e198072b8a53030cbde23a305a35929b39ff5fafd87bc21b064e6f`;
+Kissat and CaDiCaL seed 12 search it alongside the existing iGlucose run.
+
+The resulting v15 chain/strengthened-parent candidates combine J297 state 599
+and J326 state 622.  Their hashes are
+`80bfa1a06beb28511140c7f5119884113c0f980cbda250a17dbd3146501738e6`
+and
+`e0717fb22e54ffd1c34758509b66234e72b64f57006d7998a03d19e47d0549e6`.
+They supersede v14 before audit; v13 remains the active parent replay, so v15
+is not yet an accepted full-chain or strengthened-parent audit.  A low-priority
+v15 whole-chain replay is running at nice 16 with two segment and two proof
+workers, yielding proof-checking capacity to the v13 parent audit.
 
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
