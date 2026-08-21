@@ -53,6 +53,16 @@ def copy_result_artifacts(
     status = int(result["status"])
     if status == 10:
         raise ValueError("SAT result requires investigation")
+    deferred = result.get("deferred_proof")
+    if deferred is not None:
+        if not isinstance(deferred, dict):
+            raise ValueError("invalid deferred-proof record")
+        copy_bound_artifact(
+            source_root,
+            destination_root,
+            deferred["search_log"],
+            deferred["search_log_sha256"],
+        )
     if status == 0:
         return
     if status != 20:

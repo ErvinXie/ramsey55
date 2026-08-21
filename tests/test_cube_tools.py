@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 import os
@@ -175,6 +176,104 @@ class ExternalCubeToolTests(unittest.TestCase):
                 (output / checker_log.name).read_bytes(), b"s VERIFIED\n"
             )
             self.assertTrue((output / "manifest.json").is_file())
+
+    def test_finalized_deferred_progress_copies_bound_search_log(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            formula = root / "formula.cnf"
+            formula.write_text("p cnf 2 1\n1 2 0\n", encoding="ascii")
+            cubes = root / "cubes.icnf"
+            cubes.write_text("a -1 0\na 1 0\n", encoding="ascii")
+            solver = root / "solver"
+            checker = root / "checker"
+            solver.write_bytes(b"solver")
+            checker.write_bytes(b"checker")
+            before, after, variables, clauses = EXTERNAL.read_cnf(formula)
+            cube_rows = EXTERNAL.read_cubes(cubes, variables)
+            first_cube = cube_rows[0]
+            first_digest = MATERIALIZED_PROVER.cube_sha256(first_cube)
+            first_stem = f"cube-000000-{first_digest[:16]}"
+            proof = root / f"{first_stem}.drat"
+            checker_log = root / f"{first_stem}.checker.log"
+            search_log = root / f"{first_stem}.search.log"
+            proof.write_bytes(b"proof")
+            checker_log.write_text("s VERIFIED\n", encoding="utf-8")
+            search_log.write_text("s UNSATISFIABLE\n", encoding="utf-8")
+            augmented = EXTERNAL.render_cnf(
+                before, after, variables, clauses, first_cube
+            )
+            progress = root / "progress.json"
+            progress.write_text(
+                json.dumps(
+                    {
+                        "schema": MATERIALIZED_PROVER.SCHEMA,
+                        "formula": {
+                            "path": str(formula),
+                            "sha256": MATERIALIZED_PROVER.file_sha256(formula),
+                            "variables": variables,
+                            "clauses": clauses,
+                        },
+                        "cubes": {
+                            "path": str(cubes),
+                            "sha256": MATERIALIZED_PROVER.file_sha256(cubes),
+                            "count": 2,
+                        },
+                        "solver": {
+                            "path": str(solver),
+                            "sha256": MATERIALIZED_PROVER.file_sha256(solver),
+                            "arguments": [],
+                        },
+                        "checker": {
+                            "path": str(checker),
+                            "sha256": MATERIALIZED_PROVER.file_sha256(checker),
+                        },
+                        "per_cube_seconds": 3600,
+                        "compact_proof": False,
+                        "deferred_proof": True,
+                        "scratch_directory": str(root / "scratch"),
+                        "jobs": 2,
+                        "results": [
+                            {
+                                "index": 0,
+                                "cube": first_cube,
+                                "cube_sha256": first_digest,
+                                "augmented_cnf_sha256": hashlib.sha256(
+                                    augmented.encode("ascii")
+                                ).hexdigest(),
+                                "status": 20,
+                                "seconds": 3.0,
+                                "proof": proof.name,
+                                "proof_bytes": proof.stat().st_size,
+                                "proof_sha256": MATERIALIZED_PROVER.file_sha256(proof),
+                                "checker_log": checker_log.name,
+                                "checker_log_sha256": MATERIALIZED_PROVER.file_sha256(
+                                    checker_log
+                                ),
+                                "deferred_proof": {
+                                    "method": "search-to-null-then-proof-rerun",
+                                    "search_seconds": 1.0,
+                                    "search_returncode": 20,
+                                    "search_log": search_log.name,
+                                    "search_log_sha256": MATERIALIZED_PROVER.file_sha256(
+                                        search_log
+                                    ),
+                                    "proof_seconds": 2.0,
+                                    "proof_status": 20,
+                                },
+                            },
+                            None,
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            output = root / "finalized"
+            document = MATERIALIZED_PROGRESS.finalize(progress, output)
+            self.assertEqual(document["summary"]["unsat_verified"], 1)
+            self.assertEqual(
+                (output / search_log.name).read_text(encoding="utf-8"),
+                "s UNSATISFIABLE\n",
+            )
 
     def test_render_cnf_appends_cube_as_units(self) -> None:
         rendered = EXTERNAL.render_cnf("c example", "1 -2 0", 3, 1, [2, -3])
