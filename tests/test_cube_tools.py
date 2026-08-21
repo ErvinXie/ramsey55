@@ -1197,6 +1197,31 @@ class ResultMergeTests(unittest.TestCase):
                 result["deferred_proof"]["search_log"], copied.name
             )
 
+    def test_materialized_composition_rebinds_identical_cube_file(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            original = root / "original.icnf"
+            rebound = root / "rebound.icnf"
+            cubes = [[1, -2], [-1, 2]]
+            original.write_text("a 1 -2 0\na -1 2 0\n", encoding="ascii")
+            rebound.write_bytes(original.read_bytes())
+            binding = {
+                "path": str(original),
+                "sha256": MATERIALIZED_PROVER.file_sha256(original),
+                "count": 2,
+            }
+            self.assertEqual(
+                MATERIALIZED_COMPOSE.rebound_cubes_binding(
+                    binding, cubes, 2, rebound
+                ),
+                {**binding, "path": str(rebound)},
+            )
+            rebound.write_text("a 1 2 0\na -1 2 0\n", encoding="ascii")
+            with self.assertRaisesRegex(ValueError, "hash mismatch"):
+                MATERIALIZED_COMPOSE.rebound_cubes_binding(
+                    binding, cubes, 2, rebound
+                )
+
     def test_materialized_portfolio_selects_smallest_verified_proof(self) -> None:
         documents = [
             {

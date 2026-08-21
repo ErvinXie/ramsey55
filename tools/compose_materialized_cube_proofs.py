@@ -155,6 +155,23 @@ def copy_deferred_search_log(
     deferred["search_log"] = search_log_name
 
 
+def rebound_cubes_binding(
+    binding: dict[str, Any],
+    cubes: list[list[int]],
+    variables: int,
+    path: Path,
+) -> dict[str, Any]:
+    """Bind an identical cube family at a chain-local path."""
+
+    if file_sha256(path) != binding["sha256"]:
+        raise ValueError("rebound cube-file hash mismatch")
+    if read_cubes(path, variables) != cubes:
+        raise ValueError("rebound cube family mismatch")
+    rebound = copy.deepcopy(binding)
+    rebound["path"] = str(path)
+    return rebound
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("primary_manifest", type=Path)
@@ -166,6 +183,14 @@ def main() -> None:
         help=(
             "match a uniquely keyed UNKNOWN subset regardless of secondary "
             "row order; the strict default requires an ordered subsequence"
+        ),
+    )
+    parser.add_argument(
+        "--cubes",
+        type=Path,
+        help=(
+            "bind the output manifest to an identical cube file at this path; "
+            "its SHA-256 and ordered cube family must match the primary"
         ),
     )
     arguments = parser.parse_args()
@@ -264,6 +289,10 @@ def main() -> None:
     combined["jobs"] = max(int(primary["jobs"]), int(secondary["jobs"]))
     combined["results"] = combined_results
     combined["summary"] = expected_summary(combined_results)
+    if arguments.cubes is not None:
+        combined["cubes"] = rebound_cubes_binding(
+            primary["cubes"], primary_cubes, variables, arguments.cubes
+        )
     combined["composition"] = {
         "kind": (
             "exact unordered UNKNOWN-subset retry"

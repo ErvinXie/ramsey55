@@ -660,7 +660,10 @@ root of the hash chain.  A bundle may append segments to only one case; the
 other case's exact terminal summary is carried forward without replay.
 Prefix mutation, round gaps,
 incomplete base backbone proofs, and inconsistent terminal counts are covered
-by rejection tests.  The complete Python suite passes 177 tests after these
+by rejection tests.  When an accepted retry is composed into a fresh chain
+directory, `compose_materialized_cube_proofs.py --cubes` can rebind its output
+to the chain-local children file only after checking the identical SHA-256 and
+ordered cube family.  The complete Python suite passes 178 tests after these
 additions.
 
 The immutable-state path was exercised on the J297775 pre-switch snapshot:
