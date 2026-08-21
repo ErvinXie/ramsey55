@@ -134,6 +134,27 @@ def copy_bound_artifact(
         shutil.copy2(source, destination)
 
 
+def copy_deferred_search_log(
+    source_root: Path,
+    destination_root: Path,
+    stem: str,
+    result: dict[str, Any],
+) -> None:
+    deferred = result.get("deferred_proof")
+    if deferred is None:
+        return
+    if not isinstance(deferred, dict):
+        raise ValueError("invalid deferred-proof record")
+    search_log_name = stem + ".search.log"
+    copy_bound_artifact(
+        source_root,
+        deferred["search_log"],
+        destination_root / search_log_name,
+        deferred["search_log_sha256"],
+    )
+    deferred["search_log"] = search_log_name
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("primary_manifest", type=Path)
@@ -209,8 +230,9 @@ def main() -> None:
         else:
             bind_effective_solver(result, primary["solver"], primary["solver"])
         result["index"] = index
+        stem = f"cube-{index:06d}-{cube_sha256(result['cube'])[:16]}"
+        copy_deferred_search_log(source_root, output, stem, result)
         if int(result["status"]) == 20:
-            stem = f"cube-{index:06d}-{cube_sha256(result['cube'])[:16]}"
             proof_name = stem + ".drat"
             log_name = stem + ".checker.log"
             copy_bound_artifact(

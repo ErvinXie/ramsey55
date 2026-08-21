@@ -818,6 +818,34 @@ class ResultMergeTests(unittest.TestCase):
         MATERIALIZED_COMPOSE.bind_effective_solver(result, cadical, cadical)
         self.assertNotIn("solver", result)
 
+    def test_materialized_composition_copies_deferred_search_log(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            source = root / "source"
+            output = root / "output"
+            source.mkdir()
+            output.mkdir()
+            search_log = source / "original.search.log"
+            search_log.write_text("s UNSATISFIABLE\n", encoding="utf-8")
+            result = {
+                "deferred_proof": {
+                    "search_log": search_log.name,
+                    "search_log_sha256": MATERIALIZED_PROVER.file_sha256(
+                        search_log
+                    ),
+                }
+            }
+            MATERIALIZED_COMPOSE.copy_deferred_search_log(
+                source, output, "cube-000004-deadbeef", result
+            )
+            copied = output / "cube-000004-deadbeef.search.log"
+            self.assertEqual(
+                copied.read_text(encoding="utf-8"), "s UNSATISFIABLE\n"
+            )
+            self.assertEqual(
+                result["deferred_proof"]["search_log"], copied.name
+            )
+
     def test_materialized_portfolio_selects_smallest_verified_proof(self) -> None:
         documents = [
             {

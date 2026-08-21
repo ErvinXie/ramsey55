@@ -13,6 +13,7 @@ if __package__:
     from tools.compose_materialized_cube_proofs import (
         bind_effective_solver,
         copy_bound_artifact,
+        copy_deferred_search_log,
         expected_summary,
         validate_document,
     )
@@ -22,6 +23,7 @@ else:
     from compose_materialized_cube_proofs import (
         bind_effective_solver,
         copy_bound_artifact,
+        copy_deferred_search_log,
         expected_summary,
         validate_document,
     )
@@ -111,11 +113,12 @@ def main() -> None:
         bind_effective_solver(
             chosen, documents[source]["solver"], base["solver"]
         )
+        stem = f"cube-{index:06d}-{cube_sha256(cube)[:16]}"
+        source_root = arguments.manifests[source].parent
+        copy_deferred_search_log(source_root, output, stem, chosen)
         if int(chosen["status"]) == 20:
-            stem = f"cube-{index:06d}-{cube_sha256(cube)[:16]}"
             proof_name = stem + ".drat"
             log_name = stem + ".checker.log"
-            source_root = arguments.manifests[source].parent
             copy_bound_artifact(
                 source_root,
                 chosen["proof"],
