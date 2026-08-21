@@ -3502,5 +3502,111 @@ parent JSON/log hashes are
 The accepted production checkpoint is now J297/J326 39/37 segments at states
 614/636, with two/one UNKNOWN descendants.
 
+Two further J297 screens selected `1900`/`2334` and `1210`/`1308`.  Their
+20/8- and 20/8-byte compact DRAT hashes are
+`5ccf8c053c0918b916a32a3ed89e77c8a130cee3060a0f1035c8226288cea2a7` /
+`f662413801ccd5bb7b6ded8261b8d97ff4df1e4f71ed15f8f2bf0f4f4b12b58c`
+and
+`4edcf5aedd60554dc519f8b7e8c9503c8d55e2d7c7252a2861907a5be6596d1a` /
+`183579aad8299a3833be91f1d02637e034ee2f4eb781501b966f00c9f45ec7e8`.
+The state-615 selection/refinement/terminal/state hashes are
+`8bf7921ebf18448b6b5b520fc8487d20f802a9e0595e47588639fa35b57a94f3`,
+`ab379909fb59078a43ab0005a7bfdf14149ce2aa8d408f725164abc311322b26`,
+`6d56185f89a3d2235ddcd3daf1cdece6c7178912f4f18d720b78a54c8e0456ec`,
+and
+`f55f40538f69be000e3229bfb5bea6acced6141fabaf3d8286c5bb5f2a2953b0`;
+its local chain JSON/log hashes are
+`82dcd546fc08b090986e7703c9d679b77cbe5d326a0cd66d00f648a22e31ef5d` /
+`9beb7f1c051a8503cc373c72cd831b9ee66351fdea4218c2f128754e16ff76f7`.
+The corresponding state-616 hashes are
+`3a80b6fbc5637751dbcb0edd0b61edc7193fb9e16c1172b9cbeca8aef4e2142c`,
+`f60ebd870728f35aa4998d1442c41faddc089ecfec1d29b1bef1045ea6f167eb`,
+`b355050b279f321ab1af9b4293ed082330121e2b9f75305d8cfe8f7d00b304fb`,
+`4ac8dcda328bc91306450a8dd251e689ae162db3c5cb65cbed376709098b2318`,
+and
+`ba82b78d17db16ed0b5f545949842995cc16916afbd1253a5ab08d9d62f858cc` /
+`917f2bc5200f644f4d97c25a8788f5e169fa7f8beaa7b5353f09c37f0c465ec6`.
+Recursive v30-to-v31 and v31-to-v32 replay accepted both rounds.  The v32
+chain/parent bundle hashes are
+`1871a5bb07b38d56325f0ed6733daf341227d7c174fd147bea9f4d6362bdff7a` /
+`afbeb92897c76a7f51cdcafda626299614ec8ca29468905adb423f3182a51718`;
+the final chain JSON/log hashes are
+`b365b191139a09537c070697478a7936993db0eeb173a5bc6324f7ec29ec68ab` /
+`660663e4517debb09cebfe8fe3e0ab1af83e8a9d91a3ae8e77c990aed3bcea79`;
+and the final parent JSON/log hashes are
+`5bbbf5be8cf3dbc82382dd4f887b9c69ed80e47278a797594350d720e0b13f04` /
+`68404b0b37ce497a8b000eb55c85dee93dc682068c5be328da24f4b5a10b7122`.
+
+CaDiCaL independently certified the already accepted J326 state-635 child.
+Its 176,141,701-byte compact DRAT has hash
+`719593acc588143f29d9cdc9619fa4f01fcdae9ecfd1608e1f07eaca0f576e9a`;
+the frozen one-VERIFIED/one-UNKNOWN checkpoint manifest has hash
+`e3b6552487c561489b5e05bd1454628ad9812a68cb4d9fb538d43e6a1393f116`,
+and a fresh replay passed with log hash
+`ea389d56d1c9bad8343b7ff358048de4fb8c86bdcfccea31df7e26c894a045a9`.
+This is a solver-independent cross-check of the Kissat source, not a new
+frontier segment.
+
+An expanded J326 screen over variables 1201--2400 then selected `1933` from
+the unique state-636 survivor.  Its 212-byte compact DRAT has hash
+`5484e90f2c53d8e31d24126ac33c75028e6d358cbbe5332f1acf7c8f2419e5ed`.
+Selection/refinement/terminal/state and local-chain JSON/log hashes are
+`c72725c59d63814691ff8dd4aa8703296dd32f2fdc8cf293cb9c502132ee225f`,
+`0460573e289503ba30563e45765628c17af87e07c4c2702bc21c29730232fd61`,
+`ce59d911dfb76ad597240e80f157c7ff23a1d9ceddc7090912a42fa82c2dff74`,
+`48d5a3158c602b93e638af4aa82b8da3f3cf2132c901e53c4f167406cb406896`,
+and
+`46c8db10eddbf04c078c561b70c344ed3f86469b8333e9560d4e822f45653150` /
+`0c73059f2bc20ebf7836f81a07dd086cd8746ee0d5225278c668c42fcf31b7a4`.
+In parallel, a J297 screen selected `2198`/`2114`; its 88/32-byte DRAT hashes
+are
+`4fcb396c0f0ec6703a8cf189c4e720170b7112816e817cc64d95640a31d17767` /
+`d10e05dd7ea2f6ef43b0d507fc44dd09efceabab85ab62408171a5a0c826bbc5`,
+and its terminal/state hashes are
+`80b03c70f22bed45ee89004d0eeb5d8a47ab351c5583335c967f48cbdd215404` /
+`950a7ef33319f890ef0cc8aecf5dc2122b06d82f25f24387612cb8ae5d6b7bec`.
+Recursive v32-to-v33 replay accepted both new segments.  Chain/parent bundle
+hashes are
+`03c9fe3eaf4fd3be985c8c369fe8c063cad5626c4aff6cfad86797824eb66ba1` /
+`3b943538fcf702328ee057c43213233e8be0b9bd863d6cbcb7780774fa76f905`;
+chain JSON/log hashes are
+`24aecd5f9fade9abb2cb755654f675f6e027ef658554690773406a8755412fa5` /
+`65bf28dfb866c8c7b750c0dd5a277eedebcd3567a1a8c7acc8fa915c0ed62556`;
+parent JSON/log hashes are
+`a5de46d252f5f938da4857777666ae23a725e43b3e7e349fab934b429e33dee6` /
+`db18a7f6d58dc19a26258a80ff1e56e45adc78d17bb08359a688afef63f702d5`.
+
+Two more J297 screens selected `1974`/`1597` and `2103`/`2005`.  Their
+184/20- and 14/14-byte DRAT hashes are
+`8f9a5a88edba299e35d357327f9c2ecf040bb89a90d93a0dbea2ccc8e488b7d0` /
+`f7a9ab0056e78bae6951136d474e95c29cbd811515649bd59370cdf15ced9413`
+and
+`2800c0a32af6e4c8f911116224afde4391be005b0426a602b00f224d96dffc57` /
+`23d1812b39f8e72f993a89daaafbfb3831c9830f42098a03a616405f4db18e66`.
+The state-618 terminal/state/local-chain hashes are
+`1ab911d6d667b61595ee4922c4f4695872b1a53c283ab5e298fdd404f3e56f21`,
+`8b69d728e100deb39b6ec95866dd29f33499c7d695ab98d8e0d9c9a9980f4d7d`,
+and
+`2491643e0e2672c50f22cea62dcf39149f919179485042f86136fa174ce79083` /
+`b21ce6cc3b356dfa9208df66b279f2427e8c491d6cd59cfd0dd2b5ea19821985`;
+the state-619 hashes are
+`4a3ea43ce5a30ce91ee7faa035cb1796d6b3283594fde61a11e0a1a618dc5352`,
+`c3eb33c45535fd223f1bcb17ee0325d09588987dbab76483423b50dfad776f67`,
+and
+`0497ee62cd8476f8f9eb8d2ffcdedda7552e619ef83995650209c62ded6a55eb` /
+`e27cfa607cab723472e4abd3ef6f8eeae3cb878d0fe957ba16eccd4c58d5cdb3`.
+Recursive v33-to-v34 replay accepted both rounds.  The chain/parent bundle
+hashes are
+`09b695eddeb59f434781c8bc9606537184a3e010d80c2498eaf84180b8f47bb7` /
+`2b344243f1280c6aeb9b0c70452fc6df5622d8dc28afb82e48394802b28d6928`;
+chain JSON/log hashes are
+`03a2cc14684d4311c431cc51d7f895c984340e415c44fdd021e1ec379a9853d4` /
+`9bde0f97f4b47acf48f04f5e79fc87485e1823e88f795c94704350384111a1d6`;
+parent JSON/log hashes are
+`a9478d42b59ba7c7261c30492c0c12ccc0a03c57a8d057f1168ceb7279a4d088` /
+`efd4e77bca6b1205ccd123c7de9f798eede4544e3c2d1db68241a9cd89f1b29c`.
+The accepted production checkpoint is now J297/J326 44/38 segments at states
+619/637, with two/one UNKNOWN descendants.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
