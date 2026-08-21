@@ -15,7 +15,9 @@ supplied checker and every cover/refinement relation is reconstructed.
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -74,6 +76,12 @@ def required_path(document: dict[str, Any], key: str) -> Path:
     if not path.is_file() and not path.is_dir():
         raise ValueError(f"bundle path does not exist: {path}")
     return path
+
+
+def absolute_preserving_symlinks(path: Path) -> Path:
+    """Make a path absolute without resolving certificate-visible symlinks."""
+
+    return Path(os.path.abspath(path))
 
 
 def cube_binding(path: Path, count: int) -> dict[str, Any]:
@@ -308,9 +316,32 @@ def audit_chain_segments(
     checker: Path,
     jobs: int,
     tool: Path,
+    segment_jobs: int = 1,
 ) -> dict[str, Any]:
+    if segment_jobs <= 0:
+        raise ValueError("segment jobs must be positive")
+
+    def audit_spec(spec: dict[str, Any]) -> dict[str, Any]:
+        return audit_chain(
+            spec["seed_manifest"],
+            spec["chain_workdir"],
+            spec["first_round"],
+            checker,
+            jobs,
+            tool,
+            spec["state"],
+        )
+
+    if segment_jobs == 1:
+        results = [audit_spec(spec) for spec in specs]
+    else:
+        with ThreadPoolExecutor(
+            max_workers=min(segment_jobs, len(specs))
+        ) as executor:
+            results = list(executor.map(audit_spec, specs))
+
     audited: list[dict[str, Any]] = []
-    for index, spec in enumerate(specs):
+    for index, (spec, result) in enumerate(zip(specs, results)):
         seed = spec["seed_manifest"]
         if audited:
             previous_round = int(audited[-1]["final_round"])
@@ -325,15 +356,6 @@ def audit_chain_segments(
                 raise ValueError(f"{label} proof-chain segment round mismatch")
         else:
             boundary = "initial seed"
-        result = audit_chain(
-            seed,
-            spec["chain_workdir"],
-            spec["first_round"],
-            checker,
-            jobs,
-            tool,
-            spec["state"],
-        )
         result["boundary_from_previous"] = boundary
         audited.append(result)
         if index + 1 < len(specs) and result.get("complete_unsat"):

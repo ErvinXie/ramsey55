@@ -522,6 +522,89 @@ class ExternalCubeToolTests(unittest.TestCase):
             )
             self.assertTrue(binding["root_is_exact_selected_source_cube"])
 
+    def test_chain_bundle_absolute_paths_preserve_symlink_spelling(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            target = root / "target"
+            target.mkdir()
+            manifest = target / "manifest.json"
+            manifest.write_text("{}\n", encoding="utf-8")
+            link = root / "snapshot-link"
+            link.symlink_to(target, target_is_directory=True)
+            linked_manifest = link / "manifest.json"
+
+            absolute = FIXED_PAIR_BUNDLE.absolute_preserving_symlinks(
+                linked_manifest
+            )
+            self.assertEqual(absolute, linked_manifest.absolute())
+            self.assertNotEqual(absolute, linked_manifest.resolve())
+
+    def test_chain_bundle_can_audit_segments_in_parallel(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            first_seed = root / "first.json"
+            second_seed = root / "second.json"
+            first_seed.write_text("{}\n", encoding="utf-8")
+            second_seed.write_text("{}\n", encoding="utf-8")
+            first_work = root / "first-work"
+            second_work = root / "second-work"
+            first_work.mkdir()
+            second_work.mkdir()
+            specs = [
+                {
+                    "seed_manifest": first_seed,
+                    "chain_workdir": first_work,
+                    "first_round": 0,
+                    "state": None,
+                },
+                {
+                    "seed_manifest": second_seed,
+                    "chain_workdir": second_work,
+                    "first_round": 1,
+                    "state": None,
+                },
+            ]
+            rendezvous = threading.Barrier(2)
+
+            def fake_audit(seed, workdir, first_round, checker, jobs, tool, state):
+                rendezvous.wait(timeout=2)
+                if seed == first_seed:
+                    return {
+                        "final_round": 1,
+                        "final_manifest": str(second_seed),
+                        "final_manifest_sha256": FIXED_PAIR_BUNDLE.file_sha256(
+                            second_seed
+                        ),
+                        "complete_unsat": False,
+                    }
+                return {
+                    "final_round": 2,
+                    "final_manifest": str(second_seed),
+                    "final_manifest_sha256": FIXED_PAIR_BUNDLE.file_sha256(
+                        second_seed
+                    ),
+                    "complete_unsat": False,
+                }
+
+            with mock.patch.object(
+                FIXED_PAIR_BUNDLE, "audit_chain", side_effect=fake_audit
+            ) as audit:
+                result = FIXED_PAIR_BUNDLE.audit_chain_segments(
+                    specs,
+                    "test",
+                    Path("checker"),
+                    4,
+                    Path("tool"),
+                    segment_jobs=2,
+                )
+
+            self.assertEqual(audit.call_count, 2)
+            self.assertEqual(result["segment_count"], 2)
+            self.assertEqual(
+                result["segments"][1]["boundary_from_previous"],
+                "identical terminal manifest",
+            )
+
 
 class ResultMergeTests(unittest.TestCase):
     def test_second_pass_replaces_only_unknown_rows(self) -> None:

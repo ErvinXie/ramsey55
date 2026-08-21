@@ -10,6 +10,7 @@ from typing import Any
 
 if __package__:
     from tools.audit_fixed_pair_proof_bundle import (
+        absolute_preserving_symlinks,
         audit_chain_segments,
         chain_specs,
         cube_binding,
@@ -21,6 +22,7 @@ if __package__:
     from tools.solve_external_cubes import read_cnf, read_cubes
 else:
     from audit_fixed_pair_proof_bundle import (
+        absolute_preserving_symlinks,
         audit_chain_segments,
         chain_specs,
         cube_binding,
@@ -91,11 +93,12 @@ def main() -> None:
     parser.add_argument("bundle", type=Path)
     parser.add_argument("--checker", type=Path, required=True)
     parser.add_argument("--jobs", type=int, default=1)
+    parser.add_argument("--segment-jobs", type=int, default=1)
     parser.add_argument("--allow-partial", action="store_true")
     parser.add_argument("--manifest", type=Path)
     arguments = parser.parse_args()
-    if arguments.jobs <= 0:
-        parser.error("--jobs must be positive")
+    if arguments.jobs <= 0 or arguments.segment_jobs <= 0:
+        parser.error("--jobs and --segment-jobs must be positive")
     if not arguments.bundle.is_file() or not arguments.checker.is_file():
         parser.error("bundle or checker does not exist")
     if arguments.manifest is not None and arguments.manifest.exists():
@@ -124,13 +127,22 @@ def main() -> None:
         }
         specs = chain_specs(case, label)
         for spec in specs:
-            spec["seed_manifest"] = spec["seed_manifest"].resolve()
-            spec["chain_workdir"] = spec["chain_workdir"].resolve()
+            spec["seed_manifest"] = absolute_preserving_symlinks(
+                spec["seed_manifest"]
+            )
+            spec["chain_workdir"] = absolute_preserving_symlinks(
+                spec["chain_workdir"]
+            )
             if spec["state"] is not None:
-                spec["state"] = spec["state"].resolve()
+                spec["state"] = absolute_preserving_symlinks(spec["state"])
         selected_root = root_binding(case, formula, specs[0]["seed_manifest"])
         chain = audit_chain_segments(
-            specs, label, arguments.checker, arguments.jobs, chain_tool
+            specs,
+            label,
+            arguments.checker,
+            arguments.jobs,
+            chain_tool,
+            arguments.segment_jobs,
         )
         expected_complete = bool(case.get("complete_unsat", False))
         if chain["complete_unsat"] != expected_complete:
@@ -155,6 +167,8 @@ def main() -> None:
             "path": str(arguments.checker),
             "sha256": file_sha256(arguments.checker),
         },
+        "proof_jobs": arguments.jobs,
+        "segment_jobs": arguments.segment_jobs,
         "cases": audited,
         "all_cases_complete_unsat": all_complete,
     }

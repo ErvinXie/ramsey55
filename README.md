@@ -24,7 +24,7 @@ summaries belong in `doc/`. Agent collaboration conventions are defined in
 The Python verifier has no third-party dependencies:
 
     sh scripts/fetch_reference_data.sh
-    PYTHONPATH=src python3 -m unittest discover -s tests -v
+    PYTHONPATH=src:tools python3 -m unittest discover -s tests -v
     PYTHONPATH=src python3 tools/verify_reference.py
     PYTHONPATH=src python3 tools/verify_catalog_flip_certificate.py
     PYTHONPATH=src python3 tools/verify_four_flip_certificate.py

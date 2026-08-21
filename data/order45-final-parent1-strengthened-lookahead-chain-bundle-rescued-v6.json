@@ -1,0 +1,245 @@
+{
+  "artifact_root": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1",
+  "cases": [
+    {
+      "case": "J297775",
+      "complete_unsat": false,
+      "fixed_pair_parent_index": 1,
+      "formula": "build/order45-fixed-pairs/h0-j297775-nosym.cnf",
+      "root_cubes": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-root.icnf",
+      "segments": [
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-chain",
+          "first_round": 0,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-seed/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-chain/state-adopted-v2-r0002.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth1-from-r0001-v1",
+          "first_round": 2,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-chain/r0001-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth1-from-r0001-v1/state-adopted-v2-r0009.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth2-from-r0008-v1",
+          "first_round": 9,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth1-from-r0001-v1/r0008-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth2-from-r0008-v1/state-adopted-v2-r0028.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth3-from-r0027-v1",
+          "first_round": 28,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth2-from-r0008-v1/r0027-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth3-from-r0027-v1/state-adopted-v2-r0074.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth4-from-r0073-v1",
+          "first_round": 74,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth3-from-r0027-v1/r0073-proofs/manifest.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth4-cont-r0124-v1",
+          "first_round": 124,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth4-from-r0073-v1/r0123-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth4-cont-r0124-v1/state-adopted-v2-r0132.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth5-from-r0131-v1",
+          "first_round": 132,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth4-cont-r0124-v1/r0131-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth5-from-r0131-v1/state-adopted-v2-r0134.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth6-from-r0133-v1",
+          "first_round": 134,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth5-from-r0131-v1/r0133-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth6-from-r0133-v1/state-adopted-v2-r0165.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth7-from-r0164-v1",
+          "first_round": 165,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth6-from-r0133-v1/r0164-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-growth7-from-r0164-v1/state-adopted-v2-r0191.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-long-frontier-rescued-r0190-chain-v1",
+          "first_round": 191,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-r0190-rescued-other-kissat-3600-v1/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-long-frontier-rescued-r0190-chain-v1/state-adopted-v4-r0208.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-r0207-rescued-cadical3600-chain-v1",
+          "first_round": 208,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-r0207-rescued-cadical3600-v1/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-r0207-rescued-cadical3600-chain-v1/state-checkpoint-v4-r0219.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-r0218-rescued-existing-cadical-chain-v1",
+          "first_round": 219,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-r0218-rescued-existing-cadical-v1/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-r0218-rescued-existing-cadical-chain-v1/state-adopted-v4-r0239.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-r0238-rescued-cadical3600-chain-v1",
+          "first_round": 239,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-r0238-rescued-cadical3600-v1/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-r0238-rescued-cadical3600-chain-v1/state-checkpoint-v4-r0242.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-r0242-rescued-kissat3600-chain-v1",
+          "first_round": 243,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-r0242-rescued-kissat3600-v1/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-r0242-rescued-kissat3600-chain-v1/state-adopted-post-v4-r0245.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-r0244-rescued-kissat3600-chain-v1",
+          "first_round": 245,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-r0244-rescued-kissat3600-v1/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j297-r0244-rescued-kissat3600-chain-v1/state-adopted-v5-r0275.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/v6-j297-r0331-screened-snapshot/j297-r0274-rescued-cadical3600-chain-v1",
+          "first_round": 275,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/v6-j297-r0331-screened-snapshot/j297-r0274-rescued-cadical3600-v1/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/v6-j297-r0331-screened-snapshot/j297-r0274-rescued-cadical3600-chain-v1/state-checkpoint-v6-r0331.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/v8-screened-continuations-snapshot/j297-r0330-screened-chain-v1",
+          "first_round": 331,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/v8-screened-continuations-snapshot/j297-r0274-rescued-cadical3600-chain-v1/r0330-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/v8-screened-continuations-snapshot/j297-r0330-screened-chain-v1/state-checkpoint-v8-r0378.json"
+        }
+      ],
+      "source_cube_index": 0,
+      "source_cubes": "build/order45-fixed-pairs/final-frontier-full-backbone-strengthened-600-v1/j297-strengthened.icnf",
+      "source_lineage": "build/order45-fixed-pairs/final-frontier-full-backbone-strengthened-600-v1/j297-lineage.json"
+    },
+    {
+      "case": "J326185",
+      "complete_unsat": false,
+      "fixed_pair_parent_index": 1,
+      "formula": "build/order45-fixed-pairs/h0-j326185-nosym.cnf",
+      "root_cubes": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-root.icnf",
+      "segments": [
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-chain",
+          "first_round": 0,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-seed/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-chain/state-adopted-v2-r0005.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-growth1-from-r0004-v1",
+          "first_round": 5,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-chain/r0004-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-growth1-from-r0004-v1/state-adopted-v2-r0037.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-growth2-from-r0036-v1",
+          "first_round": 37,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-growth1-from-r0004-v1/r0036-proofs/manifest.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-growth2-cont-r0087-v1",
+          "first_round": 87,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-growth2-from-r0036-v1/r0086-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-growth2-cont-r0087-v1/state-adopted-v2-r0128.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-growth3-from-r0127-v1",
+          "first_round": 128,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-growth2-cont-r0087-v1/r0127-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-growth3-from-r0127-v1/state-adopted-v2-r0132.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-rescued-r0131-chain-v1",
+          "first_round": 132,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0131-rescued-kissat-600-v1/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-rescued-r0131-chain-v1/state-adopted-v2-r0163.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-rescued-growth1-from-r0162-v1",
+          "first_round": 163,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-rescued-r0131-chain-v1/r0162-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-rescued-growth1-from-r0162-v1/state-adopted-v2-r0240.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-long-frontier-rescued-cadical-r0239-chain-v1",
+          "first_round": 240,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0239-rescued-other-kissat-cadical3600-v1/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-long-frontier-rescued-cadical-r0239-chain-v1/state-adopted-v4-r0258.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0257-rescued-kissat3600-chain-v1",
+          "first_round": 258,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0257-rescued-kissat3600-v1/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0257-rescued-kissat3600-chain-v1/state-checkpoint-v4-r0278.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0277-rescued-existing-kissat-chain-v1",
+          "first_round": 278,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0277-rescued-existing-kissat-v1/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0277-rescued-existing-kissat-chain-v1/state-checkpoint-v4-r0278.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0278-rescued-cadical3600-chain-v1",
+          "first_round": 279,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0278-rescued-cadical3600-v1/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0278-rescued-cadical3600-chain-v1/state-adopted-post-v4-r0352.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0351-rescued-cadical3600-chain-v1",
+          "first_round": 352,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0351-rescued-cadical3600-v1/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0351-rescued-cadical3600-chain-v1/state-checkpoint-v5-r0356.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0355-selected-v1092-chain-v1",
+          "first_round": 356,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0351-rescued-cadical3600-chain-v1/r0355-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0355-selected-v1092-chain-v1/state.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0356-selected-v1092-v1183-chain-v1",
+          "first_round": 357,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0355-selected-v1092-chain-v1/r0356-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0356-selected-v1092-v1183-chain-v1/state.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0357-selected-v1183-v1184-chain-v1",
+          "first_round": 358,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0356-selected-v1092-v1183-chain-v1/r0357-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0357-selected-v1183-v1184-chain-v1/state.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0358-screen-selected-chain-v1",
+          "first_round": 359,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0357-selected-v1183-v1184-chain-v1/r0358-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0358-screen-selected-chain-v1/state.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0359-screen-selected-chain-v1",
+          "first_round": 360,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0358-screen-selected-chain-v1/r0359-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0359-screen-selected-chain-v1/state.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0360-screen-selected-chain-v1",
+          "first_round": 361,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0359-screen-selected-chain-v1/r0360-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/j326-r0360-screen-selected-chain-v1/state.json"
+        },
+        {
+          "chain_workdir": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/v8-screened-continuations-snapshot/j326-r0361-screened-chain-v1",
+          "first_round": 362,
+          "seed_manifest": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/v8-screened-continuations-snapshot/j326-r0360-screen-selected-chain-v1/r0361-proofs/manifest.json",
+          "state": "build/order45-fixed-pairs/final-parent1-strengthened-single-root-lookahead-v1/v8-screened-continuations-snapshot/j326-r0361-screened-chain-v1/state-checkpoint-v8-r0411.json"
+        }
+      ],
+      "source_cube_index": 0,
+      "source_cubes": "build/order45-fixed-pairs/final-frontier-full-backbone-strengthened-600-v1/j326-strengthened.icnf",
+      "source_lineage": "build/order45-fixed-pairs/final-frontier-full-backbone-strengthened-600-v1/j326-lineage.json"
+    }
+  ],
+  "claim": "independently replayable partial rescued binary-refinement chains for strengthened final parent 1 through stable state rounds 378/411, leaving two/one UNKNOWN descendants; neither parent, fixed-pair formula, nor the order-45 problem is proved UNSAT",
+  "schema": "ramsey55.materialized-proof-chain-bundle.v1"
+}

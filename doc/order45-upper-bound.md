@@ -1742,3 +1742,226 @@ has about 19 GiB free and `/dev/shm` about 98 GiB free.  Storage remains the
 first resource that would need expansion for a substantially wider proof
 portfolio.  None of these partial chains proves strengthened parent 1, either
 fixed-pair formula, the order-45 formula, or `R(5,5) <= 45`.
+
+## Screened continuation checkpoints after rescued-v5
+
+The two live screened continuations were frozen together at J297775 state
+round 378 and J326185 state round 411.  Relocation v29 bound 389 JSON
+documents into `v8-screened-continuations-snapshot`, with record hash
+`d05e5510e373cffffaf7863256715eb4ff1286432e84ec86e778d71c8677785b`.
+Independent stable-path replay of the J297 continuation covered 47 rounds,
+48 proof manifests, and 94 parent refinements, ending 2 VERIFIED / 2 UNKNOWN.
+Its JSON and log hashes are
+`786cf7c00740b8d981ae594b3cea40caf9d6bf845c4501d8484f43b43cd5c403`
+and
+`b96b31f24b2e345261ef61a9a3af6ba7b5c064984a0a572acc6aae366834ed72`.
+The J326 continuation covered 49 rounds, 50 manifests, and 49 refinements,
+ending 1 VERIFIED / 1 UNKNOWN; its corresponding hashes are
+`c3a3e02a2f5724e7d2fe2089eb0063ebd3cc757d66f268abfa7f1bba47213a93`
+and
+`a5089edb4b0532bbfa8e75ada7ba2fd2dd3d529f0806c45d24968ff258e2636c`.
+
+Rescued-v6 incorporates those two stable checkpoints.  Its chain and
+original-parent reduction bundle hashes are
+`afbd6fd0789ddddb530bdf2d3b5f617ac167d711bc2fa6b14bcc42ab37d79e86`
+and
+`f93b22a168500632e6ba1cc96065b45ebf7fbd3fe5494cda38ead4133076719b`.
+The new J297 round-275 and round-331 boundaries replay as an exact-cube retry
+and an identical terminal manifest; the J326 round-362 boundary is also
+identical.  The first full v6 run replayed the earlier J297 segments and then
+exposed a path-normalization defect at the v8 round-331 boundary: the bundle
+auditor used `Path.resolve()`, which expanded the snapshot symlink and changed
+the exact `source_manifest` spelling bound by the relocated lineage, although
+the manifest bytes and hash were unchanged.  The auditor now makes paths
+absolute without expanding symlinks, and a regression test distinguishes the
+linked path from its resolved target.  The rejected audit log was retained and
+the full replay restarted successfully.  The completed replay used four
+segment workers and four proof workers per segment.  J297 covered 17
+segments, 394 manifests, 377 rounds, and 1,356 parent refinements, ending at
+round 378 with two VERIFIED and two UNKNOWN cubes.  J326 covered 19 segments,
+429 manifests, 410 rounds, and 1,037 refinements, ending at round 411 with one
+VERIFIED and one UNKNOWN cube.  The audit JSON and log hashes are
+`02cc90594d4fdd183dcebe27fc86ac45da4fd319b5d9b2c2a4e5ae95b217be00`
+and
+`0b90fc7f2d182e98d8d6d4110032c56389dd1437aa11315afb44a1212155474b`.
+The bundle auditor also accepts an explicit
+`--segment-jobs` concurrency bound.  Independent immutable segments may now
+replay in parallel, but their adjacency and completion claims are still
+validated afterward in the original order.  Because three terminal cubes
+remain UNKNOWN, the successful replay validates the partial frontier but does
+not make a completion claim.
+
+The corresponding rescued-v6 strengthened-parent audit also completed.  It
+replayed that entire chain and separately accepted all 193 J297775 and all
+178 J326185 backbone proofs; both backbone manifests are complete UNSAT.  The
+two cases nevertheless retain two and one terminal UNKNOWN cubes, so their
+`parent_unsat` fields and the aggregate `all_parents_unsat` field are false.
+The strengthened-parent audit JSON and log hashes are
+`55b8809e6c2a1ace11346daec9954e43f1eb834ec7a26c700f03b4d1d7a2ffff`
+and
+`f8dbf65bc000b489f8ce1f21fa0034cdd133738bd01a093f172c72dce9578acc`.
+
+The J326 screened runner then reached its 100-round limit at state round 462.
+Relocation v30 has hash
+`569028cd98210691f25db9a4aa6c075ca95ad480a66eb9d65cfa4ada1122b762`.
+A fresh replay checked all 100 rounds, 101 proof manifests, and 100 parent
+refinements, still ending 1 VERIFIED / 1 UNKNOWN.  Its audit JSON/log hashes
+are
+`d4bc1d06466f316056f9737f2a6b5f1f648bc82d350907f22f52cc0a758f0496`
+and
+`50eb3befd4e1f3a9116041454cfae4281eb3252b545878fcd897c028f70e5b18`.
+The final manifest/state hashes are
+`eb2986da249f51e2e731cc41eb37bc58d6dde0e0344dbdbdcd6489b32e97a74d`
+and
+`57b6f083de5d23978c405d3319c5aaff65b72e430e6aff478c77c100aceb0908`.
+The same work directory was resumed from state 462 for another 100 rounds.
+
+Hash-bound UNKNOWN frontiers were also exported for direct long-solver
+portfolios at J297 round 378 and J326 rounds 411 and 462.  Their ICNF hashes
+are
+`8774bcb849f9fb2df937e34048ef191db3bbafa7b14cc1ff8a8d2f40d921c297`,
+`7c45921120a956bb2d4e45788f03cf784171b3a6c9b879ac4940e1221cf65439`,
+and
+`d0046a4e8d28dea87cc49883fce286c77690366cdd45e86d69bde586d0d51d94`.
+The two-parent J297 round-378 and one-parent J326 round-411 iGlucose runs
+returned only UNKNOWN after 3,600 seconds.  Their manifest hashes are
+`4caf1d736acf51c4e5e4453478cd595503af12b44b3814bb00d42def57c720d8`
+and
+`2ec9b687afb227b1f6d6714f89d95e1232be5125cf991125417946e61f9248b8`.
+CaDiCaL and Kissat also returned UNKNOWN on the J326 round-411 parent; their
+manifest hashes are
+`b4f30fb65d57a542734c98c654bfd32d7afe8bd21fcb4a5039d2e9c44f394c13`
+and
+`ce2c7857bff56eecccd74f92403ea797aed8507175e4ff6f12048fcb5d203bf8`.
+The three-solver round-462 portfolio also returned only UNKNOWN after 3,600
+seconds per solver.  Its result manifests were copied to stable storage,
+relocated, and re-audited with `--allow-partial`.  Relocation v34 has hash
+`653b6dfbe6d12e4c8e81caeee4c33ceb71636b4604cec1233e53c5bb77be6721`;
+the stable iGlucose, CaDiCaL, and Kissat manifest hashes are
+`6ccc32a9a9f25d7c47d09134561ddea293e52b362e41e0654f95850e460b375a`,
+`a955c8d332202a3aaece83dd1ec1c22c9d751152376231c8ef6524c558a4a650`,
+and
+`8fe6e2e0856e579997e57d020cb91a98d1512fbea4d3326b45cc4ebfcdfdbd8c`.
+Each stable audit log has hash
+`3d9c660d9fe1ad748481036a6378c600bbec37efa5e948ac800d08be7a4e6508`
+and reports zero VERIFIED / one UNKNOWN.
+
+The resumed J326 screened chain reached state round 506 before the original
+one-second screen over variables 800--1200 found no one-sided split accepted
+by both CaDiCaL and Kissat.  This is a refinement-policy failure, not a SAT or
+UNSAT result.  State 506 and the failed round-506 screen were preserved in
+`v13-j326-r0506-screened-snapshot`; relocation v32 has hash
+`9b47a38bb02ef6eb4a5230993f382eac2560050a351dd7f145f2f470f5166b87`.
+An independent stable-path replay checked 144 rounds, 145 proof manifests,
+and 144 parent refinements, ending with one VERIFIED cube and one UNKNOWN
+cube.  Its audit JSON and log hashes are
+`9ab68784fb18bb7351922b9989c9ababc546b8493b11d98f60ff6fe4c00e436f`
+and
+`62f24443ac3dc5c24e4ef62cc9b167166a74e5b95bd46d0752c06d2c01225278`.
+The failed live artifacts were moved to an explicit quarantine directory
+rather than deleted.  Retrying with variables 1--1200 accepted round 506 and
+advanced the live chain through at least state round 512.
+The unique state-506 UNKNOWN cube was exported for the next direct portfolio.
+Its ICNF and lineage hashes are
+`a1786afa0545807d8cd42ad3e5c12537193a2dda4c9ab001e00b91299996bcb5`
+and
+`1f749324562ea13ea1819096f4ddc54cbf95ec99f3dc15380021c87bc14f14ae`.
+iGlucose, CaDiCaL, and Kissat each ran for 3,600 seconds on that deeper cube
+and returned UNKNOWN without a proof.  The outputs were copied to stable
+storage, relocated, and re-audited.  Relocation v35 has hash
+`581fcd4d50a67f6cfb812532d75d889651c4481083249a58f880d2bc2a4d030c`;
+the stable iGlucose, CaDiCaL, and Kissat manifest hashes are
+`e6f5361a3070702d805f219aa487e95b46b9eff2673c8dfa1fd938dc2ddbdcb2`,
+`4155a0b6d91f8436a67bb5137f05db2fd2f55e7330453dab14d60a1845aaab67`,
+and
+`e05e772ff9c23dbf48756416a3c3976a3a1cd0a013ff24d3eb3b7d407c5c5e58`.
+Each stable audit reports zero VERIFIED / one UNKNOWN and has log hash
+`3d9c660d9fe1ad748481036a6378c600bbec37efa5e948ac800d08be7a4e6508`.
+
+Finally, the original four-row J297 round-331 iGlucose run independently
+closed child 2 in 2,296.95 seconds.  Its 438,113,063-byte compact DRAT has
+SHA-256
+`2eaecb24df9fef9de7b03423c56579c1ba9df36032b19f84706b2ed5b0faee0e`,
+and its source checker log has hash
+`9f134488f579b5723278b0f05bf0a362d863e0e9a2dbd807daa893ca84cb47cb`.
+The interrupted four-row progress was finalized with UNKNOWN placeholders and
+relocated to a stable v12 snapshot.  The stable-path replay passed with two
+VERIFIED UNSAT rows and two UNKNOWN rows.  The relocation, final manifest,
+and stable audit log hashes are
+`53a85260aeb7abafd0536b17526dfdcfa8623a43169c4684cae501f8b6365fb3`,
+`b7efce2dc0f54a1fc838e3521a66279bfbcf9f845f107eab858f605cf3845e7a`,
+and
+`f57494e8b072e0ac00ac8ec7061bbc50c58b50713ef8f4013f6116d740fbd606`.
+
+The J297 screened continuation later stopped at state round 414 when the
+one-second screen over variables 800--1200 found no agreed one-sided split for
+parent 1.  State 414 and the failed screen were preserved in
+`v14-j297-r0414-screened-snapshot`; relocation v33 has hash
+`f1a2acdff1d15042b62dce1c62efbcc3c2117b9c0a54ec7dbcb6d2fa379da0f9`.
+An independent stable replay checked 83 rounds, 84 proof manifests, and 166
+parent refinements, ending with two VERIFIED cubes and two UNKNOWN cubes.  Its
+audit JSON and log hashes are
+`ac87ffc6aca714448e0c1b75184534ec251a4bd40d8ab5796fa2a2533cd3309d`
+and
+`7e6f69ae5e1ddf1e32ad8a31a55dbbfdcbfeddf205ec7114ace7f664d93a802b`.
+The failed live artifacts were moved rather than deleted, and the live chain
+was restarted from state 414 over variables 1--1200.  It accepted round 414
+and reached at least state round 415.  The two state-414 UNKNOWN cubes were
+exported with ICNF and lineage hashes
+`7def28ff87dcffd793cbfebb4007d4ed6c10e15b5867ed5223e08c5c8c0d83ac`
+and
+`1a7e31f8023bd1c3e0aed3f84e5eee3aec34679614665edf6558290fc45e1aaa`.
+iGlucose, CaDiCaL, and Kissat each ran for 3,600 seconds on both deeper cubes,
+using two jobs per solver engine.  All six attempts returned UNKNOWN without
+a proof.  After copying to stable storage and relocation v36, whose record
+hash is
+`5a2aff934d593ca12c35290dd5ca55a912279b98ecb64eb41f84b7c149912664`,
+the stable iGlucose, CaDiCaL, and Kissat manifest hashes are
+`5dacddd038495cdce277ad677d58a37d43738cc06d1c75dfa53b0b6a5e8a09a5`,
+`7e4626cec35db32a38fc7beaed76c5b6b63838305dc0eb780d43593e00b5d69d`,
+and
+`b7c6afe78eb52a152ff7c281e190505815df4f3c4aedb4164cc3b11a4a8af391`.
+Each stable audit reports zero VERIFIED / two UNKNOWN and has log hash
+`3f8f88e02ae9c2005b178d357544c6a7f2b807f8201e8e9f794c8ea16a08961b`.
+
+The paused live chains had already committed deeper constant-width states at
+J326 round 522 and J297 round 418.  Their UNKNOWN frontiers were exported with
+ICNF/original-lineage hashes
+`d99ee498ab6098e6b97ee6e9ebe53407114d87ab3bebe0e29e70b77e70473efb` /
+`08d187f101e0bf8cfbbec7e3603aa2577dc553605e722115d13871a83751f3ef`
+and
+`bebfc0888867ebaae76c33e35f8d4b00b6549c063dd3caf9fc9cc11e729fd7ec` /
+`4d58393232b96cb483787172dfe3f90f8efcc823af0a37bed443c0c20ed96b22`.
+The exact workdirs and their seed boundaries were copied to stable storage.
+Relocations v37 and v38 have record hashes
+`eccc5585d5fdce91a1eab523fab21dc64bb678fb6d70aab17b4350fd80e839ab`
+and
+`657106354f788b4fcb1322b9a159becb438360b7b0b17498b163ef3b3bbcfd76`;
+the stable J326/J297 lineage hashes are
+`2c114075914742ebd9383d5a6c80ad195730a67c7b26d2c92c4ef7d318e4e4ee`
+and
+`9a45c88324d620f9b759da13042fd3e2b1fa704904a1c76e13754a94a92ab6c1`.
+The first relocation attempt transactionally rejected the missing seed
+boundaries without modifying the copied JSON.  After those two exact,
+hash-bound seeds were supplied, both relocations passed; fresh stable-path
+chain replays also passed.  The J326 replay covered 160 rounds, 161 manifests,
+and 160 parent refinements, ending one VERIFIED / one UNKNOWN at round 522;
+its JSON/log hashes are
+`3950acde503ee0e50ab32b0cb00c1e0b8aadf74f6275e2ac512e420925c8400a`
+and
+`e6e4644c7b5c6b72a6af27e9eaad9811dff4043b453781235e7f7adfcf67f5da`.
+The J297 replay covered 87 rounds, 88 manifests, and 174 refinements, ending
+two VERIFIED / two UNKNOWN at round 418; its hashes are
+`94cf2d6807634430aceec4b2dac5e8d31ca1d28b9a37c45968da6b466afe19cd`
+and
+`fb7e9d2fe92aa5a067b95929693806f8c0f066b4c75326a27ce083f81bb977c8`.
+A new three-engine 3,600-second portfolio is active on the single J326 cube
+and both J297 cubes.  The first wrappers exited during argument validation
+because their scratch directories did not yet exist; no solver ran in that
+attempt.  Those launch-error logs were retained before the directories were
+created and the six wrappers relaunched under fresh PIDs.  After the
+rescued-v6 strengthened-parent audit completed, both live screened runners
+were resumed from states 522/418 and began their next proof batches.
+
+None of these checkpoints proves strengthened parent 1, either fixed-pair
+formula, the order-45 formula, or `R(5,5) <= 45`.

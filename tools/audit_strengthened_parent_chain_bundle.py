@@ -32,7 +32,7 @@ CHAIN_AUDIT_SCHEMA = "ramsey55.materialized-proof-chain-bundle-audit.v1"
 
 
 def run_chain_bundle(
-    bundle: Path, checker: Path, jobs: int, tool: Path
+    bundle: Path, checker: Path, jobs: int, segment_jobs: int, tool: Path
 ) -> dict[str, Any]:
     completed = subprocess.run(
         [
@@ -43,6 +43,8 @@ def run_chain_bundle(
             str(checker),
             "--jobs",
             str(jobs),
+            "--segment-jobs",
+            str(segment_jobs),
             "--allow-partial",
         ],
         stdout=subprocess.PIPE,
@@ -140,11 +142,12 @@ def main() -> None:
     parser.add_argument("bundle", type=Path)
     parser.add_argument("--checker", type=Path, required=True)
     parser.add_argument("--jobs", type=int, default=1)
+    parser.add_argument("--segment-jobs", type=int, default=1)
     parser.add_argument("--allow-partial", action="store_true")
     parser.add_argument("--manifest", type=Path)
     arguments = parser.parse_args()
-    if arguments.jobs <= 0:
-        parser.error("--jobs must be positive")
+    if arguments.jobs <= 0 or arguments.segment_jobs <= 0:
+        parser.error("--jobs and --segment-jobs must be positive")
     if not arguments.bundle.is_file() or not arguments.checker.is_file():
         parser.error("bundle or checker does not exist")
     if arguments.manifest is not None and arguments.manifest.exists():
@@ -162,6 +165,7 @@ def main() -> None:
         chain_bundle,
         arguments.checker,
         arguments.jobs,
+        arguments.segment_jobs,
         root / "tools" / "audit_materialized_proof_chain_bundle.py",
     )
     chain_cases = {case["case"]: case for case in chain_audit["cases"]}
