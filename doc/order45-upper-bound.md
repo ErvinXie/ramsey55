@@ -2493,8 +2493,15 @@ the exact terminal gate: J297 state 595 with two VERIFIED / two UNKNOWN, and
 J326 state 621 with one VERIFIED / one UNKNOWN.  The bundle hash recorded by
 the audit is the expected `01996f77...2ad7`, and
 `all_cases_complete_unsat` is false.  The exact-count gate then started the
-v13 strengthened-parent audit; v12 remains the latest parent-audited bundle
-until that second replay completes.
+v13 strengthened-parent audit.  That second replay also passed, with audit
+JSON/log hashes
+`b2afc593228d6eb4954da5ca8a96c8247605df4511ff1ea9bce4594928494f41`
+and
+`15e3e4d5d6a75c3f18a07a36de90490aab85ce794d8e5010d52145c411cc3c9c`.
+It verified all 193/178 J297/J326 backbone proofs, both 15-literal
+parent-strengthening bindings, and the repeated 25/28 segment chains.  The
+parent endpoints remain two and one UNKNOWN, so both `parent_unsat` fields and
+`all_parents_unsat` are false.
 
 An independent CaDiCaL seed-5 comparison also closed the first child of the
 earlier J326 state-616 two-child growth family.  Its 227,111,943-byte compact
@@ -2579,10 +2586,39 @@ and J326 state 622.  Their hashes are
 `80bfa1a06beb28511140c7f5119884113c0f980cbda250a17dbd3146501738e6`
 and
 `e0717fb22e54ffd1c34758509b66234e72b64f57006d7998a03d19e47d0549e6`.
-They supersede v14 before audit; v13 remains the active parent replay, so v15
-is not yet an accepted full-chain or strengthened-parent audit.  A low-priority
-v15 whole-chain replay is running at nice 16 with two segment and two proof
-workers, yielding proof-checking capacity to the v13 parent audit.
+They supersede v14 before audit.  After the v13 parent replay passed, the v15
+whole-chain replay and all of its live descendants were promoted from nice 16
+to nice 10; v15 is not yet an accepted full-chain or strengthened-parent
+audit.
+
+One further guarded J326 lookahead split the state-622 leaf on variable 676.
+Both children remained UNKNOWN after the staged six-second CaDiCaL check, so
+the 1--2 growth was rejected and state 622 remains authoritative.  The
+candidate-manifest/refinement/halt hashes are
+`82b314050683cf2944b722e3099faaaef750f560aa53e6bfa3745423f7b45040`,
+`ba62a1c78bc3bfac50995362cb16dba199de9c1a2b88b5f91711947847fb86fb`,
+and
+`3f70fdd657e8341917dfef667331542ca342ea4614976e00a61fe2564cd3a51d`.
+Certified iGlucose and Kissat seed 13 now search both rejected children; they
+are exploratory routes back to a one-leaf frontier, not adopted chain state.
+
+The older 7,200-second CaDiCaL seed-7 comparisons also finished.  J297 state
+595 remained zero VERIFIED / two UNKNOWN, with manifest/audit-log hashes
+`669a551bbcfa823ba4dbf39bc2ff4f0904691b2da2a5e448d0d7273edb3bc59e`
+and
+`3f8f88e02ae9c2005b178d357544c6a7f2b807f8201e8e9f794c8ea16a08961b`.
+On the older three-leaf J326 state-621 representation, CaDiCaL independently
+produced 204,481,010- and 216,057,359-byte compact DRATs with hashes
+`92a3c9af1b780b81c04351e2262e3e966b5d0a66665b35056bb94ec94a94c2d5`
+and
+`305eedc529debfd0c854e85d92e724d5fd7cddf8a2118af10063c2d56c4c3a5c`.
+The final manifest/audit-log hashes are
+`08fa2082e3e67158a9eefe2614d4b4fdfd5c1ae2ef3cfa94629dd8f4567f5233`
+and
+`ef6e9aab2129af37b68d6a323e710f1204f35ba38566a6564df2168ebc0d15ad`.
+Those two closed leaves are already subsumed by the stronger state-620
+ancestor proofs, so this is independent solver corroboration rather than a
+new frontier reduction.
 
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
