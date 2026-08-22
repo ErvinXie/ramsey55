@@ -240,10 +240,13 @@ The local-graph applicability of those ranges is now kernel-checked in
 injectively labelled neighbour set in a Ramsey-free colouring is an
 `R(4,5)` graph. It yields the exact H-side order (d), and applying it after
 colour complementation yields the J-side order (44-d). The published edge
-ranges are isolated as `Ramsey45EdgeRange` inputs, and the remaining equality
-between induced-catalog counts and the isolated-padding excess counts is
-named explicitly by `Order45LocalCatalogCountBinding`; it is not silently
-assumed inside the SAT result.
+ranges are isolated as `Ramsey45EdgeRange` inputs. The equality between
+induced-catalog counts and the isolated-padding excess counts is now proved as
+`order45LocalCatalogCountBinding`. The proof is structural: generic
+isolated-prefix/suffix padding preserves degree sums, and fixed-star lemmas
+identify both concrete padded graphs pointwise. The published edge ranges
+remain external inputs, but there is no longer a separate count-binding
+assumption.
 
 `formal/Ramsey55/Order45ExcessTarget.lean` now gives the exact end-to-end
 composition theorem for this route. It combines the kernel-checked global

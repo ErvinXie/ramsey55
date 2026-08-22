@@ -203,11 +203,14 @@ Ramsey-free colouring induces an `R(4,5)` graph. Applied to the fixed apex,
 the neighbour block is an `R(4,5,d)` graph and, after colour complementation,
 the nonneighbour block is an `R(4,5,44-d)` graph. `Ramsey45EdgeRange` is the
 exact external classification theorem schema; assuming its two relevant
-instances, Lean obtains bounded natural H/J edge counts. A separate
-`Order45LocalCatalogCountBinding` now names only the finite-padding equality
-between those induced counts and the excess counter counts. The complete ARM
-build passes 85 jobs; axiom audits again contain only standard axioms and no
-`sorryAx`.
+instances, Lean obtains bounded natural H/J edge counts.
+`Order45LocalCatalogCountBinding` is now proved rather than assumed: generic
+isolated-prefix/suffix lemmas preserve the degree sum, and fixed-star
+pointwise equalities identify both padded catalog graphs with the H/J graphs
+in the excess identity. Thus the upper bound on local excess counts requires
+only the published edge-range inputs, not a separate count-binding premise.
+The complete ARM build passes 85 jobs. Axiom audits again contain only
+standard axioms and no `sorryAx`.
 
 [Order45CubeCover.lean](../formal/Ramsey55/Order45CubeCover.lean) now checks
 the arithmetic and ordering of the concrete edge-pair layer. It defines the
