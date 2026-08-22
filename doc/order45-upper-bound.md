@@ -5357,5 +5357,24 @@ The one-row v391 recovery point was not launched as a deterministic duplicate.
 Four high-budget producers cover the two v394 blockers, adding only two net
 solver cores.  Neither two-row group had closed at the initial audit.
 
+v398 and v399 target three more groups blocked by one final sibling: J326
+v395 f01-sub-1/f22-sub-1 and J297 v396 f31-sub-1.  The source writers resumed
+after 1.2--1.7 second snapshots.  Their f01s1/f22s1/f31s1 frontiers contain
+2/3/3 rows, with prefix/snapshot/frontier hashes:
+
+- f01s1: `d75be4111283016ccd6cc4ce51ffb019ede88c172ebce2563ba64af50e68da63` /
+  `42bed09a4c7255e863ca996a8dbfddd10f78508d28bd22e33572e8e46e1689ae` /
+  `fa82f1028dc84eec1b16adf11540cf893c42f00c7e0319df4ccb4c44a54ecbfe`;
+- f22s1: `ed11d2a376a8f5011d571c14cf1c9d905a0ca48332b24053ec038f2accd8453b` /
+  `f9b4e81572b20fef6063a1b86c59de821052c758b1b8d4b19610bb4deaf49c6a` /
+  `c7a1043ec47e7d47be92315fd53ff4a61a46b77eec7dbbb068ccf29a19580714`;
+- f31s1: `62f71019d0d50a1b0f09dec02153d5af9f03c6287b1ebf93215ad4c4e175eeca` /
+  `f5b38d7e7871fd062606474724205ed2ed8f9b473975fbb2520bbeb46433c623` /
+  `68f8c37d04c78be7d64ce436bab08fa63222ef24b245ffcc825028b04bbed7b3`.
+
+All eight rows received high-budget fragment producers, adding five net
+cores.  v398 f01s1 child 0 closed immediately; its sibling and both three-row
+groups remained open at the first post-launch audit.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
