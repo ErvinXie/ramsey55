@@ -4893,5 +4893,42 @@ The full-audit-bound selective-residual join bundle/audit/log hashes are
 `9bf7106a4f6a568186bcf9447751a8eb97f57191111d2ce02ce8e98e5c73c857`.
 New forward-J297 and reverse-J326 exact-parent screens continue on ARM.
 
+Those exact-parent screens each exposed variable 8743.  Kissat and CaDiCaL
+agreed on the J297 contradictory side.  The J326 candidate was reported only
+by the CaDiCaL primary screen within the two-second budget, so it was not
+accepted from screening alone.  Fresh compact proofs from the respective
+primary solvers passed `drat-trim` for both candidates.  The endpoints advance
+to states 3712/3762, with actual terminal rows byte-identical to their
+independent predictions.  Their hashes are
+`609e64ce4737e66321cb1ecd88f68ea419a50aa400be63109a508dae6603ba22`
+and
+`085f48627810fb8d921d65e433f067401951512ccdcc2cb93544b3702c3b0319`.
+
+The v32 chain bundle / v31-to-v32 extension audit / audit-log hashes are
+`d2425a54c319fb62abc82bd2d9ad97c3157cd57f0fe609bc0cb09dbe8f461c8d` /
+`c53b8dbde32b3012fe651644be77d5d94122eca4d7f998993dea78c499fe264f` /
+`008e969b7f71ca55ad5b6cf1caac4b44cf1d367bdadacc2519ff23143b5f87a0`.
+The selective-residual join bundle/audit/log hashes are
+`05ce1d9016986ccae33e3a1732e3d7067d350ae90634c5915f0c2d71dd4f388e` /
+`acdc6360b8c54b75de69d99345d32521653ee41c55372ad02bbf6edc3688077c` /
+`b56fb8f7c596a6d3d2d7d56f16731471097e7f3a9597b9be226d1147116f25b4`.
+It binds 24 J297 and 25 J326 continuation segments and still projects one
+effective UNKNOWN in each case.
+
+The three unfinished first-level proof fragments also received a second safe
+checkpoint layer.  Their producer processes were stopped for approximately
+five seconds while proof and TSV prefixes were copied, then resumed and
+verified running.  Exact DFS reconstruction yielded two and four live J297
+subroots plus three live J326 subroots.  Nine independent high-budget
+explicit-stack fragment jobs now run in parallel with the original producers.
+The copied prefix hashes are
+`af32795ed546d3595b352a311559dd122fc7b71503a42f2ce75e9b96bd088e6e`,
+`5d1ebb11b013977d922dcb1ac9093907d2f5dd890342a694d4ad02df6f8baf5a`,
+and
+`d7d51e18fccf46791886b0ed21415088972713a8e309a2e582cba9d061aa4de8`.
+No subfragment status will be promoted until the corresponding
+prefix-plus-subfragment composition verifies against its independently
+materialized augmented parent cube.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
