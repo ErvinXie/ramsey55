@@ -5385,5 +5385,26 @@ the same last side is independently covered by the still-running four-row
 v391 f3 checkpoint.  This isolated completion is not promoted until the final
 side closes and the exact parent composition passes `drat-trim`.
 
+Because the remaining v391 f3 children had each run approximately 2.6 hours
+and collectively represent the final unresolved direct child of the v387 f2
+group, v400 checkpointed all three.  Their source writers resumed after
+4.6--5.1 second snapshots.  The f31/f32/f33 frontiers contain 5/2/2 rows,
+with prefix/snapshot/frontier hashes:
+
+- f31: `72883b65ad5866c56211028a317bfcaa8f827a8baf6a4014a92b2ef1306180f1` /
+  `ed66c304fe3f96372e548e11fd7452c3951e7a7feaeda0f35589558a0d62584c` /
+  `a1d3668af6756a987816f862c62913396ca1b87b91c0ababdf6cea72158d1f25`;
+- f32: `913b4249dda52fad440db5df12ff97820b5b068fd2b8bd2411c42e8c67ec82a2` /
+  `6d90017a0ee57d3d8f6226c2f46523d2b1f8819f7a52d4afeb3536490ab6c7db` /
+  `999b6e1b8c2b95c61ca525f8492795736706b295715c8e276d3a406ed4a5b685`;
+- f33: `d504ca105d4aa08e099e65cb361c3973836a61a9669215fb5626ef42ada6b90f` /
+  `31cb18e274dde7b3aba661f2e795025c80df2a7f66c072ba509b016674371539` /
+  `049bca7160ad5140949c65c6fde8322f066d71879f04abd7b75c53aeb065318f`.
+
+All nine rows received high-budget fragment producers, adding six net cores.
+Three of the five f31 rows closed in the first minutes; both f32 and both f33
+rows remained open at that audit.  A v400 child group is promoted only through
+the same no-empty finalizer and exact augmented-CNF replay gate.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
