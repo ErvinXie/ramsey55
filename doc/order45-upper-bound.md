@@ -5531,5 +5531,14 @@ Both rows received the 600-second/high-conflict strategy.  If both close,
 v409 can replace v402 child 2 after exact standalone verification; otherwise
 the original v402/v401/v400 races remain authoritative alternatives.
 
+A later audit found that original v399 f31s1 child 1 had closed directly, so
+the one-row v408 f311 recovery point is now redundant and remains unlaunched.
+The still-relevant one-row v403 f10 and v407 f221 recovery points each
+received the same distinct 600-second/high-conflict strategy used for v405;
+this raised sustained CPU use to about 92% without creating another replay
+layer.  v407 f220 child 0 subsequently closed after 21 attempts and 10
+splits, advancing that two-row group to 1/2.  No complete checkpoint group is
+promoted yet.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
