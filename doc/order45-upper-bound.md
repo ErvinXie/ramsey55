@@ -251,12 +251,16 @@ assumption.
 `formal/Ramsey55/Order45Primary.lean` continues that bridge to the actual
 counter inputs. It proves that the generator's `orderedPairsFrom` order and
 triangular DIMACS identifiers scan the strict upper triangle of H and the
-complemented J block. Under `RepresentsOrder45Primary`, the d20/d21/d22 input
-counts 190/276, 210/253, and 231/231 are exactly the graph-side `edgesH` and
-`edgesJ`. The remaining mother-completeness work is therefore assignment
-construction for the primary graph, counter auxiliaries, common Ramsey and
-fixed-star clauses, and the lex representative; the H/J count interpretation
-is no longer part of that black box.
+complemented J block. A structural triangular-interval proof shows that all
+990 primary identifiers are distinct, after which the file constructs a
+canonical primary assignment for every order-45 colouring and proves its
+`RepresentsOrder45Primary` property. Consequently the representation-free
+d20/d21/d22 theorems identify input counts 190/276, 210/253, and 231/231 with
+the graph-side `edgesH` and `edgesJ`. The remaining mother-completeness work is
+therefore the extension to counter and lex auxiliaries plus satisfaction of
+the common Ramsey, fixed-star, and lex-representative clauses; neither primary
+assignment construction nor H/J count interpretation remains in that black
+box.
 
 `formal/Ramsey55/Order45ExcessTarget.lean` now gives the exact end-to-end
 composition theorem for this route. It combines the kernel-checked global

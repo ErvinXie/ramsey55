@@ -221,13 +221,16 @@ standard axioms and no `sorryAx`.
 graph-side H/J counts to the concrete DIMACS counter inputs. It defines the
 generator-ordered strict-upper-triangle stream, proves the exact handshake
 identity for its natural edge count, recursively verifies `orderedPairsFrom`,
-and maps the triangular DIMACS identifiers through a
-`RepresentsOrder45Primary` assignment. The three concrete endpoint theorems
-prove input counts 190/276, 210/253, and 231/231 equal the same `edgesH` and
-`edgesJ` used by the excess identity. The complete ARM build passes 86 jobs;
-axiom audits contain only the standard axioms and no `sorryAx`. Constructing a
-primary-representing assignment that satisfies the full mother, including
-counter auxiliaries and the lex-leader clauses, remains open.
+and proves structurally that the 990 triangular DIMACS identifiers are
+duplicate-free. It then constructs `order45GraphPrimaryAssignment` for every
+45-vertex colouring and proves `RepresentsOrder45Primary` rather than taking
+that representation as an external premise. The three representation-free
+endpoint theorems prove input counts 190/276, 210/253, and 231/231 equal the
+same `edgesH` and `edgesJ` used by the excess identity. The complete ARM build
+passes 86 jobs; axiom audits contain only the standard axioms and no
+`sorryAx`, `native_decide`, or generated native-decision axiom. Extending this
+canonical assignment with counter and lex auxiliaries, and proving all common
+Ramsey, fixed-star, and lex-leader mother clauses, remains open.
 
 [Order45CubeCover.lean](../formal/Ramsey55/Order45CubeCover.lean) now checks
 the arithmetic and ordering of the concrete edge-pair layer. It defines the

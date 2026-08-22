@@ -154,6 +154,305 @@ def RepresentsOrder45Primary (maximum : Nat)
       (orderedEdgeDimacsVariable (left, right)) true).truthValue assignment =
         order45NatColor color left right
 
+theorem lookup_mapped_of_nodup {alpha : Type}
+    (key : alpha → Nat) (value : alpha → Bool) :
+    ∀ (items : List alpha) (item : alpha),
+    (items.map key).Nodup → item ∈ items →
+      List.lookup (key item)
+        (items.map fun entry => (key entry, value entry)) =
+          some (value item) := by
+  intro items
+  induction items with
+  | nil =>
+      intro item nodup membership
+      simp at membership
+  | cons head tail inductionHypothesis =>
+      intro item nodup membership
+      simp only [List.map_cons, List.nodup_cons] at nodup
+      simp only [List.mem_cons] at membership
+      rcases membership with equal | membership
+      · subst item
+        simp
+      · have keyNe : key item ≠ key head := by
+          intro equal
+          apply nodup.1
+          rw [List.mem_map]
+          exact ⟨item, membership, equal⟩
+        have beqFalse : (key item == key head) = false :=
+          beq_eq_false_iff_ne.mpr keyNe
+        simp [List.lookup, beqFalse,
+          inductionHypothesis item nodup.2 membership]
+
+theorem nodup_map_of_injective {alpha beta : Type}
+    (mapping : alpha → beta) (injective : Function.Injective mapping) :
+    ∀ items : List alpha, items.Nodup → (items.map mapping).Nodup := by
+  intro items
+  induction items with
+  | nil => simp
+  | cons head tail inductionHypothesis =>
+      intro nodup
+      simp only [List.nodup_cons] at nodup
+      simp only [List.map_cons, List.nodup_cons]
+      constructor
+      · intro mappedMembership
+        rw [List.mem_map] at mappedMembership
+        rcases mappedMembership with
+          ⟨tailItem, tailMembership, mappedEqual⟩
+        have itemEqual := injective mappedEqual
+        subst tailItem
+        exact nodup.1 tailMembership
+      · exact inductionHypothesis nodup.2
+
+theorem nodup_map_of_nodup_of_injective_on_mem {alpha beta : Type}
+    (mapping : alpha → beta) : ∀ items : List alpha,
+    items.Nodup →
+      (∀ first, first ∈ items → ∀ second, second ∈ items →
+        mapping first = mapping second → first = second) →
+      (items.map mapping).Nodup := by
+  intro items
+  induction items with
+  | nil => simp
+  | cons head tail inductionHypothesis =>
+      intro nodup injective
+      simp only [List.nodup_cons] at nodup
+      simp only [List.map_cons, List.nodup_cons]
+      constructor
+      · intro mappedMembership
+        rw [List.mem_map] at mappedMembership
+        rcases mappedMembership with
+          ⟨tailItem, tailMembership, mappedEqual⟩
+        have itemEqual := injective tailItem (by simp [tailMembership])
+          head (by simp) mappedEqual
+        subst tailItem
+        exact nodup.1 tailMembership
+      · apply inductionHypothesis nodup.2
+        intro first firstMembership second secondMembership equal
+        exact injective first (by simp [firstMembership]) second
+          (by simp [secondMembership]) equal
+
+theorem nodup_append_of_nodup_of_disjoint {alpha : Type} :
+    ∀ first second : List alpha,
+    first.Nodup → second.Nodup →
+      (∀ item, item ∈ first → item ∉ second) →
+      (first ++ second).Nodup := by
+  intro first
+  induction first with
+  | nil => simp
+  | cons head tail inductionHypothesis =>
+      intro second firstNodup secondNodup disjoint
+      simp only [List.nodup_cons] at firstNodup
+      simp only [List.cons_append, List.nodup_cons]
+      constructor
+      · intro membership
+        rw [List.mem_append] at membership
+        rcases membership with tailMembership | secondMembership
+        · exact firstNodup.1 tailMembership
+        · exact disjoint head (by simp) secondMembership
+      · apply inductionHypothesis second firstNodup.2 secondNodup
+        intro item tailMembership
+        exact disjoint item (by simp [tailMembership])
+
+theorem range_nodup_structural : ∀ length : Nat,
+    (List.range length).Nodup := by
+  intro length
+  induction length with
+  | zero => simp
+  | succ length inductionHypothesis =>
+      rw [range_succ_eq_zero_cons_map_succ]
+      simp only [List.nodup_cons]
+      constructor
+      · intro membership
+        rw [List.mem_map] at membership
+        rcases membership with ⟨value, valueMembership, equal⟩
+        omega
+      · apply nodup_map_of_injective (fun value => value + 1)
+        · intro first second equal
+          have reduced : first + 1 = second + 1 := by simpa only using equal
+          omega
+        · exact inductionHypothesis
+
+theorem orderedPairsFrom_nodup (start count : Nat) :
+    (orderedPairsFrom start count).Nodup := by
+  induction count generalizing start with
+  | zero => simp [orderedPairsFrom]
+  | succ count inductionHypothesis =>
+      rw [orderedPairsFrom_succ]
+      apply nodup_append_of_nodup_of_disjoint
+      · apply nodup_map_of_injective
+          (fun rightOffset => (start, start + rightOffset + 1))
+        · intro first second equal
+          have rightEqual := congrArg Prod.snd equal
+          simp at rightEqual
+          omega
+        · exact range_nodup_structural count
+      · exact inductionHypothesis (start := start + 1)
+      · intro pair rowMembership tailMembership
+        simp only [List.mem_map, List.mem_range] at rowMembership
+        rcases rowMembership with ⟨rightOffset, rightInside, rfl⟩
+        simp only [orderedPairsFrom, List.mem_flatMap, List.mem_range,
+          List.mem_map] at tailMembership
+        rcases tailMembership with
+          ⟨leftOffset, leftInside, secondOffset, secondInside, pairEqual⟩
+        have firstEqual := congrArg Prod.fst pairEqual
+        simp at firstEqual
+        omega
+
+theorem mem_orderedPairsFrom_strict (start count : Nat)
+    (pair : Nat × Nat) (membership : pair ∈ orderedPairsFrom start count) :
+    pair.1 < pair.2 := by
+  simp only [orderedPairsFrom, List.mem_flatMap, List.mem_range,
+    List.mem_map] at membership
+  rcases membership with
+    ⟨leftOffset, leftInside, rightOffset, rightInside, rfl⟩
+  omega
+
+/-- The triangular offset before the row with second endpoint `right`. -/
+def triangularOffset : Nat → Nat
+  | 0 => 0
+  | right + 1 => triangularOffset right + right
+
+theorem pairCountFormula_succ (right : Nat) :
+    (right + 1) * right / 2 =
+      right * (right - 1) / 2 + right := by
+  have productIdentity :
+      (right + 1) * right = right * (right - 1) + right * 2 := by
+    cases right with
+    | zero => simp
+    | succ right =>
+        simp [Nat.add_mul, Nat.mul_add, Nat.mul_comm, Nat.add_assoc, Nat.add_comm,
+          Nat.add_left_comm]
+  rw [productIdentity, Nat.add_mul_div_right _ right (by omega)]
+
+theorem triangularOffset_eq_pairCountFormula : ∀ right : Nat,
+    triangularOffset right = right * (right - 1) / 2 := by
+  intro right
+  induction right with
+  | zero => rfl
+  | succ right inductionHypothesis =>
+      simp only [triangularOffset]
+      rw [inductionHypothesis]
+      simpa using (pairCountFormula_succ right).symm
+
+theorem triangularOffset_mono {first second : Nat}
+    (bounded : first ≤ second) :
+    triangularOffset first ≤ triangularOffset second := by
+  induction second generalizing first with
+  | zero =>
+      have : first = 0 := by omega
+      subst first
+      exact Nat.le_refl 0
+  | succ second inductionHypothesis =>
+      by_cases equal : first = second + 1
+      · subst first
+        exact Nat.le_refl (triangularOffset (second + 1))
+      · have firstBounded : first ≤ second := by omega
+        exact Nat.le_trans (inductionHypothesis firstBounded) (by
+          simp only [triangularOffset]
+          omega)
+
+theorem orderedEdgeDimacsVariable_injective_of_strict
+    (first second : Nat × Nat)
+    (firstStrict : first.1 < first.2)
+    (secondStrict : second.1 < second.2)
+    (equal : orderedEdgeDimacsVariable first =
+      orderedEdgeDimacsVariable second) :
+    first = second := by
+  change first.2 * (first.2 - 1) / 2 + first.1 + 1 =
+    second.2 * (second.2 - 1) / 2 + second.1 + 1 at equal
+  rw [← triangularOffset_eq_pairCountFormula,
+    ← triangularOffset_eq_pairCountFormula] at equal
+  by_cases rightEqual : first.2 = second.2
+  · rw [rightEqual] at equal
+    have leftEqual : first.1 = second.1 := by omega
+    apply Prod.ext <;> assumption
+  · by_cases forward : first.2 < second.2
+    · have firstUpper :
+          triangularOffset first.2 + first.1 + 1 ≤
+            triangularOffset (first.2 + 1) := by
+          simp only [triangularOffset]
+          omega
+      have middle := triangularOffset_mono (show first.2 + 1 ≤ second.2 by
+        omega)
+      have secondLower :
+          triangularOffset second.2 <
+            triangularOffset second.2 + second.1 + 1 := by omega
+      omega
+    · have reverse : second.2 < first.2 := by omega
+      have secondUpper :
+          triangularOffset second.2 + second.1 + 1 ≤
+            triangularOffset (second.2 + 1) := by
+          simp only [triangularOffset]
+          omega
+      have middle := triangularOffset_mono (show second.2 + 1 ≤ first.2 by
+        omega)
+      have firstLower :
+          triangularOffset first.2 <
+            triangularOffset first.2 + first.1 + 1 := by omega
+      omega
+
+theorem order45EdgeIdentifiers_nodup :
+    ((orderedPairsFrom 0 45).map orderedEdgeDimacsVariable).Nodup := by
+  apply nodup_map_of_nodup_of_injective_on_mem
+  · exact orderedPairsFrom_nodup 0 45
+  · intro first firstMembership second secondMembership equal
+    exact orderedEdgeDimacsVariable_injective_of_strict first second
+      (mem_orderedPairsFrom_strict 0 45 first firstMembership)
+      (mem_orderedPairsFrom_strict 0 45 second secondMembership) equal
+
+theorem mem_orderedPairsFrom_zero_45 (left right : Nat)
+    (ordered : left < right) (inside : right < 45) :
+    (left, right) ∈ orderedPairsFrom 0 45 := by
+  simp only [orderedPairsFrom, List.mem_flatMap, List.mem_range, List.mem_map]
+  refine ⟨left, by omega, right - left - 1, by omega, ?_⟩
+  apply Prod.ext <;> simp <;> omega
+
+theorem orderedEdgeDimacsVariable_le_990 (left right : Nat)
+    (ordered : left < right) (inside : right < 45) :
+    orderedEdgeDimacsVariable (left, right) ≤ 990 := by
+  have rightBound : right ≤ 44 := by omega
+  have predecessorBound : right - 1 ≤ 43 := by omega
+  have productBound : right * (right - 1) ≤ 44 * 43 :=
+    Nat.mul_le_mul rightBound predecessorBound
+  have quotientBound : right * (right - 1) / 2 ≤ 946 := by
+    have divided := Nat.div_le_div_right (c := 2) productBound
+    have calculation : 44 * 43 / 2 = 946 := by decide
+    rwa [calculation] at divided
+  have leftBound : left ≤ 43 := by omega
+  change right * (right - 1) / 2 + left + 1 ≤ 990
+  omega
+
+/-- Association list assigning every order-45 edge identifier its graph
+colour. -/
+def order45PrimaryEntries (color : Coloring 45) : List (Nat × Bool) :=
+  (orderedPairsFrom 0 45).map fun pair =>
+    (orderedEdgeDimacsVariable pair,
+      order45NatColor color pair.1 pair.2)
+
+/-- Total assignment with graph primaries filled and every non-primary
+variable initially false. Counter and lex auxiliaries can subsequently be
+overridden on their disjoint identifier ranges. -/
+def order45GraphPrimaryAssignment (maximum : Nat) (color : Coloring 45) :
+    CnfAssignment (maximum + 1) := fun index =>
+  (List.lookup index.val (order45PrimaryEntries color)).getD false
+
+theorem order45GraphPrimaryAssignment_represents (maximum : Nat)
+    (enough : 990 ≤ maximum) (color : Coloring 45) :
+    RepresentsOrder45Primary maximum
+      (order45GraphPrimaryAssignment maximum color) color := by
+  intro left right ordered inside
+  have membership := mem_orderedPairsFrom_zero_45 left right ordered inside
+  have lookup := lookup_mapped_of_nodup orderedEdgeDimacsVariable
+    (fun pair : Nat × Nat => order45NatColor color pair.1 pair.2)
+    (orderedPairsFrom 0 45) (left, right) order45EdgeIdentifiers_nodup
+    membership
+  have identifierBound :=
+    orderedEdgeDimacsVariable_le_990 left right ordered inside
+  have identifierInside :
+      orderedEdgeDimacsVariable (left, right) < maximum + 1 := by omega
+  unfold CnfLiteral.truthValue dimacsLiteral order45GraphPrimaryAssignment
+  simp [Fin.val_ofNat, Nat.mod_eq_of_lt identifierInside,
+    order45PrimaryEntries, lookup]
+
 theorem mem_orderedPairsFrom_bounds (start count : Nat) (pair : Nat × Nat)
     (membership : pair ∈ orderedPairsFrom start count) :
     start ≤ pair.1 ∧ pair.1 < pair.2 ∧ pair.2 < start + count := by
@@ -487,10 +786,62 @@ theorem order45Degree22PrimaryInputCounts
           jSemantic
       _ = edgesJ := by simpa using blockCounts.2
 
+/-- The canonical graph-primary assignment makes the concrete degree-20
+counter inputs count the local catalogue edges, with no representation
+premise left for later encoding proofs. -/
+theorem order45Degree20GraphPrimaryInputCounts
+    (color : Coloring 45) (simple : IsSimpleColoring color)
+    (fixed : HasFixedStar color 20) (edgesH edgesJ : Nat)
+    (counts : HasOrder45LocalEdgeCounts color 0 edgesH edgesJ) :
+    sequentialCounterInputCount
+        (order45GraphPrimaryAssignment 78697 color)
+        order45Degree20HInput 190 = edgesH ∧
+      sequentialCounterInputCount
+        (order45GraphPrimaryAssignment 78697 color)
+        order45Degree20JInput 276 = edgesJ := by
+  apply order45Degree20PrimaryInputCounts color simple fixed edgesH edgesJ counts
+    (order45GraphPrimaryAssignment 78697 color)
+  exact order45GraphPrimaryAssignment_represents 78697 (by omega) color
+
+/-- Representation-free degree-21 counterpart. -/
+theorem order45Degree21GraphPrimaryInputCounts
+    (color : Coloring 45) (simple : IsSimpleColoring color)
+    (fixed : HasFixedStar color 21) (edgesH edgesJ : Nat)
+    (counts : HasOrder45LocalEdgeCounts color 0 edgesH edgesJ) :
+    sequentialCounterInputCount
+        (order45GraphPrimaryAssignment 77148 color)
+        order45Degree21HInput 210 = edgesH ∧
+      sequentialCounterInputCount
+        (order45GraphPrimaryAssignment 77148 color)
+        order45Degree21JInput 253 = edgesJ := by
+  apply order45Degree21PrimaryInputCounts color simple fixed edgesH edgesJ counts
+    (order45GraphPrimaryAssignment 77148 color)
+  exact order45GraphPrimaryAssignment_represents 77148 (by omega) color
+
+/-- Representation-free degree-22 counterpart. -/
+theorem order45Degree22GraphPrimaryInputCounts
+    (color : Coloring 45) (simple : IsSimpleColoring color)
+    (fixed : HasFixedStar color 22) (edgesH edgesJ : Nat)
+    (counts : HasOrder45LocalEdgeCounts color 0 edgesH edgesJ) :
+    sequentialCounterInputCount
+        (order45GraphPrimaryAssignment 76651 color)
+        order45Degree22HInput 231 = edgesH ∧
+      sequentialCounterInputCount
+        (order45GraphPrimaryAssignment 76651 color)
+        order45Degree22JInput 231 = edgesJ := by
+  apply order45Degree22PrimaryInputCounts color simple fixed edgesH edgesJ counts
+    (order45GraphPrimaryAssignment 76651 color)
+  exact order45GraphPrimaryAssignment_represents 76651 (by omega) color
+
 #print axioms coloringDegreeSum_eq_twice_coloringEdgeCount
+#print axioms order45EdgeIdentifiers_nodup
+#print axioms order45GraphPrimaryAssignment_represents
 #print axioms fixedStar_localEdgeCounts_eq_primaryBlockCounts
 #print axioms order45Degree20PrimaryInputCounts
 #print axioms order45Degree21PrimaryInputCounts
 #print axioms order45Degree22PrimaryInputCounts
+#print axioms order45Degree20GraphPrimaryInputCounts
+#print axioms order45Degree21GraphPrimaryInputCounts
+#print axioms order45Degree22GraphPrimaryInputCounts
 
 end Ramsey55
