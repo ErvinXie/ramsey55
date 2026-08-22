@@ -5406,5 +5406,17 @@ Three of the five f31 rows closed in the first minutes; both f32 and both f33
 rows remained open at that audit.  A v400 child group is promoted only through
 the same no-empty finalizer and exact augmented-CNF replay gate.
 
+The v400 f31 group subsequently advanced to four of five rows, while f33 row
+0 also closed.  After the lone remaining f31 row had run 36 minutes, v401
+checkpointed it with a 0.974-second source pause.  Its two-row replay has
+prefix/snapshot/frontier hashes
+`aa94765a0d7fc028adb16620cdf0d6b9cda486aca6df6220e22c828dc7c9cd06` /
+`fc3ca35e73b6822dc8d21f54bc4ef8534a950ad7ad830617079b44f6aee6e509` /
+`b16f46b3a043f975d8e09212c1f53fef869fb65cd3d59bf435e64456b6e2c405`.
+Both rows received high-budget fragment producers, adding one net core; both
+were open at the initial audit.  Completion of either the original source or
+the full v401 pair will finish the v400 f31 child group, subject to finalizer
+replay for the checkpoint path.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
