@@ -187,10 +187,14 @@ edge or two-edge orbit cancels as `2 - 1 - 1`. It proves the three finite
 summation axes commute, obtains an exact global sum of zero, and shows that
 colour complementation preserves the local score. Combined with the 20--24
 window, this produces a Ramsey-free nonpositive witness in degree 20, 21, or
-22. The formal threshold theorem consumes an explicit local H/J edge-count
-contract and yields 226/222/220. Binding those abstract counts to the graph
-neighbourhoods and then to the generated DIMACS counters remains open; the
-new theorem does not claim that data bridge or any SAT branch UNSAT.
+22 and relabels it to the fixed apex. The same module constructs the concrete
+neighbourhood H and complemented-nonneighbour J graphs, proves their
+simplicity, obtains natural edge counts from their degree sums, and verifies
+the exact local-score decomposition. Consequently the kernel now derives the
+226/222/220 thresholds directly, with `ForcesRed4OrBlue5 25` as the only
+external graph theorem. Binding those concrete edge counts to the generated
+DIMACS primary-variable lists and counter outputs remains open; no SAT branch
+UNSAT is claimed.
 
 The public `r45extreme` data gives the following exact layer audit:
 

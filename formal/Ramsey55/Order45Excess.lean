@@ -210,6 +210,348 @@ theorem localExcessScore_complement {n : Nat} (color : Coloring n)
   funext y
   exact orderedTripleExcessScore_complement color v x y
 
+theorem perm_sum_int {left right : List Int} (permutation : left.Perm right) :
+    left.sum = right.sum := by
+  induction permutation with
+  | nil => rfl
+  | cons value permutation ih => simp [ih]
+  | swap left right tail => simp; omega
+  | trans first second ihFirst ihSecond => exact ihFirst.trans ihSecond
+
+theorem sum_ofFn_comp_vertexRelabeling_int {n : Nat}
+    (values : Fin n → Int) (vertexMap : Fin n → Fin n)
+    (relabeling : IsVertexRelabeling vertexMap) :
+    (List.ofFn fun i : Fin n => values (vertexMap i)).sum =
+      (List.ofFn values).sum := by
+  have mapped := relabeling.2.map values
+  exact perm_sum_int (by
+    simpa [Function.comp_def] using mapped)
+
+theorem orderedTripleExcessScore_relabel {n : Nat} (color : Coloring n)
+    (vertexMap : Fin n → Fin n) (injective : Function.Injective vertexMap)
+    (v x y : Fin n) :
+    orderedTripleExcessScore (relabelColoring color vertexMap) v x y =
+      orderedTripleExcessScore color (vertexMap v) (vertexMap x)
+        (vertexMap y) := by
+  by_cases vx : v = x
+  · subst x
+    simp [orderedTripleExcessScore]
+  by_cases vy : v = y
+  · subst y
+    simp [orderedTripleExcessScore, vx]
+  by_cases xy : x = y
+  · subst y
+    simp [orderedTripleExcessScore, vx]
+  have mappedVX : vertexMap v ≠ vertexMap x := fun equal => vx (injective equal)
+  have mappedVY : vertexMap v ≠ vertexMap y := fun equal => vy (injective equal)
+  have mappedXY : vertexMap x ≠ vertexMap y := fun equal => xy (injective equal)
+  simp [orderedTripleExcessScore, relabelColoring, vx, vy, xy,
+    mappedVX, mappedVY, mappedXY]
+
+/-- A finite relabeling preserves the local excess score at the corresponding
+old vertex. -/
+theorem localExcessScore_relabel {n : Nat} (color : Coloring n)
+    (vertexMap : Fin n → Fin n) (relabeling : IsVertexRelabeling vertexMap)
+    (v : Fin n) :
+    localExcessScore (relabelColoring color vertexMap) v =
+      localExcessScore color (vertexMap v) := by
+  unfold localExcessScore
+  calc
+    (List.ofFn fun x : Fin n =>
+        (List.ofFn fun y : Fin n =>
+          orderedTripleExcessScore (relabelColoring color vertexMap) v x y
+        ).sum).sum =
+        (List.ofFn fun x : Fin n =>
+          (List.ofFn fun y : Fin n =>
+            orderedTripleExcessScore color (vertexMap v) (vertexMap x)
+              (vertexMap y)).sum).sum := by
+      apply congrArg List.sum
+      apply congrArg List.ofFn
+      funext x
+      apply congrArg List.sum
+      apply congrArg List.ofFn
+      funext y
+      exact orderedTripleExcessScore_relabel color vertexMap
+        relabeling.1 v x y
+    _ = (List.ofFn fun x : Fin n =>
+          (List.ofFn fun y : Fin n =>
+            orderedTripleExcessScore color (vertexMap v) (vertexMap x) y
+          ).sum).sum := by
+      apply congrArg List.sum
+      apply congrArg List.ofFn
+      funext x
+      exact sum_ofFn_comp_vertexRelabeling_int
+        (fun y : Fin n =>
+          orderedTripleExcessScore color (vertexMap v) (vertexMap x) y)
+        vertexMap relabeling
+    _ = (List.ofFn fun x : Fin n =>
+          (List.ofFn fun y : Fin n =>
+            orderedTripleExcessScore color (vertexMap v) x y).sum).sum := by
+      exact sum_ofFn_comp_vertexRelabeling_int
+        (fun x : Fin n =>
+          (List.ofFn fun y : Fin n =>
+            orderedTripleExcessScore color (vertexMap v) x y).sum)
+        vertexMap relabeling
+
+/-- Integer-valued edge indicator used to compare local scores with graph
+degree sums. -/
+def intEdgeWeight (edge : Bool) : Int := if edge then 1 else 0
+
+/-- The graph induced on the neighbours of `v`, padded by isolated labels. -/
+def localNeighborhoodColoring {n : Nat} (color : Coloring n) (v : Fin n) :
+    Coloring n := fun x y =>
+  if x = v ∨ y = v ∨ x = y then false
+  else color v x && color v y && color x y
+
+/-- The complement graph induced on the nonneighbours of `v`, padded by
+isolated labels.  This is the local J graph used in the excess formula. -/
+def localDualColoring {n : Nat} (color : Coloring n) (v : Fin n) :
+    Coloring n := fun x y =>
+  if x = v ∨ y = v ∨ x = y then false
+  else !color v x && !color v y && !color x y
+
+theorem localNeighborhoodColoring_isSimple {n : Nat} (color : Coloring n)
+    (simple : IsSimpleColoring color) (v : Fin n) :
+    IsSimpleColoring (localNeighborhoodColoring color v) := by
+  constructor
+  · intro x
+    simp [localNeighborhoodColoring]
+  · intro x y
+    by_cases xv : x = v
+    · subst x
+      simp [localNeighborhoodColoring]
+    by_cases yv : y = v
+    · subst y
+      simp [localNeighborhoodColoring]
+    by_cases xy : x = y
+    · subst y
+      simp [localNeighborhoodColoring]
+    have yx : y ≠ x := Ne.symm xy
+    simp [localNeighborhoodColoring, xv, yv, xy, yx, simple.2]
+    cases color v x <;> cases color v y <;> simp
+
+theorem localDualColoring_isSimple {n : Nat} (color : Coloring n)
+    (simple : IsSimpleColoring color) (v : Fin n) :
+    IsSimpleColoring (localDualColoring color v) := by
+  constructor
+  · intro x
+    simp [localDualColoring]
+  · intro x y
+    by_cases xv : x = v
+    · subst x
+      simp [localDualColoring]
+    by_cases yv : y = v
+    · subst y
+      simp [localDualColoring]
+    by_cases xy : x = y
+    · subst y
+      simp [localDualColoring]
+    have yx : y ≠ x := Ne.symm xy
+    simp [localDualColoring, xv, yv, xy, yx, simple.2]
+    cases color v x <;> cases color v y <;> simp
+
+/-- Edge-independent part of one ordered local pair. -/
+def orderedPairExcessBase {n : Nat} (color : Coloring n)
+    (v x y : Fin n) : Int :=
+  if x = v ∨ y = v ∨ x = y then 0
+  else
+    match color v x, color v y with
+    | true, true => 2
+    | false, false => 2
+    | _, _ => -1
+
+theorem orderedTripleExcessScore_edge_decomposition {n : Nat}
+    (color : Coloring n) (v x y : Fin n) :
+    orderedTripleExcessScore color v x y +
+        2 * intEdgeWeight (localNeighborhoodColoring color v x y) +
+        2 * intEdgeWeight (localDualColoring color v x y) =
+      orderedPairExcessBase color v x y := by
+  by_cases xv : x = v
+  · subst x
+    simp [orderedTripleExcessScore, orderedPairExcessBase,
+      localNeighborhoodColoring, localDualColoring, intEdgeWeight]
+  by_cases yv : y = v
+  · subst y
+    simp [orderedTripleExcessScore, orderedPairExcessBase,
+      localNeighborhoodColoring, localDualColoring, intEdgeWeight]
+  by_cases xy : x = y
+  · subst y
+    simp [orderedTripleExcessScore, orderedPairExcessBase,
+      localNeighborhoodColoring, localDualColoring, intEdgeWeight]
+  have vx : v ≠ x := Ne.symm xv
+  have vy : v ≠ y := Ne.symm yv
+  cases colorVX : color v x <;>
+    cases colorVY : color v y <;>
+    cases colorXY : color x y <;>
+    simp [orderedTripleExcessScore, orderedPairExcessBase,
+      localNeighborhoodColoring, localDualColoring, intEdgeWeight,
+      xv, yv, xy, vx, vy, colorVX, colorVY, colorXY]
+
+theorem intCast_sum_ofFn_nat {n : Nat} (values : Fin n → Nat) :
+    ((List.ofFn values).sum : Int) =
+      (List.ofFn fun i : Fin n => (values i : Int)).sum := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      rw [List.ofFn_succ, List.ofFn_succ]
+      simp only [List.sum_cons, Int.natCast_add]
+      rw [ih (fun i => values i.succ)]
+
+theorem intEdgeWeight_eq_cast_edgeWeight (edge : Bool) :
+    intEdgeWeight edge = (edgeWeight edge : Int) := by
+  cases edge <;> rfl
+
+theorem sumFin2_intEdgeWeight_eq_degreeSum {n : Nat} (color : Coloring n) :
+    sumFin2 (fun x y => intEdgeWeight (color x y)) =
+      (coloringDegreeSum color : Int) := by
+  rw [coloringDegreeSum_eq_listColoringDegreeSum]
+  unfold listColoringDegreeSum listColoringDegree sumFin2
+  rw [intCast_sum_ofFn_nat]
+  apply congrArg List.sum
+  apply congrArg List.ofFn
+  funext x
+  rw [intCast_sum_ofFn_nat]
+  apply congrArg List.sum
+  apply congrArg List.ofFn
+  funext y
+  exact intEdgeWeight_eq_cast_edgeWeight (color x y)
+
+theorem sum_ofFn_mul_int {n : Nat} (constant : Int) (values : Fin n → Int) :
+    (List.ofFn fun i => constant * values i).sum =
+      constant * (List.ofFn values).sum := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      rw [List.ofFn_succ, List.ofFn_succ]
+      simp only [List.sum_cons]
+      rw [ih (fun i => values i.succ)]
+      rw [Int.mul_add]
+
+theorem sumFin2_mul_int {n m : Nat} (constant : Int)
+    (values : Fin n → Fin m → Int) :
+    sumFin2 (fun i j => constant * values i j) =
+      constant * sumFin2 values := by
+  unfold sumFin2
+  calc
+    (List.ofFn fun i : Fin n =>
+        (List.ofFn fun j : Fin m => constant * values i j).sum).sum =
+        (List.ofFn fun i : Fin n =>
+          constant * (List.ofFn fun j : Fin m => values i j).sum).sum := by
+      apply congrArg List.sum
+      apply congrArg List.ofFn
+      funext i
+      exact sum_ofFn_mul_int constant (values i)
+    _ = _ := sum_ofFn_mul_int constant _
+
+/-- Summed form of the pointwise local edge decomposition. -/
+theorem localExcessScore_edge_decomposition {n : Nat}
+    (color : Coloring n) (v : Fin n) :
+    localExcessScore color v +
+        2 * (coloringDegreeSum (localNeighborhoodColoring color v) : Int) +
+        2 * (coloringDegreeSum (localDualColoring color v) : Int) =
+      sumFin2 (fun x y => orderedPairExcessBase color v x y) := by
+  have pointwise := congrArg sumFin2 (funext fun x => funext fun y =>
+    orderedTripleExcessScore_edge_decomposition color v x y)
+  rw [sumFin2_add, sumFin2_add, sumFin2_mul_int, sumFin2_mul_int,
+    sumFin2_intEdgeWeight_eq_degreeSum,
+    sumFin2_intEdgeWeight_eq_degreeSum] at pointwise
+  exact pointwise
+
+/-- Pure fixed-star version of the edge-independent pair score. -/
+def fixedStarOrderedPairExcessBase (degree : Nat) (x y : Fin 45) : Int :=
+  if x = 0 ∨ y = 0 ∨ x = y then 0
+  else if (x.val ≤ degree ↔ y.val ≤ degree) then 2 else -1
+
+set_option maxRecDepth 100000 in
+theorem fixedStarOrderedPairExcessBase_values :
+    sumFin2 (fixedStarOrderedPairExcessBase 20) = 904 ∧
+    sumFin2 (fixedStarOrderedPairExcessBase 21) = 886 ∧
+    sumFin2 (fixedStarOrderedPairExcessBase 22) = 880 := by
+  unfold sumFin2 fixedStarOrderedPairExcessBase
+  decide
+
+theorem fixedStar_zero_row {color : Coloring 45} (simple : IsSimpleColoring color)
+    (degree : Nat) (fixed : HasFixedStar color degree) (i : Fin 45) :
+    color 0 i = decide (0 < i.val ∧ i.val ≤ degree) := by
+  by_cases zero : i.val = 0
+  · have equal : i = 0 := Fin.ext zero
+    subst i
+    simp [simple.1]
+  by_cases bounded : i.val ≤ degree
+  · have positive : 0 < i.val := by omega
+    rw [fixed.1 i positive bounded]
+    simp [positive, bounded]
+  · have beyond : degree < i.val := by omega
+    rw [fixed.2 i beyond]
+    simp [beyond]
+
+theorem orderedPairExcessBase_fixedStar {color : Coloring 45}
+    (simple : IsSimpleColoring color) (degree : Nat)
+    (fixed : HasFixedStar color degree) (x y : Fin 45) :
+    orderedPairExcessBase color 0 x y =
+      fixedStarOrderedPairExcessBase degree x y := by
+  unfold orderedPairExcessBase
+  rw [fixedStar_zero_row simple degree fixed x,
+    fixedStar_zero_row simple degree fixed y]
+  by_cases xzero : x = 0
+  · subst x
+    simp [fixedStarOrderedPairExcessBase]
+  by_cases yzero : y = 0
+  · subst y
+    simp [fixedStarOrderedPairExcessBase]
+  by_cases xy : x = y
+  · subst y
+    simp [fixedStarOrderedPairExcessBase]
+  have xpos : 0 < x.val := by
+    have : x.val ≠ 0 := fun equal => xzero (Fin.ext equal)
+    omega
+  have ypos : 0 < y.val := by
+    have : y.val ≠ 0 := fun equal => yzero (Fin.ext equal)
+    omega
+  by_cases xbounded : x.val ≤ degree <;>
+    by_cases ybounded : y.val ≤ degree <;>
+    simp [fixedStarOrderedPairExcessBase, xzero, yzero, xy, xpos, ypos,
+      xbounded, ybounded]
+
+theorem fixedStar_pairBase_sum {color : Coloring 45}
+    (simple : IsSimpleColoring color) (degree : Nat)
+    (fixed : HasFixedStar color degree) :
+    sumFin2 (fun x y => orderedPairExcessBase color 0 x y) =
+      sumFin2 (fixedStarOrderedPairExcessBase degree) := by
+  apply congrArg sumFin2
+  funext x y
+  exact orderedPairExcessBase_fixedStar simple degree fixed x y
+
+/-- The concrete H/J graphs provide natural edge counts whose doubled degree
+sums satisfy the local score formula. -/
+theorem exists_fixedStar_localEdgeCounts_raw {color : Coloring 45}
+    (simple : IsSimpleColoring color) (degree : Nat)
+    (fixed : HasFixedStar color degree) (constant : Int)
+    (baseValue : sumFin2 (fixedStarOrderedPairExcessBase degree) =
+      2 * constant) :
+    ∃ edgesH edgesJ : Nat,
+      coloringDegreeSum (localNeighborhoodColoring color 0) = 2 * edgesH ∧
+      coloringDegreeSum (localDualColoring color 0) = 2 * edgesJ ∧
+        localExcessScore color 0 =
+          2 * (constant - 2 * ((edgesH : Int) + (edgesJ : Int))) := by
+  have hSimple := localNeighborhoodColoring_isSimple color simple 0
+  have jSimple := localDualColoring_isSimple color simple 0
+  rcases coloringDegreeSum_even (localNeighborhoodColoring color 0) hSimple with
+    ⟨edgesH, hEven⟩
+  rcases coloringDegreeSum_even (localDualColoring color 0) jSimple with
+    ⟨edgesJ, jEven⟩
+  have hEvenInt := congrArg (fun value : Nat => (value : Int)) hEven
+  have jEvenInt := congrArg (fun value : Nat => (value : Int)) jEven
+  simp only [Int.natCast_mul] at hEvenInt jEvenInt
+  have decomposition := localExcessScore_edge_decomposition color 0
+  have actualBase :
+      sumFin2 (fun x y => orderedPairExcessBase color 0 x y) =
+        2 * constant :=
+    (fixedStar_pairBase_sum simple degree fixed).trans baseValue
+  refine ⟨edgesH, edgesJ, hEven, jEven, ?_⟩
+  rw [actualBase] at decomposition
+  omega
+
 /-- The global sum of all local excess scores is zero for every finite simple
 two-colouring. -/
 theorem globalExcessScore_identity {n : Nat} (color : Coloring n)
@@ -343,14 +685,90 @@ theorem order45_normalize_nonpositive_excess_witness
       simp [normalized]
       omega
 
+/-- Relabel the selected excess witness to the exact fixed-apex convention
+used by the three excess mother formulas. -/
+theorem order45_fixedStar_normalize_nonpositive_excess_witness
+    (color : Coloring 45) (simple : IsSimpleColoring color)
+    (ramseyFree : IsRamseyFree55 color)
+    (window : ∀ v : Fin 45,
+      20 ≤ coloringDegree color v ∧ coloringDegree color v ≤ 24) :
+    ∃ normalized : Coloring 45,
+      IsSimpleColoring normalized ∧ IsRamseyFree55 normalized ∧
+      localExcessScore normalized 0 ≤ 0 ∧
+      ((HasFixedStar normalized 20 ∧ coloringDegree normalized 0 = 20) ∨
+        (HasFixedStar normalized 21 ∧ coloringDegree normalized 0 = 21) ∨
+        (HasFixedStar normalized 22 ∧ coloringDegree normalized 0 = 22)) := by
+  rcases order45_normalize_nonpositive_excess_witness color simple ramseyFree
+      window with
+    ⟨base, v, baseSimple, baseFree, nonpositive,
+      degree20 | degree21 | degree22⟩
+  all_goals
+    let normalized := relabelColoring base (starVertexMap base v)
+    have facts := starRelabeling_normalizes base v baseSimple baseFree
+    have scoreEquality := localExcessScore_relabel base
+      (starVertexMap base v) (starVertexMap_isVertexRelabeling base v) 0
+    rw [starVertexMap_zero] at scoreEquality
+    have normalizedNonpositive : localExcessScore normalized 0 ≤ 0 := by
+      rw [scoreEquality]
+      exact nonpositive
+  · refine ⟨normalized, facts.1, facts.2.1, normalizedNonpositive, Or.inl ?_⟩
+    exact ⟨by simpa [degree20] using facts.2.2.1,
+      facts.2.2.2.trans degree20⟩
+  · refine ⟨normalized, facts.1, facts.2.1, normalizedNonpositive,
+      Or.inr (Or.inl ?_)⟩
+    exact ⟨by simpa [degree21] using facts.2.2.1,
+      facts.2.2.2.trans degree21⟩
+  · refine ⟨normalized, facts.1, facts.2.1, normalizedNonpositive,
+      Or.inr (Or.inr ?_)⟩
+    exact ⟨by simpa [degree22] using facts.2.2.1,
+      facts.2.2.2.trans degree22⟩
+
 /-- Concrete contract still to be discharged by the neighbourhood/J edge
 counter bridge.  The score is twice
 `twoOrder45LocalExcessConstant d - 2 * (e(H) + e(J))`. -/
 def HasOrder45LocalEdgeCounts (color : Coloring 45) (v : Fin 45)
     (edgesH edgesJ : Nat) : Prop :=
-  localExcessScore color v =
-    2 * (twoOrder45LocalExcessConstant (coloringDegree color v) -
-      2 * ((edgesH : Int) + (edgesJ : Int)))
+  coloringDegreeSum (localNeighborhoodColoring color v) = 2 * edgesH ∧
+  coloringDegreeSum (localDualColoring color v) = 2 * edgesJ ∧
+    localExcessScore color v =
+      2 * (twoOrder45LocalExcessConstant (coloringDegree color v) -
+        2 * ((edgesH : Int) + (edgesJ : Int)))
+
+theorem exists_order45LocalEdgeCounts_degree20 {color : Coloring 45}
+    (simple : IsSimpleColoring color) (fixed : HasFixedStar color 20)
+    (degree : coloringDegree color 0 = 20) :
+    ∃ edgesH edgesJ : Nat, HasOrder45LocalEdgeCounts color 0 edgesH edgesJ := by
+  have baseValues := fixedStarOrderedPairExcessBase_values
+  have base : sumFin2 (fixedStarOrderedPairExcessBase 20) = 2 * (452 : Int) := by
+    omega
+  rcases exists_fixedStar_localEdgeCounts_raw simple 20 fixed 452 base with
+    ⟨edgesH, edgesJ, hCount, jCount, counts⟩
+  exact ⟨edgesH, edgesJ, hCount, jCount, by
+    simpa [degree, twoOrder45LocalExcessConstant] using counts⟩
+
+theorem exists_order45LocalEdgeCounts_degree21 {color : Coloring 45}
+    (simple : IsSimpleColoring color) (fixed : HasFixedStar color 21)
+    (degree : coloringDegree color 0 = 21) :
+    ∃ edgesH edgesJ : Nat, HasOrder45LocalEdgeCounts color 0 edgesH edgesJ := by
+  have baseValues := fixedStarOrderedPairExcessBase_values
+  have base : sumFin2 (fixedStarOrderedPairExcessBase 21) = 2 * (443 : Int) := by
+    omega
+  rcases exists_fixedStar_localEdgeCounts_raw simple 21 fixed 443 base with
+    ⟨edgesH, edgesJ, hCount, jCount, counts⟩
+  exact ⟨edgesH, edgesJ, hCount, jCount, by
+    simpa [degree, twoOrder45LocalExcessConstant] using counts⟩
+
+theorem exists_order45LocalEdgeCounts_degree22 {color : Coloring 45}
+    (simple : IsSimpleColoring color) (fixed : HasFixedStar color 22)
+    (degree : coloringDegree color 0 = 22) :
+    ∃ edgesH edgesJ : Nat, HasOrder45LocalEdgeCounts color 0 edgesH edgesJ := by
+  have baseValues := fixedStarOrderedPairExcessBase_values
+  have base : sumFin2 (fixedStarOrderedPairExcessBase 22) = 2 * (440 : Int) := by
+    omega
+  rcases exists_fixedStar_localEdgeCounts_raw simple 22 fixed 440 base with
+    ⟨edgesH, edgesJ, hCount, jCount, counts⟩
+  exact ⟨edgesH, edgesJ, hCount, jCount, by
+    simpa [degree, twoOrder45LocalExcessConstant] using counts⟩
 
 /-- Once the concrete local edge counters satisfy their exact score contract,
 the global identity yields one of the three dense excess branches used by the
@@ -359,42 +777,70 @@ theorem order45_exists_dense_excess_branch
     (color : Coloring 45) (simple : IsSimpleColoring color)
     (ramseyFree : IsRamseyFree55 color)
     (window : ∀ v : Fin 45,
-      20 ≤ coloringDegree color v ∧ coloringDegree color v ≤ 24)
-    (counted : ∀ candidate : Coloring 45, IsSimpleColoring candidate →
-      ∀ v : Fin 45, ∃ edgesH edgesJ : Nat,
-        HasOrder45LocalEdgeCounts candidate v edgesH edgesJ) :
-    ∃ normalized : Coloring 45, ∃ v : Fin 45, ∃ edgesH edgesJ : Nat,
+      20 ≤ coloringDegree color v ∧ coloringDegree color v ≤ 24) :
+    ∃ normalized : Coloring 45, ∃ edgesH edgesJ : Nat,
       IsSimpleColoring normalized ∧ IsRamseyFree55 normalized ∧
-      HasOrder45LocalEdgeCounts normalized v edgesH edgesJ ∧
-      ((coloringDegree normalized v = 20 ∧ 226 ≤ edgesH + edgesJ) ∨
-        (coloringDegree normalized v = 21 ∧ 222 ≤ edgesH + edgesJ) ∨
-        (coloringDegree normalized v = 22 ∧ 220 ≤ edgesH + edgesJ)) := by
-  rcases order45_normalize_nonpositive_excess_witness color simple ramseyFree
-      window with
-    ⟨normalized, v, normalizedSimple, normalizedFree, nonpositive,
-      degree20 | degree21 | degree22⟩
-  · rcases counted normalized normalizedSimple v with ⟨edgesH, edgesJ, counts⟩
-    refine ⟨normalized, v, edgesH, edgesJ, normalizedSimple, normalizedFree,
-      counts, Or.inl ⟨degree20, ?_⟩⟩
-    rw [counts, degree20] at nonpositive
+      HasOrder45LocalEdgeCounts normalized 0 edgesH edgesJ ∧
+      ((HasFixedStar normalized 20 ∧ coloringDegree normalized 0 = 20 ∧
+          226 ≤ edgesH + edgesJ) ∨
+        (HasFixedStar normalized 21 ∧ coloringDegree normalized 0 = 21 ∧
+          222 ≤ edgesH + edgesJ) ∨
+        (HasFixedStar normalized 22 ∧ coloringDegree normalized 0 = 22 ∧
+          220 ≤ edgesH + edgesJ)) := by
+  rcases order45_fixedStar_normalize_nonpositive_excess_witness color simple
+      ramseyFree window with
+    ⟨normalized, normalizedSimple, normalizedFree, nonpositive,
+      branch20 | branch21 | branch22⟩
+  · rcases exists_order45LocalEdgeCounts_degree20 normalizedSimple
+      branch20.1 branch20.2 with ⟨edgesH, edgesJ, counts⟩
+    refine ⟨normalized, edgesH, edgesJ, normalizedSimple, normalizedFree,
+      counts, Or.inl ⟨branch20.1, branch20.2, ?_⟩⟩
+    have degree20 := branch20.2
+    rw [counts.2.2, degree20] at nonpositive
     have constants := twoOrder45LocalExcessConstant_values
     omega
-  · rcases counted normalized normalizedSimple v with ⟨edgesH, edgesJ, counts⟩
-    refine ⟨normalized, v, edgesH, edgesJ, normalizedSimple, normalizedFree,
-      counts, Or.inr (Or.inl ⟨degree21, ?_⟩)⟩
-    rw [counts, degree21] at nonpositive
+
+  · rcases exists_order45LocalEdgeCounts_degree21 normalizedSimple
+      branch21.1 branch21.2 with ⟨edgesH, edgesJ, counts⟩
+    refine ⟨normalized, edgesH, edgesJ, normalizedSimple, normalizedFree,
+      counts, Or.inr (Or.inl ⟨branch21.1, branch21.2, ?_⟩)⟩
+    have degree21 := branch21.2
+    rw [counts.2.2, degree21] at nonpositive
     have constants := twoOrder45LocalExcessConstant_values
     omega
-  · rcases counted normalized normalizedSimple v with ⟨edgesH, edgesJ, counts⟩
-    refine ⟨normalized, v, edgesH, edgesJ, normalizedSimple, normalizedFree,
-      counts, Or.inr (Or.inr ⟨degree22, ?_⟩)⟩
-    rw [counts, degree22] at nonpositive
+
+  · rcases exists_order45LocalEdgeCounts_degree22 normalizedSimple
+      branch22.1 branch22.2 with ⟨edgesH, edgesJ, counts⟩
+    refine ⟨normalized, edgesH, edgesJ, normalizedSimple, normalizedFree,
+      counts, Or.inr (Or.inr ⟨branch22.1, branch22.2, ?_⟩)⟩
+    have degree22 := branch22.2
+    rw [counts.2.2, degree22] at nonpositive
     have constants := twoOrder45LocalExcessConstant_values
     omega
+
+/-- End-to-end graph-side excess reduction with the checked order-25 Ramsey
+statement as its sole external mathematical input. -/
+theorem order45_exists_dense_excess_branch_of_r45
+    (r45 : ForcesRed4OrBlue5 25)
+    (color : Coloring 45) (simple : IsSimpleColoring color)
+    (ramseyFree : IsRamseyFree55 color) :
+    ∃ normalized : Coloring 45, ∃ edgesH edgesJ : Nat,
+      IsSimpleColoring normalized ∧ IsRamseyFree55 normalized ∧
+      HasOrder45LocalEdgeCounts normalized 0 edgesH edgesJ ∧
+      ((HasFixedStar normalized 20 ∧ coloringDegree normalized 0 = 20 ∧
+          226 ≤ edgesH + edgesJ) ∨
+        (HasFixedStar normalized 21 ∧ coloringDegree normalized 0 = 21 ∧
+          222 ≤ edgesH + edgesJ) ∨
+        (HasFixedStar normalized 22 ∧ coloringDegree normalized 0 = 22 ∧
+          220 ≤ edgesH + edgesJ)) := by
+  exact order45_exists_dense_excess_branch color simple ramseyFree
+    (order45_degree_window_of_r45 r45 color simple ramseyFree)
 
 #print axioms globalExcessScore_identity
 #print axioms exists_nonpositive_localExcessScore
 #print axioms order45_normalize_nonpositive_excess_witness
+#print axioms order45_fixedStar_normalize_nonpositive_excess_witness
 #print axioms order45_exists_dense_excess_branch
+#print axioms order45_exists_dense_excess_branch_of_r45
 
 end Ramsey55

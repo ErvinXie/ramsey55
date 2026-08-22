@@ -168,16 +168,21 @@ score to every ordered three-label orbit, proves the one-edge/two-edge
 derives that the sum of all vertex scores is exactly zero. Hence every
 nonempty simple colouring has a nonpositive vertex. Under the checked
 20--24 degree window, colour complementation preserves that score and
-normalizes a Ramsey-free witness to degree 20, 21, or 22. A final theorem
-turns the exact local H/J edge-count contract into the three thresholds
-226/222/220. The complete 83-job ARM build passes, and the new axiom audits
-contain only `propext` and `Quot.sound`, with no `sorryAx`.
+normalizes a Ramsey-free witness to degree 20, 21, or 22. The module now also
+constructs the padded neighbourhood H graph and complemented-nonneighbour J
+graph, proves both are simple, obtains their exact natural edge counts by the
+handshake theorem, and proves the local score decomposes into those two
+counts. Relabelling preserves the score and moves the witness to the fixed
+apex convention. The end-to-end graph theorem therefore derives the concrete
+226/222/220 dense branches with `ForcesRed4OrBlue5 25` as its sole external
+mathematical input. The complete 83-job ARM build passes, and the new axiom
+audits contain only `propext`, `Classical.choice`, and `Quot.sound`, with no
+`sorryAx`.
 
-The H/J contract is intentionally still explicit: the next graph-to-CNF
-bridge must prove that the concrete neighbourhood and complemented-
-nonneighbour edge counters have the values used by the generated DIMACS
-formulas. Relabelling the selected witness to the fixed apex and binding the
-exact edge-range inputs also remain separate obligations.
+The remaining graph-to-CNF bridge must identify these concrete H/J edge
+counts with the primary-variable lists and generated counter outputs in the
+three DIMACS mothers. Binding the exact published edge-range inputs and the
+checked computational leaf refutations also remain separate obligations.
 
 [Order45CubeCover.lean](../formal/Ramsey55/Order45CubeCover.lean) now checks
 the arithmetic and ordering of the concrete edge-pair layer. It defines the
