@@ -5556,5 +5556,19 @@ core was reassigned to a high-budget race for v406 f320 child 1.  At this
 checkpoint v409, v407 f220, v408 f312, v404, and v406 f320 are each one leaf
 short of a complete finalizer input.
 
+The finalizer now supports the recursive promotion needed after those groups
+close.  Each ordered `--child PROOF EVIDENCE` pair may use either the original
+producer log or a lower `ramsey55.cadical-dfs-checkpoint-finalization.v1`
+manifest.  For the latter, the tool requires `checker_verified=true`, a
+certified no-empty output fragment, a standalone proof carrying the appended
+empty-clause marker, complete hash records for the lower checker inputs, and
+an exact SHA-256/size match between the supplied proof and the lower output.
+It then scans the supplied binary DRAT fragment again and runs a fresh
+standalone `drat-trim` over the entire upper composition.  Thus a lower
+manifest is only ordered provenance; the upper checker remains the soundness
+gate.  Tests cover successful recursive composition, proof-hash mismatch,
+and an unverified lower manifest.  Six focused tests and the full 200-test
+Python suite pass locally.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.

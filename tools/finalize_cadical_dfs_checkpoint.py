@@ -83,6 +83,69 @@ def read_producer_log(path: Path) -> dict[str, str]:
     return records
 
 
+def validate_file_record(record: Any, label: str) -> dict[str, Any]:
+    if not isinstance(record, dict):
+        raise ValueError(f"finalization manifest lacks {label} file record")
+    if not isinstance(record.get("path"), str) or not record["path"]:
+        raise ValueError(f"finalization manifest has invalid {label} path")
+    digest = record.get("sha256")
+    if (
+        not isinstance(digest, str)
+        or len(digest) != 64
+        or any(character not in "0123456789abcdef" for character in digest)
+    ):
+        raise ValueError(f"finalization manifest has invalid {label} hash")
+    if not isinstance(record.get("size"), int) or record["size"] < 0:
+        raise ValueError(f"finalization manifest has invalid {label} size")
+    return record
+
+
+def read_finalized_child(
+    path: Path, proof_record: dict[str, Any]
+) -> dict[str, Any] | None:
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return None
+    if not isinstance(document, dict) or document.get("schema") != SCHEMA:
+        raise ValueError(f"unexpected child finalization manifest schema: {path}")
+    if document.get("checker_verified") is not True:
+        raise ValueError(f"child finalization manifest is not checker-verified: {path}")
+    output = validate_file_record(document.get("output_fragment"), "output_fragment")
+    if output.get("contains_empty_addition") is not False:
+        raise ValueError(
+            f"child finalization manifest does not certify a no-empty fragment: {path}"
+        )
+    if output["sha256"] != proof_record["sha256"] or output["size"] != proof_record["size"]:
+        raise ValueError(
+            f"child proof does not match finalization manifest output: {path}"
+        )
+    standalone = validate_file_record(
+        document.get("standalone_proof"), "standalone_proof"
+    )
+    if standalone.get("appended_empty_clause") is not True:
+        raise ValueError(
+            f"child finalization manifest lacks standalone empty-clause marker: {path}"
+        )
+    for label in (
+        "cnf",
+        "replay_manifest",
+        "prefix",
+        "checker",
+        "checker_log",
+    ):
+        validate_file_record(document.get(label), label)
+    if not isinstance(document.get("children"), list) or not document["children"]:
+        raise ValueError(f"child finalization manifest has no children: {path}")
+    return {
+        **file_record(path),
+        "schema": document["schema"],
+        "checker_verified": True,
+        "output_fragment_sha256": output["sha256"],
+        "output_fragment_size": output["size"],
+    }
+
+
 def load_replay_manifest(path: Path) -> dict[str, Any]:
     document = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(document, dict) or document.get("schema") != REPLAY_SCHEMA:
@@ -119,8 +182,12 @@ def main() -> None:
         "--child",
         action="append",
         nargs=2,
-        metavar=("PROOF", "PRODUCER_LOG"),
+        metavar=("PROOF", "EVIDENCE"),
         required=True,
+        help=(
+            "ordered no-empty child proof and either its producer log or a "
+            "checker-verified child finalization manifest"
+        ),
     )
     parser.add_argument(
         "--checker", type=Path, default=Path(".tools/src/drat-trim/drat-trim")
@@ -161,18 +228,25 @@ def main() -> None:
     if prefix_scan["empty_additions"]:
         raise ValueError("proof prefix contains an embedded empty clause")
     children: list[dict[str, Any]] = []
-    for index, (proof, log) in enumerate(child_pairs):
-        telemetry = read_producer_log(log)
+    for index, (proof, evidence) in enumerate(child_pairs):
         proof_scan = scan_binary_drat(proof)
         if proof_scan["empty_additions"]:
             raise ValueError(f"child proof {index} contains an embedded empty clause")
-        children.append(
-            {
-                "index": index,
-                "proof": {**file_record(proof), "binary_drat": proof_scan},
-                "producer_log": {**file_record(log), "telemetry": telemetry},
+        proof_record = file_record(proof)
+        finalized = read_finalized_child(evidence, proof_record)
+        child = {
+            "index": index,
+            "proof": {**proof_record, "binary_drat": proof_scan},
+        }
+        if finalized is None:
+            telemetry = read_producer_log(evidence)
+            child["producer_log"] = {
+                **file_record(evidence),
+                "telemetry": telemetry,
             }
-        )
+        else:
+            child["finalization_manifest"] = finalized
+        children.append(child)
 
     fragment_temporary, standalone_temporary, checker_log_temporary = temporaries
     try:

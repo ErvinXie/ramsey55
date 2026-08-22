@@ -70,6 +70,42 @@ class FinalizeCadicalDfsCheckpointTests(unittest.TestCase):
             str(root / "manifest.json"),
         ]
 
+    def finalized_child_manifest(
+        self, root: Path, proof: Path, checker_verified: bool = True
+    ) -> Path:
+        placeholder = {
+            "path": "recorded-elsewhere",
+            "sha256": "0" * 64,
+            "size": 0,
+        }
+        path = root / "child-finalization.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "schema": "ramsey55.cadical-dfs-checkpoint-finalization.v1",
+                    "cnf": placeholder,
+                    "replay_manifest": placeholder,
+                    "prefix": placeholder,
+                    "children": [{"index": 0}],
+                    "output_fragment": {
+                        "path": str(proof),
+                        "sha256": sha256(proof),
+                        "size": proof.stat().st_size,
+                        "contains_empty_addition": False,
+                    },
+                    "standalone_proof": {
+                        **placeholder,
+                        "appended_empty_clause": True,
+                    },
+                    "checker": placeholder,
+                    "checker_log": placeholder,
+                    "checker_verified": checker_verified,
+                }
+            ),
+            encoding="utf-8",
+        )
+        return path
+
     def test_composes_checks_and_hash_binds_checkpoint(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -110,6 +146,52 @@ class FinalizeCadicalDfsCheckpointTests(unittest.TestCase):
             )
             self.assertNotEqual(completed.returncode, 0)
             self.assertIn("lacks root_index=all", completed.stderr)
+
+    def test_accepts_checker_verified_finalized_child(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            command = self.fixture(root)
+            proof = root / "child.drat"
+            finalized = self.finalized_child_manifest(root, proof)
+            command[command.index(str(root / "child.log"))] = str(finalized)
+            subprocess.run(command, check=True, stdout=subprocess.PIPE)
+            manifest = json.loads((root / "manifest.json").read_text())
+            child = manifest["children"][0]
+            self.assertNotIn("producer_log", child)
+            self.assertTrue(child["finalization_manifest"]["checker_verified"])
+            self.assertEqual(
+                child["proof"]["sha256"],
+                child["finalization_manifest"]["output_fragment_sha256"],
+            )
+
+    def test_rejects_finalized_child_with_mismatched_proof(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            command = self.fixture(root)
+            proof = root / "child.drat"
+            finalized = self.finalized_child_manifest(root, proof)
+            proof.write_bytes(b"a\x06\0")
+            command[command.index(str(root / "child.log"))] = str(finalized)
+            completed = subprocess.run(
+                command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+            )
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn("does not match finalization manifest", completed.stderr)
+
+    def test_rejects_unverified_finalized_child(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            command = self.fixture(root)
+            proof = root / "child.drat"
+            finalized = self.finalized_child_manifest(
+                root, proof, checker_verified=False
+            )
+            command[command.index(str(root / "child.log"))] = str(finalized)
+            completed = subprocess.run(
+                command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+            )
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn("is not checker-verified", completed.stderr)
 
 
 if __name__ == "__main__":
