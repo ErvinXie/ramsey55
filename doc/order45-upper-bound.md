@@ -248,6 +248,16 @@ identify both concrete padded graphs pointwise. The published edge ranges
 remain external inputs, but there is no longer a separate count-binding
 assumption.
 
+`formal/Ramsey55/Order45Primary.lean` continues that bridge to the actual
+counter inputs. It proves that the generator's `orderedPairsFrom` order and
+triangular DIMACS identifiers scan the strict upper triangle of H and the
+complemented J block. Under `RepresentsOrder45Primary`, the d20/d21/d22 input
+counts 190/276, 210/253, and 231/231 are exactly the graph-side `edgesH` and
+`edgesJ`. The remaining mother-completeness work is therefore assignment
+construction for the primary graph, counter auxiliaries, common Ramsey and
+fixed-star clauses, and the lex representative; the H/J count interpretation
+is no longer part of that black box.
+
 `formal/Ramsey55/Order45ExcessTarget.lean` now gives the exact end-to-end
 composition theorem for this route. It combines the kernel-checked global
 excess witness with complete d20/d21/d22 graph-to-mother encodings and either

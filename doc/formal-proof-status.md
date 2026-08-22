@@ -217,6 +217,18 @@ only the published edge-range inputs, not a separate count-binding premise.
 The complete ARM build passes 85 jobs. Axiom audits again contain only
 standard axioms and no `sorryAx`.
 
+[Order45Primary.lean](../formal/Ramsey55/Order45Primary.lean) now connects the
+graph-side H/J counts to the concrete DIMACS counter inputs. It defines the
+generator-ordered strict-upper-triangle stream, proves the exact handshake
+identity for its natural edge count, recursively verifies `orderedPairsFrom`,
+and maps the triangular DIMACS identifiers through a
+`RepresentsOrder45Primary` assignment. The three concrete endpoint theorems
+prove input counts 190/276, 210/253, and 231/231 equal the same `edgesH` and
+`edgesJ` used by the excess identity. The complete ARM build passes 86 jobs;
+axiom audits contain only the standard axioms and no `sorryAx`. Constructing a
+primary-representing assignment that satisfies the full mother, including
+counter auxiliaries and the lex-leader clauses, remains open.
+
 [Order45CubeCover.lean](../formal/Ramsey55/Order45CubeCover.lean) now checks
 the arithmetic and ordering of the concrete edge-pair layer. It defines the
 same lexicographically ordered, threshold-filtered closed-range product as the
