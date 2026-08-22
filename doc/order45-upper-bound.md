@@ -4930,5 +4930,42 @@ No subfragment status will be promoted until the corresponding
 prefix-plus-subfragment composition verifies against its independently
 materialized augmented parent cube.
 
+A resource audit removed computation that had become strictly dominated by
+the newer proof paths: three low-budget fragment hedges, four non-proof direct
+probes on the weaker state-3700/state-3743 leaves, and two weaker recursive
+trees.  Their incomplete files were retained, but their processes were
+stopped.  The proof-producing state-3704/state-3752 CaDiCaL and Kissat jobs,
+the original high-budget fragments, and all nine second-level fragments were
+left running.
+
+The next screens found three CaDiCaL-primary J297 candidates in proof order:
+4400, 5968, and 9276.  Kissat agreed on 5968 and 9276.  The J297 agreement and
+primary queue hashes are
+`aa061bcf14cddb936a8c3749876216c4584a3dd25615fb448f80825c91aed85d`
+and
+`44a54089823b8be341223248a0b4f26c4edb9d6def8aa7860ed12b28fe30742a`.
+The J326 Kissat-primary queue was `[5978,5604]`, with CaDiCaL agreement on
+5978; its agreement/primary hashes are
+`fe204ead09a5331b17327210bc6e841626593052a89978fef784ad3f7965b6c5` /
+`dca6ea15eb294f50dfad2a17a0b38198d7618aed7d0c379b94bcafc6365ce562`.
+Fresh compact primary-solver proofs for all five candidates passed
+`drat-trim`.  The endpoints advance to states 3715/3764, and their actual
+terminal rows equal the primary-queue predictions with hashes
+`606eb8dedfc77966cedcf75b49fbfd81bc43d238a89828720ab4dbf154fd410e`
+and
+`f812c6404a4999b0c6d4627018fbf350a43e6587fde83fc54e2d597102880988`.
+
+The v33 chain bundle / v32-to-v33 extension-audit / log hashes are
+`268495ed3fe80b73803d66737b64898a58dec6cd8c8bb3e300fb1fb856ba4def` /
+`d9b069c65467916836bf86e5fc6536649065ef656688162201160b944f44d8cc` /
+`4035276ad34e7faba3de780d37b494ad30d16251950f3a570378286e06204cb7`.
+The refreshed selective-residual join bundle/audit/log hashes are
+`902e28c4bbc97903b531ff28444a2074e38a57795ed61fa408e995b0ba7ca26d` /
+`69b3b82f3d8905ead0ccadf648f0bb01a1a112a2090006b7019e24b7625abf2d` /
+`339d072afda1f5421ac44c97c44bf94569c6a7a9a3f66e809150aaf61068419e`.
+It binds 25 J297 and 26 J326 continuation segments and still projects one
+effective UNKNOWN in each fixed-pair case.  Forward-J297 and reverse-J326
+screens now run on the exact state-3715/state-3764 leaves.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
