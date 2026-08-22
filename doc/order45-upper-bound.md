@@ -5028,5 +5028,78 @@ It binds 25 J297 and 27 J326 continuation segments, with exactly one effective
 UNKNOWN in each fixed-pair case at states 3715/3768.  A forward
 Kissat-primary scan now runs on the exact J326 state-3768 leaf.
 
+The complementary reverse CaDiCaL-primary screen of J297 state 3715 found a
+single candidate, variable 4559; Kissat did not confirm it within two seconds.
+The empty agreement queue and one-entry primary queue hashes are
+`a31e906a6e88398a260b946f5f108e80dd476c2ad116a67a34f9c22eec80e69a`
+and
+`8ba64d2b58bb38a170ac4941913c840c455644bf65695bb820d65dae40ff0bfa`.
+A new compact CaDiCaL proof passed `drat-trim`, advancing the endpoint to
+state 3716.  Its final proof manifest and state hashes are
+`ef6c25b50819e3d0799bb8644e015073041c35b84f81f80b3bcd31a507de036c`
+and
+`c3dffebc70d23f0e0de193e3f69b6b7d047d80843f3ea916edebab320e7614c3`.
+The actual terminal is byte-identical to its independently materialized
+prediction, hash
+`6c773ac1a56b348d28aa492f2534f7bcdc7fe0e1127bf8f1d0b5e623f8b71acd`.
+
+The v35 chain bundle / v34-to-v35 extension-audit / audit-log hashes are
+`4eb59f6b9b794ab8d98d7a949982d51d596c704466b5ff601acf34d1a9324820` /
+`15035e1177597ca92e213fd663f69f79d7b9db8c74b1d41338d9c84295455d39` /
+`263ece9a429bc9a303ba26d2bbfb3729f2090d58c1a9c8ad53d4ebca7a5ff000`.
+The corresponding selective-residual join bundle/audit/log hashes are
+`21a26b9eb80b974087b9b97cc4ad61e059f8fe25c5538694442e9015b657d65d` /
+`3fb3a8f33c0401fe51bd2dfe85c3f2c8dbc5dbaa735d478c45448acb39cd9616` /
+`ce438b0a63304693aed68b44418db99bb881d7e7dfe0620bc74c0466e4b42f4b`.
+
+The forward Kissat-primary screen of the exact J326 state-3768 leaf produced
+three candidates in proof order: 6332, 8561, and 4993.  CaDiCaL confirmed
+8561 and 4993 at the same two-second budget.  The agreement and primary queue
+hashes are
+`f3d58f909c5fe4cb91872ef8de66e5bb424275573af76de3412d1430028b3e4d`
+and
+`57a5b022e504ee618b38c330ef861194276df0729925f49504939590061a3c64`.
+All three fresh compact Kissat proofs passed `drat-trim`, advancing the exact
+endpoint to state 3771.  Its final manifest and state hashes are
+`e84ad08cbdaec2b449f9150eed2cad1ed06d3c4156d74308c89bd59a2cee9ea6`
+and
+`cfbb01434b349c240a75ddd0770e29948d743208113245ea2a73c07ca598b20a`.
+The actual and predicted terminal rows match exactly, hash
+`609bd2e966b0d10dbaa9ac3e4caf0892b253e9d3ca3af83c198c2e5576fb5e6a`.
+
+The v36 chain bundle / v35-to-v36 extension-audit / audit-log hashes are
+`ca31894117e634473f239b6d2e13587564ab6262faa671ceb246c400f8b84ef3` /
+`64f27308cda10ae551513509d3871965b04f4046ef885e90f73ba920fbcc13b9` /
+`c118735c52852cf21eb90aeafb104f32ebbde9214f36a9168af675b4097e746f`.
+The refreshed selective-residual join bundle/audit/log hashes are
+`9132b6702a501dee0ae6ed70e31ac37e8327d21023cb307b6ad2545d0879618f` /
+`6e9ede98b68df2f6e1d4fe73d336784bd627e040a0423beef2a53de58d08d322` /
+`da8ccb32cb055e44165804445b4f7f434374b1e62c39ba6940ee1659f73ddf69`.
+It binds 26 J297 and 28 J326 continuation segments and still projects one
+effective UNKNOWN in each case at states 3716/3771.
+
+After the first of the new screens released its 16 worker slots, a third
+parallel checkpoint layer was added beneath the five unfinished late
+fragments.  Each source prover was stopped only for its own three-to-four
+second copy window and immediately resumed.  Exact DFS reconstruction exposed
+three plus four J297 subroots, and one plus two plus three J326 subroots.  The
+J297 f2/f3 proof-prefix hashes are
+`75cc4ab75362de9dbb39217b51f9ad7b207a4f7603e34796d429062730ee1228`
+and
+`a80dded06ce490db28b2f4bbc513d2969f3b0091064f2767bf532239520cc3a3`.
+The J326 f2/f3/f4 prefix hashes are
+`771660df24c492e045b60306d76c3695599b7b8b0cb474486a73936116069bdb`,
+`cee808e313526d9ce28480df0cc6b82a5d5649671fad79534de3701b7df86663`,
+and
+`ce721495ee0bf17245b50862fd379e5c6bbddcf88a49d9b5a7c92a68ac64aa6a`.
+All 13 subroots received independent high-budget explicit-stack fragment
+producers.  The original J326 fragment 2 subsequently completed, so its
+strictly redundant child was stopped and its partial artifacts retained.  At
+this checkpoint two J297 subfragments have completed.  A nested fragment is
+accepted only after prefix-plus-ordered-subfragment composition, a final empty
+clause in a separate standalone copy, and `drat-trim` replay against the exact
+parent-fragment augmented CNF.  Only the verified no-empty fragment form may
+then be embedded in the final root composition.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
