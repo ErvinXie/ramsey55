@@ -5135,5 +5135,76 @@ One further third-layer producer, J326 f3-sub-0, has completed with
 and standalone replay are still pending; this isolated completion is not yet
 used by a parent-fragment or root proof.
 
+The reverse CaDiCaL-primary scan of J326 state 3771 then completed all 11,692
+polarity cubes without a one-sided candidate.  Its exact-parent-bound zero
+queue has hash
+`1f7d83b6dac59224d56c69f666cb552a77dbbb50f35eecd0107bb8b3510cd237`.
+The complementary forward Kissat-primary scan was also empty, with queue hash
+`12692e6e51a3b8e6b6b1e8e094029bbc392ecd593d5828ffaa6cf020073c1773`.
+Both independently materialized terminals are unchanged from state 3771,
+hash
+`609bd2e966b0d10dbaa9ac3e4caf0892b253e9d3ca3af83c198c2e5576fb5e6a`.
+J297 state 3717 likewise produced an empty reverse CaDiCaL-primary queue,
+hash
+`5e1181aa703974f0683cccdee7e4ef6751d0b15dddf5e15c95546b19120eb0c9`,
+and an unchanged terminal at
+`343020bf56c06ac1d9f4c57c1ce64c580f639687fb09827e89f6e730ebc059ff`.
+These observations bind complete two-second screening fixed points only; they
+do not certify either leaf UNSAT.  A forward Kissat-primary scan continues on
+the exact J297 state-3717 leaf.
+
+The two direct 14,400-second Kissat attempts on the state-3704/state-3752
+roots both ended UNKNOWN, with neither a SAT model nor an UNSAT proof.  Their
+partial manifest hashes are
+`dcdf1a1e7d8d8262e1aad79876a51df1a57a6d02637d3b37f3c433fd7c622f8a`
+and
+`0ae35cffc7f7435a9e12e70cec7aa4770076f7ef283bc9d0ce8ab4de497fc03b`.
+Independent allow-partial audits each report one UNKNOWN and have the same log
+hash
+`3d9c660d9fe1ad748481036a6378c600bbec37efa5e948ac800d08be7a4e6508`.
+The corresponding whole-root CaDiCaL trees also exhausted their global
+budgets with `runner.exit=3`; their proof traces are incomplete.  The usable
+work is retained by the later v372/v373 proof-prefix checkpoints and their
+descendants.
+
+`tools/replay_cadical_dfs_prefix.py` now reconstructs a single-root
+explicit-stack frontier from an immutable TSV prefix, rejecting inconsistent
+attempt/depth order, repeated split variables, and SAT rows.  Its manifest
+hash-binds the source root, TSV snapshot, optional binary proof prefix, and
+output frontier.  The full Python suite passes 194 tests under
+`PYTHONPATH=src:tools`.  On ARM, a real regression reproduced the existing
+four-row J297 and two-row J326 checkpoint frontiers byte-for-byte, hashes
+`f5fcd8687995dbb2c7df26b9cbf00267c5f3c217e950ac3a97e8866fb7418b53`
+and
+`b82c235d6f671878c3eac6a23e45d7c157e22a04f26f388d2e7b0341e9c25812`.
+The tool and tests are public in commit `e94301b`.
+
+This replay supported a fourth proof-parallelism layer under six remaining
+third-layer roots.  Each source writer was stopped only for its own 1.8--2.3
+second copy window and then verified running.  The reconstructed frontiers
+are:
+
+- J326 f3-sub-1: two rows, prefix/frontier hashes
+  `7bcf96372844794bbfc8c3c8c54538a8c80d903736b0359a8615d0c05dcb819d` /
+  `981390830d1237b9a98233770d22820588829affb4ad36b91f39e0ab7fdf6326`;
+- J297 f3-sub-2/sub-3: four rows each, frontier hashes
+  `bb18637bca5497309a5f9c1db1d310c3919f4f7cbea129249102c6ad79b69e01` /
+  `20d564c73dc44ccc32b1a33a1910d55fd78b8c4224db6c2cfc9063216cee39f5`;
+- J297 f2-sub-1/sub-2: two rows each, frontier hashes
+  `149a85faaca06e5dbfa308ea81a78ce6de0e4107d17063b319f7ec719d05b21a` /
+  `5805cd0a6325d1a41edcff200e92e694ca631be636610fa92cb8782699d4f2ab`;
+- J326 f4-sub-0/sub-1/sub-2: 2/3/4 rows, frontier hashes
+  `bd80a65bb70bf88056d9607c4f9f42b0e44933ca8de9ae4472f6ac956f093327`,
+  `56d04c87b8155abe9cde3dca1f2a8091165cb996930d3658275e2b5043b760c0`,
+  and
+  `6996b2f6d9b24001cea40f8554bb67e8c09b281f30ebc1c1368709b341f575e8`.
+
+All 23 reconstructed open roots received independent high-budget fragment
+producers.  At the first post-launch audit two had closed.  No fourth-layer
+result is promoted until every sibling frontier closes, its no-empty
+prefix-plus-fragment composition is checked as a standalone proof against the
+exact augmented source-root CNF, and that verified fragment is recursively
+composed at the next level.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
