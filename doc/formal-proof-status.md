@@ -196,6 +196,19 @@ fixed-pair H100/J132 result is confused with a global structural cover. The
 complete ARM root build passes 84 jobs; all three new target theorems use only
 the same standard axioms and no `sorryAx`.
 
+[Order45LocalCatalog.lean](../formal/Ramsey55/Order45LocalCatalog.lean) now
+checks the graph-theoretic side of the published edge-range inputs. It proves
+generically that any injectively labelled neighbour set of a vertex in a
+Ramsey-free colouring induces an `R(4,5)` graph. Applied to the fixed apex,
+the neighbour block is an `R(4,5,d)` graph and, after colour complementation,
+the nonneighbour block is an `R(4,5,44-d)` graph. `Ramsey45EdgeRange` is the
+exact external classification theorem schema; assuming its two relevant
+instances, Lean obtains bounded natural H/J edge counts. A separate
+`Order45LocalCatalogCountBinding` now names only the finite-padding equality
+between those induced counts and the excess counter counts. The complete ARM
+build passes 85 jobs; axiom audits again contain only standard axioms and no
+`sorryAx`.
+
 [Order45CubeCover.lean](../formal/Ramsey55/Order45CubeCover.lean) now checks
 the arithmetic and ordering of the concrete edge-pair layer. It defines the
 same lexicographically ordered, threshold-filtered closed-range product as the

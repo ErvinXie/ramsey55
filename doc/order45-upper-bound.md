@@ -235,6 +235,16 @@ files are bound in `data/order45-edge-strata-summary.json`. The exact edge
 ranges are an additional external theorem/catalog dependency and remain part
 of the final formalization boundary.
 
+The local-graph applicability of those ranges is now kernel-checked in
+`formal/Ramsey55/Order45LocalCatalog.lean`. A generic theorem proves that an
+injectively labelled neighbour set in a Ramsey-free colouring is an
+`R(4,5)` graph. It yields the exact H-side order (d), and applying it after
+colour complementation yields the J-side order (44-d). The published edge
+ranges are isolated as `Ramsey45EdgeRange` inputs, and the remaining equality
+between induced-catalog counts and the isolated-padding excess counts is
+named explicitly by `Order45LocalCatalogCountBinding`; it is not silently
+assumed inside the SAT result.
+
 `formal/Ramsey55/Order45ExcessTarget.lean` now gives the exact end-to-end
 composition theorem for this route. It combines the kernel-checked global
 excess witness with complete d20/d21/d22 graph-to-mother encodings and either
