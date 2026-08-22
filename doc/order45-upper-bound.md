@@ -5431,5 +5431,27 @@ cores while the original v401 child and its v400 ancestor remain live.  This
 checkpoint is promoted only if all three child fragments pass the same exact
 augmented-CNF finalization gate.
 
+Three more last-sibling blockers were then checkpointed selectively.  v403
+covers the J297 v397 f10s1/f21s1 child-1 writers.  Their source pauses were
+2.829 and 1.946 seconds, and replay produced one and two open rows.  The
+f10 proof-prefix/snapshot/frontier hashes are
+`002d8df44816e889ee467c8e1fc122bf92b41a94e796368982ae0f7db3419b5c` /
+`6a7f4484b5b9c82fa11bb6ed9cfc8a365b399a20db4a598fb401ba01604930fd` /
+`10a7814e5225a2ccbea337b0e3a0736f304008dd536c3f5517aa019c53ffd1d7`;
+the f21 hashes are
+`fe875a0036d851187a2760a14ca3872e609c51b6f116d1e8b4009f9d32ed3b6b` /
+`a7380c0ec5eaa454143d28d95369f382362841d12f6404498deb71c66cd58041` /
+`836383f63e67e0747cfa19d2c33fd3c89b54d814fe540a5185320e7dd376bdae`.
+The one-row f10 checkpoint is recovery-only; both f21 rows received
+producers.
+
+v404 covers J326 v398 f01s1 child 1.  Its writer paused for 1.939 seconds,
+and replay produced two rows with proof-prefix/snapshot/frontier hashes
+`0d0c7f4d9868b6e2456c3f9dc6cbf6a28d42b6ca3b158f6c80f977e9b35a5f4a` /
+`80e3500248856bc6cbf762b6d75a3aea84bbb57784451a6e6a5d235e50fb334e` /
+`3e5b80b612488511cc28becbc5190268d74a19fd000a196ac95d61ab0c3ddde0`.
+Both rows received producers.  At the first combined post-launch audit v402
+had already closed two of three children; v403/v404 were still open.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
