@@ -251,14 +251,14 @@ gap at this layer is no longer vague. The count theorem has an empty axiom
 audit; the quantified coverage results contain only Lean's standard axioms
 and no `sorry` or `native_decide`.
 
-[CnfCardinality.lean](../formal/Ramsey55/CnfCardinality.lean) discharges the
-generic sequential-counter soundness obligation. It proves directly from CNF
-semantics that the generator's initial, first-column, diagonal, and interior
-clause groups encode respectively `current ↔ item`, `current ↔ old ∨ item`,
-`current ↔ diagonal ∧ item`, and
-`current ↔ old ∨ (diagonal ∧ item)`. A finite row/width induction then proves
-that every state cell means “at least column+1 true inputs,” and packages the
-last row as `ExactAtLeastCounterOutputs`.
+[CnfCardinality.lean](../formal/Ramsey55/CnfCardinality.lean) now discharges
+both directions of the generic sequential-counter obligation. It proves
+directly from CNF semantics that the generator's initial, first-column,
+diagonal, and interior clause groups encode respectively `current ↔ item`,
+`current ↔ old ∨ item`, `current ↔ diagonal ∧ item`, and
+`current ↔ old ∨ (diagonal ∧ item)`. A finite row/width induction proves that
+every satisfying state cell means “at least column+1 true inputs,” and
+packages the last row as `ExactAtLeastCounterOutputs`.
 
 The file now also constructs the complete truncated counter clause stream in
 the generator's exact row-major cell and clause order. A subformula theorem
@@ -274,13 +274,25 @@ force the sum of the two exact counts above the requested threshold. Combining
 the four units and all sum clauses yields the full H/J range-and-density tuple
 used by each order-45 cover theorem.
 
+The converse is now proved as well. Assigning each valid state cell its
+intended prefix-threshold truth value satisfies the exact row-major cell
+stream; counts inside the stated ranges satisfy the four units; and the dense
+sum inequality satisfies every truncated sum clause. The combined theorem
+`satisfiesSequentialCounterPairEncoding_of_exact` packages both counter
+streams and their whole constraint suffix. Therefore no further Boolean
+counter mathematics is needed for mother completeness. The concrete remaining
+step is to extend the canonical graph-primary assignment across the disjoint
+DIMACS state ranges so it realizes those intended H/J cell values.
+
 The order-45 file instantiates this theorem at the actual H/J row counts and
 counter widths: `(190,101)/(276,133)`, `(210,108)/(253,123)`, and
 `(231,115)/(231,115)`. It now derives three formula-relative cube covers from
 mother-CNF satisfaction and inclusion of the two row-major counter substreams
 plus the generated constraint tail. No separate semantic range or density
-hypothesis remains. What remains is data-level rather than counter mathematics:
-prove the generated mother formula contains that concrete typed suffix.
+hypothesis remains. At the data boundary, the generated mother formula must
+still be shown to contain that concrete typed suffix, and the concrete
+state-variable assignment described above must be connected to its numeric
+DIMACS allocation.
 
 [Order45Dimacs.lean](../formal/Ramsey55/Order45Dimacs.lean) fixes the numeric
 counter-variable allocation used by the DIMACS generator. It defines the

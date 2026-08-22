@@ -1663,15 +1663,18 @@ ranges and 226/222/220 density threshold belongs to the corresponding list.
 It then maps each pair to the same four observable counter literals used in
 DIMACS and proves coverage under an explicit exact-counter semantic contract.
 `formal/Ramsey55/CnfCardinality.lean` now proves the concrete four
-sequential-counter cell encodings sound and lifts them through a finite
-row/width induction to that exact-counter contract. The d20/d21/d22 bridge is
-instantiated with the actual H/J input sizes and widths. The remaining work at
-this layer is to bind the generated DIMACS variable IDs and prove its bound and
-sum clauses supply the formal hypotheses; it is not hidden inside a
-computational claim. The counter side is now phrased as an exact row-major CNF
-substream: satisfaction of a mother containing that substream supplies every
-cell recurrence, and the three formula-relative cover theorems consume those
-two substream inclusions directly.
+sequential-counter cell encodings in both directions and lifts them through a
+finite row/width induction to that exact-counter contract. Conversely,
+intended prefix-threshold cell values satisfy the row-major CNF stream, exact
+counts inside their ranges satisfy all four units, and the dense H/J
+inequality satisfies every truncated sum clause. One combined theorem covers
+both counter streams and the entire constraint tail. The d20/d21/d22 bridge is
+instantiated with the actual H/J input sizes and widths, while
+`Order45Primary.lean` binds their graph inputs to the concrete identifiers.
+What remains at this layer is the finite-assignment construction for the
+disjoint H/J state-variable ranges and the data-level inclusion of the exact
+typed suffix in each generated mother; it is not hidden inside a computational
+claim.
 
 Colour swap reduces the last raw count to 483,900,495 unordered pairs. These
 numbers are pairs of unlabelled local records before testing a single cross
