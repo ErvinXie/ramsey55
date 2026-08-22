@@ -12,6 +12,7 @@ import Ramsey55.Order45Excess
 import Ramsey55.Order45LocalCatalog
 import Ramsey55.Order45ExcessTarget
 import Ramsey55.Order45Primary
+import Ramsey55.Order45CounterAssignment
 import Ramsey55.Order45Window
 import Ramsey55.CubeCover
 import Ramsey55.CnfCardinality

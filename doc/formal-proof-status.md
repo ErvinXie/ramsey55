@@ -228,9 +228,10 @@ that representation as an external premise. The three representation-free
 endpoint theorems prove input counts 190/276, 210/253, and 231/231 equal the
 same `edgesH` and `edgesJ` used by the excess identity. The complete ARM build
 passes 86 jobs; axiom audits contain only the standard axioms and no
-`sorryAx`, `native_decide`, or generated native-decision axiom. Extending this
-canonical assignment with counter and lex auxiliaries, and proving all common
-Ramsey, fixed-star, and lex-leader mother clauses, remains open.
+`sorryAx`, `native_decide`, or generated native-decision axiom. The counter
+extension is now constructed in `Order45CounterAssignment.lean`; proving the
+common Ramsey, fixed-star, degree-window, and lex-leader mother prefix remains
+open.
 
 [Order45CubeCover.lean](../formal/Ramsey55/Order45CubeCover.lean) now checks
 the arithmetic and ordering of the concrete edge-pair layer. It defines the
@@ -280,9 +281,20 @@ stream; counts inside the stated ranges satisfy the four units; and the dense
 sum inequality satisfies every truncated sum clause. The combined theorem
 `satisfiesSequentialCounterPairEncoding_of_exact` packages both counter
 streams and their whole constraint suffix. Therefore no further Boolean
-counter mathematics is needed for mother completeness. The concrete remaining
-step is to extend the canonical graph-primary assignment across the disjoint
-DIMACS state ranges so it realizes those intended H/J cell values.
+counter mathematics is needed for mother completeness.
+
+[Order45CounterAssignment.lean](../formal/Ramsey55/Order45CounterAssignment.lean)
+closes the corresponding concrete assignment step. It defines the valid
+row-major cell coordinates, proves their numeric DIMACS identifiers are
+duplicate-free, proves the H and J state intervals are disjoint, and overlays
+their intended prefix-threshold values on the canonical graph-primary
+assignment. The overlay is proved to preserve every graph input below the
+counter base. Its three concrete endpoint theorems construct assignments that
+satisfy the complete d20/d21/d22 counter tails from the exact local counts,
+range bounds, and dense-excess inequalities. Thus all H/J counter variables,
+cell clauses, range units, and sum clauses are now covered constructively.
+The complete ARM build passes 87 jobs and the new axiom audits contain only
+the standard axioms.
 
 The order-45 file instantiates this theorem at the actual H/J row counts and
 counter widths: `(190,101)/(276,133)`, `(210,108)/(253,123)`, and
@@ -290,9 +302,8 @@ counter widths: `(190,101)/(276,133)`, `(210,108)/(253,123)`, and
 mother-CNF satisfaction and inclusion of the two row-major counter substreams
 plus the generated constraint tail. No separate semantic range or density
 hypothesis remains. At the data boundary, the generated mother formula must
-still be shown to contain that concrete typed suffix, and the concrete
-state-variable assignment described above must be connected to its numeric
-DIMACS allocation.
+still be shown to contain that concrete typed suffix. The state-variable
+assignment and its numeric DIMACS allocation are no longer open.
 
 [Order45Dimacs.lean](../formal/Ramsey55/Order45Dimacs.lean) fixes the numeric
 counter-variable allocation used by the DIMACS generator. It defines the

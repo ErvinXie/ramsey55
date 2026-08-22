@@ -257,10 +257,11 @@ canonical primary assignment for every order-45 colouring and proves its
 `RepresentsOrder45Primary` property. Consequently the representation-free
 d20/d21/d22 theorems identify input counts 190/276, 210/253, and 231/231 with
 the graph-side `edgesH` and `edgesJ`. The remaining mother-completeness work is
-therefore the extension to counter and lex auxiliaries plus satisfaction of
-the common Ramsey, fixed-star, and lex-representative clauses; neither primary
+therefore the lex auxiliaries and satisfaction of the common Ramsey,
+fixed-star, degree-window, and lex-representative clauses; neither primary
 assignment construction nor H/J count interpretation remains in that black
-box.
+box. `formal/Ramsey55/Order45CounterAssignment.lean` now handles the counter
+auxiliaries separately as described below.
 
 `formal/Ramsey55/Order45ExcessTarget.lean` now gives the exact end-to-end
 composition theorem for this route. It combines the kernel-checked global
@@ -1671,10 +1672,13 @@ inequality satisfies every truncated sum clause. One combined theorem covers
 both counter streams and the entire constraint tail. The d20/d21/d22 bridge is
 instantiated with the actual H/J input sizes and widths, while
 `Order45Primary.lean` binds their graph inputs to the concrete identifiers.
-What remains at this layer is the finite-assignment construction for the
-disjoint H/J state-variable ranges and the data-level inclusion of the exact
-typed suffix in each generated mother; it is not hidden inside a computational
-claim.
+`formal/Ramsey55/Order45CounterAssignment.lean` now constructs that finite
+assignment. It proves row-major cell identifiers unique, H/J state intervals
+disjoint, all primary inputs preserved, and intended cell values realized.
+The d20/d21/d22 endpoint theorems satisfy their entire counter tails from the
+graph-side bounds and dense inequality. What remains at this layer is only the
+data-level inclusion of the exact typed suffix in each generated mother; it is
+not hidden inside a computational claim.
 
 Colour swap reduces the last raw count to 483,900,495 unordered pairs. These
 numbers are pairs of unlabelled local records before testing a single cross
