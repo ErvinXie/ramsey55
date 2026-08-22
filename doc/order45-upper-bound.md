@@ -5603,13 +5603,16 @@ before solving.  Their defaults, seed 0 and phase 1, preserve the previous
 solver configuration; existing live v5 binaries were not changed or
 restarted.  The ARM binary
 `build/prove_cadical_cubes_seeded_v6` hashes to
-`383dfdd90ef13495fd5e7b95f8908aa9dc8f42ab8f805a9e4a1e3d091b5be0fb`.
+`7ac2c0d499f4c2d01c5b27b8b78b9d2965fc5e27931cca06cfcc25108e981db3`.
+This is the rebuild from the committed repository source path; a pre-commit
+temporary-path build was discarded after its different binary hash exposed
+the path-sensitive build output.
 An independent smoke run with seed 7 and phase 0 produced a complete binary
 DRAT proof for a contradictory-unit CNF.  Real ARM `drat-trim` reports
 `s VERIFIED`; the proof and checker-log hashes are
 `16f4b7149dc2102fe7bf34922e208d8a96cad0c912344ecb3f28c3f2de2ed838`
 and
-`36b2a9ded1c9e58dbb5918509bea4a5b084c8b06cbe4bdceea70d3d68a8c1fbe`.
+`1e2b40bff467818671cde8fb25afd1e4a789d7af9314f159762197e60584416d`.
 This runner is ready for seed/phase diversification after a current producer
 finishes and frees a core.
 
