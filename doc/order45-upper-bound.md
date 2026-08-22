@@ -1,6 +1,6 @@
 # Order-45 upper-bound program
 
-Updated: 2026-08-21
+Updated: 2026-08-22
 
 ## Current status
 
@@ -36,12 +36,15 @@ The formal file `formal/Ramsey55/Order45.lean` currently checks the arithmetic
 parity reduction from degree counts.  It now also defines the
 diagonal-normalized colour complement and proves that complementation
 preserves simple colourings and is an iff on `IsRamseyFree55`; the latter proof
-reduces all ten off-diagonal equalities of an increasing five-tuple.  A final
-formal bridge still needs a machine-checked \(R(4,5)=25\) dependency, actual
-graph degree counts, the degree-24-to-20 count under this complement, and the
-relabelling equivalence.  The new complement theorems pass ARM Lean with only
-standard `propext`/`Quot.sound` dependencies, and the full pinned Lean project
-builds successfully in 79 jobs.
+reduces all ten off-diagonal equalities of an increasing five-tuple.  It also
+defines graph degree by an explicit bounded scan, proves in general that a
+vertex's original and complemented degrees sum to `n - 1`, and specializes
+this to the required order-45 degree-24-to-degree-20 step.  A final formal
+bridge still needs a machine-checked \(R(4,5)=25\) dependency, the connection
+from an actual graph to the degree-window and parity counts, and the
+relabelling equivalence.  The complement and degree theorems pass ARM Lean
+with only standard `propext`/`Quot.sound` dependencies, and the full pinned
+Lean project builds successfully in 79 jobs.
 
 `formal/Ramsey55/CubeCover.lean` now supplies the generic certificate
 composition layer: binary literal splits preserve cube coverage, and an
