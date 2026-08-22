@@ -5239,5 +5239,17 @@ about 47 on 64 cores, with 165 GiB available memory and 1.6 TiB free on
 hardware capacity.  Further splitting is paused in favor of completing,
 composing, and independently replaying the existing groups.
 
+`tools/finalize_cadical_dfs_checkpoint.py` implements the promotion gate.  It
+checks the replay-manifest prefix hash and frontier count; requires each child
+producer log to record `proof_fragment=1`, `root_index=all`, `status=20`, and
+one cube; validates binary DRAT clause framing and rejects embedded empty
+additions; then writes both the recursively embeddable no-empty fragment and a
+separate standalone copy with exactly one appended empty clause.  Acceptance
+requires the configured `drat-trim` to emit `s VERIFIED` against the exact
+augmented source-root CNF.  Its output manifest records SHA-256 and size for
+the CNF, replay manifest, checker, prefix, ordered children, logs, composed
+fragment, standalone proof, and checker log.  Three focused tests plus the
+full 197-test suite pass.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
