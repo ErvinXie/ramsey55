@@ -4843,5 +4843,49 @@ It replays 22/23 continuation segments and still projects one effective
 UNKNOWN per fixed-pair case.  Reverse-J297 and forward-J326 two-second staged
 screens now run on the newest exact leaves.
 
+To add parallelism to the separate root-proof route, the state-3704 and
+state-3752 high-budget recursive producers were stopped briefly while their
+proof streams and result tables were copied, then resumed.  Replaying the
+snapshots reconstructed exact live frontiers of four J297 rows and two J326
+rows.  Their independently materialized root augmented CNFs have hashes
+`ec1adf42531c3fcb9d41492efcd0207c9f96ee2d2e45ba2bef163e96300970d2`
+and
+`dda5442bd75d6e74fa104d29cb6ecfaf819ab06c29c1183fc30280a477ca8d4b`.
+Each live row now has an independent explicit-stack proof-fragment producer.
+J297 fragment 0 has completed, and composing it against its own exact row
+produced a standalone proof accepted by `drat-trim`.  This validates that
+fragment's output but is not a root proof: every frontier row must close and
+the prefix-plus-fragments composition must independently verify first.
+
+The next exact-parent screens yielded two more cross-solver-agreed J297
+candidates, 8901 and 7980, and one Kissat-primary J326 candidate, 6706.  The
+agreement and primary J297 queue hashes are
+`4652eb5b74bfcbb3a2450f02c42b482c37b33add6e4808b902260fc13f62cad7`
+and
+`221771e9e247d8856a47669c69d5b8de606f92c510b0d81edafa09704e884c0c`.
+The J326 agreement queue is empty, while its primary queue hash is
+`03f351b5fc7b3867f504dc688484f3c37ff78d34cdf4a055e09b2e5874fe79af`.
+All three primary-solver candidates received fresh compact DRAT proofs
+accepted by `drat-trim`.  This advances the exact endpoints to states
+3711/3761; their actual terminal rows are byte-identical to the independent
+primary-queue predictions, with hashes
+`c6ce95910a77c0f23c63d72f8a804454b68a96f61e959cd4dca27a334e24ae1a`
+and
+`c5ec9aa0ea4c0059173ba246760cb1391626c3570e47a078e36b46273be008f0`.
+
+The v30-to-v31 chain extension was independently replayed.  The extended
+bundle, extension audit, and audit-log hashes are
+`a98cd644398fb65d81c07722efe685c978fa31ce0577d83e2ce566ae680795ee` /
+`5601fd9c6797bffa9cc5190fab4d1ed2640d2fb303a6d663dd79a80ad9773a8b` /
+`aae3563a9c78eeba9e531b9455bc197e648bdea78571c6f6a003753112b01abe`.
+The corresponding selective-residual join bundle/audit/log hashes are
+`4029be4a56eb15bfa7b9582f09b3e1963bf2450c797bedc276d1678583088506` /
+`8b65919cb78a1c2b80ce3d981f9f3041d89ab56bb172cf934e39da0aabaee171` /
+`c1754516ee1c03c68b9abd518e4992ec637845fdc2b9fe0a6d8abd21df64c37d`.
+It binds 23 J297 and 24 J326 continuation segments, with exactly one audited
+effective UNKNOWN in each case at states 3711/3761.  A full v31 historical
+replay runs in parallel with new forward-J297 and reverse-J326 exact-parent
+screens.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
