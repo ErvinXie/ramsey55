@@ -175,7 +175,7 @@ handshake theorem, and proves the local score decomposes into those two
 counts. Relabelling preserves the score and moves the witness to the fixed
 apex convention. The end-to-end graph theorem therefore derives the concrete
 226/222/220 dense branches with `ForcesRed4OrBlue5 25` as its sole external
-mathematical input. The complete 83-job ARM build passes, and the new axiom
+mathematical input. The complete ARM build passes, and the new axiom
 audits contain only `propext`, `Classical.choice`, and `Quot.sound`, with no
 `sorryAx`.
 
@@ -183,6 +183,18 @@ The remaining graph-to-CNF bridge must identify these concrete H/J edge
 counts with the primary-variable lists and generated counter outputs in the
 three DIMACS mothers. Binding the exact published edge-range inputs and the
 checked computational leaf refutations also remain separate obligations.
+
+[Order45ExcessTarget.lean](../formal/Ramsey55/Order45ExcessTarget.lean)
+composes this graph theorem with the certificate layer actually used by the
+global search. `DenseExcessCnfComplete d t formula` is the exact remaining
+graph-to-mother obligation for a fixed-apex colouring with concrete H/J
+counts and density threshold. Refuting complete degree-20, degree-21, and
+degree-22 mothers now yields `ForcesMonochromatic5 45`. The most concrete
+form consumes the generated 28/36/45 typed DIMACS cube lists, the already
+proved counter-tail inclusions, and one leaf-UNSAT fact per cube. Thus no
+fixed-pair H100/J132 result is confused with a global structural cover. The
+complete ARM root build passes 84 jobs; all three new target theorems use only
+the same standard axioms and no `sorryAx`.
 
 [Order45CubeCover.lean](../formal/Ramsey55/Order45CubeCover.lean) now checks
 the arithmetic and ordering of the concrete edge-pair layer. It defines the
