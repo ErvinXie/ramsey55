@@ -5376,5 +5376,14 @@ All eight rows received high-budget fragment producers, adding five net
 cores.  v398 f01s1 child 0 closed immediately; its sibling and both three-row
 groups remained open at the first post-launch audit.
 
+The original v387 J297 f2-sub-2 producer later completed with `status=20` and
+`proof_fragment=1`.  This superseded the v391 f2 checkpoint before its last
+child closed.  That remaining redundant producer was terminated, retaining
+its 1.9 GiB partial proof and TSV.  The original v387 f2 group consequently
+has three of four direct child fragments complete and awaits only f2-sub-3;
+the same last side is independently covered by the still-running four-row
+v391 f3 checkpoint.  This isolated completion is not promoted until the final
+side closes and the exact parent composition passes `drat-trim`.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
