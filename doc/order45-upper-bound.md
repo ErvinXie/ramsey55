@@ -4589,9 +4589,44 @@ The refreshed selective-residual join passed with bundle/audit/log hashes
 `9212fd315319efaab5b0761bc3a409ca7534feedab747c014f4be69756dd294e` /
 `e98116f22c4a1fa9d3d8a9d73b74cfb95c852dc052b448c34fd03dac914ed7e4` /
 `0c39b7c32f2cf3ca7550bfc51fb6c5fb05adc31a65f32c45c1b42dd5e20d86e0`.
-It projects exactly one effective UNKNOWN for each fixed-pair case.  A
-1.0-second J297 screen and the final in-flight 0.5-second J326 screen continue
-on the stronger leaves; diversified direct probes remain diagnostic only.
+It projects exactly one effective UNKNOWN for each fixed-pair case.
+
+The final 0.5-second J326 screen supplied one further candidate, which was
+recertified to state 3691.  At a 1.0-second budget, the next J297/J326 waves
+contained 21/22 candidates.  Subsequent staged waves contained 11/6 and 5/5.
+All 70 new binary siblings were regenerated in proof mode, compacted, and
+accepted by `drat-trim`; the exact chains reached states 3678/3724 without
+frontier growth.  Their actual terminal rows again equal their independently
+materialized predictions, with hashes
+`f628a76950abf0623e30050dbf9e95cd16eb19229de6258cc0f15821982eaae0`
+and
+`6ea270f79df9c6e418af34bdd6021bb5effbdc1d9b64643c6270d37bae445037`.
+
+The optional `--staged-screening` mode now makes repeated dual-solver screens
+less wasteful.  The first solver scans every unassigned variable; the second
+solver receives only variables for which the primary table reported a
+one-sided UNSAT.  Standard projected TSVs still let
+`export_screened_forced_queue.py` require agreement, while the selection
+manifest additionally binds the full primary variable list, ICNF, result
+table, solver binary, and log.  The final proof trust path is unchanged:
+every accepted split is still regenerated independently with compact DRAT and
+checked.  All 190 tests and `ruff check` pass.  A full J297 run scanned 5,967
+variables, confirmed only 20 primary candidates, retained 11 agreements, and
+reduced wall time from roughly 27 to 12.5 minutes at the same peak screen-job
+count.  A two-variable ARM smoke test reproduced the known `[8561, 5807]`
+queue end to end.
+
+The v20 incremental whole-chain replay has bundle/audit/log hashes
+`175d30fe0024b169bfaeeb17e169f556a27b35a8844a560dc368db2f4cdfed7c` /
+`2d25551e266e7f83ed6d436c18f44be81fd37561fb5ab608ede650e45a7feb4e` /
+`2059f97659813617c70a327f536214f16227acb196e3924692432e76d0613913`.
+The corresponding selective-residual join bundle/audit/log hashes are
+`bf7b13a1f2fd4768367d40e27aeb2a07c25dcd5e35e939126e9d46f33136f672` /
+`a80dffbd7c44f813d4954caf86cbd2d05360e4601a9e4c3af39e88eeef94dd8a` /
+`e9e69edb57dbcb5274085f387dafb9f261a2095a97c2cadf7cbd7b831b02a248`.
+It binds 17/18 continuation segments and still projects exactly one effective
+UNKNOWN for each fixed-pair case.  Further staged 1-second screens and
+diversified direct probes remain in progress and diagnostic only.
 
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
