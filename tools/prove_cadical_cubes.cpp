@@ -105,6 +105,18 @@ void appendBinaryEmptyClause(const std::string& path) {
   if (!proof) throw std::runtime_error("cannot append empty proof clause");
 }
 
+int environmentInteger(const char* name, int fallback, int minimum,
+                       int maximum) {
+  const char* raw = std::getenv(name);
+  if (!raw || !*raw) return fallback;
+  std::size_t consumed = 0;
+  const long long value = std::stoll(raw, &consumed);
+  if (raw[consumed] || value < minimum || value > maximum) {
+    throw std::runtime_error(std::string("invalid ") + name);
+  }
+  return static_cast<int>(value);
+}
+
 }  // namespace
 
 int main(int argc, char** argv) try {
@@ -147,6 +159,10 @@ int main(int argc, char** argv) try {
   if (rootOnly && selectedRoot >= cubes.size()) {
     throw std::runtime_error("root index is out of range");
   }
+  const int randomSeed = environmentInteger(
+      "RAMSEY55_CADICAL_SEED", 0, 0, 2'000'000'000);
+  const int initialPhase =
+      environmentInteger("RAMSEY55_CADICAL_PHASE", 1, 0, 1);
   std::cout << "conflicts\t" << conflictLimit << '\n';
   std::cout << "maximum_conflicts\t" << maximumConflictLimit << '\n';
   std::cout << "maximum_lookahead_seconds\t" << maximumLookaheadSeconds
@@ -155,6 +171,8 @@ int main(int argc, char** argv) try {
             << maximumPrimarySplitVariable << '\n';
   std::cout << "maximum_solve_seconds\t" << maximumSolveSeconds << '\n';
   std::cout << "freeze_policy\tselective\n";
+  std::cout << "cadical_seed\t" << randomSeed << '\n';
+  std::cout << "cadical_phase\t" << initialPhase << '\n';
   std::cout << "proof_fragment\t" << fragmentMode << '\n';
   std::cout << "root_index\t";
   if (rootOnly) {
@@ -169,6 +187,8 @@ int main(int argc, char** argv) try {
     solver.connect_terminator(&terminator);
   }
   solver.set("quiet", 1);
+  solver.set("seed", randomSeed);
+  solver.set("phase", initialPhase);
   if (!solver.trace_proof(argv[3])) {
     throw std::runtime_error("cannot open proof trace");
   }

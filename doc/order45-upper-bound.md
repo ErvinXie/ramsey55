@@ -5595,5 +5595,23 @@ alternatives, the machine now runs 63 active proof producers while retaining
 all six paused legacy recovery processes.  CPU is saturated, so no further
 search duplication is launched before a completion frees capacity.
 
+To support genuinely different CaDiCaL searches when capacity next becomes
+available, the proof runner now reads two optional environment variables:
+`RAMSEY55_CADICAL_SEED` in the documented CaDiCaL range 0--2,000,000,000 and
+`RAMSEY55_CADICAL_PHASE` in 0--1.  Both values are written to the producer log
+before solving.  Their defaults, seed 0 and phase 1, preserve the previous
+solver configuration; existing live v5 binaries were not changed or
+restarted.  The ARM binary
+`build/prove_cadical_cubes_seeded_v6` hashes to
+`383dfdd90ef13495fd5e7b95f8908aa9dc8f42ab8f805a9e4a1e3d091b5be0fb`.
+An independent smoke run with seed 7 and phase 0 produced a complete binary
+DRAT proof for a contradictory-unit CNF.  Real ARM `drat-trim` reports
+`s VERIFIED`; the proof and checker-log hashes are
+`16f4b7149dc2102fe7bf34922e208d8a96cad0c912344ecb3f28c3f2de2ed838`
+and
+`36b2a9ded1c9e58dbb5918509bea4a5b084c8b06cbe4bdceea70d3d68a8c1fbe`.
+This runner is ready for seed/phase diversification after a current producer
+finishes and frees a core.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
