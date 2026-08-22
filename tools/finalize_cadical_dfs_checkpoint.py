@@ -192,6 +192,12 @@ def main() -> None:
     parser.add_argument(
         "--checker", type=Path, default=Path(".tools/src/drat-trim/drat-trim")
     )
+    parser.add_argument(
+        "--checker-option",
+        action="append",
+        default=[],
+        help="option appended to the checker command and recorded in the manifest",
+    )
     parser.add_argument("--manifest", type=Path, required=True)
     arguments = parser.parse_args()
 
@@ -259,7 +265,12 @@ def main() -> None:
             standalone_temporary, [fragment_temporary], append_empty=True
         )
         completed = subprocess.run(
-            [str(arguments.checker), str(arguments.cnf), str(standalone_temporary)],
+            [
+                str(arguments.checker),
+                str(arguments.cnf),
+                str(standalone_temporary),
+                *arguments.checker_option,
+            ],
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
@@ -298,6 +309,7 @@ def main() -> None:
             "appended_empty_clause": True,
         },
         "checker": file_record(arguments.checker),
+        "checker_options": arguments.checker_option,
         "checker_log": file_record(arguments.checker_log),
         "checker_verified": True,
     }

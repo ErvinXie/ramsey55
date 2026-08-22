@@ -5682,12 +5682,41 @@ retaining both source and derivative hashes.
 
 Future `replay_cadical_dfs_prefix.py` runs reject a supplied proof prefix that
 does not end at a binary-DRAT clause boundary; its SHA-256 path now streams
-large files rather than loading them entirely into memory.  Thirteen focused
-framing, replay, and recursive-finalizer tests pass on ARM.  The v399 composed
-standalone proof is 7,271,596,689 bytes and is currently undergoing a fresh
-single-core `drat-trim` replay against its exact augmented CNF.  It is not an
-accepted fragment unless that run emits `s VERIFIED` and the finalization
-manifest is atomically written.
+large files rather than loading them entirely into memory.
+
+The first deletion-aware replay of the 7,271,596,689-byte v399 standalone
+composition returned `s NOT VERIFIED` at proof line 102,694,099, inside the
+third independent child rather than at the framed-prefix boundary.  Its
+retained checker-log hash is
+`cb58113bf2b0688324b8313ea8ce16f0a2c677cd20f977dbe2e0bcdb198b1fd0`.
+The cause under test is deletion-state interference between proof fragments
+produced by independent solver instances: an earlier fragment may delete a
+base clause expected by a later fragment.  `drat-trim -p` ignores deletion
+instructions while continuing to check every addition, so it is a sound,
+stricter composition gate for this layout.  The finalizer now accepts and
+records explicit checker options; fourteen focused framing, replay, and
+recursive-finalizer tests pass on ARM.  Fresh plain-mode replays of v399 and
+the newly completed v407 f220/f221 groups are in progress.  None is accepted
+unless its run emits `s VERIFIED` and the finalization manifest is atomically
+written.
+
+While those three checks were running, v406 f320 row 1 completed under the
+primary route after 291 attempts and 145 splits.  Together with row 0 this
+closes the two-row checkpoint group at the producer level.  Its
+1,139,871,744-byte raw prefix had a four-byte incomplete tail; the framed
+1,139,871,740-byte prefix hashes to
+`35ede3ca0b6e3c19a0014037b4bb474eecea03039f6862c4ef1da26c51dd37da`,
+and the derived replay manifest hashes to
+`e85e1564270f31692504fcea108beecda442cf365b1ff6bf354f88840f4a5066`.
+A fourth plain-mode finalization is in progress.  v403 f21 row 0 also closed
+under the high-budget route after 33 attempts and 16 splits, leaving that
+two-row group at one of two rows.  Redundant races for both completed rows
+were stopped with their partial artifacts retained.
+
+The standard ARM Python command from the repository README,
+`PYTHONPATH=src:tools python3 -m unittest discover -s tests -v`, passes all
+205 tests in 38.571 seconds.  The retained test log hashes to
+`3f6cb9e89e5f78a2922f2850f48532ce7a65335fbc5ce18f1afd963e2e5a33b3`.
 
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.

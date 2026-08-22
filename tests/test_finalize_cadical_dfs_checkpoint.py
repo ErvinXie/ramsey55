@@ -194,6 +194,15 @@ class FinalizeCadicalDfsCheckpointTests(unittest.TestCase):
             self.assertNotEqual(completed.returncode, 0)
             self.assertIn("is not checker-verified", completed.stderr)
 
+    def test_records_checker_options(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            command = self.fixture(root)
+            command.append("--checker-option=-p")
+            subprocess.run(command, check=True, stdout=subprocess.PIPE)
+            manifest = json.loads((root / "manifest.json").read_text())
+            self.assertEqual(manifest["checker_options"], ["-p"])
+
     @unittest.skipUnless(REAL_CHECKER.is_file(), "drat-trim is not built")
     def test_real_checker_accepts_recursive_finalization(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
