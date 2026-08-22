@@ -62,6 +62,153 @@ def coloringDegree {n : Nat} (color : Coloring n) (v : Fin n) : Nat :=
 def coloringDegreeSum {n : Nat} (color : Coloring n) : Nat :=
   (List.ofFn fun v : Fin n => coloringDegree color v).sum
 
+/-- Turn one Boolean adjacency-matrix entry into its contribution to a
+degree. -/
+def edgeWeight (edge : Bool) : Nat := if edge then 1 else 0
+
+/-- A list-based presentation of one row degree, used for the finite-matrix
+double-counting proof below. -/
+def listColoringDegree {n : Nat} (color : Coloring n) (v : Fin n) : Nat :=
+  (List.ofFn fun u : Fin n => edgeWeight (color v u)).sum
+
+theorem coloringDegreeUpTo_eq_listPrefix {n : Nat} (color : Coloring n)
+    (v : Fin n) : ∀ (m : Nat) (within : m ≤ n),
+    coloringDegreeUpTo color v m within =
+      (List.ofFn fun i : Fin m =>
+        edgeWeight (color v ⟨i.val, Nat.lt_of_lt_of_le i.isLt within⟩)).sum := by
+  intro m
+  induction m with
+  | zero =>
+      intro within
+      simp [coloringDegreeUpTo]
+  | succ m ih =>
+      intro within
+      have previous : m ≤ n := Nat.le_trans (Nat.le_succ m) within
+      rw [coloringDegreeUpTo, List.ofFn_succ_last, ih previous]
+      simp only [List.sum_append, List.sum_singleton]
+      congr 2
+
+theorem coloringDegree_eq_listColoringDegree {n : Nat}
+    (color : Coloring n) (v : Fin n) :
+    coloringDegree color v = listColoringDegree color v := by
+  exact coloringDegreeUpTo_eq_listPrefix color v n (Nat.le_refl n)
+
+/-- Delete label zero from both axes of a colouring. -/
+def tailColoring {n : Nat} (color : Coloring (n + 1)) : Coloring n :=
+  fun u v => color u.succ v.succ
+
+theorem tailColoring_isSimple {n : Nat} (color : Coloring (n + 1))
+    (simple : IsSimpleColoring color) : IsSimpleColoring (tailColoring color) := by
+  constructor
+  · intro v
+    exact simple.1 v.succ
+  · intro u v
+    exact simple.2 u.succ v.succ
+
+theorem listColoringDegree_zero_succ {n : Nat}
+    (color : Coloring (n + 1)) (simple : IsSimpleColoring color) :
+    listColoringDegree color 0 =
+      (List.ofFn fun i : Fin n => edgeWeight (color 0 i.succ)).sum := by
+  simp [listColoringDegree, List.ofFn_succ, edgeWeight, simple.1]
+
+theorem listColoringDegree_succ {n : Nat} (color : Coloring (n + 1))
+    (i : Fin n) :
+    listColoringDegree color i.succ =
+      edgeWeight (color i.succ 0) +
+        listColoringDegree (tailColoring color) i := by
+  simp [listColoringDegree, List.ofFn_succ, tailColoring]
+
+theorem sum_ofFn_add {n : Nat} (left right : Fin n → Nat) :
+    (List.ofFn fun i => left i + right i).sum =
+      (List.ofFn left).sum + (List.ofFn right).sum := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      rw [List.ofFn_succ, List.ofFn_succ, List.ofFn_succ]
+      simp only [List.sum_cons]
+      rw [ih (fun i => left i.succ) (fun i => right i.succ)]
+      omega
+
+def listColoringDegreeSum {n : Nat} (color : Coloring n) : Nat :=
+  (List.ofFn fun v : Fin n => listColoringDegree color v).sum
+
+theorem listColoringDegreeSum_succ {n : Nat} (color : Coloring (n + 1)) :
+    listColoringDegreeSum color = listColoringDegree color 0 +
+      (List.ofFn fun i : Fin n => listColoringDegree color i.succ).sum := by
+  simp [listColoringDegreeSum, List.ofFn_succ]
+
+theorem listColoringDegree_tail_rows {n : Nat}
+    (color : Coloring (n + 1)) :
+    (List.ofFn fun i : Fin n => listColoringDegree color i.succ).sum =
+      (List.ofFn fun i : Fin n => edgeWeight (color i.succ 0)).sum +
+        listColoringDegreeSum (tailColoring color) := by
+  calc
+    (List.ofFn fun i : Fin n => listColoringDegree color i.succ).sum =
+        (List.ofFn fun i : Fin n => edgeWeight (color i.succ 0) +
+          listColoringDegree (tailColoring color) i).sum := by
+      apply congrArg List.sum
+      apply congrArg List.ofFn
+      funext i
+      exact listColoringDegree_succ color i
+    _ = (List.ofFn fun i : Fin n => edgeWeight (color i.succ 0)).sum +
+        (List.ofFn fun i : Fin n =>
+          listColoringDegree (tailColoring color) i).sum :=
+      sum_ofFn_add _ _
+    _ = (List.ofFn fun i : Fin n => edgeWeight (color i.succ 0)).sum +
+        listColoringDegreeSum (tailColoring color) := rfl
+
+theorem coloring_cross_sum_eq {n : Nat} (color : Coloring (n + 1))
+    (simple : IsSimpleColoring color) :
+    (List.ofFn fun i : Fin n => edgeWeight (color i.succ 0)).sum =
+      (List.ofFn fun i : Fin n => edgeWeight (color 0 i.succ)).sum := by
+  apply congrArg List.sum
+  apply congrArg List.ofFn
+  funext i
+  apply congrArg edgeWeight
+  exact simple.2 i.succ 0
+
+/-- Handshake double counting for the list presentation of the adjacency
+matrix.  Removing vertex zero leaves an even tail sum, while symmetry pairs
+the deleted row with the deleted column. -/
+theorem listColoringDegreeSum_even : ∀ (n : Nat) (color : Coloring n),
+    IsSimpleColoring color →
+      ∃ edges : Nat, listColoringDegreeSum color = 2 * edges := by
+  intro n
+  induction n with
+  | zero =>
+      intro color simple
+      exact ⟨0, by simp [listColoringDegreeSum]⟩
+  | succ n ih =>
+      intro color simple
+      have tailSimple := tailColoring_isSimple color simple
+      rcases ih (tailColoring color) tailSimple with ⟨tailEdges, tailSum⟩
+      let crossEdges :=
+        (List.ofFn fun i : Fin n => edgeWeight (color 0 i.succ)).sum
+      refine ⟨tailEdges + crossEdges, ?_⟩
+      rw [listColoringDegreeSum_succ color,
+        listColoringDegree_zero_succ color simple,
+        listColoringDegree_tail_rows color,
+        coloring_cross_sum_eq color simple,
+        tailSum]
+      dsimp [crossEdges]
+      omega
+
+theorem coloringDegreeSum_eq_listColoringDegreeSum {n : Nat}
+    (color : Coloring n) :
+    coloringDegreeSum color = listColoringDegreeSum color := by
+  apply congrArg List.sum
+  apply congrArg List.ofFn
+  funext v
+  exact coloringDegree_eq_listColoringDegree color v
+
+/-- The handshake lemma for the project's concrete degree definition: the
+sum of all degrees in a finite simple colouring is twice a natural number. -/
+theorem coloringDegreeSum_even {n : Nat} (color : Coloring n)
+    (simple : IsSimpleColoring color) :
+    ∃ edges : Nat, coloringDegreeSum color = 2 * edges := by
+  rcases listColoringDegreeSum_even n color simple with ⟨edges, even⟩
+  exact ⟨edges, (coloringDegreeSum_eq_listColoringDegreeSum color).trans even⟩
+
 theorem coloringDegreeUpTo_complement_add {n : Nat} (color : Coloring n)
     (simple : IsSimpleColoring color) (v : Fin n) :
     ∀ (m : Nat) (within : m ≤ n),
@@ -318,6 +465,21 @@ theorem order45_normalize_of_window_and_even_sum
   exact order45_normalize_degree20_or22 color simple ramseyFree
     (order45_degree_candidate_of_window_and_even_sum color window evenSum)
 
+/-- The checked handshake lemma removes the parity hypothesis entirely: the
+20--24 degree window alone reduces a simple order-45 counterexample to one of
+the two SAT degree branches. -/
+theorem order45_normalize_of_window
+    (color : Coloring 45) (simple : IsSimpleColoring color)
+    (ramseyFree : IsRamseyFree55 color)
+    (window : ∀ v : Fin 45,
+      20 ≤ coloringDegree color v ∧ coloringDegree color v ≤ 24) :
+    ∃ normalized : Coloring 45, ∃ v : Fin 45,
+      IsSimpleColoring normalized ∧ IsRamseyFree55 normalized ∧
+        (coloringDegree normalized v = 20 ∨
+          coloringDegree normalized v = 22) := by
+  exact order45_normalize_of_window_and_even_sum color simple ramseyFree window
+    (coloringDegreeSum_even color simple)
+
 /-- Twice the constant part of the order-45 local excess contribution for a
 vertex of degree `degree`.  If `H` is its neighbourhood and `J` is the
 complement of its dual neighbourhood, the full doubled contribution is this
@@ -383,5 +545,9 @@ theorem order45_dense_pair_of_nonpositive_degree22
 #print axioms order45_degree_candidate_of_window_and_even_sum
 #print axioms order45_even_degree_of_window_and_even_sum
 #print axioms order45_normalize_of_window_and_even_sum
+#print axioms coloringDegreeUpTo_eq_listPrefix
+#print axioms listColoringDegreeSum_even
+#print axioms coloringDegreeSum_even
+#print axioms order45_normalize_of_window
 
 end Ramsey55

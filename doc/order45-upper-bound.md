@@ -48,13 +48,18 @@ from the handshake lemma), derives the 20/22/24 candidate arithmetically, and
 feeds it into that normalization.  The formalization now also defines the sum
 of all graph degrees, proves the odd-list arithmetic needed at order 45, and
 extracts a 20/22/24 candidate from the degree window plus an even total degree.
-Thus the handshake obligation is isolated to proving that this concrete
-degree sum is twice an edge count.  A final formal bridge still needs a
-machine-checked \(R(4,5)=25\) dependency, derivation of the actual degree
-window, that double-counting equality, and the relabelling equivalence.  The
-complement and degree identities use only standard `propext`/`Quot.sound`;
-the finite candidate extraction additionally reports `Classical.choice`.
-The full pinned Lean project builds successfully in 79 jobs.
+The concrete handshake lemma is now checked too: a list-matrix presentation
+peels off label zero, applies induction to the tail, and pairs the deleted row
+and column using symmetry.  A compatibility theorem identifies that list
+count with the original bounded-scan degree, proving `coloringDegreeSum` is
+twice a natural number.  Therefore `order45_normalize_of_window` needs only a
+simple Ramsey-free colouring and its 20--24 degree window to construct the
+degree-20 or degree-22 branch.  The remaining formal bridge needs a
+machine-checked \(R(4,5)=25\) dependency, derivation of that actual degree
+window, and the relabelling equivalence.  The handshake and complement-degree
+identities use only standard `propext`/`Quot.sound`; the finite order-45
+candidate extraction additionally reports `Classical.choice`.  The complete
+pinned ARM Lean project builds successfully in 79 jobs after this addition.
 
 `formal/Ramsey55/CubeCover.lean` now supplies the generic certificate
 composition layer: binary literal splits preserve cube coverage, and an
