@@ -5319,5 +5319,24 @@ within one minute; its sibling and both other groups remain open.  v390
 f0-sub-0 and f2-sub-0/sub-1 have already closed directly, so v395 targets
 exactly the remaining sides needed to complete those parent groups.
 
+v396 then checkpointed the three approximately 1.9-hour J297 v387 f3
+children that had no deeper descendants.  Their writers resumed after
+independent 2.3--3.0 second snapshots.  The f31/f32/f33 frontiers contain
+2/3/3 rows, with prefix/snapshot/frontier hashes:
+
+- f31: `c30296b7b4634d8cda9aa34c6165cbf7499ecc73dc5d35f0736b0d3a134a072d` /
+  `332bd8df11a8ab2acfddecdc969d9651f39e170b2e0f3ba6fe7c0d9084a2169b` /
+  `fedc3b55ba47c4781ef360f62834dd0e59d840832d74192ad794607659c91b42`;
+- f32: `305cf7f481ae0b9217f4f13ec09038a3bb6057daaad09d3f896d6b88e9cc7463` /
+  `e0d996f3f8ecbdb78ab0b72bfbf3215805806cc8f1d417f1894845ef2e7b6256` /
+  `555a441958eee000c7fb36096356cc297591b07217c3a786717a9acab84b24bc`;
+- f33: `3138888bbb37ff087b64d43a76191ee22571dccdfd24f53aef48152d0164d941` /
+  `5352cd4a03ba84f5b675fc82002e0f2627b9c94138f1def069d0ee6e5fe3d127` /
+  `358f246cd6609edff162972d20b03181887b766a6bb228b546b5e45fd2a409ce`.
+
+All eight rows received high-budget fragment producers, adding five net cores
+and bringing sustained CPU use to about 90%.  No v396 child had closed at the
+initial post-launch audit.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
