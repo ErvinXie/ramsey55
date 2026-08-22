@@ -4760,5 +4760,60 @@ artifact hashes.  Existing proof composers and chain auditors can therefore
 consume a checked tree proof without a hand-written manifest.  All 191 tests
 and targeted Ruff checks pass.
 
+The reverse CaDiCaL-primary J297 screen at state 3700 found three more
+one-sided candidates: 2321, 2576, and 872.  Fresh CaDiCaL proofs for all three
+passed `drat-trim`, advancing the exact endpoint to state 3703.  Its actual
+terminal row equals the independently materialized prediction with hash
+`14a3bc7c2eaf3a3ad75722529dd8f6679be1ef5127fb10b6133879a91ed877ea`.
+The v27 chain bundle/audit/log hashes are
+`ad9e8eb904cb15268701d23ad55ac3f175264ce8c08acbb2a74ac62d96a6265b` /
+`9a7db118b6318373107d0c16e070689fe7ab6871cd08a2aa650cd449696d5e75` /
+`8b267719834d5968d0fca86bb1137e1cada495b2d06bbd5cbcc42cf92d2b6ccd`.
+The corresponding selective-residual join hashes are
+`3c4626c9fe3ed0a0f5a5f8cc2a3301590ac7207517baeeea297faa050d80775a` /
+`cbb6f467081f649c203b3d8bbf72b053e19d74f6e7411a6cb5564d804a806eea` /
+`d9659372cb4ad716420e79aebd0f822d34b4a7c76e9e5aeeda2d2eee36c10839`.
+
+On J326 state 3743, a forward Kissat-primary two-second screen found nine
+candidates in proof order: 9046, 8719, 6888, 8864, 9471, 7860, 9083, 872,
+and 8925.  All nine fresh Kissat proofs passed, reaching state 3752.  The
+actual terminal row is byte-identical to its prediction with hash
+`549dda26fa2062f2abf65eccf9b9ac177fef47fee55addbada8b725cb93679a2`.
+The v28 chain bundle/audit/log hashes are
+`59e3b9591be6499dd9917e5eaabc0ba8bc71cb727e2a48d9140a965469a74d39` /
+`d573aad2a4adee7961b767bad35fb9b8552ab267d3e8ff26e9a4fda7d7b9326d` /
+`1ccd8d6b5d24c3993c7f458d61a1e72b863ee4f920221a7d2a19eabb6a560502`.
+The refreshed join bundle/audit/log hashes are
+`0e20397338e0ae00ef5d6be0c7df0d9821ed8836b42e6850cc13ef21adae2564` /
+`7dbf2f85417a0e59cb42cafdb2aeefca385ff29636d3bbb544fd4d0284228157` /
+`d179805323fe51035df348ccc7023d941672b5a88a679706491f2af84b204f96`.
+
+The earlier J297 forward screen exposed variable 8719 against the weaker
+state-3700 leaf.  To avoid carrying stale-parent screening provenance, it was
+screened again against the exact state-3703 parent; Kissat and CaDiCaL again
+proved the same contradictory side within two seconds.  A newly generated
+Kissat DRAT then passed `drat-trim`, advancing J297 to state 3704.  The actual
+terminal matches the exact-parent prediction with hash
+`d74b5927a13d1f1ef4a3fe3236224ee7071387d7f85aa6ddf740b6653f6685ee`.
+The v29 chain bundle/audit/log hashes are
+`c1c88cf2fd7995e191d500fd0326b1a2b5e7c068aa60d5e7aaaa8d711f13a68d` /
+`5ac64a0e0bc5e84c309279b4a4acfd59a166e2d59dd8ea8cc177d835496d4017` /
+`42ae898fa5262ed1b3185f1a53f451fb234cef50830df5d60e9669648c2c885e`.
+The refreshed join bundle/audit/log hashes are
+`94e29a901fe6e7a291541458aa54497e20f4bb0f234cb29c0be55785ef031794` /
+`7942da4574b8625990a5a17f41a17e6ce69747838f3ad832c945604d4756a1c9` /
+`f6a2479c5210f046789f79a2e890c61227f619b14495121707ac6b8d34d13fe9`.
+The audited effective frontier is still one UNKNOWN per case, now at states
+3704/3752.
+
+Two proof-producing recursive CaDiCaL trees continue from the slightly weaker
+state-3700 and state-3743 leaves.  At the latest checkpoint they had recorded
+95/93 splits and 92/91 closed siblings, leaving estimated pending frontiers of
+4/3 and proof streams of 871/864 MiB.  Their output is not accepted merely
+from the producer status: a successful root proof will be replayed by
+`drat-trim` against the independently materialized augmented cube before the
+checked importer can bind it into the chain.  Four-hour direct probes and new
+two-second forward-J297/reverse-J326 screens also remain in flight.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
