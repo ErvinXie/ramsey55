@@ -5481,5 +5481,43 @@ All seven replay rows received high-budget fragment producers.  They must be
 finalized as three separate exact augmented-CNF fragments before replacing
 their v400 source children.
 
+Although v405 has only one row, it also received a deliberately different
+producer configuration: five million initial conflicts, ten million maximum
+conflicts, five seconds of lookahead, and a 600-second solve budget.  This is
+a strategy race rather than a deterministic duplicate; if it closes, the
+v405 prefix and its fragment can replace the remaining v402 child after the
+usual standalone check.
+
+The final available solver cores were assigned to v407/v408, covering five
+large last-sibling tails.  v407 checkpoints the three J326 v398 f22s1 rows.
+Their pauses were 1.922/1.814/2.354 seconds and their replay frontiers contain
+2/1/4 rows.  The proof-prefix/snapshot/frontier hashes are:
+
+- f220: `15fecfb59661bfe7b351751fc5076b69f4eaae7a61ac6fbe2a9603bbe0aa4a1d` /
+  `2ffa758dcf4aa8a8cf9ea078042145692cd802a9def9b76f4cf3fef3c82a8043` /
+  `36a267770f3eae6e4474469464deead4bd5ab3ee30ac91435d41b8af78b7e76e`;
+- f221: `8f0980da8c10781b4ddd304fb7b9adb4a9b815288ad6a0975ca2b5674d0075a8` /
+  `c4cea451229bc371ed63e22c06f5a0f4b8d52e23b3807d8053d405213be6a39c` /
+  `6cbfb6eeec156d355737be83dd6811eff1078270dac2be2b6d0bdc0934646e89`;
+- f222: `a0c883818bad4f4fbaa082ea45415eea2b577eb0c9082c041803b2cd81f6c16c` /
+  `ef6afe40bb93f09a51e004e21cd414c85d3d00cd7779b6ba420aeb24925a58c8` /
+  `743fb1b416d387249159ea6d17c24ee8ef9b85caf28d23b0d5c4cc166d434538`.
+
+The one-row f221 checkpoint is recovery-only; all six rows from f220/f222
+received producers.  f222 child 1 closed almost immediately.
+
+v408 checkpoints the two remaining J297 v399 f31s1 rows.  Their pauses were
+1.688/1.960 seconds.  f311 replayed to one recovery-only row with hashes
+`b0984031d46f930ef0f6dad6765b3a7f61d997c2d941143d64143e94e4618e5c` /
+`4107122e19ddec33ccf04d0a553203dbf1d73ca19123848a533fe8eb202b1e1c` /
+`6b6c628b70b7f65fd2bdb62e4fa60ba3cdd57df6292fa3709b916d410a4e1a87`.
+f312 replayed to two launched rows with hashes
+`6bb71c54385a9e475fdb0606839b6e9c9efd405103f2cacd6c6700251bf5765d` /
+`26d488fa1d4703f42353da85d7560c1c71b828c44b7c5ff3768545f122bc48c1` /
+`d6eab5ced0c360ab084ba863824c50ca26a9d90b65f9e1c5e262afb1f7b51e11`.
+The resulting workload uses about 90% CPU, with enough headroom reserved for
+the OS and later proof checking; no further checkpoint expansion is planned
+before a child group closes.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
