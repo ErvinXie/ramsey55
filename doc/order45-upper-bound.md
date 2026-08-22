@@ -4518,5 +4518,80 @@ Kissat replay, hence the same
 hash.  The four oldest diversified four-hour no-proof probes returned UNKNOWN;
 this is only a timeout result and contributes no proof claim.
 
+Subsequent 2-second screens contributed 2/4 further forced variables, and a
+five-second plus incremental-screen union contributed 7/6.  Recertifying each
+binary sibling advanced J297/J326 to states 1039/1073.  Whole-chain v7 and v8
+replays passed.  The v8 bundle/audit/log hashes are
+`5a31befd8775dfb556765069165dbb8b8960a605bec0eeff2e11d4404e6c2308` /
+`d2c2ae35876208036cae40ac9aa9ecb7c19f16791515a8f0519201828ea04945` /
+`4f1ef871e75b71291e5512a838978de32108ffca7ff5cdb7f87f62afcc81eacd`.
+
+Screening the previously unused auxiliary ranges 2401--5000, 5001--7500,
+and 7501--9746 at 0.15 seconds exposed 689/689, 709/709, and 546/539
+CaDiCaL/Kissat-agreed candidates.  The committed
+`export_screened_forced_queue.py` tool binds the exact parent, variable list,
+screened cubes, solver TSV hashes, polarities, and deterministic ranking.  Its
+six queue-manifest hashes are
+`8eaab67c514f5b2b75f4eec66d5eb7b1b8e686543a81cdca34252d50a00d1246`,
+`8de541642770422baa507568b1528797eee37a42e5322b1a0ad0bb0a3322e686`,
+`4e4302dbf15d53f665215693b637346f46b556cb2092cbc9dec5051551ca94ce`,
+`796e4222648c3669b74844283b3e2297911fd43fadb793a9440eea21bbc4c219`,
+`024e99f25b40b052b97266a3bb3cbd01ab7768d022d1c9a24d389b42fcc5954c`,
+and
+`d3cfece420c23bb7b7b7ff06730f4bbca558fc2b5ef4d02635f9c633549ff3a5`.
+The screen remains heuristic: every accepted sibling is regenerated with
+proof logging, compacted, and replayed by `drat-trim` under the progressively
+stronger exact parent.
+
+All 1,944/1,937 initial candidates were recertified without frontier growth,
+ending at states 2983/3010.  Independently materialized predicted leaves have
+hashes
+`dd034c89488f2da33422e914d89497453905f4a11b525f554289bd18cc19ef05`
+and
+`634081076a74780a9c0baaa73e3b752f34f2dcd8124259cfdfcb96426d198451`;
+the actual terminal UNKNOWN rows were byte-identical to them.  Recursive v11
+replay passed with bundle/audit/log hashes
+`ad495f9faa10be43651d15a21d04a61ee136b72d70485a75deaee721cbabc938` /
+`5fbbcfd4a9ae82efac591501133c3d980d786a1bf00fcff10c9ce4730486cc0f` /
+`5f1cfb34c03946ac4b420f209df735827ab06d866116f4ebba20bf63064e7a66`.
+
+Iterated 0.15-second screens on these stronger leaves produced waves of
+292/314, 10/8, 1/2, 2/0, and 1/0 candidates.  Concatenating them in dependency
+order and recertifying 306/324 siblings advanced the chains to states
+3289/3334.  The actual terminal rows again matched the predictions exactly.
+The v12 bundle/audit/log hashes are
+`069d2030bc53416f0d37d5728e98639d79157b229e23c9f6de5edab669020f29` /
+`b0c93df67ae80e8e39c2a30edf048ac42abfedacd524ace13a0d56e19a60e8e6` /
+`402433a0855539181bc355ac96140552ee7eb24de3b16acf84e36b3b10912ae9`.
+
+At a 0.5-second screen budget, the next waves contained 319/331 and 19/17
+candidates.  All were freshly recertified to states 3627/3682 with one UNKNOWN
+per case.  Recursive v14 replay passed with bundle/audit/log hashes
+`d291e9f7192a58aa00148adbbf474debfc1fc748604356f00b92545df652d48b` /
+`06a4e2552bdc907acb1e7e866c11fa9fa1b01869123981a8b6628e6b93f467a4` /
+`7fc93e1bf64ade3d5ee834e3a36f7828611b46419345b470e91ef481068098d7`.
+
+The next two 0.5-second waves contributed 8/6 and 6/2 candidates.  All 22
+binary siblings were regenerated in proof mode, compacted, and checked.  The
+exact chains now end at states 3641/3690, each with one verified sibling and
+one UNKNOWN row.  Their actual terminal rows are byte-identical to separately
+materialized predicted leaves with hashes
+`a1e75f03818f52022f81127f580b5a77c462eba4f5a910c3208e4ac772976728`
+and
+`5b46a8c4c1d107cc08170890c25edb63b43e33fc1ab661e827610d25533a5562`.
+
+The v16 incremental whole-chain replay binds these new segments to v15.  Its
+bundle/audit/log hashes are
+`216b4cf29737fa009c8ba7a7a057a1fe09a048b19d3569da84c4dbe8950d6bf7` /
+`0b98d1612faf6adccdcfd61ab212c62ef22a02676a404341cfe4a0b3ccead4da` /
+`83550c386dd9cd99bf7070234685dc6a9dc8b14ae64bd2a68978cce8dd9edb6b`.
+The refreshed selective-residual join passed with bundle/audit/log hashes
+`9212fd315319efaab5b0761bc3a409ca7534feedab747c014f4be69756dd294e` /
+`e98116f22c4a1fa9d3d8a9d73b74cfb95c852dc052b448c34fd03dac914ed7e4` /
+`0c39b7c32f2cf3ca7550bfc51fb6c5fb05adc31a65f32c45c1b42dd5e20d86e0`.
+It projects exactly one effective UNKNOWN for each fixed-pair case.  A
+1.0-second J297 screen and the final in-flight 0.5-second J326 screen continue
+on the stronger leaves; diversified direct probes remain diagnostic only.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
