@@ -68,6 +68,7 @@ STRATA_PROOF_BUNDLE = load_tool("audit_order45_strata_proof_bundle")
 CARTESIAN_CUBES = load_tool("generate_cartesian_cubes")
 SCREEN_VARIABLES = load_tool("screen_cube_variables")
 SCREENED_SPLITS = load_tool("select_screened_binary_splits")
+SCREENED_QUEUE = load_tool("export_screened_forced_queue")
 SCREENED_REFINER = load_tool("refine_screened_binary_cubes")
 QUEUED_REFINER = load_tool("refine_queued_binary_cubes")
 SELECTED_REFINEMENT = load_tool("refine_selected_binary_cubes")
@@ -428,6 +429,58 @@ class ExternalCubeToolTests(unittest.TestCase):
                     [result(20, 0.1), result(0, 1.0)],
                     [result(0, 1.0), result(20, 0.1)],
                 ],
+            )
+
+    def test_exports_all_agreed_or_union_screened_forced_splits(self) -> None:
+        result = SCREENED_SPLITS.ScreenResult
+        parents = [[1]]
+        variables = [2, 3, 4]
+        screened = SCREEN_VARIABLES.extend_cubes(parents, variables)
+        first = [
+            result(20, 0.3), result(0, 1.0),
+            result(0, 1.0), result(20, 0.4),
+            result(20, 0.2), result(0, 1.0),
+        ]
+        second = [
+            result(20, 0.5), result(0, 1.0),
+            result(0, 1.0), result(20, 0.2),
+            result(0, 1.0), result(0, 1.0),
+        ]
+        agreed = SCREENED_QUEUE.rank_forced_splits(
+            parents, variables, screened, [first, second], "agreement"
+        )
+        self.assertEqual([row["variable"] for row in agreed[0]], [3, 2])
+        self.assertEqual(
+            [row["surviving_literal"] for row in agreed[0]], [-3, 2]
+        )
+        union = SCREENED_QUEUE.rank_forced_splits(
+            parents, variables, screened, [first, second], "union"
+        )
+        self.assertEqual([row["variable"] for row in union[0]], [3, 4, 2])
+
+    def test_screened_forced_queue_rejects_opposite_or_double_unsat(self) -> None:
+        result = SCREENED_SPLITS.ScreenResult
+        parents = [[1]]
+        variables = [2]
+        screened = SCREEN_VARIABLES.extend_cubes(parents, variables)
+        with self.assertRaisesRegex(ValueError, "direction disagreement"):
+            SCREENED_QUEUE.rank_forced_splits(
+                parents,
+                variables,
+                screened,
+                [
+                    [result(20, 0.1), result(0, 1.0)],
+                    [result(0, 1.0), result(20, 0.1)],
+                ],
+                "union",
+            )
+        with self.assertRaisesRegex(ValueError, "both sides UNSAT"):
+            SCREENED_QUEUE.rank_forced_splits(
+                parents,
+                variables,
+                screened,
+                [[result(20, 0.1), result(20, 0.1)]],
+                "union",
             )
         with self.assertRaisesRegex(ValueError, "SAT result"):
             SCREENED_SPLITS.choose_splits(
