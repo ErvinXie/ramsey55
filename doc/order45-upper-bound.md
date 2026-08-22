@@ -4883,9 +4883,15 @@ The corresponding selective-residual join bundle/audit/log hashes are
 `8b65919cb78a1c2b80ce3d981f9f3041d89ab56bb172cf934e39da0aabaee171` /
 `c1754516ee1c03c68b9abd518e4992ec637845fdc2b9fe0a6d8abd21df64c37d`.
 It binds 23 J297 and 24 J326 continuation segments, with exactly one audited
-effective UNKNOWN in each case at states 3711/3761.  A full v31 historical
-replay runs in parallel with new forward-J297 and reverse-J326 exact-parent
-screens.
+effective UNKNOWN in each case at states 3711/3761.  A subsequent full replay
+of all 47 continuation segments also passed.  Its audit and log hashes are
+`96a9dcee33c728a0ae7693aab6b2a6776868406f8b77311e39a5f6cf18b3a3b6` /
+`a3d2b19dc8523931efee040db8f2877846ef468f2d430e5d22ef8c801e15743f`.
+The full-audit-bound selective-residual join bundle/audit/log hashes are
+`bdff1daa8e7fba74262b4bfe63f90c017825d78f0f9a1c44ddd0d9d2dc9e3c4f` /
+`51b9484785e7faceee73bfc035d6272fbceec7b9164f334d901f880d961fc899` /
+`9bf7106a4f6a568186bcf9447751a8eb97f57191111d2ce02ce8e98e5c73c857`.
+New forward-J297 and reverse-J326 exact-parent screens continue on ARM.
 
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
