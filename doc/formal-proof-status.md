@@ -242,6 +242,26 @@ compares clauses 2,584,036/2,584,054/2,584,060 onward and binds the three
 audited external data, not yet an embedded Lean theorem. Graph/excess reduction
 and checked UNSAT-certificate import remain separate obligations.
 
+[Order45Target.lean](../formal/Ramsey55/Order45Target.lean) now packages the
+end-to-end upper-bound interface.  `FixedStarCnfComplete d formula` states the
+exact graph-to-CNF obligation: every simple Ramsey-free order-45 colouring in
+fixed-star branch `d` extends to a satisfying assignment of that formula.
+Lean proves that completeness plus formula UNSAT excludes the branch, and
+then combines the degree-20 and degree-22 exclusions with
+`order45_fixedStar_normalize_of_r45`:
+
+    theorem forcesMonochromatic5_45_of_fixedStarCnf ...
+    theorem forcesMonochromatic5_45_of_fixedStarCubeRefutations ...
+
+The second form takes formula-relative cube covers and an UNSAT fact for every
+covered leaf, deriving each mother-formula refutation through the existing
+generic composition theorem.  The complete ARM root build passes all 82 jobs.
+The new axiom audits contain only Lean's standard `propext`,
+`Classical.choice`, and `Quot.sound`, with no `sorryAx`.  This theorem is a
+precise contract, not a discharged upper bound: the external `R(4,5)=25`
+input, concrete graph-to-DIMACS completeness, and checked leaf UNSAT data are
+still explicit hypotheses.
+
 [Symmetry.lean](../formal/Ramsey55/Symmetry.lean) adds the generic bridge for
 an optional symmetry-reduced route. It proves that a nonempty finite orbit
 closed under a listed family of transformations has a least representative;
