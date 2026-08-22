@@ -5769,5 +5769,40 @@ confirmed its final byte was NUL, and replayed it as the one still-open source
 cube.  This provides clean future checkpoint boundaries; production jobs
 already running under the older binary are unchanged.
 
+The first expiring four-hour v6 race, v403 f10 seed151/phase0, ended after
+396 complete attempts with 197 closed nodes, 199 splits, and three replayed
+open cubes.  Its immutable 4,724,830,208-byte proof hashes to
+`e96dc2ed4920c56efdb19a486f74514f476097c833843c2da2f64228ede56eb3`.
+Framing removed a 208-byte incomplete tail; the resulting prefix is
+4,724,830,000 bytes with hash
+`95cc6921204d67129135c7dcee2091e19abb8597fe8d6e26e4f9599b538ab805`,
+and the framed replay manifest hashes to
+`e8a2e2c2705bee52656cee0dc3cb01aaefcc12421fc7325adc4322401c4ab20f`.
+This v410 checkpoint materializes all three rows independently and runs their
+children with the new internal deadline.  Row 0 closed immediately in one
+attempt; rows 1 and 2 remain open.
+
+Seven additional expired v6 sources were preserved as v411--v417.  Each row
+below is an exact source-root checkpoint with an independently materialized
+parent CNF and hash-bound row-selection manifests:
+
+| checkpoint source | open rows | truncated tail (bytes) | framed-prefix SHA-256 |
+|---|---:|---:|---|
+| v411, v404 row 1 seed199/p0 | 2 | 42 | `39e4fb46ab531a58625d46b58b936391ab0014761cecd3085be3c82add791c3a` |
+| v412, v409 row 1 seed197/p0 | 2 | 3 | `4ddc3e91ebd16b066c1b82092ce849c14c926e4cf5d2087783db3749c046a88f` |
+| v413, v407 f222 row 2 seed191/p0 | 3 | 117 | `427b976520460ac90b2a16e5720f3c109c3cbc6ad1aa65564f6d3b787dd56a50` |
+| v414, v407 f222 row 3 seed193/p0 | 4 | 62 | `3fdd53ac357b35db1b25f2e3f0e6c85efe94e9c47bff5d0a3d1bacdf527d10e9` |
+| v415, v406 f321 row 1 seed173/p0 | 3 | 90 | `8453c788557b0504d990a4939a0b97ebdac052b88b4e7725d748f244b2cd7c7c` |
+| v416, v406 f331 row 1 seed179/p0 | 2 | 24 | `1775c96929197b88432b84a4d37e3f5cd0289eb22f5f08102737edb5b38b0df0` |
+| v417, v406 f331 row 2 seed181/p0 | 3 | 53 | `1e163f98e60d7e9f639b9046f5927e1be5d8ff735af3ba6be0a0ff8920731122` |
+
+The 19 disjoint rows are running under v7 with distinct seeds/phases and the
+14,400-second internal deadline.  Four rows (v411 row 0, v412 row 0, v414 row
+2, and v417 row 0) closed in their first minutes; none of v411--v417 is yet a
+complete group.  The duplicate seed167 f10 expiry also had three open rows and
+was not copied because v410 already covers the same source with one child
+closed.  No checkpoint prefix is promoted until every child passes the
+addition-only finalizer and independent audit.
+
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.
