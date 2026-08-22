@@ -5540,5 +5540,21 @@ layer.  v407 f220 child 0 subsequently closed after 21 attempts and 10
 splits, advancing that two-row group to 1/2.  No complete checkpoint group is
 promoted yet.
 
+v409 strong child 0 closed directly in 498.702 seconds with one attempt and
+no split.  Strong child 1 exhausted its first 600-second node, split on
+variable -3751, and closed one side in 2.278 seconds; a standard 60-second
+strategy race was therefore added for its sole remaining blocker.  Several
+older four-hour ancestor races then exited on schedule, freeing enough CPU to
+start nine high-budget alternatives on existing v403 f21, v404, v407 f220 /
+f222, and v408 f312 rows.  These alternatives do not add replay depth and may
+be substituted row-for-row only after `status=20`.
+
+Original v404 child 0 and v406 f320 child 0 subsequently closed, advancing
+both groups to 1/2.  The v404 high-budget child-0 race became strictly
+redundant and was terminated; its 60 MB partial proof is retained.  The freed
+core was reassigned to a high-budget race for v406 f320 child 1.  At this
+checkpoint v409, v407 f220, v408 f312, v404, and v406 f320 are each one leaf
+short of a complete finalizer input.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
