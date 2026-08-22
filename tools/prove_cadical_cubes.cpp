@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cmath>
 #include <cstdlib>
 #include <fstream>
 #include <iomanip>
@@ -28,13 +29,27 @@ class DeadlineTerminator : public CaDiCaL::Terminator {
 
   void stop() { enabled_ = false; }
 
+  void setGlobal(double seconds) {
+    if (seconds <= 0.0) return;
+    globalDeadline_ = Clock::now() +
+                      std::chrono::duration_cast<Clock::duration>(
+                          std::chrono::duration<double>(seconds));
+    globalEnabled_ = true;
+  }
+
+  bool globalExpired() const {
+    return globalEnabled_ && Clock::now() >= globalDeadline_;
+  }
+
   bool terminate() override {
-    return enabled_ && Clock::now() >= deadline_;
+    return globalExpired() || (enabled_ && Clock::now() >= deadline_);
   }
 
  private:
   bool enabled_ = false;
   Clock::time_point deadline_{};
+  bool globalEnabled_ = false;
+  Clock::time_point globalDeadline_{};
 };
 
 std::vector<std::vector<int>> readCubes(const std::string& path) {
@@ -117,6 +132,17 @@ int environmentInteger(const char* name, int fallback, int minimum,
   return static_cast<int>(value);
 }
 
+double environmentSeconds(const char* name) {
+  const char* raw = std::getenv(name);
+  if (!raw || !*raw) return 0.0;
+  std::size_t consumed = 0;
+  const double value = std::stod(raw, &consumed);
+  if (raw[consumed] || !std::isfinite(value) || value < 0.0) {
+    throw std::runtime_error(std::string("invalid ") + name);
+  }
+  return value;
+}
+
 }  // namespace
 
 int main(int argc, char** argv) try {
@@ -163,6 +189,8 @@ int main(int argc, char** argv) try {
       "RAMSEY55_CADICAL_SEED", 0, 0, 2'000'000'000);
   const int initialPhase =
       environmentInteger("RAMSEY55_CADICAL_PHASE", 1, 0, 1);
+  const double maximumWallSeconds =
+      environmentSeconds("RAMSEY55_CADICAL_WALL_SECONDS");
   std::cout << "conflicts\t" << conflictLimit << '\n';
   std::cout << "maximum_conflicts\t" << maximumConflictLimit << '\n';
   std::cout << "maximum_lookahead_seconds\t" << maximumLookaheadSeconds
@@ -170,6 +198,7 @@ int main(int argc, char** argv) try {
   std::cout << "maximum_primary_split_variable\t"
             << maximumPrimarySplitVariable << '\n';
   std::cout << "maximum_solve_seconds\t" << maximumSolveSeconds << '\n';
+  std::cout << "maximum_wall_seconds\t" << maximumWallSeconds << '\n';
   std::cout << "freeze_policy\tselective\n";
   std::cout << "cadical_seed\t" << randomSeed << '\n';
   std::cout << "cadical_phase\t" << initialPhase << '\n';
@@ -182,8 +211,10 @@ int main(int argc, char** argv) try {
   }
   std::cout << std::endl;
   DeadlineTerminator terminator;
+  terminator.setGlobal(maximumWallSeconds);
   CaDiCaL::Solver solver;
-  if (maximumLookaheadSeconds > 0.0 || maximumSolveSeconds > 0.0) {
+  if (maximumLookaheadSeconds > 0.0 || maximumSolveSeconds > 0.0 ||
+      maximumWallSeconds > 0.0) {
     solver.connect_terminator(&terminator);
   }
   solver.set("quiet", 1);
@@ -250,6 +281,7 @@ int main(int argc, char** argv) try {
                              const std::vector<int>& initialCube) {
     std::vector<PendingCube> pending{{initialCube, 0}};
     while (!pending.empty()) {
+      if (terminator.globalExpired()) return 0;
       PendingCube node = std::move(pending.back());
       pending.pop_back();
       auto& cube = node.literals;
@@ -271,8 +303,9 @@ int main(int argc, char** argv) try {
       terminator.stop();
       const double seconds =
           std::chrono::duration<double>(Clock::now() - start).count();
-      const std::size_t attempt = attempts++;
+      const std::size_t attempt = attempts;
       if (status == 10) {
+        ++attempts;
         report << root << '\t' << attempt << '\t' << depth << '\t'
                << effectiveLimit << "\t10\t0\t0\t" << seconds << '\n'
                << std::flush;
@@ -281,6 +314,7 @@ int main(int argc, char** argv) try {
         return 10;
       }
       if (status == 20) {
+        ++attempts;
         int core = 0;
         for (const int literal : cube) core += solver.failed(literal);
         solver.conclude();
@@ -292,6 +326,7 @@ int main(int argc, char** argv) try {
         continue;
       }
       if (status != 0) throw std::runtime_error("invalid solve status");
+      if (terminator.globalExpired()) return 0;
 
       for (const int literal : cube) solver.assume(literal);
       if (maximumLookaheadSeconds > 0.0) {
@@ -304,6 +339,7 @@ int main(int argc, char** argv) try {
           Clock::now() - lookaheadStart).count();
       const int lookaheadStatus = solver.status();
       if (lookaheadStatus == 10) {
+        ++attempts;
         report << root << '\t' << attempt << '\t' << depth << '\t'
                << effectiveLimit << "\t10\t0\t0\t"
                << seconds + lookaheadSeconds << '\n'
@@ -313,6 +349,7 @@ int main(int argc, char** argv) try {
         return 10;
       }
       if (lookaheadStatus == 20) {
+        ++attempts;
         int core = 0;
         for (const int literal : cube) core += solver.failed(literal);
         solver.conclude();
@@ -323,6 +360,7 @@ int main(int argc, char** argv) try {
         globallyUnsat |= core == 0;
         continue;
       }
+      if (terminator.globalExpired()) return 0;
       if (maximumPrimarySplitVariable &&
           std::abs(split) > maximumPrimarySplitVariable) {
         const auto unused = std::find_if(
@@ -345,6 +383,7 @@ int main(int argc, char** argv) try {
              << effectiveLimit << "\t0\t0\t" << split << '\t'
              << seconds + lookaheadSeconds << '\n'
              << std::flush;
+      ++attempts;
       ++splits;
       freezeVariable(std::abs(split));
       auto negativeCube = cube;
@@ -361,10 +400,21 @@ int main(int argc, char** argv) try {
   const std::size_t firstRoot = selectedRoot;
   const std::size_t lastRoot = rootOnly ? firstRoot + 1 : cubes.size();
   for (std::size_t index = firstRoot; index < lastRoot; ++index) {
-    if (proveRoot(index, cubes[index]) == 10) {
+    const int rootStatus = proveRoot(index, cubes[index]);
+    if (rootStatus == 10) {
       solver.flush_proof_trace();
       solver.close_proof_trace();
       return 10;
+    }
+    if (rootStatus == 0) {
+      solver.flush_proof_trace();
+      solver.close_proof_trace();
+      std::cout << "checkpoint\t1\n";
+      std::cout << "status\t0\n";
+      std::cout << "attempts\t" << attempts << '\n';
+      std::cout << "splits\t" << splits << '\n';
+      std::cout << "maximum_extra_depth\t" << maximumDepth << '\n';
+      return 0;
     }
     if (globallyUnsat) break;
     if ((index + 1) % 256 == 0 || index + 1 == cubes.size()) {

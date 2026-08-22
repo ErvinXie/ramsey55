@@ -75,6 +75,36 @@ for branch in positive negative; do
   grep -q '^proof_fragment[[:space:]]1$' \
     "$temporary/fragment-$branch.log"
 done
+
+# An internal wall deadline must leave a clean, replayable no-empty prefix
+# instead of relying on an external timeout to kill the writer mid-clause.
+set +e
+RAMSEY55_CADICAL_WALL_SECONDS=0.000001 "$runner" \
+  "$root/tests/data/cube-leaf-smoke.cnf" \
+  "$temporary/fragment-positive.icnf" \
+  "$temporary/checkpoint-prefix.drat" \
+  "$temporary/checkpoint-results.tsv" \
+  100 100 0 2 0 --fragment \
+  > "$temporary/checkpoint.log"
+checkpoint_status=$?
+set -e
+if [ "$checkpoint_status" -ne 0 ]; then
+  cat "$temporary/checkpoint.log" >&2
+  echo "checkpoint proof driver returned $checkpoint_status instead of 0" >&2
+  exit 2
+fi
+grep -q '^maximum_wall_seconds[[:space:]]1e-06$' \
+  "$temporary/checkpoint.log"
+grep -q '^checkpoint[[:space:]]1$' "$temporary/checkpoint.log"
+grep -q '^status[[:space:]]0$' "$temporary/checkpoint.log"
+python3 "$root/tools/replay_cadical_dfs_prefix.py" \
+  "$temporary/fragment-positive.icnf" \
+  "$temporary/checkpoint-results.tsv" \
+  "$temporary/checkpoint-open.icnf" \
+  --proof-prefix "$temporary/checkpoint-prefix.drat" \
+  --manifest "$temporary/checkpoint-replay.json" >/dev/null
+grep -q '^a -1 2 0$' "$temporary/checkpoint-open.icnf"
+
 python3 "$root/tools/compose_binary_drat.py" --append-empty \
   "$temporary/composed-root-proof.drat" \
   "$temporary/fragment-positive.drat" \

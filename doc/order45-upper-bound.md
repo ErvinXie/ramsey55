@@ -5755,5 +5755,19 @@ python3 tools/audit_cadical_dfs_checkpoint_finalization.py \
 
 Add `--rerun-checker` when an additional full proof-checking pass is desired.
 
+The CaDiCaL cube runner now supports an internal
+`RAMSEY55_CADICAL_WALL_SECONDS` deadline.  A deadline reached during a solve
+or lookahead does not manufacture a completed TSV row: the current cube
+therefore remains in the replayed DFS stack.  The runner instead flushes and
+closes the no-empty proof stream, emits `checkpoint=1` and `status=0`, and
+exits successfully.  An outer watchdog should still allow a short grace
+period beyond the internal deadline, but no longer needs to be the normal
+checkpoint mechanism.  The existing complete proof smoke test covers an
+immediate checkpoint and exact one-root replay.  A separate five-second test
+on the real v407 f222 row-2 formula produced a nonempty 1,942,705-byte prefix,
+confirmed its final byte was NUL, and replayed it as the one still-open source
+cube.  This provides clean future checkpoint boundaries; production jobs
+already running under the older binary are unchanged.
+
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.
