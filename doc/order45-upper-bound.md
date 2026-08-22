@@ -5922,5 +5922,17 @@ The complete 89-job ARM build passed with log hash
 `sorryAx` or native-decision axiom. Concrete lex and generated-DIMACS binding
 remain open, so this does not promote any computational checkpoint.
 
+The Boolean lex block is now formalized separately from its symmetry-coverage
+argument. `CnfLex.lean` matches the Python first/later prefix clauses and order
+guards, while `Order45LexAssignment.lean` fills the exact d20/d21/d22 state
+intervals and proves the prior graph and degree variables unchanged. Kernel
+checks give 2622/2640/2646 lex clauses and final variables
+36627/36630/36631. Assuming adjacent cross rows are already lex-sorted, the
+complete degree-plus-lex prefix has a constructed satisfying assignment. The
+91-job ARM log hash is
+`56ea53bcee64b56da08aabf9a3c78c774800af7c6d7046f1467697b3f263df97`.
+The required neighbour permutation/relabeling theorem and external DIMACS
+binding are not yet discharged.
+
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.

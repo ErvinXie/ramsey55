@@ -336,6 +336,25 @@ DIMACS stream shape/inclusion. The external `R(4,5)=25` import, five catalog
 edge-range inputs, and every computational leaf UNSAT certificate also remain
 explicit obligations.
 
+[CnfLex.lean](../formal/Ramsey55/CnfLex.lean) and
+[Order45LexAssignment.lean](../formal/Ramsey55/Order45LexAssignment.lean) now
+formalize the generator's cross-row lex block itself. The generic file proves
+the four-clause first-prefix and five-clause later-prefix definitions, the
+guarded order clause at every column, and constructive satisfaction from exact
+prefix-equality states plus Boolean lex order. The order-45 file allocates the
+states in the exact generator interval beginning at 36191. Kernel arithmetic
+checks 437/440/441 states ending at 36627/36630/36631 and exact clause counts
+2622/2640/2646 for d20/d21/d22. The overlay is duplicate-free, preserves every
+primary and degree-counter cell, and satisfies both the complete degree-window
+formula and lex formula whenever the concrete cross rows are sorted. The full
+91-job ARM build log has SHA-256
+`56ea53bcee64b56da08aabf9a3c78c774800af7c6d7046f1467697b3f263df97`;
+all new audits contain only the standard Lean axioms. The remaining lex
+obligation is the graph relabeling/coverage theorem that sorts the neighbour
+rows while preserving the fixed-star problem. Exact external DIMACS stream
+binding and the H/J overlay on top of this lex-filled source remain separate
+steps.
+
 The order-45 file instantiates this theorem at the actual H/J row counts and
 counter widths: `(190,101)/(276,133)`, `(210,108)/(253,123)`, and
 `(231,115)/(231,115)`. It now derives three formula-relative cube covers from

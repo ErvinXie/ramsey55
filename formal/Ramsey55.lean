@@ -15,9 +15,11 @@ import Ramsey55.Order45Primary
 import Ramsey55.Order45CounterAssignment
 import Ramsey55.Order45MotherPrefix
 import Ramsey55.Order45DegreeWindowAssignment
+import Ramsey55.Order45LexAssignment
 import Ramsey55.Order45Window
 import Ramsey55.CubeCover
 import Ramsey55.CnfCardinality
+import Ramsey55.CnfLex
 import Ramsey55.Order45CubeCover
 import Ramsey55.Order45Dimacs
 import Ramsey55.Order45Target
