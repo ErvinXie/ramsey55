@@ -18,6 +18,7 @@ if __package__:
     from tools.screen_cube_variables import extend_cubes, read_cubes, write_cubes
     from tools.select_screened_binary_splits import (
         SCHEMA,
+        ScreenResult,
         atomic_json,
         choose_splits,
         read_results,
@@ -30,6 +31,7 @@ else:
     from screen_cube_variables import extend_cubes, read_cubes, write_cubes
     from select_screened_binary_splits import (
         SCHEMA,
+        ScreenResult,
         atomic_json,
         choose_splits,
         read_results,
@@ -48,6 +50,81 @@ def available_variables(
 ) -> list[int]:
     assigned = {abs(literal) for cube in parents for literal in cube}
     return [variable for variable in candidates if variable not in assigned]
+
+
+def primary_candidate_variables(
+    parents: list[list[int]],
+    variables: list[int],
+    screened: list[list[int]],
+    results: list[ScreenResult],
+) -> list[int]:
+    """Return variables with a one-sided UNSAT report for any parent."""
+
+    if screened != extend_cubes(parents, variables):
+        raise ValueError(
+            "primary screen cube file does not match parents and variables"
+        )
+    if len(results) != len(screened):
+        raise ValueError("primary screen-result count mismatch")
+    width = 2 * len(variables)
+    selected: set[int] = set()
+    for parent_index in range(len(parents)):
+        for variable_index, variable in enumerate(variables):
+            negative_index = parent_index * width + 2 * variable_index
+            positive_index = negative_index + 1
+            negative = results[negative_index]
+            positive = results[positive_index]
+            pair = (negative.status, positive.status)
+            if 10 in pair:
+                raise ValueError(
+                    f"SAT result at primary parent {parent_index} "
+                    f"variable {variable} requires investigation"
+                )
+            if pair == (20, 20):
+                raise ValueError(
+                    f"both sides UNSAT at primary parent {parent_index} "
+                    f"variable {variable}"
+                )
+            if pair in ((20, 0), (0, 20)):
+                selected.add(variable)
+    return [variable for variable in variables if variable in selected]
+
+
+def subset_results(
+    parents: list[list[int]],
+    variables: list[int],
+    selected: list[int],
+    results: list[ScreenResult],
+) -> list[ScreenResult]:
+    """Project a complete screen table onto a variable subsequence."""
+
+    positions = {variable: index for index, variable in enumerate(variables)}
+    if len(positions) != len(variables) or any(
+        variable not in positions for variable in selected
+    ):
+        raise ValueError("selected variables are not a subset of the screen")
+    if len(set(selected)) != len(selected):
+        raise ValueError("selected variables contain duplicates")
+    width = 2 * len(variables)
+    if len(results) != len(parents) * width:
+        raise ValueError("screen-result count mismatch")
+    output: list[ScreenResult] = []
+    for parent_index in range(len(parents)):
+        for variable in selected:
+            negative = parent_index * width + 2 * positions[variable]
+            output.extend(results[negative : negative + 2])
+    return output
+
+
+def write_screen_results(path: Path, results: list[ScreenResult]) -> None:
+    atomic_text(
+        path,
+        "cube\tstatus\tseconds\tmodel\n"
+        + "".join(
+            f"{index}\t{result.status}\t{result.seconds:.6f}\t\n"
+            for index, result in enumerate(results)
+        ),
+    )
 
 
 def artifact_prefix(results: Path) -> Path:
@@ -105,9 +182,19 @@ def main() -> int:
     parser.add_argument("--screen-solver-argument", action="append", default=[])
     parser.add_argument("--screen-seconds", type=float, default=1.0)
     parser.add_argument("--screen-jobs", type=int)
+    parser.add_argument(
+        "--staged-screening",
+        action="store_true",
+        help=(
+            "run the first solver on every variable and the second only on "
+            "the first solver's one-sided candidates"
+        ),
+    )
     arguments = parser.parse_args()
     if len(arguments.screen_solver) < 2:
         parser.error("at least two --screen-solver values are required")
+    if arguments.staged_screening and len(arguments.screen_solver) != 2:
+        parser.error("staged screening requires exactly two screen solvers")
     if arguments.jobs <= 0 or arguments.screen_seconds <= 0:
         parser.error("jobs and screen-seconds must be positive")
     screen_jobs = arguments.screen_jobs or arguments.jobs
@@ -132,6 +219,12 @@ def main() -> int:
         for index in range(len(solvers))
     ]
     solver_logs = [output.with_suffix(".log") for output in solver_outputs]
+    primary_variables_path = prefix.with_name(
+        prefix.name + "-primary-screen-variables.txt"
+    )
+    primary_screened_path = prefix.with_name(prefix.name + "-primary-screen.icnf")
+    primary_output = prefix.with_name(prefix.name + "-primary-screen-solver.tsv")
+    primary_log = primary_output.with_suffix(".log")
     outputs = (
         children_path,
         results_path,
@@ -142,6 +235,13 @@ def main() -> int:
         *solver_outputs,
         *solver_logs,
     )
+    if arguments.staged_screening:
+        outputs += (
+            primary_variables_path,
+            primary_screened_path,
+            primary_output,
+            primary_log,
+        )
     existing = [path for path in outputs if path.exists()]
     if existing:
         parser.error(f"refusing to overwrite {existing[0]}")
@@ -151,31 +251,102 @@ def main() -> int:
     variables = available_variables(parents, candidates)
     if not variables:
         raise ValueError("no unassigned screen variables remain")
-    atomic_text(variables_path, ",".join(map(str, variables)) + "\n")
-    screened = extend_cubes(parents, variables)
-    write_cubes(screened_path, screened)
-
     solve_tool = Path(__file__).with_name("solve_external_cubes.py")
-    with concurrent.futures.ThreadPoolExecutor(len(solvers)) as executor:
-        futures = [
-            executor.submit(
-                run_screen,
-                solve_tool,
-                formula,
-                screened_path,
-                arguments.screen_seconds,
-                screen_jobs,
-                output,
-                log,
-                solver,
-                arguments.screen_solver_argument,
-            )
-            for solver, output, log in zip(
-                solvers, solver_outputs, solver_logs, strict=True
-            )
-        ]
-        for future in futures:
-            future.result()
+    staged_primary: dict[str, object] | None = None
+    if arguments.staged_screening:
+        primary_variables = list(variables)
+        atomic_text(primary_variables_path, ",".join(map(str, variables)) + "\n")
+        primary_screened = extend_cubes(parents, variables)
+        write_cubes(primary_screened_path, primary_screened)
+        run_screen(
+            solve_tool,
+            formula,
+            primary_screened_path,
+            arguments.screen_seconds,
+            screen_jobs,
+            primary_output,
+            primary_log,
+            solvers[0],
+            arguments.screen_solver_argument,
+        )
+        primary_table = read_results(primary_output)
+        variables = primary_candidate_variables(
+            parents, variables, primary_screened, primary_table
+        )
+        if not variables:
+            raise ValueError("primary screen found no one-sided candidate")
+        atomic_text(variables_path, ",".join(map(str, variables)) + "\n")
+        screened = extend_cubes(parents, variables)
+        write_cubes(screened_path, screened)
+        write_screen_results(
+            solver_outputs[0],
+            subset_results(
+                parents,
+                primary_variables,
+                variables,
+                primary_table,
+            ),
+        )
+        atomic_text(
+            solver_logs[0],
+            "projected from " + str(primary_output) + "\n",
+        )
+        run_screen(
+            solve_tool,
+            formula,
+            screened_path,
+            arguments.screen_seconds,
+            screen_jobs,
+            solver_outputs[1],
+            solver_logs[1],
+            solvers[1],
+            arguments.screen_solver_argument,
+        )
+        staged_primary = {
+            "variables": {
+                "path": str(primary_variables_path),
+                "sha256": file_sha256(primary_variables_path),
+                "count": len(primary_variables),
+            },
+            "screened_cubes": {
+                "path": str(primary_screened_path),
+                "sha256": file_sha256(primary_screened_path),
+                "count": len(primary_screened),
+            },
+            "solver": {
+                "path": str(solvers[0]),
+                "sha256": file_sha256(solvers[0]),
+                "arguments": arguments.screen_solver_argument,
+                "results": str(primary_output),
+                "results_sha256": file_sha256(primary_output),
+                "log": str(primary_log),
+                "log_sha256": file_sha256(primary_log),
+            },
+        }
+    else:
+        atomic_text(variables_path, ",".join(map(str, variables)) + "\n")
+        screened = extend_cubes(parents, variables)
+        write_cubes(screened_path, screened)
+        with concurrent.futures.ThreadPoolExecutor(len(solvers)) as executor:
+            futures = [
+                executor.submit(
+                    run_screen,
+                    solve_tool,
+                    formula,
+                    screened_path,
+                    arguments.screen_seconds,
+                    screen_jobs,
+                    output,
+                    log,
+                    solver,
+                    arguments.screen_solver_argument,
+                )
+                for solver, output, log in zip(
+                    solvers, solver_outputs, solver_logs, strict=True
+                )
+            ]
+            for future in futures:
+                future.result()
 
     tables = [read_results(path) for path in solver_outputs]
     selections = choose_splits(parents, variables, screened, tables)
@@ -216,6 +387,8 @@ def main() -> int:
         "selections": selections,
         "split_variables": [item["variable"] for item in selections],
     }
+    if staged_primary is not None:
+        selection["staged_primary_screen"] = staged_primary
     atomic_json(selection_path, selection)
     atomic_text(
         selection_log,

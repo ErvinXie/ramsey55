@@ -494,6 +494,54 @@ class ExternalCubeToolTests(unittest.TestCase):
                 ],
             )
 
+    def test_staged_screen_projects_primary_one_sided_candidates(self) -> None:
+        result = SCREENED_SPLITS.ScreenResult
+        parents = [[1], [-1]]
+        variables = [2, 3, 4]
+        screened = SCREEN_VARIABLES.extend_cubes(parents, variables)
+        primary = [
+            result(20, 0.1), result(0, 1.0),
+            result(0, 1.0), result(0, 1.0),
+            result(0, 1.0), result(20, 0.2),
+            result(0, 1.0), result(0, 1.0),
+            result(0, 1.0), result(20, 0.3),
+            result(0, 1.0), result(0, 1.0),
+        ]
+        selected = SCREENED_REFINER.primary_candidate_variables(
+            parents, variables, screened, primary
+        )
+        self.assertEqual(selected, [2, 3, 4])
+        projected = SCREENED_REFINER.subset_results(
+            parents, variables, [4, 2], primary
+        )
+        self.assertEqual(
+            [(row.status, row.seconds) for row in projected],
+            [
+                (0, 1.0), (20, 0.2), (20, 0.1), (0, 1.0),
+                (0, 1.0), (0, 1.0), (0, 1.0), (0, 1.0),
+            ],
+        )
+        with tempfile.TemporaryDirectory() as raw:
+            output = Path(raw) / "projected.tsv"
+            SCREENED_REFINER.write_screen_results(output, projected)
+            self.assertEqual(SCREENED_SPLITS.read_results(output), projected)
+
+    def test_staged_screen_rejects_primary_sat_and_double_unsat(self) -> None:
+        result = SCREENED_SPLITS.ScreenResult
+        parents = [[1]]
+        variables = [2]
+        screened = SCREEN_VARIABLES.extend_cubes(parents, variables)
+        with self.assertRaisesRegex(ValueError, "SAT result"):
+            SCREENED_REFINER.primary_candidate_variables(
+                parents, variables, screened,
+                [result(10, 0.1), result(0, 1.0)],
+            )
+        with self.assertRaisesRegex(ValueError, "both sides UNSAT"):
+            SCREENED_REFINER.primary_candidate_variables(
+                parents, variables, screened,
+                [result(20, 0.1), result(20, 0.1)],
+            )
+
     def test_materializes_disjoint_forced_queue_survivors(self) -> None:
         def queue(variable: int, survivor: int) -> dict[str, object]:
             candidate = {
