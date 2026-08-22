@@ -4967,5 +4967,66 @@ It binds 25 J297 and 26 J326 continuation segments and still projects one
 effective UNKNOWN in each fixed-pair case.  Forward-J297 and reverse-J326
 screens now run on the exact state-3715/state-3764 leaves.
 
+A second, later checkpoint was taken from the still-running strong
+state-3704/state-3752 CaDiCaL trees.  The producers were stopped only for the
+copy window and then resumed.  For J297, the copied proof prefix and replayed
+four-row frontier have hashes
+`1a95c662b564e6c919aa61d61270053960cc19f09a02af46ab4930e2c03ab271`
+and
+`433679b71f11382c04b80ade656085996e5911fe1521a4ac3deb2db20ddd5fdd`.
+For J326, the corresponding prefix and five-row frontier hashes are
+`0eba17a529fad6594cd478ff7f745d5c3fe4d37788d3f610ca87a50aa567fd74`
+and
+`5e276bf59ee5cf30e72e848e84510ec580fb28257a4b223aa048321ffd0b539d`.
+Independently materializing the two root cubes again produced the earlier
+augmented-CNF hashes
+`ec1adf42531c3fcb9d41492efcd0207c9f96ee2d2e45ba2bef163e96300970d2`
+and
+`dda5442bd75d6e74fa104d29cb6ecfaf819ab06c29c1183fc30280a477ca8d4b`.
+All nine frontier rows now have independent high-budget explicit-stack proof
+producers.  A standalone replay of J326 fragment 0 passed `drat-trim`.  At
+this checkpoint 2/4 J297 and 2/5 J326 fragments have completed; the remaining
+fragments and the final prefix-plus-fragment checks are still required.
+
+The forward Kissat-primary two-second scan of the exact state-3715 J297 leaf
+completed all 11,828 polarity cubes and found no one-sided candidate among
+5,914 unassigned variables.  The exported zero queue has hash
+`1f01d151d25cfee4a639440fb37f19cd6ebcffc41dccdbd6b3fd516b6c3ff6fe`.
+Its independently materialized terminal is unchanged, with state-3715 hash
+`606eb8dedfc77966cedcf75b49fbfd81bc43d238a89828720ab4dbf154fd410e`.
+This binds a solver-budget screening fixed point only; it does not prove that
+the leaf is UNSAT.  A complementary reverse CaDiCaL-primary scan now runs on
+the same exact parent.
+
+The reverse CaDiCaL-primary scan of J326 state 3764 produced four candidates
+in proof order: 2576, 4559, 1586, and 1298.  None was confirmed by Kissat
+within the two-second screening budget.  The empty agreement queue and full
+primary queue hashes are
+`19b462fce5272943b0d6cc6738f83f5532df987c0f1a43774f55ef5233558422`
+and
+`0a3b25efacaa3524bd3e635f77dba3fab601f7bbe03ee23d2f80e4cd77881ea4`.
+Every candidate then received a new compact CaDiCaL proof accepted by
+`drat-trim`, advancing the exact endpoint to state 3768.  The final proof
+manifest and state hashes are
+`ed4828e7acbd28d5a1f32f139c60b629a244eafec969e41ab3e552dc0a58e85d`
+and
+`0fa7d18d673d162e699a8209a874597d90bca552ec9c8fb20057809fa0a7536f`.
+The actual terminal row is byte-identical to the primary-queue prediction,
+hash
+`2c1af809b124c02613698bef0eb3114fc4ed1ae965b00a7e93fb124341864cf0`.
+
+The v34 incremental replay appends only this new J326 suffix to v33.  Its
+chain bundle / v33-to-v34 extension-audit / audit-log hashes are
+`72d2d1e75291a0418b8262a9841d052f17aca9de63ca98901ab1f3e0aeef1af7` /
+`4a1db9ea498f06ba0233393102c16967d9396039c92a9362a842ea92f8e03533` /
+`07a863d966d96283be79b6a26185ac2b1786450cf889d981e93a74f348820da6`.
+The refreshed selective-residual join bundle/audit/log hashes are
+`c350150ee8455e818ad8a4d34bd2b2aedb1e64ca889cc373d687acfe0180d24d` /
+`5e5594b2b0b5c64d64641ba5b59c1f48fc36ac9631d4412af60aac6c0a011a48` /
+`0d86e2ba06df6489050f0d1be608128496f50d44b3bfdd513b99e773a9506654`.
+It binds 25 J297 and 27 J326 continuation segments, with exactly one effective
+UNKNOWN in each fixed-pair case at states 3715/3768.  A forward
+Kissat-primary scan now runs on the exact J326 state-3768 leaf.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
