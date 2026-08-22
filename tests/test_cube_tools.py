@@ -69,6 +69,7 @@ CARTESIAN_CUBES = load_tool("generate_cartesian_cubes")
 SCREEN_VARIABLES = load_tool("screen_cube_variables")
 SCREENED_SPLITS = load_tool("select_screened_binary_splits")
 SCREENED_QUEUE = load_tool("export_screened_forced_queue")
+FORCED_QUEUE_CUBE = load_tool("materialize_forced_queue_cube")
 SCREENED_REFINER = load_tool("refine_screened_binary_cubes")
 QUEUED_REFINER = load_tool("refine_queued_binary_cubes")
 SELECTED_REFINEMENT = load_tool("refine_selected_binary_cubes")
@@ -492,6 +493,37 @@ class ExternalCubeToolTests(unittest.TestCase):
                     [result(10, 0.1), result(0, 1.0)],
                 ],
             )
+
+    def test_materializes_disjoint_forced_queue_survivors(self) -> None:
+        def queue(variable: int, survivor: int) -> dict[str, object]:
+            candidate = {
+                "parent_index": 0,
+                "variable": variable,
+                "contradictory_literal": -survivor,
+                "surviving_literal": survivor,
+            }
+            return {
+                "schema": SCREENED_QUEUE.SCHEMA,
+                "mode": "agreement",
+                "candidate_count": 1,
+                "parents_ranked": [{
+                    "parent_index": 0,
+                    "candidate_count": 1,
+                    "queue": [variable],
+                    "candidates": [candidate],
+                }],
+            }
+
+        self.assertEqual(
+            FORCED_QUEUE_CUBE.extend_cube([1, -2], [queue(3, -3), queue(4, 4)]),
+            [1, -2, -3, 4],
+        )
+        with self.assertRaisesRegex(ValueError, "assigned more than once"):
+            FORCED_QUEUE_CUBE.extend_cube([1, -2], [queue(2, -2)])
+        broken = queue(3, -3)
+        broken["parents_ranked"][0]["candidates"][0]["contradictory_literal"] = -3
+        with self.assertRaisesRegex(ValueError, "inconsistent literals"):
+            FORCED_QUEUE_CUBE.extend_cube([1, -2], [broken])
 
     def test_screened_refiner_removes_variables_assigned_by_any_parent(self) -> None:
         self.assertEqual(
