@@ -4628,5 +4628,57 @@ It binds 17/18 continuation segments and still projects exactly one effective
 UNKNOWN for each fixed-pair case.  Further staged 1-second screens and
 diversified direct probes remain in progress and diagnostic only.
 
+The next staged waves retained three J297 and two J326 candidates.  All five
+contradictory siblings were regenerated with compact DRAT and accepted by
+`drat-trim`, advancing the exact chains to states 3681/3726 without frontier
+growth.  Their actual terminal rows again equal their independently
+materialized predictions, with hashes
+`36f38922fc942bd497e0fd48b443d816da7c63666dd037f35b9d408355298fe1`
+and
+`23082e3b638adae7c42b010844aa255130489929e79c2361950f6d97994ae3dc`.
+
+The v21 incremental whole-chain replay has bundle/audit/log hashes
+`4baf83cac762ca1c24d87cfb857ebccd1bd4c621db8193bd62049ec09ab247ad` /
+`e430e634f6e33c4322a3c8147b3809dc7be1761db4e19d045505b490d1b3a608` /
+`c65791ce3393614cd689d3bf89c0f3ae7a1dd407c269c2533a0ec6304eb8b495`.
+The refreshed selective-residual join bundle/audit/log hashes are
+`fc1ec6d32d845fbc7acc8754081008091f89510c61f1392fda6f9b9f901ea4a0` /
+`aee4e29484c3b8c3a48ed367ed40e02f46725daa15d26d934e9d018b9bf89d87` /
+`2e2a2c131645e812eba6a399f1d417e69918e3056d95bf07d535137ec2a76365`.
+It binds 18/19 continuation segments and still projects exactly one effective
+UNKNOWN for each fixed-pair case.  Further staged one-second screens are
+running on these exact stronger leaves.
+
+The next J297 staged screen scanned 5,948 unassigned variables with Kissat.
+Its only one-sided candidate, variable 9046, was not confirmed by CaDiCaL at
+the same one-second budget.  The zero-candidate agreement queue is bound to
+the exact state-3681 parent and has hash
+`9aea25573c9cad5e2e48777bba047e02bbbb4a0e0df6448628254eed2372bbdc`.
+This is a dual-solver screening fixed point at one second, not proof that the
+remaining leaf is satisfiable or unsatisfiable.  A two-second staged screen
+and independent four-hour CaDiCaL/Kissat probes now run on that stronger leaf.
+
+For J326, Kissat found eight one-sided candidates among 5,891 variables and
+CaDiCaL confirmed three: 5232, 5263, and 9121.  Their exact-parent-bound queue
+has hash
+`532a34ed18cdd87504064b3fba8dca16848fed15fee105e390c21795846fa049`.
+All three contradictory siblings were regenerated with compact DRAT and
+accepted by `drat-trim`, advancing the exact chain from state 3726 to 3729.
+The actual terminal row is byte-identical to the independently materialized
+prediction with hash
+`d58d631f21b9729cb79a19dd176d53f40776967554ddb20ba0202378068583af`.
+
+The v22 incremental whole-chain replay has bundle/audit/log hashes
+`d25d24f112a1746acf657d57dda72d928da8e490a88fbd2c9c686520dfa43809` /
+`7214ed3b0d582615ca91226c73e35568ba3a8e0474a795c704a834f3e75ac251` /
+`db9b03fa6260908bf16f5fafa981a0bced2ad5bdcec970c66544e58eb3db40da`.
+The refreshed selective-residual join bundle/audit/log hashes are
+`c228f344658e423363e49018a0d9e72ccd05eb68504c6859bdff6f611b41e127` /
+`a2669a8db6435230874e9d56dda4f3144e627a783bdec1ba75e124152532a439` /
+`7c48009146aebe48d0fc6ab6f620283fa50b2b50f0fd77fda584124d87c9ea31`.
+It binds 18/20 continuation segments and still projects exactly one effective
+UNKNOWN for each fixed-pair case.  A further one-second J326 screen is running
+on the exact state-3729 leaf.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
