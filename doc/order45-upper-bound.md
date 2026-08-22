@@ -5209,5 +5209,35 @@ prefix-plus-fragment composition is checked as a standalone proof against the
 exact augmented source-root CNF, and that verified fragment is recursively
 composed at the next level.
 
+A fifth checkpoint layer was then taken beneath the two unfinished J297 v387
+f2 children and the two unfinished J326 v390 f1 children.  The four source
+writers were stopped independently for 0.47--1.02 seconds, copied, and
+immediately resumed.  The hash-bound replay results are:
+
+- J297 v387 f2-sub-2: two rows, prefix/snapshot/frontier hashes
+  `63c18941439baa0a3b2863288b3482f97c0c6c0344d897bbee0d7a54deaf89d3` /
+  `b9683a3d74017771f9b4865a5c5c50a5fb7bb005846a3e826dabb544dbad92b1` /
+  `52e2d74f4ca2b6c5bb49bf7d0d7089b8f3682fc5cef3413044ab684e56491c57`;
+- J297 v387 f2-sub-3: four rows, prefix/snapshot/frontier hashes
+  `afeead6f6c4acde5d22467eb932ed38da10b1070165dfcc6a53ef2fde98f7206` /
+  `d7964e813d8a9f4f14adcf1eb90940ed7f20ea13f240114c7af74e20291c5dba` /
+  `518bf9102f2a66a6ded811d8b1cdb6e7b4648dc04e97b80c8f1cff0ca436fd2b`;
+- J326 v390 f1-sub-1: one row, prefix/snapshot/frontier hashes
+  `a87202a5449bbb452e6d48dee31659e96f523be0d0a2449792e971d96190694c` /
+  `260bf7d4394603214a238811515569e52accc1cada847907e7c9c909f5a2deb3` /
+  `31d5a289935991a03a74886187433177cd16ccdb091c33c3dc041318a1dca316`;
+- J326 v390 f1-sub-2: three rows, prefix/snapshot/frontier hashes
+  `99d0c7761e9d27d172b9674e7609dd3813e154f64236bc0395dac0a32ae1ba45` /
+  `caef343e4a6aae1cffc78903942e0782b01c4a62eb0715c80559b0d0c26b7869` /
+  `3666b720bb7e6cf1e0f13ab548c6af93a997e99482fefd019b70aef9dd7c034a`.
+
+All ten fifth-layer rows have independent high-budget fragment producers.
+The first child of the three-row J326 group has closed; its two siblings are
+still open, so this is not yet a composable parent fragment.  Machine load is
+about 47 on 64 cores, with 165 GiB available memory and 1.6 TiB free on
+`/data`; the present bottleneck is search-tree tail latency rather than
+hardware capacity.  Further splitting is paused in favor of completing,
+composing, and independently replaying the existing groups.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
