@@ -1,6 +1,30 @@
 import Ramsey55.Definitions
+import Init.Data.List.OfFn
+import Init.Data.List.Nat.Sum
 
 namespace Ramsey55
+
+/-- The sum of `n` odd natural numbers is an even number plus `n`.  This is
+the arithmetic half of the odd-order handshake argument. -/
+theorem sum_ofFn_of_all_odd {n : Nat} (values : Fin n → Nat)
+    (odd : ∀ i : Fin n, ∃ half : Nat, values i = 2 * half + 1) :
+    ∃ half : Nat, (List.ofFn values).sum = 2 * half + n := by
+  induction n with
+  | zero =>
+      exact ⟨0, by simp [List.ofFn_zero]⟩
+  | succ n ih =>
+      have headOdd := odd (0 : Fin (n + 1))
+      have tailOdd : ∀ i : Fin n, ∃ half : Nat,
+          values i.succ = 2 * half + 1 := by
+        intro i
+        exact odd i.succ
+      rcases headOdd with ⟨headHalf, headValue⟩
+      rcases ih (fun i : Fin n => values i.succ) tailOdd with
+        ⟨tailHalf, tailSum⟩
+      refine ⟨headHalf + tailHalf, ?_⟩
+      rw [List.ofFn_succ]
+      simp [headValue, tailSum]
+      omega
 
 /-- Swap the two edge colours while keeping the ignored diagonal in the
 canonical `false` form required by `IsSimpleColoring`. -/
@@ -33,6 +57,10 @@ def coloringDegreeUpTo {n : Nat} (color : Coloring n) (v : Fin n) :
 false diagonal, so scanning all `n` labels counts exactly its graph degree. -/
 def coloringDegree {n : Nat} (color : Coloring n) (v : Fin n) : Nat :=
   coloringDegreeUpTo color v n (Nat.le_refl n)
+
+/-- The sum of the degrees of all labelled vertices. -/
+def coloringDegreeSum {n : Nat} (color : Coloring n) : Nat :=
+  (List.ofFn fun v : Fin n => coloringDegree color v).sum
 
 theorem coloringDegreeUpTo_complement_add {n : Nat} (color : Coloring n)
     (simple : IsSimpleColoring color) (v : Fin n) :
@@ -217,6 +245,79 @@ theorem order45_normalize_of_window_and_even
   exact order45_normalize_degree20_or22 color simple ramseyFree
     (order45_degree_candidate_of_window_and_even color window evenVertex)
 
+/-- On 45 vertices in the 20--24 degree window, an even total degree forces a
+degree-20, degree-22, or degree-24 vertex.  The proof excludes the alternative
+that all 45 degrees are 21 or 23 by the preceding odd-sum theorem. -/
+theorem order45_degree_candidate_of_window_and_even_sum
+    (color : Coloring 45)
+    (window : ∀ v : Fin 45,
+      20 ≤ coloringDegree color v ∧ coloringDegree color v ≤ 24)
+    (evenSum : ∃ half : Nat, coloringDegreeSum color = 2 * half) :
+    ∃ v : Fin 45,
+      coloringDegree color v = 20 ∨ coloringDegree color v = 22 ∨
+        coloringDegree color v = 24 := by
+  letI : Decidable (∃ v : Fin 45,
+      coloringDegree color v = 20 ∨ coloringDegree color v = 22 ∨
+        coloringDegree color v = 24) := inferInstance
+  by_cases candidate : ∃ v : Fin 45,
+      coloringDegree color v = 20 ∨ coloringDegree color v = 22 ∨
+        coloringDegree color v = 24
+  · exact candidate
+  · have allOdd : ∀ v : Fin 45, ∃ half : Nat,
+        coloringDegree color v = 2 * half + 1 := by
+      intro v
+      have bounds := window v
+      have not20 : coloringDegree color v ≠ 20 := by
+        intro degree20
+        exact candidate ⟨v, Or.inl degree20⟩
+      have not22 : coloringDegree color v ≠ 22 := by
+        intro degree22
+        exact candidate ⟨v, Or.inr (Or.inl degree22)⟩
+      have not24 : coloringDegree color v ≠ 24 := by
+        intro degree24
+        exact candidate ⟨v, Or.inr (Or.inr degree24)⟩
+      have alternatives : coloringDegree color v = 21 ∨
+          coloringDegree color v = 23 := by
+        omega
+      rcases alternatives with degree21 | degree23
+      · exact ⟨10, by omega⟩
+      · exact ⟨11, by omega⟩
+    rcases sum_ofFn_of_all_odd
+        (fun v : Fin 45 => coloringDegree color v) allOdd with
+      ⟨oddHalf, oddSum⟩
+    rcases evenSum with ⟨evenHalf, evenSum⟩
+    change (List.ofFn fun v : Fin 45 => coloringDegree color v).sum =
+      2 * evenHalf at evenSum
+    omega
+
+/-- Equivalently, the preceding candidate supplies an even-degree vertex. -/
+theorem order45_even_degree_of_window_and_even_sum
+    (color : Coloring 45)
+    (window : ∀ v : Fin 45,
+      20 ≤ coloringDegree color v ∧ coloringDegree color v ≤ 24)
+    (evenSum : ∃ half : Nat, coloringDegreeSum color = 2 * half) :
+    ∃ v : Fin 45, ∃ half : Nat, coloringDegree color v = 2 * half := by
+  rcases order45_degree_candidate_of_window_and_even_sum color window evenSum
+    with ⟨v, degree20 | degree22 | degree24⟩
+  · exact ⟨v, 10, by omega⟩
+  · exact ⟨v, 11, by omega⟩
+  · exact ⟨v, 12, by omega⟩
+
+/-- The degree window and even degree-sum conclusion of the handshake lemma
+are sufficient to reach the two SAT branches. -/
+theorem order45_normalize_of_window_and_even_sum
+    (color : Coloring 45) (simple : IsSimpleColoring color)
+    (ramseyFree : IsRamseyFree55 color)
+    (window : ∀ v : Fin 45,
+      20 ≤ coloringDegree color v ∧ coloringDegree color v ≤ 24)
+    (evenSum : ∃ half : Nat, coloringDegreeSum color = 2 * half) :
+    ∃ normalized : Coloring 45, ∃ v : Fin 45,
+      IsSimpleColoring normalized ∧ IsRamseyFree55 normalized ∧
+        (coloringDegree normalized v = 20 ∨
+          coloringDegree normalized v = 22) := by
+  exact order45_normalize_degree20_or22 color simple ramseyFree
+    (order45_degree_candidate_of_window_and_even_sum color window evenSum)
+
 /-- Twice the constant part of the order-45 local excess contribution for a
 vertex of degree `degree`.  If `H` is its neighbourhood and `J` is the
 complement of its dual neighbourhood, the full doubled contribution is this
@@ -278,5 +379,9 @@ theorem order45_dense_pair_of_nonpositive_degree22
 #print axioms order45_normalize_degree20_or22
 #print axioms order45_degree_candidate_of_window_and_even
 #print axioms order45_normalize_of_window_and_even
+#print axioms sum_ofFn_of_all_odd
+#print axioms order45_degree_candidate_of_window_and_even_sum
+#print axioms order45_even_degree_of_window_and_even_sum
+#print axioms order45_normalize_of_window_and_even_sum
 
 end Ramsey55

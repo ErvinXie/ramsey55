@@ -45,12 +45,16 @@ colouring with a degree-20, degree-22, or degree-24 vertex yields a Ramsey-free
 simple colouring in the degree-20 or degree-22 branch.  A second theorem
 accepts the actual degree window and an even-degree vertex (the output expected
 from the handshake lemma), derives the 20/22/24 candidate arithmetically, and
-feeds it into that normalization.  A final formal bridge still needs a
+feeds it into that normalization.  The formalization now also defines the sum
+of all graph degrees, proves the odd-list arithmetic needed at order 45, and
+extracts a 20/22/24 candidate from the degree window plus an even total degree.
+Thus the handshake obligation is isolated to proving that this concrete
+degree sum is twice an edge count.  A final formal bridge still needs a
 machine-checked \(R(4,5)=25\) dependency, derivation of the actual degree
-window, the handshake lemma itself, and the relabelling equivalence.  The
-complement and degree theorems pass ARM Lean with only standard
-`propext`/`Quot.sound` dependencies, and the full pinned Lean project builds
-successfully in 79 jobs.
+window, that double-counting equality, and the relabelling equivalence.  The
+complement and degree identities use only standard `propext`/`Quot.sound`;
+the finite candidate extraction additionally reports `Classical.choice`.
+The full pinned Lean project builds successfully in 79 jobs.
 
 `formal/Ramsey55/CubeCover.lean` now supplies the generic certificate
 composition layer: binary literal splits preserve cube coverage, and an
