@@ -5585,5 +5585,15 @@ v406 f320, v407 f220, v408 f312, and v404; two cover v403 f21.  This fills all
 fragment is interchangeable with its exact same-row standard/high-budget
 competitors only after `status=20` and the normal finalizer gate.
 
+The six old `order45-strata/checkpoint-compose-d20-legacy-20260815` solver
+processes were audited before further allocation.  They are already in the
+kernel `T` state, use no CPU, and their proof files have not changed since
+August 15; no process or artifact was deleted.  Five of those available
+logical-core slots were then assigned to primary-only alternatives for both
+v406 f321 rows and all three v406 f331 rows.  Together with the earlier
+alternatives, the machine now runs 63 active proof producers while retaining
+all six paused legacy recovery processes.  CPU is saturated, so no further
+search duplication is launched before a completion frees capacity.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
