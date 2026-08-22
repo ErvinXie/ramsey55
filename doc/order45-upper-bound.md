@@ -5144,14 +5144,17 @@ The complementary forward Kissat-primary scan was also empty, with queue hash
 Both independently materialized terminals are unchanged from state 3771,
 hash
 `609bd2e966b0d10dbaa9ac3e4caf0892b253e9d3ca3af83c198c2e5576fb5e6a`.
-J297 state 3717 likewise produced an empty reverse CaDiCaL-primary queue,
-hash
-`5e1181aa703974f0683cccdee7e4ef6751d0b15dddf5e15c95546b19120eb0c9`,
-and an unchanged terminal at
+J297 state 3717 likewise produced empty reverse CaDiCaL-primary and forward
+Kissat-primary queues, hashes
+`5e1181aa703974f0683cccdee7e4ef6751d0b15dddf5e15c95546b19120eb0c9`
+and
+`1e6c6c916a5f67840115dcd5d1f4b57409a043f288acc690e7561ca48ee67b82`.
+Both independently materialized terminals remain unchanged at
 `343020bf56c06ac1d9f4c57c1ce64c580f639687fb09827e89f6e730ebc059ff`.
 These observations bind complete two-second screening fixed points only; they
-do not certify either leaf UNSAT.  A forward Kissat-primary scan continues on
-the exact J297 state-3717 leaf.
+do not certify either leaf UNSAT.  Both exact residual leaves are now fixed
+points in both solver directions, so subsequent resources are assigned to
+proof-producing trees rather than repeated screening at the same boundary.
 
 The two direct 14,400-second Kissat attempts on the state-3704/state-3752
 roots both ended UNKNOWN, with neither a SAT model nor an UNSAT proof.  Their
