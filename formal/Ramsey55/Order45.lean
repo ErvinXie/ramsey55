@@ -2,6 +2,58 @@ import Ramsey55.Definitions
 
 namespace Ramsey55
 
+/-- Swap the two edge colours while keeping the ignored diagonal in the
+canonical `false` form required by `IsSimpleColoring`. -/
+def complementColoring {n : Nat} (color : Coloring n) : Coloring n :=
+  fun u v => if u = v then false else !color u v
+
+theorem complementColoring_isSimple {n : Nat} (color : Coloring n)
+    (simple : IsSimpleColoring color) :
+    IsSimpleColoring (complementColoring color) := by
+  constructor
+  · intro vertex
+    simp [complementColoring]
+  · intro left right
+    by_cases equal : left = right
+    · subst right
+      simp [complementColoring]
+    · have reverse : right ≠ left := Ne.symm equal
+      simp [complementColoring, equal, reverse, simple.2 left right]
+
+theorem monochromatic5_complement_iff {n : Nat} (color : Coloring n)
+    (a b c d e : Fin n)
+    (ab : a.val < b.val) (bc : b.val < c.val)
+    (cd : c.val < d.val) (de : d.val < e.val) :
+    Monochromatic5 (complementColoring color) a b c d e ↔
+      Monochromatic5 color a b c d e := by
+  have neOfValLt : ∀ {left right : Fin n},
+      left.val < right.val → left ≠ right := by
+    intro left right less equal
+    subst right
+    omega
+  have ac : a.val < c.val := by omega
+  have ad : a.val < d.val := by omega
+  have ae : a.val < e.val := by omega
+  have bd : b.val < d.val := by omega
+  have be : b.val < e.val := by omega
+  have ce : c.val < e.val := by omega
+  simp [Monochromatic5, complementColoring,
+    neOfValLt ab, neOfValLt ac, neOfValLt ad, neOfValLt ae,
+    neOfValLt bc, neOfValLt bd, neOfValLt be,
+    neOfValLt cd, neOfValLt ce, neOfValLt de]
+
+theorem ramseyFree55_complement_iff {n : Nat} (color : Coloring n) :
+    IsRamseyFree55 (complementColoring color) ↔ IsRamseyFree55 color := by
+  constructor
+  · intro complementFree a b c d e ab bc cd de monochromatic
+    exact complementFree a b c d e ab bc cd de
+      ((monochromatic5_complement_iff color a b c d e ab bc cd de).2
+        monochromatic)
+  · intro colorFree a b c d e ab bc cd de monochromatic
+    exact colorFree a b c d e ab bc cd de
+      ((monochromatic5_complement_iff color a b c d e ab bc cd de).1
+        monochromatic)
+
 /-- Twice the constant part of the order-45 local excess contribution for a
 vertex of degree `degree`.  If `H` is its neighbourhood and `J` is the
 complement of its dual neighbourhood, the full doubled contribution is this
@@ -53,5 +105,8 @@ theorem order45_dense_pair_of_nonpositive_degree22
 #print axioms order45_dense_pair_of_nonpositive_degree20
 #print axioms order45_dense_pair_of_nonpositive_degree21
 #print axioms order45_dense_pair_of_nonpositive_degree22
+#print axioms complementColoring_isSimple
+#print axioms monochromatic5_complement_iff
+#print axioms ramseyFree55_complement_iff
 
 end Ramsey55

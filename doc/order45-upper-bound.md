@@ -33,11 +33,14 @@ placing its neighbours first gives exactly two fixed-star branches:
 `src/ramsey55/order45.py` implements this normalization on explicit graphs,
 and its degree-20, degree-22, and complemented degree-24 paths are unit tested.
 The formal file `formal/Ramsey55/Order45.lean` currently checks the arithmetic
-parity reduction from degree counts. A final formal bridge still needs a
-machine-checked \(R(4,5)=25\) dependency, actual graph degree counts, colour
-complementation, and the relabelling equivalence. The complete 75-target Lean
-project, including this new file, builds successfully with pinned Lean 4.31.0
-on the ARM node.
+parity reduction from degree counts.  It now also defines the
+diagonal-normalized colour complement and proves that complementation
+preserves simple colourings and is an iff on `IsRamseyFree55`; the latter proof
+reduces all ten off-diagonal equalities of an increasing five-tuple.  A final
+formal bridge still needs a machine-checked \(R(4,5)=25\) dependency, actual
+graph degree counts, the degree-24-to-20 count under this complement, and the
+relabelling equivalence.  The new complement theorems pass ARM Lean with only
+standard `propext`/`Quot.sound` dependencies.
 
 `formal/Ramsey55/CubeCover.lean` now supplies the generic certificate
 composition layer: binary literal splits preserve cube coverage, and an
