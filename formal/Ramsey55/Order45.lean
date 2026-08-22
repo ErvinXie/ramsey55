@@ -150,6 +150,40 @@ theorem ramseyFree55_complement_iff {n : Nat} (color : Coloring n) :
       ((monochromatic5_complement_iff color a b c d e ab bc cd de).1
         monochromatic)
 
+/-- The degree-24 branch of a hypothetical order-45 counterexample reduces
+in one checked step to a degree-20 counterexample by swapping edge colours. -/
+theorem order45_ramseyFree_degree24_complement
+    (color : Coloring 45) (simple : IsSimpleColoring color)
+    (ramseyFree : IsRamseyFree55 color) (v : Fin 45)
+    (degree24 : coloringDegree color v = 24) :
+    IsSimpleColoring (complementColoring color) ∧
+      IsRamseyFree55 (complementColoring color) ∧
+      coloringDegree (complementColoring color) v = 20 := by
+  exact ⟨complementColoring_isSimple color simple,
+    (ramseyFree55_complement_iff color).2 ramseyFree,
+    order45_complement_degree24 color simple v degree24⟩
+
+/-- Once an order-45 counterexample supplies a vertex of even degree in its
+20--24 degree window, colour complementation reduces it to one of the two
+degree branches used by the SAT calculation. -/
+theorem order45_normalize_degree20_or22
+    (color : Coloring 45) (simple : IsSimpleColoring color)
+    (ramseyFree : IsRamseyFree55 color)
+    (candidate : ∃ v : Fin 45,
+      coloringDegree color v = 20 ∨ coloringDegree color v = 22 ∨
+        coloringDegree color v = 24) :
+    ∃ normalized : Coloring 45, ∃ v : Fin 45,
+      IsSimpleColoring normalized ∧ IsRamseyFree55 normalized ∧
+        (coloringDegree normalized v = 20 ∨
+          coloringDegree normalized v = 22) := by
+  rcases candidate with ⟨v, degree20 | degree22 | degree24⟩
+  · exact ⟨color, v, simple, ramseyFree, Or.inl degree20⟩
+  · exact ⟨color, v, simple, ramseyFree, Or.inr degree22⟩
+  · have reduced := order45_ramseyFree_degree24_complement color simple
+        ramseyFree v degree24
+    exact ⟨complementColoring color, v, reduced.1, reduced.2.1,
+      Or.inl reduced.2.2⟩
+
 /-- Twice the constant part of the order-45 local excess contribution for a
 vertex of degree `degree`.  If `H` is its neighbourhood and `J` is the
 complement of its dual neighbourhood, the full doubled contribution is this
@@ -207,5 +241,7 @@ theorem order45_dense_pair_of_nonpositive_degree22
 #print axioms order45_complement_degree24
 #print axioms monochromatic5_complement_iff
 #print axioms ramseyFree55_complement_iff
+#print axioms order45_ramseyFree_degree24_complement
+#print axioms order45_normalize_degree20_or22
 
 end Ramsey55

@@ -39,12 +39,15 @@ preserves simple colourings and is an iff on `IsRamseyFree55`; the latter proof
 reduces all ten off-diagonal equalities of an increasing five-tuple.  It also
 defines graph degree by an explicit bounded scan, proves in general that a
 vertex's original and complemented degrees sum to `n - 1`, and specializes
-this to the required order-45 degree-24-to-degree-20 step.  A final formal
-bridge still needs a machine-checked \(R(4,5)=25\) dependency, the connection
-from an actual graph to the degree-window and parity counts, and the
-relabelling equivalence.  The complement and degree theorems pass ARM Lean
-with only standard `propext`/`Quot.sound` dependencies, and the full pinned
-Lean project builds successfully in 79 jobs.
+this to the required order-45 degree-24-to-degree-20 step.  These facts are
+composed into a checked normalization theorem: any Ramsey-free simple
+colouring with a degree-20, degree-22, or degree-24 vertex yields a Ramsey-free
+simple colouring in the degree-20 or degree-22 branch.  A final formal bridge
+still needs a machine-checked \(R(4,5)=25\) dependency, the connection from an
+actual graph to the degree-window and parity counts, and the relabelling
+equivalence.  The complement and degree theorems pass ARM Lean with only
+standard `propext`/`Quot.sound` dependencies, and the full pinned Lean project
+builds successfully in 79 jobs.
 
 `formal/Ramsey55/CubeCover.lean` now supplies the generic certificate
 composition layer: binary literal splits preserve cube coverage, and an
