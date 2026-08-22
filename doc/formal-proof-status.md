@@ -193,8 +193,13 @@ degree-22 mothers now yields `ForcesMonochromatic5 45`. The most concrete
 form consumes the generated 28/36/45 typed DIMACS cube lists, the already
 proved counter-tail inclusions, and one leaf-UNSAT fact per cube. Thus no
 fixed-pair H100/J132 result is confused with a global structural cover. The
-complete ARM root build passes 84 jobs; all three new target theorems use only
-the same standard axioms and no `sorryAx`.
+new factored concrete theorem uses
+`CatalogBoundedDenseExcessCnfComplete`: the local-catalog bridge upgrades
+these range-bounded encoder obligations to full mother completeness from the
+single explicit `Order45ExcessCatalogRanges` proposition. This isolates the
+five published order-20 through order-24 range theorems instead of burying
+them in the encoder premise. All target theorems use only the same standard
+axioms and no `sorryAx`.
 
 [Order45LocalCatalog.lean](../formal/Ramsey55/Order45LocalCatalog.lean) now
 checks the graph-theoretic side of the published edge-range inputs. It proves

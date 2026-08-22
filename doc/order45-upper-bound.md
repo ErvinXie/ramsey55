@@ -254,9 +254,13 @@ excess witness with complete d20/d21/d22 graph-to-mother encodings and either
 mother UNSAT or formula-relative cube refutations. Its concrete form uses the
 committed 28/36/45 typed DIMACS cube families and the checked counter-tail
 cover theorems. What remains is deliberately explicit: prove the full mother
-encoding completeness (including the lex representative and published edge
-ranges) and import checked UNSAT for every leaf. The two H100/J132 formulas
-are only one local top stratum and are not treated as this global cover.
+encoding completeness and import checked UNSAT for every leaf. A factored
+variant narrows the encoder interface to
+`CatalogBoundedDenseExcessCnfComplete` and exposes the five published edge
+ranges separately as `Order45ExcessCatalogRanges`; the proved local-padding
+bridge upgrades those bounded premises to the original completeness
+contract. The two H100/J132 formulas are only one local top stratum and are
+not treated as this global cover.
 
 `tools/cadical_assumption_scan.cpp` loads each mother once and reuses only
 globally valid learned clauses while scanning cubes. At 10,000 conflicts per
