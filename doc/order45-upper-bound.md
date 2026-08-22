@@ -40,7 +40,8 @@ reduces all ten off-diagonal equalities of an increasing five-tuple.  A final
 formal bridge still needs a machine-checked \(R(4,5)=25\) dependency, actual
 graph degree counts, the degree-24-to-20 count under this complement, and the
 relabelling equivalence.  The new complement theorems pass ARM Lean with only
-standard `propext`/`Quot.sound` dependencies.
+standard `propext`/`Quot.sound` dependencies, and the full pinned Lean project
+builds successfully in 79 jobs.
 
 `formal/Ramsey55/CubeCover.lean` now supplies the generic certificate
 composition layer: binary literal splits preserve cube coverage, and an
