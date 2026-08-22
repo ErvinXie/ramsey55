@@ -5299,5 +5299,25 @@ terminated with its 605 MiB partial proof and TSV retained.  The f10/f21
 siblings and all f11 rows remain open.  No group is promoted before all of its
 children pass the finalization gate.
 
+After more direct parents closed and old races timed out, v395 checkpointed
+the remaining v390 f0-sub-1 and f2-sub-2/sub-3 roots.  Their writers were
+paused independently for 1.3--1.6 seconds and immediately resumed.  The
+f01/f22/f23 frontiers contain 2/2/4 rows, with prefix/snapshot/frontier hashes:
+
+- f01: `4324df36a7a290b4b1d4622e479d4e47048c49c07b4b7abaf643b5743e6a206d` /
+  `d407fcf04c2c069f2e3498606e725bcf65c6a8810fbf0946b58f79c35bef7fcd` /
+  `6f9e5fedc39dde2de1f1c819c9c6d5bc466eb12f37eba5f8af75c6134d291cf5`;
+- f22: `dbef1a68a4b92fe300484fd9a63b4fdaa9dfe2821ce33b64c2c9bb551b0c164a` /
+  `2c2a2f8b52df8369f1054348ba61d90aa22226a5d8277bd4f9b1c76c7e67e8ff` /
+  `cd579be2ecf834f9ce227c696ad3a58fd70aa6dc3e40013ff3386691450bff98`;
+- f23: `822fb7de2b77603229e92ecca2397c8a626280c3f8ce59ee3a548a2816f2980a` /
+  `e2c831d4c9017e10f5e0b9aa3e7ebf280641125f41255a439b7e05a7bb604323` /
+  `f758e8900c8bc9db4afdf59bab857a2827c8d25c5a49321e10187136c6026881`.
+
+All eight rows received producers, adding five net cores.  f01 child 0 closed
+within one minute; its sibling and both other groups remain open.  v390
+f0-sub-0 and f2-sub-0/sub-1 have already closed directly, so v395 targets
+exactly the remaining sides needed to complete those parent groups.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
