@@ -11,6 +11,7 @@ import unittest
 
 ROOT = Path(__file__).parents[1]
 TOOL = ROOT / "tools/finalize_cadical_dfs_checkpoint.py"
+REAL_CHECKER = ROOT / ".tools/src/drat-trim/drat-trim"
 
 
 def sha256(path: Path) -> str:
@@ -192,6 +193,104 @@ class FinalizeCadicalDfsCheckpointTests(unittest.TestCase):
             )
             self.assertNotEqual(completed.returncode, 0)
             self.assertIn("is not checker-verified", completed.stderr)
+
+    @unittest.skipUnless(REAL_CHECKER.is_file(), "drat-trim is not built")
+    def test_real_checker_accepts_recursive_finalization(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            cnf = root / "root.cnf"
+            cnf.write_text("p cnf 1 2\n1 0\n-1 0\n", encoding="ascii")
+
+            lower_prefix = root / "lower-prefix.drat"
+            lower_child = root / "lower-child.drat"
+            lower_log = root / "lower-child.log"
+            lower_replay = root / "lower-replay.json"
+            lower_prefix.write_bytes(b"")
+            lower_child.write_bytes(b"")
+            lower_log.write_text(
+                "proof_fragment\t1\n"
+                "root_index\tall\n"
+                "status\t20\n"
+                "cubes\t1\n"
+                "attempts\t1\n"
+                "splits\t0\n"
+                "maximum_extra_depth\t0\n",
+                encoding="ascii",
+            )
+            lower_replay.write_text(
+                json.dumps(
+                    {
+                        "schema": "ramsey55.cadical-dfs-prefix-replay.v1",
+                        "proof_prefix_sha256": sha256(lower_prefix),
+                        "output_count": 1,
+                    }
+                ),
+                encoding="utf-8",
+            )
+            lower_fragment = root / "lower-fragment.drat"
+            lower_manifest = root / "lower-finalization.json"
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(TOOL),
+                    str(cnf),
+                    str(lower_replay),
+                    str(lower_prefix),
+                    str(lower_fragment),
+                    str(root / "lower-standalone.drat"),
+                    str(root / "lower-checker.log"),
+                    "--child",
+                    str(lower_child),
+                    str(lower_log),
+                    "--checker",
+                    str(REAL_CHECKER),
+                    "--manifest",
+                    str(lower_manifest),
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+            )
+
+            upper_prefix = root / "upper-prefix.drat"
+            upper_replay = root / "upper-replay.json"
+            upper_prefix.write_bytes(b"")
+            upper_replay.write_text(
+                json.dumps(
+                    {
+                        "schema": "ramsey55.cadical-dfs-prefix-replay.v1",
+                        "proof_prefix_sha256": sha256(upper_prefix),
+                        "output_count": 1,
+                    }
+                ),
+                encoding="utf-8",
+            )
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(TOOL),
+                    str(cnf),
+                    str(upper_replay),
+                    str(upper_prefix),
+                    str(root / "upper-fragment.drat"),
+                    str(root / "upper-standalone.drat"),
+                    str(root / "upper-checker.log"),
+                    "--child",
+                    str(lower_fragment),
+                    str(lower_manifest),
+                    "--checker",
+                    str(REAL_CHECKER),
+                    "--manifest",
+                    str(root / "upper-finalization.json"),
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+            )
+            self.assertIn(
+                "s VERIFIED", (root / "lower-checker.log").read_text()
+            )
+            self.assertIn(
+                "s VERIFIED", (root / "upper-checker.log").read_text()
+            )
 
 
 if __name__ == "__main__":

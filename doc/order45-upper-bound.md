@@ -5567,8 +5567,11 @@ It then scans the supplied binary DRAT fragment again and runs a fresh
 standalone `drat-trim` over the entire upper composition.  Thus a lower
 manifest is only ordered provenance; the upper checker remains the soundness
 gate.  Tests cover successful recursive composition, proof-hash mismatch,
-and an unverified lower manifest.  Six focused tests and the full 200-test
-Python suite pass locally.
+and an unverified lower manifest.  A real-checker integration test uses an
+inconsistent two-unit CNF and empty no-final-clause fragments: the lower and
+then upper standalone compositions both pass genuine ARM `drat-trim`.
+All seven focused tests pass on ARM.  The full local suite passes 201 tests,
+with only this test skipped because the local checker binary is not built.
 
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
