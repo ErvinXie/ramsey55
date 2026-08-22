@@ -306,8 +306,35 @@ data boundary for the 2,443,518-clause Ramsey stream. The same file defines
 the exact fixed-star unit and proves all 44 units from `HasFixedStar`. The
 complete ARM build passes 88 jobs; all new audits contain only `propext`,
 `Classical.choice`, and `Quot.sound`, with no `sorryAx` or native-decision
-axiom. The unproved mother prefix is now the 44 degree-window counter
-encodings, lex-leader auxiliaries, and exact generated-stream shape/inclusion.
+axiom.
+
+[Order45DegreeWindowAssignment.lean](../formal/Ramsey55/Order45DegreeWindowAssignment.lean)
+closes the next constructive layer. It proves that the generator's 44
+incident inputs for each vertex, in increasing-label order with the diagonal
+omitted, have truth count exactly equal to the graph degree. It then constructs
+all 44 width-25 sequential-counter tables. Their 800 variables per vertex are
+proved duplicate-free and pairwise disjoint, and occupy exactly identifiers
+991 through 36190. The resulting overlay preserves all graph primaries and
+satisfies every row-major counter clause plus the two `[20,24]` range units
+for every vertex, assuming the already isolated `ForcesRed4OrBlue5 25`
+graph-theoretic input.
+
+The same file composes this global degree assignment with each concrete H/J
+assignment without overwriting the earlier interval. For d20/d21/d22 it now
+constructs one assignment satisfying the Ramsey-clause shape interface,
+fixed-star units, all 44 degree encodings, and the complete H/J counter tail
+from the corresponding exact local counts, catalog bounds, and dense-excess
+inequality. `order45Degree20/21/22NonLexMotherFormula_satisfied` records the
+exact retained order after deleting only the cross-row lex block. This is a
+conditional satisfiability/completeness bridge, not an UNSAT result. The full
+89-job ARM build succeeds; its log SHA-256 is
+`6910fd89e57a34a301ecd71f9caaaa7236381f7dd3920656a1be24202765df4b`.
+Every added axiom audit contains only `propext`, `Classical.choice`, and
+`Quot.sound`; no `sorryAx` or native-decision axiom appears. Remaining mother
+work is the concrete lex-leader assignment/encoding bridge and exact generated
+DIMACS stream shape/inclusion. The external `R(4,5)=25` import, five catalog
+edge-range inputs, and every computational leaf UNSAT certificate also remain
+explicit obligations.
 
 The order-45 file instantiates this theorem at the actual H/J row counts and
 counter widths: `(190,101)/(276,133)`, `(210,108)/(253,123)`, and

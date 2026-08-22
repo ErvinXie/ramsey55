@@ -5909,5 +5909,18 @@ deletions, and 61,659 protected deletions omitted. Its SHA-256 is
 The ordinary checker is still running, so this artifact is an experiment and
 has not replaced any addition-only finalization.
 
+The formal non-lex mother assignment is now constructive. The new
+`Order45DegreeWindowAssignment.lean` identifies each generator incident stream
+with the corresponding graph degree, fills all 35,200 degree-counter state
+variables in the exact 991--36190 interval, proves all 44 `[20,24]` encodings,
+and then overlays the existing H/J assignments for d20/d21/d22. Under the
+explicit `R(4,5)=25`, local count, range, and dense-excess premises, the merged
+assignment satisfies the Ramsey-shape interface, fixed star, degree windows,
+and complete counter tail. The only omitted mother block is cross-row lex.
+The complete 89-job ARM build passed with log hash
+`6910fd89e57a34a301ecd71f9caaaa7236381f7dd3920656a1be24202765df4b` and no
+`sorryAx` or native-decision axiom. Concrete lex and generated-DIMACS binding
+remain open, so this does not promote any computational checkpoint.
+
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.
