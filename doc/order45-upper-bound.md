@@ -5453,5 +5453,33 @@ and replay produced two rows with proof-prefix/snapshot/frontier hashes
 Both rows received producers.  At the first combined post-launch audit v402
 had already closed two of three children; v403/v404 were still open.
 
+The sole remaining v402 child followed a serial-looking split chain: each
+60-second split had one side close quickly and left only the other side open.
+v405 preserved a recovery checkpoint after a 0.260-second pause, but exact
+replay again produced only one open row, so no duplicate producer was
+launched.  Its proof-prefix/snapshot/frontier hashes are
+`517ac22ff97edb5e1e17fca5640da7799117d7e9fd42508bcec95698fd60ffe2` /
+`51d9073895f1dfe8c0501359aad81c9f409267ed89b56cd34e52771274c23c05` /
+`739fc5a734b8498454e3ba23676d653ea4d698813228264f5b9d4017390dfb8c`.
+
+The available cores were instead assigned to three sibling blockers on the
+same critical v400 path.  v406 checkpointed f32 children 0/1 and f33 child 1;
+their writers paused for 1.368/1.089/1.543 seconds and resumed immediately.
+Replay exposed 2/2/3 rows.  The proof-prefix/snapshot/frontier hashes are:
+
+- f320: `a8b72bbb6d5f854f9afca288ded08c2ca72889064ace43eae5b3d4bc82b18c24` /
+  `41c284bda6b211add1d05bb2dff9503d060635d53558e9679008373964d78432` /
+  `a4ff080930e08a25013c933310bd680eeac7973389a7f782e190ae86df30120b`;
+- f321: `291576503f374beb8f91667f90899283fe5889bb0db0e7a707e700635eba1764` /
+  `037d4d0d5d57cec33aa72f80d4e576fc42baed1cecbdfa64bb47e601d73a136c` /
+  `4a95d1796bb1ff4e3070fad776fde0e37d23ad5f83dc49a2db6d5462bdccfdf7`;
+- f331: `6d1be8112e1a872af20b58747e1829974607174978715279d68c0fb2970cc6de` /
+  `3b999495d5e3699668d34d8ab4c86f8ccc208bd611c9b5cabca757f208f4097d` /
+  `2a2538372fbe0b2a4cc893545d743926b1cd85062de6274c018fa4062a1e23ad`.
+
+All seven replay rows received high-budget fragment producers.  They must be
+finalized as three separate exact augmented-CNF fragments before replacing
+their v400 source children.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
