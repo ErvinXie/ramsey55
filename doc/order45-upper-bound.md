@@ -1,6 +1,6 @@
 # Order-45 upper-bound program
 
-Updated: 2026-08-22
+Updated: 2026-08-23
 
 ## Current status
 
@@ -179,6 +179,18 @@ complementation, an excess witness can have degree 20, 21, or 22. This is
 different from the complete fixed-star reduction above: parity removes the
 degree-21 SAT branch, but it does **not** prove that the nonpositive excess
 witness is even-degree.
+
+The global identity and witness extraction are now kernel-checked in
+`formal/Ramsey55/Order45Excess.lean`. The proof uses a symmetric ordered-
+triple score: empty and complete triples contribute zero, while every one-
+edge or two-edge orbit cancels as `2 - 1 - 1`. It proves the three finite
+summation axes commute, obtains an exact global sum of zero, and shows that
+colour complementation preserves the local score. Combined with the 20--24
+window, this produces a Ramsey-free nonpositive witness in degree 20, 21, or
+22. The formal threshold theorem consumes an explicit local H/J edge-count
+contract and yields 226/222/220. Binding those abstract counts to the graph
+neighbourhoods and then to the generated DIMACS counters remains open; the
+new theorem does not claim that data bridge or any SAT branch UNSAT.
 
 The public `r45extreme` data gives the following exact layer audit:
 

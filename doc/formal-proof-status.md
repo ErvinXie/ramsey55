@@ -159,8 +159,25 @@ theorems have empty axiom audits; the split theorems use only Lean's standard
 This is the formal composition interface, not yet the completed order-45
 proof. Remaining formal work includes connecting the concrete DIMACS encoder
 and its variable map to graph colourings and the abstract counter development,
-importing or checking the generated cube data and leaf UNSAT results, and connecting the full
-excess-witness reduction to an arbitrary Ramsey-free 45-vertex colouring.
+and importing or checking the generated cube data and leaf UNSAT results.
+
+[Order45Excess.lean](../formal/Ramsey55/Order45Excess.lean) now closes the
+pure global part of the excess-witness reduction. It assigns an integral
+score to every ordered three-label orbit, proves the one-edge/two-edge
+`2 - 1 - 1 = 0` cancellation, commutes the three finite summation axes, and
+derives that the sum of all vertex scores is exactly zero. Hence every
+nonempty simple colouring has a nonpositive vertex. Under the checked
+20--24 degree window, colour complementation preserves that score and
+normalizes a Ramsey-free witness to degree 20, 21, or 22. A final theorem
+turns the exact local H/J edge-count contract into the three thresholds
+226/222/220. The complete 83-job ARM build passes, and the new axiom audits
+contain only `propext` and `Quot.sound`, with no `sorryAx`.
+
+The H/J contract is intentionally still explicit: the next graph-to-CNF
+bridge must prove that the concrete neighbourhood and complemented-
+nonneighbour edge counters have the values used by the generated DIMACS
+formulas. Relabelling the selected witness to the fixed apex and binding the
+exact edge-range inputs also remain separate obligations.
 
 [Order45CubeCover.lean](../formal/Ramsey55/Order45CubeCover.lean) now checks
 the arithmetic and ordering of the concrete edge-pair layer. It defines the
