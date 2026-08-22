@@ -4680,5 +4680,75 @@ It binds 18/20 continuation segments and still projects exactly one effective
 UNKNOWN for each fixed-pair case.  A further one-second J326 screen is running
 on the exact state-3729 leaf.
 
+Cross-solver agreement is useful screening corroboration but is not part of
+the final trust path: a candidate is adopted only after an independently
+generated DRAT proof passes `drat-trim`.  Re-examining the complete primary
+tables therefore recovered candidates that the one-second confirmation stage
+had missed.  The J297 primary-only queue has hash
+`025e81892dc79cfe86ce7412fe72467d5edc9438e5ae36f758e884dfae086f06`.
+Its sole candidate, variable 9046, received a fresh checked Kissat proof and
+advanced the exact endpoint to state 3682.  The actual and predicted terminal
+rows match with hash
+`dc70151dde1f1683fe99080e665810c1de8a5024fd20cc07b9f148a32b621af0`.
+
+The analogous J326 primary queue has hash
+`069bc9a6ea9540390f71ea19a218726c0a3e8992bcf85f524d106180d9098530`
+and contains eight candidates, including the three cross-solver agreements.
+All eight fresh Kissat proofs passed `drat-trim`.  This gives a clean segment
+from state 3726 to 3734 and supersedes the shorter three-round v22 segment.
+The terminal row equals the independently materialized primary-queue
+prediction with hash
+`09a9f2461b8026b7f280fc906fac3be4289462be36671b4e5c8986612d62668a`.
+
+The v23 incremental replay starts from the common v21 base and appends the
+one-round J297 and eight-round J326 primary-queue segments, so it contains no
+overlap with v22.  Its bundle/audit/log hashes are
+`0d09ecbd37f42d44f6c001963e1ec59d3c3b48f07b052dabfe4deae553395baa` /
+`e59b8115ebd7eea4bc027cfeedf91e5ab8cf3e2dc6eb53cbcb49b8244970384f` /
+`9b4ccaf7823caf498683e6e8aaad2371503d8792cd98cf1990b163959f9c072d`.
+The refreshed selective-residual join bundle/audit/log hashes are
+`763c9472049a8f117f1f10dc06d150ac52496262f8bcec1ca13615b897307755` /
+`4e4641790140d161a3486db8d11180e73bd44a54553f318c967e2c9a7c0da2cb` /
+`bdfba54e55dc1c3925fd28d93c1c4010d1b5322cf3fd979cbeb9aed0aa266297`.
+It binds 19/20 continuation segments, ends at states 3682/3734, and still
+projects one effective UNKNOWN per case.  A reverse staged screen now gives
+CaDiCaL a full-variable pass on the latest J326 leaf to search for candidates
+that a Kissat-primary pass cannot see.
+
+At two seconds, the next J297 scan produced 15 cross-solver agreements and 19
+Kissat primary candidates.  The complete primary queue has hash
+`de09997d82205f23e10df9f9e19a9601cdad251f4c049b2a3ff981d4bd0a3158`.
+Every candidate received a fresh Kissat proof accepted by `drat-trim`, so the
+single-round v23 J297 suffix can be replaced by a clean 19-round segment from
+state 3681 to 3700.  Its actual terminal row equals the independently
+materialized prediction with hash
+`3ba53864de9e480eb60d70d3d5640761c262c8ea80c5901a59826d2d244264a8`.
+
+The reverse J326 scan found eight CaDiCaL-primary candidates and Kissat
+confirmed all eight.  The reverse primary queue has hash
+`c9bee68f6514c01d1f0b75651c969da7320d2f110096022aa318747523ef2179`.
+A preceding Kissat-primary scan also exposed variable 8500.  It did not
+reproduce after strengthening at one second, but a two-second targeted screen
+did reproduce it and its formal DRAT passed.  Both queue manifests bind the
+same exact state-3734 parent, so composing the eight reverse candidates with
+8500 gives a clean nine-round proof segment through state 3743.  The actual
+and predicted terminal rows match with hash
+`6abba530077d70d4c4ac70a5cf930159d66e0f1454402c90dd1be5037088bcf2`.
+
+The v26 incremental replay starts again from the common v21 base and appends
+only the final non-overlapping J297 and J326 suffixes, superseding the shorter
+v23--v25 candidates.  Its bundle/audit/log hashes are
+`d82e0b50c214972d9a289c4a30514d373c1b598e4b17055508bff3a322e90e26` /
+`aa650880c1131d331c520e3d2098168936654bfa389b4f3aa519a540f06b7529` /
+`8bb0d494f5cb70c94598d9f82cde899cd97cfa31b27e1c6028436d08595f91e3`.
+The refreshed selective-residual join bundle/audit/log hashes are
+`c7124f0a2cc774b86869d55e357fcec4005dacd8365c80a143842a4b0f66b344` /
+`e2c99a70828bfeaec47d92ab7974f93f9dbc4f0b273364bb37b45bcfc68fc62f` /
+`954ebc8a7d67d84359bd48dc79747321ce1074ed5c69c64bd0d733f5f009b699`.
+It binds 19/21 continuation segments, ends at states 3700/3743, and still
+projects one effective UNKNOWN per case.  Fresh four-hour CaDiCaL/Kissat
+probes run on these stronger leaves, while a CaDiCaL-primary two-second
+reverse screen searches the latest J297 leaf.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
