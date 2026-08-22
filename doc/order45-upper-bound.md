@@ -5418,5 +5418,18 @@ were open at the initial audit.  Completion of either the original source or
 the full v401 pair will finish the v400 f31 child group, subject to finalizer
 replay for the checkpoint path.
 
+v401 child 0 then closed with `status=20`, leaving child 1 as the only open
+row on that checkpoint path.  v402 checkpointed the child-1 writer after a
+0.470-second pause and resumed it immediately.  Replaying 24 snapshot rows to
+maximum processed depth 13 produced a three-row frontier.  Its proof-prefix,
+snapshot, and frontier hashes are
+`34f9a91e3d12a2ab57513cf620e82357f04adc085986cc4b1903e97209c718b5` /
+`79ef57aeec135a29f54deb950ff061b93ad77dd36007049d693e598f968d8593` /
+`65d8429a76b4a8ddcd92a8a3bb2c38c0accabea24aa53635532acb3f61de2955`.
+All three rows received high-budget fragment producers, adding two net solver
+cores while the original v401 child and its v400 ancestor remain live.  This
+checkpoint is promoted only if all three child fragments pass the same exact
+augmented-CNF finalization gate.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
