@@ -5519,5 +5519,17 @@ The resulting workload uses about 90% CPU, with enough headroom reserved for
 the OS and later proof checking; no further checkpoint expansion is planned
 before a child group closes.
 
+v408 f312 child 0 also closed immediately with one attempt and no split,
+leaving its sibling open.  While the original v402 final child continued its
+serial chain, a later v409 snapshot caught a genuine two-leaf frontier at
+maximum processed depth 19.  The source writer paused for 0.531 seconds.  The
+proof-prefix/snapshot/frontier hashes are
+`d68df5a8beb864d548dcdc9191e7296412d08f20fcd7989f325f123d2d99d719` /
+`acd159068bb89a30b847f590effb9db67b38c4f02431e0b76a28eeded6baa623` /
+`51218a7eb40b8ea6dd455ee0d650f24d180df75b1d63230a17cb5bb5ccefc6e6`.
+Both rows received the 600-second/high-conflict strategy.  If both close,
+v409 can replace v402 child 2 after exact standalone verification; otherwise
+the original v402/v401/v400 races remain authoritative alternatives.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
