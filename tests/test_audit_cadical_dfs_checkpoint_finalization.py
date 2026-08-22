@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -103,6 +104,22 @@ class AuditCadicalDfsCheckpointFinalizationTests(unittest.TestCase):
             self.assertTrue(report["verified"])
             self.assertTrue(report["drop_deletions"])
             self.assertTrue(report["checker_rerun"]["verified"])
+
+    def test_auditor_runs_without_the_production_finalizer_module(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            manifest = self.finalize(root, "leaf")
+            isolated = root / "isolated-auditor.py"
+            shutil.copyfile(AUDITOR, isolated)
+            completed = subprocess.run(
+                [sys.executable, "-I", str(isolated), str(manifest)],
+                cwd=root,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            self.assertTrue(json.loads(completed.stdout)["verified"])
 
     def test_rejects_hash_bound_output_tampering(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

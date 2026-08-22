@@ -10,17 +10,85 @@ from pathlib import Path
 import subprocess
 from typing import Any
 
-from finalize_cadical_dfs_checkpoint import (
-    REPLAY_SCHEMA,
-    SCHEMA,
-    combine_scans,
-    file_sha256,
-    read_producer_log,
-    validate_file_record,
-)
-
-
 AUDIT_SCHEMA = "ramsey55.cadical-dfs-checkpoint-finalization-audit.v1"
+FINALIZATION_SCHEMA = "ramsey55.cadical-dfs-checkpoint-finalization.v1"
+REPLAY_SCHEMA = "ramsey55.cadical-dfs-prefix-replay.v1"
+
+
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(1 << 23), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def validate_file_record(record: Any, label: str) -> dict[str, Any]:
+    if not isinstance(record, dict):
+        raise ValueError(f"finalization manifest lacks {label} file record")
+    if not isinstance(record.get("path"), str) or not record["path"]:
+        raise ValueError(f"finalization manifest has invalid {label} path")
+    digest = record.get("sha256")
+    if (
+        not isinstance(digest, str)
+        or len(digest) != 64
+        or any(character not in "0123456789abcdef" for character in digest)
+    ):
+        raise ValueError(f"finalization manifest has invalid {label} hash")
+    if not isinstance(record.get("size"), int) or record["size"] < 0:
+        raise ValueError(f"finalization manifest has invalid {label} size")
+    return record
+
+
+def read_producer_log(path: Path) -> dict[str, str]:
+    records: dict[str, str] = {}
+    for line_number, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        if not raw:
+            continue
+        fields = raw.split("\t", 1)
+        if len(fields) != 2 or not fields[0] or fields[0] in records:
+            raise ValueError(f"invalid producer log row {line_number}: {path}")
+        records[fields[0]] = fields[1]
+    required = {
+        "proof_fragment": "1",
+        "root_index": "all",
+        "status": "20",
+        "cubes": "1",
+    }
+    for key, expected in required.items():
+        if records.get(key) != expected:
+            raise ValueError(f"producer log {path} lacks {key}={expected}")
+    for key in ("attempts", "splits", "maximum_extra_depth"):
+        value = records.get(key)
+        if value is None:
+            raise ValueError(f"producer log {path} lacks {key}")
+        try:
+            nonnegative = int(value) >= 0
+        except ValueError as error:
+            raise ValueError(f"producer log {path} has invalid {key}") from error
+        if not nonnegative:
+            raise ValueError(f"producer log {path} has invalid {key}")
+    return records
+
+
+def expected_scan(
+    scans: list[dict[str, int]], drop_deletions: bool, append_empty: bool
+) -> dict[str, int]:
+    additions = sum(scan["additions"] for scan in scans)
+    empty_additions = sum(scan["empty_additions"] for scan in scans)
+    if append_empty:
+        additions += 1
+        empty_additions += 1
+    return {
+        "additions": additions,
+        "deletions": 0
+        if drop_deletions
+        else sum(scan["deletions"] for scan in scans),
+        "empty_additions": empty_additions,
+        "empty_deletions": 0
+        if drop_deletions
+        else sum(scan["empty_deletions"] for scan in scans),
+    }
 
 
 def resolve_path(root: Path, recorded: str) -> Path:
@@ -111,7 +179,10 @@ def checked_child_finalization(
 ) -> Path:
     validated, path = checked_file_record(record, "child finalization manifest", root)
     document = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(document, dict) or document.get("schema") != SCHEMA:
+    if (
+        not isinstance(document, dict)
+        or document.get("schema") != FINALIZATION_SCHEMA
+    ):
         raise ValueError(f"unexpected child finalization manifest schema: {path}")
     if document.get("checker_verified") is not True:
         raise ValueError(f"child finalization manifest is not checker-verified: {path}")
@@ -121,7 +192,7 @@ def checked_child_finalization(
     if output["sha256"] != proof_record["sha256"] or output["size"] != proof_record["size"]:
         raise ValueError(f"child proof does not match finalization manifest: {path}")
     expected = {
-        "schema": SCHEMA,
+        "schema": FINALIZATION_SCHEMA,
         "checker_verified": True,
         "output_fragment_sha256": output["sha256"],
         "output_fragment_size": output["size"],
@@ -145,7 +216,10 @@ def audit_manifest(
     active.add(resolved_manifest)
     try:
         document = json.loads(manifest_path.read_text(encoding="utf-8"))
-        if not isinstance(document, dict) or document.get("schema") != SCHEMA:
+        if (
+            not isinstance(document, dict)
+            or document.get("schema") != FINALIZATION_SCHEMA
+        ):
             raise ValueError(f"unexpected finalization manifest schema: {manifest_path}")
         if document.get("checker_verified") is not True:
             raise ValueError(f"finalization manifest is not checker-verified: {manifest_path}")
@@ -237,7 +311,7 @@ def audit_manifest(
                     )
                     recursive_children += 1
 
-        expected_fragment_scan = combine_scans(
+        expected_fragment_scan = expected_scan(
             component_scans, drop_deletions, append_empty=False
         )
         expected_fragment_sha256 = expected_digest.hexdigest()
@@ -257,7 +331,7 @@ def audit_manifest(
 
         standalone_digest = expected_digest.copy()
         standalone_digest.update(b"a\0")
-        expected_standalone_scan = combine_scans(
+        expected_standalone_scan = expected_scan(
             component_scans, drop_deletions, append_empty=True
         )
         standalone_record, standalone_path, standalone_scan, _ = checked_binary_record(

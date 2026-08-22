@@ -5731,7 +5731,8 @@ The retained test log hashes to
 `533126901c84c6b0f2a7ab428aedae924e2386e7d27e671ae5143d63a79c5661`.
 
 `tools/audit_cadical_dfs_checkpoint_finalization.py` is separate from the
-producer/finalizer path.  Starting only from a finalization manifest and a
+producer/finalizer path and no longer imports any implementation from the
+production finalizer.  Starting only from a finalization manifest and a
 repository root, it recomputes every recorded file hash and binary-DRAT clause
 count, checks the replay-prefix hash and ordered child count, and streams the
 prefix and child proofs to reconstruct the exact expected fragment hash.  In
@@ -5797,11 +5798,18 @@ parent CNF and hash-bound row-selection manifests:
 | v417, v406 f331 row 2 seed181/p0 | 3 | 53 | `1e163f98e60d7e9f639b9046f5927e1be5d8ff735af3ba6be0a0ff8920731122` |
 
 The 19 disjoint rows are running under v7 with distinct seeds/phases and the
-14,400-second internal deadline.  Four rows (v411 row 0, v412 row 0, v414 row
-2, and v417 row 0) closed in their first minutes; none of v411--v417 is yet a
+14,400-second internal deadline.  Six rows (v411 row 0, v412 row 0, v414 rows
+0 and 2, v415 row 0, and v417 row 0) have closed; none of v411--v417 is yet a
 complete group.  The duplicate seed167 f10 expiry also had three open rows and
 was not copied because v410 already covers the same source with one child
-closed.  No checkpoint prefix is promoted until every child passes the
+closed.
+
+A second six-route phase-1 comparison expired with open counts 2/2/2/3/4/2
+for v406 f321 row 1, v406 f331 rows 1/2, v407 f222 rows 2/3, and v404 row 1.
+The active v415/v416/v417/v413/v414/v411 routes respectively have only
+2/2/2/3/2/1 unfinished rows, so every comparison route was equal or worse.
+No multi-gigabyte prefix was copied and no duplicate descendants were
+launched.  No checkpoint prefix is promoted until every child passes the
 addition-only finalizer and independent audit.
 
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
