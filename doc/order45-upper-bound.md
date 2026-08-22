@@ -5101,5 +5101,39 @@ clause in a separate standalone copy, and `drat-trim` replay against the exact
 parent-fragment augmented CNF.  Only the verified no-empty fragment form may
 then be embedded in the final root composition.
 
+The forward Kissat-primary scan of the exact J297 state-3716 leaf found one
+candidate, variable 5139, and CaDiCaL confirmed the same contradictory side
+within the two-second screening budget.  The agreement and primary queue
+hashes are
+`81a956db3aecf6c79507cd8e00b0dce662d5884503ae6b137cdbf0088cf04acf`
+and
+`e8e24ad01265042f519e94d5ed43d68491c7935cc1a4318bd8533a666b82e8d9`.
+A fresh compact Kissat proof then passed `drat-trim`, independently of the
+screening run.  The endpoint advances to state 3717; its proof manifest and
+state hashes are
+`1dfcc28de42624d80af6144a8b9c9d7992e683dc5eb1b11cee591f681057deeb`
+and
+`d405091f5afead83151a8e0daabdb0a0c138fdbccd1fa80e34aba78ee8a43bc4`.
+The actual terminal row is byte-identical to the independently materialized
+prediction, hash
+`343020bf56c06ac1d9f4c57c1ce64c580f639687fb09827e89f6e730ebc059ff`.
+
+The v37 chain bundle / v36-to-v37 extension-audit / audit-log hashes are
+`07eb96ef38b3359deb42acfff357ebefe33f60ba1c538edcf5e2e8e0a161c233` /
+`2dad3dfe102520f4148a91a42d8591b4ba0a75dca7ef3def2710c4189550e181` /
+`0b76f95a20d2485ef359b4fadceb9b78f148cf21d6957370df454bfc9e65b009`.
+The refreshed selective-residual join bundle/audit/log hashes are
+`0096a501ae1070b06142743a769196c3c81764e77d1697567ee3adf8b6c06d25` /
+`0354c41db0d47c16c37a417d6b512788a5b7bd3768dc72d92e42ae6639a66e3e` /
+`2e75bc4f9792447810648b7ce30661eb6edc41477de2d857c45c00dbcb2bb89f`.
+It binds 27 J297 and 28 J326 continuation segments and still projects one
+effective UNKNOWN in each case at states 3717/3771.  A reverse
+CaDiCaL-primary screen continues on the exact J326 state-3771 leaf.
+
+One further third-layer producer, J326 f3-sub-0, has completed with
+`status=20`.  Its sibling f3-sub-1 remains open, so the nested f3 composition
+and standalone replay are still pending; this isolated completion is not yet
+used by a parent-fragment or root proof.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
