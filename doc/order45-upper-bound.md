@@ -5251,5 +5251,53 @@ the CNF, replay manifest, checker, prefix, ordered children, logs, composed
 fragment, standalone proof, and checker log.  Three focused tests plus the
 full 197-test suite pass.
 
+Later resource sampling showed about 26% idle CPU with effectively zero I/O
+wait, so two additional selective checkpoints were taken.  v393 covers the
+two long J326 v386 children:
+
+- child 0: one row, prefix/snapshot/frontier hashes
+  `397d8903ec15f3cb4a7a837fb51e4c5f27f535d33b51d2dd689f560c2e619ef2` /
+  `c91e465368b5dff592a2bf02b0bfd0da078db8b377add1c8ee33169b6bc4cd09` /
+  `01c9e07bd0a43dfb3b16a2c34a1112b25ca71617786c1f0699be3e57811be423`;
+- child 1: three rows, prefix/snapshot/frontier hashes
+  `73439f3b9ead86331fb4efbc8a4ce9533c31b1c0a5526f3001081fe5e1812f4f` /
+  `9367bc4c1ffbffea5b64e6d5543b1cb1dba8b0dd21ba7f6bc5e5b573267c9c03` /
+  `aad047231c80a2eb5032158c56b7f84ea49ec67f86736618d472124159e99128`.
+
+The one-row checkpoint was retained only as a recovery point because a
+deterministic duplicate would not add parallelism.  The three-row side was
+launched, adding two net solver cores.  The original v386 child 0 subsequently
+closed directly.  Its 1.2 GiB no-empty fragment passed standalone `drat-trim`
+against the exact materialized child CNF in 1,264.335 seconds.  The augmented
+CNF / fragment / standalone proof / checker-log hashes are
+`ad3681a84591f6551ba7c8b9f52096b557364545c8d1ab3ad32d5db7d898b541` /
+`54c527e5f64988c5daa0f0e2eac7578687799d2359dc61992af40ec083bd8ab4` /
+`90d2abb532fa622b2415efb14180291d41dc113445e939abd69b7a6832a0c48a` /
+`e8637529b536146fdf30474acdd07662f1d749dec488c9c303eef7438c33141d`.
+
+v394 covers all four long J297 v389 children.  Its f10/f11/f20/f21 replay
+frontiers contain 2/3/2/2 rows and have prefix/snapshot/frontier hashes:
+
+- f10: `860176b27e4081fe37bca92466716740d894bc301d2bc7ee0dbd5a17a4948a77` /
+  `b46d7b9caf59cf78b607a335b5683e84cc8e2b14a5881e9fa57bd7ca855bbf70` /
+  `76cc43f28bcbaa17807a09368788516d074c358e6da40052045be10d7579ab57`;
+- f11: `662acc7fe72ed51c631632dfc814cf4df2b12f136a1814a7320ca536446e0c3b` /
+  `f08f5d2af1b98578c656d290fbb1da6dd56004eabaf401b4d928cf1d963b2ec1` /
+  `fc84f8c775177d9ac2e3aa4dcc12991d28030def715311fb7c369ea8239c689b`;
+- f20: `2bcc501c30f85946647659af155721145dcb5932e85530451ebc20389fbd910f` /
+  `301b3ea2962b4cd01504a886954a5125a8c484b01c769ae8bc975caf5bbc2219` /
+  `93695bd8eeadcc290ae9206ebe08b5d64468438aa4bdd21a4e37d733fdb47162`;
+- f21: `66b5ae145858ef7fb12e17fe0aadc3e42f8ccb343e1ba7c361c5dafda239d39f` /
+  `2fe4d3dae710f345d19a1bb79c32b1ae52357cc059456a74a2954bb093fd077e` /
+  `daa3583eba2543c06dbbc54b1983314aedac8937f6307506eb73d1b70a9271ad`.
+
+All nine v394 rows received producers, adding five net cores and raising CPU
+use to about 92%.  The first child in each of the f10, f20, and f21 two-row
+groups closed within minutes.  The original v389 f2-sub-0 then closed
+directly, superseding the f20 checkpoint; its remaining f20 producer was
+terminated with its 605 MiB partial proof and TSV retained.  The f10/f21
+siblings and all f11 rows remain open.  No group is promoted before all of its
+children pass the finalization gate.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
