@@ -4815,5 +4815,33 @@ from the producer status: a successful root proof will be replayed by
 checked importer can bind it into the chain.  Four-hour direct probes and new
 two-second forward-J297/reverse-J326 screens also remain in flight.
 
+The next exact-parent screens found five Kissat-primary J297 candidates and
+eight CaDiCaL-primary J326 candidates.  CaDiCaL confirmed all five J297
+candidates; Kissat confirmed the first J326 candidate, while the remaining
+seven retain primary-only screening provenance.  The primary queue hashes are
+`a57000817e48b87d363b4b5ced6a8d9cc30528e61a67041f50fe781c1d62ef94`
+and
+`fa05e39c9ba131480ec752fcb5ac15de55bb365b9766f5056fb037de2df97179`.
+Their ordered variable lists are `[6160,7434,5604,6514,4890]` and
+`[5279,8901,7678,1067,8042,5786,9629,8537]`, respectively.  Every one of the
+13 candidates then received a fresh compact proof accepted by `drat-trim`.
+The exact endpoints advanced to states 3709/3760.  Their actual terminal rows
+equal the independently materialized predictions with hashes
+`54a50a6c6dd2d8343feaee46668c1568fa4e8b10c74a5203d6e4d10f8af1c99b`
+and
+`f09f664b39a4d7c0f907a8ec34ceec0d0228be51792959532516587b3e3de407`.
+
+The v30 incremental chain bundle/audit/log hashes are
+`e5835dd5f1c5466ffd6d549e13111228b1b084c5c0c587da1c4ee17ec0ddae26` /
+`e7ef1e3d7cf71d7e5fdfe59d5782435abe9999dc975e067f497c118bb749a94b` /
+`1f59c71f5b9895b51b678c80cb939969cb2df9cf11b4bb279b893f634c41f97c`.
+The refreshed selective-residual join bundle/audit/log hashes are
+`4290d1deab46b5bbe940530090ed4a4be13eabf8225057b262773c0822cae362` /
+`1ad60b11505d55e2ee025c0b08f009e9c1af65a3e6135ab4f08d098456aac794` /
+`5088b3e67df358a0cecc5c7e34af7407fa6b50c267de88b6286e174fd8b03d9c`.
+It replays 22/23 continuation segments and still projects one effective
+UNKNOWN per fixed-pair case.  Reverse-J297 and forward-J326 two-second staged
+screens now run on the newest exact leaves.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
