@@ -5573,5 +5573,17 @@ then upper standalone compositions both pass genuine ARM `drat-trim`.
 All seven focused tests pass on ARM.  The full local suite passes 201 tests,
 with only this test skipped because the local checker binary is not built.
 
+Seven cores later freed by expired ancestor races were assigned to a third
+search strategy on the existing one-leaf blockers.  These producers retain
+the standard 500,000/1,000,000 conflict and 60-second solve budgets but set
+`maximum_primary_split_variable=990`.  If CaDiCaL lookahead proposes an
+auxiliary variable, the runner therefore falls back to the highest-occurrence
+unused graph-edge variable.  The first rows split only on variables 893,
+654, or 668, confirming the cap.  One primary-only race covers each of v409,
+v406 f320, v407 f220, v408 f312, and v404; two cover v403 f21.  This fills all
+64 solver slots at about 94% CPU without adding proof-replay depth.  Any such
+fragment is interchangeable with its exact same-row standard/high-budget
+competitors only after `status=20` and the normal finalizer gate.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
