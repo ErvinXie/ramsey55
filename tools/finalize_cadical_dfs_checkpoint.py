@@ -161,13 +161,56 @@ def atomic_json(path: Path, document: dict[str, Any]) -> None:
     temporary.replace(path)
 
 
-def copy_fragments(output: Path, fragments: list[Path], append_empty: bool) -> None:
+def copy_fragments(
+    output: Path,
+    fragments: list[Path],
+    append_empty: bool,
+    drop_deletions: bool = False,
+) -> None:
     with output.open("wb") as target:
         for fragment in fragments:
+            if not drop_deletions:
+                with fragment.open("rb") as source:
+                    shutil.copyfileobj(source, target, length=1 << 23)
+                continue
+            pending = b""
             with fragment.open("rb") as source:
-                shutil.copyfileobj(source, target, length=1 << 23)
+                for block in iter(lambda: source.read(1 << 23), b""):
+                    clauses = (pending + block).split(b"\0")
+                    pending = clauses.pop()
+                    for clause in clauses:
+                        if not clause or clause[0] not in (ord("a"), ord("d")):
+                            raise ValueError(
+                                f"invalid binary DRAT framing in {fragment}"
+                            )
+                        if clause[0] == ord("a"):
+                            target.write(clause)
+                            target.write(b"\0")
+            if pending:
+                raise ValueError(f"unterminated binary DRAT clause in {fragment}")
         if append_empty:
             target.write(b"a\0")
+
+
+def combine_scans(
+    scans: list[dict[str, int]], drop_deletions: bool, append_empty: bool
+) -> dict[str, int]:
+    combined = {
+        key: sum(scan[key] for scan in scans)
+        for key in (
+            "additions",
+            "deletions",
+            "empty_additions",
+            "empty_deletions",
+        )
+    }
+    if drop_deletions:
+        combined["deletions"] = 0
+        combined["empty_deletions"] = 0
+    if append_empty:
+        combined["additions"] += 1
+        combined["empty_additions"] += 1
+    return combined
 
 
 def main() -> None:
@@ -197,6 +240,14 @@ def main() -> None:
         action="append",
         default=[],
         help="option appended to the checker command and recorded in the manifest",
+    )
+    parser.add_argument(
+        "--drop-deletions",
+        action="store_true",
+        help=(
+            "omit every binary DRAT deletion while composing, producing a "
+            "monotone addition-only proof"
+        ),
     )
     parser.add_argument("--manifest", type=Path, required=True)
     arguments = parser.parse_args()
@@ -234,6 +285,7 @@ def main() -> None:
     if prefix_scan["empty_additions"]:
         raise ValueError("proof prefix contains an embedded empty clause")
     children: list[dict[str, Any]] = []
+    child_scans: list[dict[str, int]] = []
     for index, (proof, evidence) in enumerate(child_pairs):
         proof_scan = scan_binary_drat(proof)
         if proof_scan["empty_additions"]:
@@ -253,6 +305,15 @@ def main() -> None:
         else:
             child["finalization_manifest"] = finalized
         children.append(child)
+        child_scans.append(proof_scan)
+
+    component_scans = [prefix_scan, *child_scans]
+    fragment_scan = combine_scans(
+        component_scans, arguments.drop_deletions, append_empty=False
+    )
+    standalone_scan = combine_scans(
+        component_scans, arguments.drop_deletions, append_empty=True
+    )
 
     fragment_temporary, standalone_temporary, checker_log_temporary = temporaries
     try:
@@ -260,9 +321,13 @@ def main() -> None:
             fragment_temporary,
             [arguments.prefix] + [proof for proof, _ in child_pairs],
             append_empty=False,
+            drop_deletions=arguments.drop_deletions,
         )
         copy_fragments(
-            standalone_temporary, [fragment_temporary], append_empty=True
+            standalone_temporary,
+            [fragment_temporary],
+            append_empty=True,
+            drop_deletions=False,
         )
         completed = subprocess.run(
             [
@@ -299,13 +364,18 @@ def main() -> None:
             **file_record(arguments.prefix),
             "binary_drat": prefix_scan,
         },
+        "composition": {
+            "drop_deletions": arguments.drop_deletions,
+        },
         "children": children,
         "output_fragment": {
             **file_record(arguments.output_fragment),
+            "binary_drat": fragment_scan,
             "contains_empty_addition": False,
         },
         "standalone_proof": {
             **file_record(arguments.standalone_proof),
+            "binary_drat": standalone_scan,
             "appended_empty_clause": True,
         },
         "checker": file_record(arguments.checker),

@@ -203,6 +203,94 @@ class FinalizeCadicalDfsCheckpointTests(unittest.TestCase):
             manifest = json.loads((root / "manifest.json").read_text())
             self.assertEqual(manifest["checker_options"], ["-p"])
 
+    def test_can_emit_addition_only_composition(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            command = self.fixture(root)
+            (root / "prefix.drat").write_bytes(b"d\x02\0a\x02\0")
+            (root / "child.drat").write_bytes(b"d\x04\0a\x04\0")
+            replay = json.loads((root / "replay.json").read_text())
+            replay["proof_prefix_sha256"] = sha256(root / "prefix.drat")
+            (root / "replay.json").write_text(json.dumps(replay), encoding="utf-8")
+            command.append("--drop-deletions")
+            subprocess.run(command, check=True, stdout=subprocess.PIPE)
+            fragment = root / "fragment.drat"
+            standalone = root / "standalone.drat"
+            self.assertEqual(fragment.read_bytes(), b"a\x02\0a\x04\0")
+            self.assertEqual(standalone.read_bytes(), fragment.read_bytes() + b"a\0")
+            manifest = json.loads((root / "manifest.json").read_text())
+            self.assertTrue(manifest["composition"]["drop_deletions"])
+            self.assertEqual(
+                manifest["output_fragment"]["binary_drat"]["deletions"], 0
+            )
+            self.assertEqual(
+                manifest["standalone_proof"]["binary_drat"]["empty_additions"],
+                1,
+            )
+
+    @unittest.skipUnless(REAL_CHECKER.is_file(), "drat-trim is not built")
+    def test_real_checker_accepts_deletion_free_composition(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            cnf = root / "root.cnf"
+            replay = root / "replay.json"
+            prefix = root / "prefix.drat"
+            child = root / "child.drat"
+            child_log = root / "child.log"
+            cnf.write_text("p cnf 1 2\n1 0\n-1 0\n", encoding="ascii")
+            # Deleting input clause (1) would make the final empty addition
+            # invalid.  The normalized composition must physically omit it.
+            prefix.write_bytes(b"d\x02\0")
+            child.write_bytes(b"")
+            child_log.write_text(
+                "proof_fragment\t1\n"
+                "root_index\tall\n"
+                "status\t20\n"
+                "cubes\t1\n"
+                "attempts\t1\n"
+                "splits\t0\n"
+                "maximum_extra_depth\t0\n",
+                encoding="ascii",
+            )
+            replay.write_text(
+                json.dumps(
+                    {
+                        "schema": "ramsey55.cadical-dfs-prefix-replay.v1",
+                        "proof_prefix_sha256": sha256(prefix),
+                        "output_count": 1,
+                    }
+                ),
+                encoding="utf-8",
+            )
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(TOOL),
+                    str(cnf),
+                    str(replay),
+                    str(prefix),
+                    str(root / "fragment.drat"),
+                    str(root / "standalone.drat"),
+                    str(root / "checker.log"),
+                    "--child",
+                    str(child),
+                    str(child_log),
+                    "--checker",
+                    str(REAL_CHECKER),
+                    "--drop-deletions",
+                    "--manifest",
+                    str(root / "manifest.json"),
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+            )
+            self.assertEqual((root / "fragment.drat").read_bytes(), b"")
+            self.assertEqual((root / "standalone.drat").read_bytes(), b"a\0")
+            manifest = json.loads((root / "manifest.json").read_text())
+            self.assertTrue(manifest["checker_verified"])
+            self.assertTrue(manifest["composition"]["drop_deletions"])
+            self.assertEqual(manifest["checker_options"], [])
+
     @unittest.skipUnless(REAL_CHECKER.is_file(), "drat-trim is not built")
     def test_real_checker_accepts_recursive_finalization(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

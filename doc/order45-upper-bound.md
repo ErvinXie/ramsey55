@@ -5713,10 +5713,21 @@ under the high-budget route after 33 attempts and 16 splits, leaving that
 two-row group at one of two rows.  Redundant races for both completed rows
 were stopped with their partial artifacts retained.
 
+The finalizer now also has an explicit `--drop-deletions` normalization mode.
+It parses each framed binary clause, copies only additions, and records the
+composition policy plus exact output/standalone addition, deletion, and empty
+clause counts in the finalization manifest.  This produces a monotone DRAT
+stream with the same clause-database evolution checked by `drat-trim -p`, so
+future recursive levels can use a standard checker without inheriting
+independent solver deletion state.  A real-checker regression starts from a
+contradictory-unit CNF and a proof that deletes one of those units: retaining
+the deletion would invalidate the final empty clause, while the exact
+addition-only output is accepted by ordinary ARM `drat-trim`.
+
 The standard ARM Python command from the repository README,
 `PYTHONPATH=src:tools python3 -m unittest discover -s tests -v`, passes all
-205 tests in 38.571 seconds.  The retained test log hashes to
-`3f6cb9e89e5f78a2922f2850f48532ce7a65335fbc5ce18f1afd963e2e5a33b3`.
+207 tests in 25.700 seconds.  The retained test log hashes to
+`151b3a62ec97dd508435679295273b126b3cff8b3bb765ec0ae65820608733d9`.
 
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.
