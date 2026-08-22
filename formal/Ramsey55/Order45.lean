@@ -184,6 +184,39 @@ theorem order45_normalize_degree20_or22
     exact ⟨complementColoring color, v, reduced.1, reduced.2.1,
       Or.inl reduced.2.2⟩
 
+/-- The graph-theoretic degree window plus the even vertex supplied by the
+handshake lemma yields exactly the candidate expected by the normalization
+theorem. -/
+theorem order45_degree_candidate_of_window_and_even
+    (color : Coloring 45)
+    (window : ∀ v : Fin 45,
+      20 ≤ coloringDegree color v ∧ coloringDegree color v ≤ 24)
+    (evenVertex : ∃ v : Fin 45, ∃ half : Nat,
+      coloringDegree color v = 2 * half) :
+    ∃ v : Fin 45,
+      coloringDegree color v = 20 ∨ coloringDegree color v = 22 ∨
+        coloringDegree color v = 24 := by
+  rcases evenVertex with ⟨v, half, even⟩
+  have bounds := window v
+  refine ⟨v, ?_⟩
+  omega
+
+/-- A degree window and a handshake-lemma witness reduce a hypothetical
+order-45 counterexample to the degree-20 or degree-22 SAT branch. -/
+theorem order45_normalize_of_window_and_even
+    (color : Coloring 45) (simple : IsSimpleColoring color)
+    (ramseyFree : IsRamseyFree55 color)
+    (window : ∀ v : Fin 45,
+      20 ≤ coloringDegree color v ∧ coloringDegree color v ≤ 24)
+    (evenVertex : ∃ v : Fin 45, ∃ half : Nat,
+      coloringDegree color v = 2 * half) :
+    ∃ normalized : Coloring 45, ∃ v : Fin 45,
+      IsSimpleColoring normalized ∧ IsRamseyFree55 normalized ∧
+        (coloringDegree normalized v = 20 ∨
+          coloringDegree normalized v = 22) := by
+  exact order45_normalize_degree20_or22 color simple ramseyFree
+    (order45_degree_candidate_of_window_and_even color window evenVertex)
+
 /-- Twice the constant part of the order-45 local excess contribution for a
 vertex of degree `degree`.  If `H` is its neighbourhood and `J` is the
 complement of its dual neighbourhood, the full doubled contribution is this
@@ -243,5 +276,7 @@ theorem order45_dense_pair_of_nonpositive_degree22
 #print axioms ramseyFree55_complement_iff
 #print axioms order45_ramseyFree_degree24_complement
 #print axioms order45_normalize_degree20_or22
+#print axioms order45_degree_candidate_of_window_and_even
+#print axioms order45_normalize_of_window_and_even
 
 end Ramsey55

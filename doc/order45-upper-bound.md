@@ -42,12 +42,15 @@ vertex's original and complemented degrees sum to `n - 1`, and specializes
 this to the required order-45 degree-24-to-degree-20 step.  These facts are
 composed into a checked normalization theorem: any Ramsey-free simple
 colouring with a degree-20, degree-22, or degree-24 vertex yields a Ramsey-free
-simple colouring in the degree-20 or degree-22 branch.  A final formal bridge
-still needs a machine-checked \(R(4,5)=25\) dependency, the connection from an
-actual graph to the degree-window and parity counts, and the relabelling
-equivalence.  The complement and degree theorems pass ARM Lean with only
-standard `propext`/`Quot.sound` dependencies, and the full pinned Lean project
-builds successfully in 79 jobs.
+simple colouring in the degree-20 or degree-22 branch.  A second theorem
+accepts the actual degree window and an even-degree vertex (the output expected
+from the handshake lemma), derives the 20/22/24 candidate arithmetically, and
+feeds it into that normalization.  A final formal bridge still needs a
+machine-checked \(R(4,5)=25\) dependency, derivation of the actual degree
+window, the handshake lemma itself, and the relabelling equivalence.  The
+complement and degree theorems pass ARM Lean with only standard
+`propext`/`Quot.sound` dependencies, and the full pinned Lean project builds
+successfully in 79 jobs.
 
 `formal/Ramsey55/CubeCover.lean` now supplies the generic certificate
 composition layer: binary literal splits preserve cube coverage, and an
