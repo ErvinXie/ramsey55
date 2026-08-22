@@ -5726,8 +5726,34 @@ addition-only output is accepted by ordinary ARM `drat-trim`.
 
 The standard ARM Python command from the repository README,
 `PYTHONPATH=src:tools python3 -m unittest discover -s tests -v`, passes all
-207 tests in 25.700 seconds.  The retained test log hashes to
-`151b3a62ec97dd508435679295273b126b3cff8b3bb765ec0ae65820608733d9`.
+211 tests in 40.843 seconds after adding the independent finalization auditor.
+The retained test log hashes to
+`533126901c84c6b0f2a7ab428aedae924e2386e7d27e671ae5143d63a79c5661`.
+
+`tools/audit_cadical_dfs_checkpoint_finalization.py` is separate from the
+producer/finalizer path.  Starting only from a finalization manifest and a
+repository root, it recomputes every recorded file hash and binary-DRAT clause
+count, checks the replay-prefix hash and ordered child count, and streams the
+prefix and child proofs to reconstruct the exact expected fragment hash.  In
+addition-only mode it hashes only the physically emitted addition clauses, so
+it independently confirms that the published fragment is exactly the
+deletion-normalized composition rather than merely another hash-bound proof.
+It likewise confirms that the standalone proof is exactly that fragment plus
+one final binary empty addition.  Checker-verified child finalizations are
+audited recursively; `--rerun-checker` additionally invokes the recorded
+checker and options against the recorded CNF and standalone proof.  The four
+focused tests include recursive composition, checker rerun, ordinary
+hash-bound tampering, and an adversarial case that rehashes a replacement
+output but cannot make it equal the ordered components.
+
+Run the structural recursive audit from the repository root with:
+
+```bash
+python3 tools/audit_cadical_dfs_checkpoint_finalization.py \
+  path/to/finalization.json --root .
+```
+
+Add `--rerun-checker` when an additional full proof-checking pass is desired.
 
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.
