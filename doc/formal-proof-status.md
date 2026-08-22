@@ -1,6 +1,6 @@
 # R(5,5) formal proof status
 
-Updated: 2026-08-15
+Updated: 2026-08-23
 
 ## Target theorem
 
@@ -253,14 +253,44 @@ then combines the degree-20 and degree-22 exclusions with
     theorem forcesMonochromatic5_45_of_fixedStarCnf ...
     theorem forcesMonochromatic5_45_of_fixedStarCubeRefutations ...
 
-The second form takes formula-relative cube covers and an UNSAT fact for every
-covered leaf, deriving each mother-formula refutation through the existing
-generic composition theorem.  The complete ARM root build passes all 82 jobs.
+For the actual catalog/fixed-pair decomposition, the file also defines
+`FixedStarCnfFamilyComplete`: every fixed-star Ramsey-free colouring must
+satisfy at least one member of a finite reduced-CNF family, rather than one
+particular symmetry-reduced formula. Lean then proves:
+
+    theorem forcesMonochromatic5_45_of_fixedStarCnfFamilies ...
+    theorem forcesMonochromatic5_45_of_fixedStarFamilyCubeRefutations ...
+
+The latter permits a separate formula-relative cube cover and leaf-refutation
+family for every reduced CNF. This is the certificate interface matching the
+current fixed-pair computation; it avoids requiring every labelled colouring
+to satisfy one chosen lex/fixed-pair formula.
+
+The single-formula cube form takes a formula-relative cube cover and an UNSAT
+fact for every covered leaf, deriving the mother-formula refutation through
+the existing generic composition theorem. The complete ARM root build passes
+all 82 jobs.
 The new axiom audits contain only Lean's standard `propext`,
 `Classical.choice`, and `Quot.sound`, with no `sorryAx`.  This theorem is a
 precise contract, not a discharged upper bound: the external `R(4,5)=25`
 input, concrete graph-to-DIMACS completeness, and checked leaf UNSAT data are
 still explicit hypotheses.
+
+The published HOL4 source for the first input is now pinned independently.
+The upstream repository `barakeel/ramsey` was inspected at commit
+`065c07054483e3132f12909103e6d0e35e912c28` (2025-05-16). Its final
+`src/mergef/r45_equals_25Script.sml` blob is
+`5e211cf623ee268c0404fc70852b33cdc8307ff0`; it combines the kernel-checked
+degree-8/10/12 exclusions and the order-24 witness into the theorem
+`r45_equals_25`. The generic reduction source
+`src/basicRamsey/basicRamseyScript.sml` is blob
+`69b249e6a1fd59e5a77f4b4a710807f98331540d` and explicitly derives
+`RAMSEY 4 5 25` before the exact-value statement. This is a version-locked
+formal source for the mathematical input, but it has not been imported into
+the Lean kernel here. Upstream's own reproduction guide reports about
+500 GB RAM for the enumeration proof and multi-week gluing stages, beyond the
+current 244 GiB ARM host, so duplicating that completed computation is not the
+best use of the order-45 search machine.
 
 [Symmetry.lean](../formal/Ramsey55/Symmetry.lean) adds the generic bridge for
 an optional symmetry-reduced route. It proves that a nonempty finite orbit

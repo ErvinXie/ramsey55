@@ -5780,8 +5780,9 @@ Framing removed a 208-byte incomplete tail; the resulting prefix is
 and the framed replay manifest hashes to
 `e8a2e2c2705bee52656cee0dc3cb01aaefcc12421fc7325adc4322401c4ab20f`.
 This v410 checkpoint materializes all three rows independently and runs their
-children with the new internal deadline.  Row 0 closed immediately in one
-attempt; rows 1 and 2 remain open.
+children with the new internal deadline. Row 0 closed immediately in one
+attempt; row 1 later closed after 101 attempts and 50 splits, leaving only row
+2 open.
 
 Seven additional expired v6 sources were preserved as v411--v417.  Each row
 below is an exact source-root checkpoint with an independently materialized
@@ -5798,8 +5799,9 @@ parent CNF and hash-bound row-selection manifests:
 | v417, v406 f331 row 2 seed181/p0 | 3 | 53 | `1e163f98e60d7e9f639b9046f5927e1be5d8ff735af3ba6be0a0ff8920731122` |
 
 The 19 disjoint rows are running under v7 with distinct seeds/phases and the
-14,400-second internal deadline.  Six rows (v411 row 0, v412 row 0, v414 rows
-0 and 2, v415 row 0, and v417 row 0) have closed; none of v411--v417 is yet a
+14,400-second internal deadline. Seven rows (v411 row 0, v412 row 0, v414 rows
+0 and 2, v415 row 0, v416 row 0, and v417 row 0) have closed; none of
+v411--v417 is yet a
 complete group.  The duplicate seed167 f10 expiry also had three open rows and
 was not copied because v410 already covers the same source with one child
 closed.
@@ -5811,6 +5813,29 @@ The active v415/v416/v417/v413/v414/v411 routes respectively have only
 No multi-gigabyte prefix was copied and no duplicate descendants were
 launched.  No checkpoint prefix is promoted until every child passes the
 addition-only finalizer and independent audit.
+
+As older races expired, twelve otherwise idle solver slots were assigned one
+opposite-phase v7 race on each still-open v410/v413--v417 row; the attempted
+v410 row-1 launch was skipped atomically because its original proof had just
+closed. The v416 row-0 original then closed after 97 attempts and 48 splits;
+its sole new alternative was terminated after exact command validation, with
+the 267,636,736-byte partial proof retained. This brought the machine to about
+51 proof solvers plus four proof checkers while retaining more than 130 GiB
+available RAM.
+
+`tools/compose_binary_drat_protect_cnf.py` tests a narrower deletion policy
+for independently produced fragments. It canonicalizes and fingerprints
+every original mother-CNF clause, omits only deletion instructions targeting
+that protected set, retains learned-clause deletions, rejects embedded empty
+additions, and hash-binds every source and the composed output. Omitting a
+deletion is logically safe; ordinary `drat-trim` remains the acceptance gate.
+Four focused tests, including a genuine checker regression, and the complete
+216-test ARM suite pass. The first full f221 experiment produced a
+3,916,568,669-byte proof with 29,631,565 additions, 29,077,845 retained
+deletions, and 61,659 protected deletions omitted. Its SHA-256 is
+`b13e0b6d5b826898657344feb53b92f301dc97025afaba12f9dc435f60c8ff0e`.
+The ordinary checker is still running, so this artifact is an experiment and
+has not replaced any addition-only finalization.
 
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.
