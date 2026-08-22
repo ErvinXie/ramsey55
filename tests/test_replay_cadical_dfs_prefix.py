@@ -36,7 +36,7 @@ class ReplayCadicalDfsPrefixTests(unittest.TestCase):
                 + "0\t2\t1\t500000\t0\t0\t4\t2.0\n",
                 encoding="ascii",
             )
-            proof.write_bytes(b"proof-prefix")
+            proof.write_bytes(b"a\x02\0")
             old_argv = sys.argv
             try:
                 sys.argv = [
@@ -59,6 +59,14 @@ class ReplayCadicalDfsPrefixTests(unittest.TestCase):
             self.assertEqual(document["maximum_processed_depth"], 1)
             self.assertEqual(document["output_count"], 2)
             self.assertEqual(document["proof_prefix_sha256"], REPLAY.file_sha256(proof))
+
+    def test_detects_unframed_binary_drat_prefix(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            proof = Path(raw) / "prefix.drat"
+            proof.write_bytes(b"a\x02\0a\x04")
+            self.assertFalse(REPLAY.binary_drat_is_framed(proof))
+            proof.write_bytes(b"a\x02\0a\x04\0")
+            self.assertTrue(REPLAY.binary_drat_is_framed(proof))
 
     def test_rejects_depth_mismatch(self) -> None:
         with tempfile.TemporaryDirectory() as raw:

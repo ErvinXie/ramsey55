@@ -54,12 +54,26 @@ and column using symmetry.  A compatibility theorem identifies that list
 count with the original bounded-scan degree, proving `coloringDegreeSum` is
 twice a natural number.  Therefore `order45_normalize_of_window` needs only a
 simple Ramsey-free colouring and its 20--24 degree window to construct the
-degree-20 or degree-22 branch.  The remaining formal bridge needs a
-machine-checked \(R(4,5)=25\) dependency, derivation of that actual degree
-window, and the relabelling equivalence.  The handshake and complement-degree
-identities use only standard `propext`/`Quot.sound`; the finite order-45
-candidate extraction additionally reports `Classical.choice`.  The complete
-pinned ARM Lean project builds successfully in 79 jobs after this addition.
+degree-20 or degree-22 branch.  `formal/Ramsey55/Relabeling.lean` now closes
+the relabelling step: it constructs a deterministic list consisting of the
+selected vertex, its neighbours, and its nonneighbours; proves that list is a
+permutation of all labels; and transports simplicity, degree, and
+Ramsey-freeness through the resulting bijection.  The bridge from an arbitrary
+five-tuple to the historical increasing-tuple predicate is checked by sorting
+the five distinct labels and transporting monochromaticity through the list
+permutation.  Consequently `order45_fixedStar_normalize_of_window` produces
+exactly the degree-20 or degree-22 fixed-star branch expected by the CNFs.
+`formal/Ramsey55/Order45Window.lean` isolates the remaining external theorem
+as `ForcesRed4OrBlue5 25`.  Assuming exactly that order-25 statement, it takes
+the first 25 labels in the deterministic neighbour order, rules out degree at
+least 25, repeats the argument after colour complementation to obtain the
+lower bound 20, and invokes the fixed-star theorem.  Thus the sole remaining
+graph-side input is an imported or independently rechecked proof of the
+formal \(R(4,5)=25\) proposition itself; derivation of the 20--24 window is
+now checked.  These theorems use only standard `propext`/`Quot.sound` and,
+where finite permutations or witness extraction require it,
+`Classical.choice`; no `sorryAx` is present.  The complete pinned ARM Lean
+project builds successfully in 81 jobs with these modules included.
 
 `formal/Ramsey55/CubeCover.lean` now supplies the generic certificate
 composition layer: binary literal splits preserve cube coverage, and an
@@ -5640,3 +5654,40 @@ finishes and frees a core.
 
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.
+
+## First complete checkpoint group and binary-prefix framing
+
+The last direct v399 child, J297 f31s1 row 2, completed with `status=20`
+after 383 attempts and 191 splits.  Together with the previously completed
+rows 0 and 1, this is the first three-child checkpoint group ready for the
+recursive finalization gate.  Four still-running v408 races below the same
+row-2 source became redundant and were stopped; their partial artifacts were
+retained.
+
+The first finalizer invocation correctly rejected the frozen v399 proof
+prefix before composition: the 903,831,552-byte binary DRAT snapshot ended
+20 bytes after its last complete NUL-terminated clause.  A read-only scan
+showed the same `SIGSTOP`-at-write-boundary issue in many older prefixes, with
+tails from 1 to 169 bytes.  `tools/frame_binary_drat_prefix.py` now provides a
+hash-bound conversion instead of modifying those immutable snapshots.  For
+v399 the original prefix hash is
+`62f71019d0d50a1b0f09dec02153d5af9f03c6287b1ebf93215ad4c4e175eeca`;
+the 903,831,532-byte clause-framed derivative hashes to
+`9be57352ebc074fb7268d828b48df61991714a2af54020ecd029b2f2df2289eb`,
+and its derived replay manifest hashes to
+`4db8ab2a0a5a515599f345568ad34e7c55811a2a2c0352a206be679fc49125e0`.
+The conversion manifest also binds the discarded tail hash.  The next v396
+prefix has been prepared through the same gate, trimming 24 bytes while
+retaining both source and derivative hashes.
+
+Future `replay_cadical_dfs_prefix.py` runs reject a supplied proof prefix that
+does not end at a binary-DRAT clause boundary; its SHA-256 path now streams
+large files rather than loading them entirely into memory.  Thirteen focused
+framing, replay, and recursive-finalizer tests pass on ARM.  The v399 composed
+standalone proof is 7,271,596,689 bytes and is currently undergoing a fresh
+single-core `drat-trim` replay against its exact augmented CNF.  It is not an
+accepted fragment unless that run emits `s VERIFIED` and the finalization
+manifest is atomically written.
+
+No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
+theorem is claimed.

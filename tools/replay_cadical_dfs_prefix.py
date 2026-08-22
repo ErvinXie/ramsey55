@@ -14,7 +14,19 @@ HEADER = "root\tattempt\tdepth\tlimit\tstatus\tcore\tsplit\tseconds"
 
 
 def file_sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(1 << 20), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def binary_drat_is_framed(path: Path) -> bool:
+    if path.stat().st_size == 0:
+        return True
+    with path.open("rb") as stream:
+        stream.seek(-1, 2)
+        return stream.read(1) == b"\0"
 
 
 def read_single_root(path: Path) -> tuple[int, ...]:
@@ -106,6 +118,14 @@ def main() -> None:
             parser.error(f"input does not exist: {path}")
     if arguments.proof_prefix is not None and not arguments.proof_prefix.is_file():
         parser.error(f"proof prefix does not exist: {arguments.proof_prefix}")
+    if arguments.proof_prefix is not None and not binary_drat_is_framed(
+        arguments.proof_prefix
+    ):
+        parser.error(
+            "proof prefix does not end at a binary DRAT clause boundary; "
+            "replay without --proof-prefix, then derive a bound framed replay "
+            "with frame_binary_drat_prefix.py"
+        )
     if arguments.output.exists() or arguments.manifest.exists():
         parser.error("refusing to overwrite output or manifest")
 

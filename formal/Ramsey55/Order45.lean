@@ -1,4 +1,4 @@
-import Ramsey55.Definitions
+import Ramsey55.Relabeling
 import Init.Data.List.OfFn
 import Init.Data.List.Nat.Sum
 
@@ -92,6 +92,186 @@ theorem coloringDegree_eq_listColoringDegree {n : Nat}
     (color : Coloring n) (v : Fin n) :
     coloringDegree color v = listColoringDegree color v := by
   exact coloringDegreeUpTo_eq_listPrefix color v n (Nat.le_refl n)
+
+/-- A finite vertex relabeling preserves the degree of the corresponding old
+vertex.  The proof maps the explicit permutation of all labels through one
+adjacency row and uses permutation-invariance of natural-number sums. -/
+theorem coloringDegree_relabel {n : Nat} (color : Coloring n)
+    (vertexMap : Fin n → Fin n) (relabeling : IsVertexRelabeling vertexMap)
+    (v : Fin n) :
+    coloringDegree (relabelColoring color vertexMap) v =
+      coloringDegree color (vertexMap v) := by
+  rw [coloringDegree_eq_listColoringDegree,
+    coloringDegree_eq_listColoringDegree]
+  have mapped := relabeling.2.map
+    (fun u => edgeWeight (color (vertexMap v) u))
+  simpa [listColoringDegree, relabelColoring, Function.comp_def] using
+    mapped.sum_nat
+
+theorem sum_map_edgeWeight_eq_countP {alpha : Type}
+    (predicate : alpha → Bool) : ∀ values : List alpha,
+    (values.map fun value => edgeWeight (predicate value)).sum =
+      values.countP predicate := by
+  intro values
+  induction values with
+  | nil => simp
+  | cons head tail ih =>
+      rw [List.map_cons, List.sum_cons, List.countP_cons, ih]
+      cases condition : predicate head <;> simp [edgeWeight]
+      all_goals omega
+
+theorem listColoringDegree_eq_countP_allVertices {n : Nat}
+    (color : Coloring n) (v : Fin n) :
+    listColoringDegree color v =
+      (allVertices n).countP (fun u => color v u) := by
+  rw [← sum_map_edgeWeight_eq_countP (fun u => color v u) (allVertices n)]
+  simp [listColoringDegree, allVertices, Function.comp_def]
+
+/-- The neighbour segment in the deterministic star order has exactly the
+degree measured by the project's bounded scan. -/
+theorem starNeighborCount {n : Nat} (color : Coloring n) (v : Fin n)
+    (simple : IsSimpleColoring color) :
+    (((allVertices n).erase v).filter fun u => color v u).length =
+      coloringDegree color v := by
+  rw [← List.countP_eq_length_filter,
+    coloringDegree_eq_listColoringDegree,
+    listColoringDegree_eq_countP_allVertices]
+  have member : v ∈ allVertices n := by
+    exact List.mem_ofFn.mpr ⟨v, rfl⟩
+  have counts := (List.perm_cons_erase member).countP_eq (fun u => color v u)
+  simpa [simple.1 v] using counts.symm
+
+theorem starVertexMap_edge_of_le_degree {n : Nat}
+    (color : Coloring (n + 1)) (v : Fin (n + 1))
+    (simple : IsSimpleColoring color) (i : Fin (n + 1))
+    (positive : 0 < i.val) (bounded : i.val ≤ coloringDegree color v) :
+    color v (starVertexMap color v i) = true := by
+  revert positive bounded
+  refine Fin.cases ?_ (fun j => ?_) i
+  · intro positive bounded
+    change 0 < 0 at positive
+    omega
+  · intro positive bounded
+    let rest := (allVertices (n + 1)).erase v
+    let neighbors := rest.filter (fun u => color v u)
+    let nonneighbors := rest.filter (fun u => !color v u)
+    have neighborLength : neighbors.length = coloringDegree color v := by
+      exact starNeighborCount color v simple
+    have index_lt : j.val < neighbors.length := by
+      change j.val + 1 ≤ coloringDegree color v at bounded
+      omega
+    have member : neighbors[j.val] ∈ neighbors :=
+      List.getElem_mem index_lt
+    have edge : color v neighbors[j.val] = true := by
+      exact (List.mem_filter.mp member).2
+    simpa [starVertexMap, starVertexOrder, rest, neighbors, nonneighbors,
+      index_lt] using edge
+
+theorem starVertexMap_nonedge_of_degree_lt {n : Nat}
+    (color : Coloring (n + 1)) (v : Fin (n + 1))
+    (simple : IsSimpleColoring color) (i : Fin (n + 1))
+    (beyond : coloringDegree color v < i.val) :
+    color v (starVertexMap color v i) = false := by
+  revert beyond
+  refine Fin.cases ?_ (fun j => ?_) i
+  · intro beyond
+    change coloringDegree color v < 0 at beyond
+    omega
+  · intro beyond
+    let rest := (allVertices (n + 1)).erase v
+    let neighbors := rest.filter (fun u => color v u)
+    let nonneighbors := rest.filter (fun u => !color v u)
+    have neighborLength : neighbors.length = coloringDegree color v := by
+      exact starNeighborCount color v simple
+    have memberV : v ∈ allVertices (n + 1) := by
+      exact List.mem_ofFn.mpr ⟨v, rfl⟩
+    have restLength : rest.length = n := by
+      rw [show rest = (allVertices (n + 1)).erase v by rfl,
+        List.length_erase_of_mem memberV]
+      simp [allVertices]
+    have partitionLength : neighbors.length + nonneighbors.length = n := by
+      have partition :=
+        (List.filter_append_perm (fun u => color v u) rest).length_eq
+      simpa [neighbors, nonneighbors, restLength] using partition
+    have neighbor_le : neighbors.length ≤ j.val := by
+      change coloringDegree color v < j.val + 1 at beyond
+      omega
+    have offset_lt : j.val - neighbors.length < nonneighbors.length := by
+      have j_lt : j.val < n := j.isLt
+      omega
+    have member : nonneighbors[j.val - neighbors.length] ∈ nonneighbors :=
+      List.getElem_mem offset_lt
+    have nonedge :
+        color v nonneighbors[j.val - neighbors.length] = false := by
+      have negated := (List.mem_filter.mp member).2
+      simpa using negated
+    simpa [starVertexMap, starVertexOrder, rest, neighbors, nonneighbors,
+      neighbor_le, offset_lt] using nonedge
+
+/-- Vertex zero is adjacent exactly to labels `1, ..., degree`. -/
+def HasFixedStar {n : Nat} (color : Coloring (n + 1)) (degree : Nat) : Prop :=
+  (∀ i : Fin (n + 1),
+    0 < i.val → i.val ≤ degree → color 0 i = true) ∧
+    (∀ i : Fin (n + 1), degree < i.val → color 0 i = false)
+
+theorem relabelColoring_starVertexMap_hasFixedStar {n : Nat}
+    (color : Coloring (n + 1)) (v : Fin (n + 1))
+    (simple : IsSimpleColoring color) :
+    HasFixedStar (relabelColoring color (starVertexMap color v))
+      (coloringDegree color v) := by
+  constructor
+  · intro i positive bounded
+    change color (starVertexMap color v 0) (starVertexMap color v i) = true
+    rw [starVertexMap_zero]
+    exact starVertexMap_edge_of_le_degree color v simple i positive bounded
+  · intro i beyond
+    change color (starVertexMap color v 0) (starVertexMap color v i) = false
+    rw [starVertexMap_zero]
+    exact starVertexMap_nonedge_of_degree_lt color v simple i beyond
+
+theorem coloringDegree_starVertexMap_zero {n : Nat}
+    (color : Coloring (n + 1)) (v : Fin (n + 1)) :
+    coloringDegree (relabelColoring color (starVertexMap color v)) 0 =
+      coloringDegree color v := by
+  rw [coloringDegree_relabel color (starVertexMap color v)
+    (starVertexMap_isVertexRelabeling color v), starVertexMap_zero]
+
+/-- Deterministic fixed-star normalization under the order-independent
+Ramsey-free predicate; `Relabeling.lean` supplies the checked equivalence with
+the historical increasing-tuple predicate used below. -/
+theorem starRelabeling_normalizes_unordered {n : Nat}
+    (color : Coloring (n + 1)) (v : Fin (n + 1))
+    (simple : IsSimpleColoring color)
+    (ramseyFree : IsRamseyFree55Unordered color) :
+    IsSimpleColoring (relabelColoring color (starVertexMap color v)) ∧
+      IsRamseyFree55Unordered
+        (relabelColoring color (starVertexMap color v)) ∧
+      HasFixedStar (relabelColoring color (starVertexMap color v))
+        (coloringDegree color v) ∧
+      coloringDegree (relabelColoring color (starVertexMap color v)) 0 =
+        coloringDegree color v := by
+  exact ⟨relabelColoring_isSimple color (starVertexMap color v) simple,
+    ramseyFree55Unordered_relabel color (starVertexMap color v)
+      (starVertexMap_isVertexRelabeling color v).1 ramseyFree,
+    relabelColoring_starVertexMap_hasFixedStar color v simple,
+    coloringDegree_starVertexMap_zero color v⟩
+
+/-- Deterministic fixed-star normalization stated using the project's
+historical increasing-tuple Ramsey-free predicate. -/
+theorem starRelabeling_normalizes {n : Nat}
+    (color : Coloring (n + 1)) (v : Fin (n + 1))
+    (simple : IsSimpleColoring color) (ramseyFree : IsRamseyFree55 color) :
+    IsSimpleColoring (relabelColoring color (starVertexMap color v)) ∧
+      IsRamseyFree55 (relabelColoring color (starVertexMap color v)) ∧
+      HasFixedStar (relabelColoring color (starVertexMap color v))
+        (coloringDegree color v) ∧
+      coloringDegree (relabelColoring color (starVertexMap color v)) 0 =
+        coloringDegree color v := by
+  exact ⟨relabelColoring_isSimple color (starVertexMap color v) simple,
+    ramseyFree55_relabel color (starVertexMap color v)
+      (starVertexMap_isVertexRelabeling color v).1 simple ramseyFree,
+    relabelColoring_starVertexMap_hasFixedStar color v simple,
+    coloringDegree_starVertexMap_zero color v⟩
 
 /-- Delete label zero from both axes of a colouring. -/
 def tailColoring {n : Nat} (color : Coloring (n + 1)) : Coloring n :=
@@ -480,6 +660,36 @@ theorem order45_normalize_of_window
   exact order45_normalize_of_window_and_even_sum color simple ramseyFree window
     (coloringDegreeSum_even color simple)
 
+/-- Complete graph-side normalization to the two fixed-star SAT inputs.
+After the degree-window and handshake reductions, a deterministic vertex
+relabeling moves the selected vertex to zero, its neighbours to the next
+20 or 22 labels, and its nonneighbours to the remaining labels. -/
+theorem order45_fixedStar_normalize_of_window
+    (color : Coloring 45) (simple : IsSimpleColoring color)
+    (ramseyFree : IsRamseyFree55 color)
+    (window : ∀ v : Fin 45,
+      20 ≤ coloringDegree color v ∧ coloringDegree color v ≤ 24) :
+    ∃ normalized : Coloring 45,
+      IsSimpleColoring normalized ∧ IsRamseyFree55 normalized ∧
+        ((HasFixedStar normalized 20 ∧
+            coloringDegree normalized 0 = 20) ∨
+          (HasFixedStar normalized 22 ∧
+            coloringDegree normalized 0 = 22)) := by
+  rcases order45_normalize_of_window color simple ramseyFree window with
+    ⟨base, v, baseSimple, baseRamseyFree, degree20 | degree22⟩
+  · let normalized := relabelColoring base (starVertexMap base v)
+    have facts := starRelabeling_normalizes base v baseSimple baseRamseyFree
+    refine ⟨normalized, facts.1, facts.2.1, Or.inl ?_⟩
+    constructor
+    · simpa [normalized, degree20] using facts.2.2.1
+    · exact facts.2.2.2.trans degree20
+  · let normalized := relabelColoring base (starVertexMap base v)
+    have facts := starRelabeling_normalizes base v baseSimple baseRamseyFree
+    refine ⟨normalized, facts.1, facts.2.1, Or.inr ?_⟩
+    constructor
+    · simpa [normalized, degree22] using facts.2.2.1
+    · exact facts.2.2.2.trans degree22
+
 /-- Twice the constant part of the order-45 local excess contribution for a
 vertex of degree `degree`.  If `H` is its neighbourhood and `J` is the
 complement of its dual neighbourhood, the full doubled contribution is this
@@ -546,8 +756,15 @@ theorem order45_dense_pair_of_nonpositive_degree22
 #print axioms order45_even_degree_of_window_and_even_sum
 #print axioms order45_normalize_of_window_and_even_sum
 #print axioms coloringDegreeUpTo_eq_listPrefix
+#print axioms coloringDegree_relabel
+#print axioms starNeighborCount
+#print axioms relabelColoring_starVertexMap_hasFixedStar
+#print axioms coloringDegree_starVertexMap_zero
+#print axioms starRelabeling_normalizes_unordered
+#print axioms starRelabeling_normalizes
 #print axioms listColoringDegreeSum_even
 #print axioms coloringDegreeSum_even
 #print axioms order45_normalize_of_window
+#print axioms order45_fixedStar_normalize_of_window
 
 end Ramsey55
