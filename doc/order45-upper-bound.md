@@ -4750,5 +4750,15 @@ projects one effective UNKNOWN per case.  Fresh four-hour CaDiCaL/Kissat
 probes run on these stronger leaves, while a CaDiCaL-primary two-second
 reverse screen searches the latest J297 leaf.
 
+`tools/import_materialized_cube_proof.py` prepares the integration path for a
+successful recursive tree proof.  It does not trust the producer exit code:
+the supplied checker must first accept the proof against an independently
+rendered augmented cube.  Only then does it emit a standard materialized-proof
+manifest binding the formula, ordered cube family and target index, proof,
+producer/checker binaries and arguments, optional producer log, and all
+artifact hashes.  Existing proof composers and chain auditors can therefore
+consume a checked tree proof without a hand-written manifest.  All 191 tests
+and targeted Ruff checks pass.
+
 None of these checkpoints proves strengthened parent 1, either fixed-pair
 formula, the order-45 formula, or `R(5,5) <= 45`.

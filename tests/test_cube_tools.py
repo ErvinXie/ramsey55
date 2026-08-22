@@ -38,6 +38,7 @@ COVER = load_tool("verify_cube_cover")
 AUDIT = load_tool("verify_adaptive_cube_covers")
 MATERIALIZED_PROVER = load_tool("prove_materialized_cubes")
 MATERIALIZED_AUDIT = load_tool("audit_materialized_cube_proofs")
+MATERIALIZED_IMPORT = load_tool("import_materialized_cube_proof")
 BINARY_COVER = load_tool("certify_binary_cube_cover")
 MATERIALIZED_FRONTIER = load_tool("export_materialized_proof_frontier")
 BINARY_REFINEMENT = load_tool("audit_binary_cube_refinement")
@@ -79,6 +80,71 @@ FREEZE_CHAIN_STATE = load_tool("freeze_materialized_chain_state")
 
 
 class ExternalCubeToolTests(unittest.TestCase):
+    def test_imports_one_independently_checked_materialized_proof(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            formula = root / "formula.cnf"
+            cubes = root / "cubes.icnf"
+            proof = root / "source.drat"
+            producer = root / "producer"
+            checker = root / "checker"
+            producer_log = root / "producer.log"
+            output = root / "imported"
+            formula.write_text("p cnf 2 1\n1 2 0\n", encoding="ascii")
+            cubes.write_text("a -1 0\na 1 0\n", encoding="ascii")
+            proof.write_bytes(b"proof")
+            producer.write_bytes(b"producer")
+            checker.write_bytes(b"checker")
+            producer_log.write_text("runner configuration\n", encoding="utf-8")
+            completed = mock.Mock(returncode=0, stdout="s VERIFIED\n")
+            old_argv = sys.argv
+            try:
+                sys.argv = [
+                    "import_materialized_cube_proof.py",
+                    str(formula),
+                    str(cubes),
+                    "1",
+                    str(proof),
+                    str(output),
+                    "--producer",
+                    str(producer),
+                    "--producer-argument=--tree",
+                    "--producer-log",
+                    str(producer_log),
+                    "--checker",
+                    str(checker),
+                    "--seconds",
+                    "12.5",
+                ]
+                with (
+                    mock.patch.object(
+                        MATERIALIZED_IMPORT.subprocess, "run", return_value=completed
+                    ) as run,
+                    mock.patch("builtins.print"),
+                ):
+                    MATERIALIZED_IMPORT.main()
+            finally:
+                sys.argv = old_argv
+            run.assert_called_once()
+            document = json.loads((output / "manifest.json").read_text())
+            self.assertEqual([row["status"] for row in document["results"]], [0, 20])
+            self.assertEqual(document["summary"]["unsat_verified"], 1)
+            self.assertEqual(document["summary"]["unknown"], 1)
+            self.assertFalse(document["summary"]["complete_unsat"])
+            self.assertEqual(document["solver"]["arguments"], ["--tree"])
+            imported = document["results"][1]["imported_external_proof"]
+            self.assertEqual(
+                imported["source_sha256"],
+                MATERIALIZED_PROVER.file_sha256(proof),
+            )
+            self.assertEqual(
+                imported["producer_log_sha256"],
+                MATERIALIZED_PROVER.file_sha256(producer_log),
+            )
+            self.assertEqual(
+                (output / document["results"][1]["proof"]).read_bytes(), b"proof"
+            )
+
     def test_freezes_hash_bound_materialized_chain_state(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)
