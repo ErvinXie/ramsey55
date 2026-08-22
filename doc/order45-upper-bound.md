@@ -263,6 +263,14 @@ assignment construction nor H/J count interpretation remains in that black
 box. `formal/Ramsey55/Order45CounterAssignment.lean` now handles the counter
 auxiliaries separately as described below.
 
+`formal/Ramsey55/Order45MotherPrefix.lean` additionally proves that every
+generated ten-literal Ramsey clause is satisfied by a Ramsey-free colouring
+and every fixed-apex unit is satisfied by `HasFixedStar`. Its formula-shape
+interfaces avoid constructing the 2,443,518-clause Ramsey prefix as a Lean
+value while leaving exact clause-stream binding explicit. The remaining
+prefix semantics are the 44 degree-window counters and the cross-row lex
+leader, followed by data-level equality/inclusion with the generated DIMACS.
+
 `formal/Ramsey55/Order45ExcessTarget.lean` now gives the exact end-to-end
 composition theorem for this route. It combines the kernel-checked global
 excess witness with complete d20/d21/d22 graph-to-mother encodings and either

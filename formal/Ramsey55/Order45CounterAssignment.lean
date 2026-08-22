@@ -559,6 +559,34 @@ theorem assignmentWithCounterPairStates_satisfies_encoding
   · exact assignmentWithCounterPairStates_j_exact maximum source hInput jInput
       hBase hRows hWidth jBase jRows jWidth separated jEndInside jInputBelow
 
+theorem assignmentWithCounterPairStates_represents_primary
+    (maximum : Nat) (source : CnfAssignment (maximum + 1))
+    (color : Coloring 45) (represents : RepresentsOrder45Primary maximum source color)
+    (hInput jInput : Nat → CnfLiteral (maximum + 1))
+    (hBase hRows hWidth jBase jRows jWidth : Nat)
+    (maximumEnough : 990 ≤ maximum)
+    (primaryBelow : 990 ≤ hBase)
+    (separated : hBase + counterCellsBefore hWidth hRows ≤ jBase) :
+    RepresentsOrder45Primary maximum
+      (assignmentWithCounterPairStates maximum source hInput jInput
+        hBase hRows hWidth jBase jRows jWidth) color := by
+  intro left right ordered inside
+  have identifierBound := orderedEdgeDimacsVariable_le_990 left right
+    ordered inside
+  have preserved := assignmentWithCounterPairStates_truthValue_eq_source
+    maximum source hInput jInput hBase hRows hWidth jBase jRows jWidth
+    separated
+    (dimacsLiteral maximum (orderedEdgeDimacsVariable (left, right)) true)
+    (by
+      unfold dimacsLiteral
+      have identifierInside :
+          orderedEdgeDimacsVariable (left, right) < maximum + 1 := by
+        omega
+      simp [Fin.val_ofNat, Nat.mod_eq_of_lt identifierInside]
+      omega)
+  rw [preserved]
+  exact represents left right ordered inside
+
 def order45Degree20CounterAssignment (color : Coloring 45) :
     CnfAssignment (78697 + 1) :=
   assignmentWithCounterPairStates 78697
@@ -603,6 +631,19 @@ theorem order45Degree20CounterTail_satisfied
       sourceCounts.1 sourceCounts.2
       (by omega) (by omega) (by omega) (by omega) (by omega) (by omega)
       hLower hUpper jLower jUpper dense)
+
+set_option maxRecDepth 100000 in
+theorem order45Degree20CounterAssignment_represents (color : Coloring 45) :
+    RepresentsOrder45Primary 78697
+      (order45Degree20CounterAssignment color) color := by
+  apply assignmentWithCounterPairStates_represents_primary 78697
+    (order45GraphPrimaryAssignment 78697 color) color
+    (order45GraphPrimaryAssignment_represents 78697 (by omega) color)
+    order45Degree20HInput order45Degree20JInput
+    36627 190 101 50767 276 133
+  · omega
+  · omega
+  · decide
 
 def order45Degree21CounterAssignment (color : Coloring 45) :
     CnfAssignment (77148 + 1) :=
@@ -649,6 +690,19 @@ theorem order45Degree21CounterTail_satisfied
       (by omega) (by omega) (by omega) (by omega) (by omega) (by omega)
       hLower hUpper jLower jUpper dense)
 
+set_option maxRecDepth 100000 in
+theorem order45Degree21CounterAssignment_represents (color : Coloring 45) :
+    RepresentsOrder45Primary 77148
+      (order45Degree21CounterAssignment color) color := by
+  apply assignmentWithCounterPairStates_represents_primary 77148
+    (order45GraphPrimaryAssignment 77148 color) color
+    (order45GraphPrimaryAssignment_represents 77148 (by omega) color)
+    order45Degree21HInput order45Degree21JInput
+    36630 210 108 53532 253 123
+  · omega
+  · omega
+  · decide
+
 def order45Degree22CounterAssignment (color : Coloring 45) :
     CnfAssignment (76651 + 1) :=
   assignmentWithCounterPairStates 76651
@@ -694,6 +748,19 @@ theorem order45Degree22CounterTail_satisfied
       (by omega) (by omega) (by omega) (by omega) (by omega) (by omega)
       hLower hUpper jLower jUpper dense)
 
+set_option maxRecDepth 100000 in
+theorem order45Degree22CounterAssignment_represents (color : Coloring 45) :
+    RepresentsOrder45Primary 76651
+      (order45Degree22CounterAssignment color) color := by
+  apply assignmentWithCounterPairStates_represents_primary 76651
+    (order45GraphPrimaryAssignment 76651 color) color
+    (order45GraphPrimaryAssignment_represents 76651 (by omega) color)
+    order45Degree22HInput order45Degree22JInput
+    36631 231 115 56641 231 115
+  · omega
+  · omega
+  · decide
+
 #print axioms counterCellCoordinates_nodup
 #print axioms counterCellIdentifiers_nodup
 #print axioms counterStateEntryKeys_nodup
@@ -708,8 +775,12 @@ theorem order45Degree22CounterTail_satisfied
 #print axioms order45CounterInput_index_le_990
 #print axioms assignmentWithCounterPairStates_inputCount_eq_source
 #print axioms assignmentWithCounterPairStates_satisfies_encoding
+#print axioms assignmentWithCounterPairStates_represents_primary
 #print axioms order45Degree20CounterTail_satisfied
+#print axioms order45Degree20CounterAssignment_represents
 #print axioms order45Degree21CounterTail_satisfied
+#print axioms order45Degree21CounterAssignment_represents
 #print axioms order45Degree22CounterTail_satisfied
+#print axioms order45Degree22CounterAssignment_represents
 
 end Ramsey55

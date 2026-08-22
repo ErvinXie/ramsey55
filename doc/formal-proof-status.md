@@ -293,8 +293,21 @@ counter base. Its three concrete endpoint theorems construct assignments that
 satisfy the complete d20/d21/d22 counter tails from the exact local counts,
 range bounds, and dense-excess inequalities. Thus all H/J counter variables,
 cell clauses, range units, and sum clauses are now covered constructively.
-The complete ARM build passes 87 jobs and the new axiom audits contain only
-the standard axioms.
+The assignment is also proved to retain `RepresentsOrder45Primary`, so it can
+be reused for clauses earlier in the mother stream. The new axiom audits
+contain only the standard axioms.
+
+[Order45MotherPrefix.lean](../formal/Ramsey55/Order45MotherPrefix.lean) proves
+the primary-only prefix semantics without materializing millions of clauses
+inside Lean. It defines the exact ten-literal order used for every increasing
+five-set and proves both signs satisfied by any `IsRamseyFree55` colouring
+under a representing assignment. A per-clause shape predicate is the explicit
+data boundary for the 2,443,518-clause Ramsey stream. The same file defines
+the exact fixed-star unit and proves all 44 units from `HasFixedStar`. The
+complete ARM build passes 88 jobs; all new audits contain only `propext`,
+`Classical.choice`, and `Quot.sound`, with no `sorryAx` or native-decision
+axiom. The unproved mother prefix is now the 44 degree-window counter
+encodings, lex-leader auxiliaries, and exact generated-stream shape/inclusion.
 
 The order-45 file instantiates this theorem at the actual H/J row counts and
 counter widths: `(190,101)/(276,133)`, `(210,108)/(253,123)`, and
