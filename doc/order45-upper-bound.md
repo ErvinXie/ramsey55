@@ -6820,6 +6820,31 @@ free, the other eight rows then received seed/phase pairs 2081/0, 2083/1,
 policy.  Thus every one of the 16 roots now has a live or selected route.  No
 recovered subgroup or J326 ancestor was accepted at launch.
 
+The first four-hour limits in the older v421/v422/v423 deep routes ended as
+clean `status=0`, `checkpoint=1`, exit-zero prefixes rather than completed
+leaves.  Public commits `bb64767` and `7ed7f81` add a fail-closed recovery
+preparer that requires one exact producer-key set, GNU-time exit zero, a
+NUL-framed proof, exact attempt/split replay, and a producer maximum depth
+consistent with the independently reconstructed DFS state.  It atomically
+writes and hash-binds the replay manifest and every one-row ICNF, refusing all
+existing outputs.  Five focused tests and the full 323-test suite pass.
+
+Applied to v421 seed911 root2, v422 seed929 root2, v422 seed937 root1, and
+v423 seed967 root1, the four immutable 3.09/2.73/2.85/2.85 GB prefixes replay
+38/40/39/42 attempts and 19/20/20/21 splits into 1/1/2/1 roots.  The recovery
+manifest hashes are
+`7f0da6d4aa24e4f3342f0865bf31f4a199c63abc3fa87e6e7d383445423b9233`,
+`d3b6a8adc291dcbd802fa5fc65011f3cb4657c1d1db48565711565045f2f7494`,
+`7102863edd0aeed0c6b68082a0b4aa7f016348f77f0c88639c79b72a010ad749`,
+and
+`5f549fab510cc79e36ceeea5dda147685b403043349a80ee53db07965e12188e`.
+The five new nice-19 fragment routes use seed/phases 2141/0, 2143/1, 2153/0,
+2161/1, and 2179/0 under the same checked 2M--4M-conflict, 600-second-solve,
+14,400-second-wall policy.  Recursive route watchers preserve the completed
+siblings, insert only the future checker-audited recovery child at its exact
+position, and feed the existing deterministic choice gate.  Launch and
+watcher readiness add no proof credit.
+
 In parallel, the original 1,239 upstream HOL enumeration theories for orders
 8--17 completed their five-artifact build with exit zero in 7:26:35.  Their
 historical inventory hash is
