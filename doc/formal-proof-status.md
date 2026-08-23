@@ -377,6 +377,19 @@ generated DIMACS Ramsey/fixed streams and complete block concatenation to
 these typed formulas. The external `R(4,5)=25` theorem, five catalog edge
 ranges, and all 109 leaf UNSAT certificates also remain explicit inputs.
 
+The concrete theorem
+`forcesMonochromatic5_45_of_exactFullMotherCubeRefutations` now performs the
+last in-kernel composition for those typed formulas.  It instantiates all
+three range-bounded completeness theorems, proves structurally that each exact
+mother contains its counter tail, and applies the 28/36/45 cube-cover theorem.
+Its only premises are `ForcesRed4OrBlue5 25`, the five published catalog edge
+ranges, and formula-relative UNSAT for the 109 exact typed mother/cube leaves.
+The full 95-job ARM Lean build passed with log SHA-256
+`cbca5c0139729361c91cb3676ec3aefe51c0750afe6baf3e0dc4ab2012b0d180`;
+the theorem's axiom audit lists only `propext`, `Classical.choice`, and
+`Quot.sound`.  This composition does not by itself import the generated
+DIMACS bytes or any solver certificate.
+
 The order-45 file instantiates this theorem at the actual H/J row counts and
 counter widths: `(190,101)/(276,133)`, `(210,108)/(253,123)`, and
 `(231,115)/(231,115)`. It now derives three formula-relative cube covers from

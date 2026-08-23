@@ -800,6 +800,48 @@ theorem order45Degree22ExactFullMotherFormula_complete
       (order45ExactRamseyFormula_shape 76651)
       (order45ExactFixedStarFormula_shape 76651 22) r45
 
+/-- Concrete end-to-end order-45 target for the exact typed mother formulas.
+The graph-to-CNF obligations and counter-tail inclusions have been discharged;
+only the two published finite-classification inputs and the 109 leaf
+refutations remain as premises. -/
+theorem forcesMonochromatic5_45_of_exactFullMotherCubeRefutations
+    (r45 : ForcesRed4OrBlue5 25)
+    (ranges : Order45ExcessCatalogRanges)
+    (leaves20 : ∀ cube ∈ order45Degree20CnfCubes,
+      CnfCubeIsUnsat order45Degree20ExactFullMotherFormula cube)
+    (leaves21 : ∀ cube ∈ order45Degree21CnfCubes,
+      CnfCubeIsUnsat order45Degree21ExactFullMotherFormula cube)
+    (leaves22 : ∀ cube ∈ order45Degree22CnfCubes,
+      CnfCubeIsUnsat order45Degree22ExactFullMotherFormula cube) :
+    ForcesMonochromatic5 45 := by
+  exact forcesMonochromatic5_45_of_order45CatalogDimacsCubeRefutations
+    r45 ranges
+    order45Degree20ExactFullMotherFormula
+    order45Degree21ExactFullMotherFormula
+    order45Degree22ExactFullMotherFormula
+    (order45Degree20ExactFullMotherFormula_complete r45)
+    (order45Degree21ExactFullMotherFormula_complete r45)
+    (order45Degree22ExactFullMotherFormula_complete r45)
+    (by
+      intro clause membership
+      simp only [order45Degree20ExactFullMotherFormula,
+        order45Degree20FullMotherFormula, order45FullMotherFormula,
+        List.mem_append]
+      exact Or.inr (Or.inr (Or.inr (Or.inr membership))))
+    (by
+      intro clause membership
+      simp only [order45Degree21ExactFullMotherFormula,
+        order45Degree21FullMotherFormula, order45FullMotherFormula,
+        List.mem_append]
+      exact Or.inr (Or.inr (Or.inr (Or.inr membership))))
+    (by
+      intro clause membership
+      simp only [order45Degree22ExactFullMotherFormula,
+        order45Degree22FullMotherFormula, order45FullMotherFormula,
+        List.mem_append]
+      exact Or.inr (Or.inr (Or.inr (Or.inr membership))))
+    leaves20 leaves21 leaves22
+
 #print axioms order45ColorCrossRowKey_le_implication
 #print axioms order45SortedNeighborMap_injective
 #print axioms order45SortedNeighborMap_keys_ordered
@@ -825,5 +867,6 @@ theorem order45Degree22ExactFullMotherFormula_complete
 #print axioms order45Degree20ExactFullMotherFormula_complete
 #print axioms order45Degree21ExactFullMotherFormula_complete
 #print axioms order45Degree22ExactFullMotherFormula_complete
+#print axioms forcesMonochromatic5_45_of_exactFullMotherCubeRefutations
 
 end Ramsey55
