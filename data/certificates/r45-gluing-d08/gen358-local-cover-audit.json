@@ -1,0 +1,238 @@
+{
+  "claim": "all locally valid completions of every listed generalized graph are represented up to isomorphism; global exhaustiveness still depends on an independently checked Ramsey-graph enumeration",
+  "cover": {
+    "bytes": 5954,
+    "path": "/data/ramsey55/external/barakeel-gen/gen358",
+    "sha256": "e785c585979cb058460ecbc0dbb8fee2167f390600dec3bdbb4fbc89e9cddfc8"
+  },
+  "forbidden_cliques": {
+    "blue": 3,
+    "red": 5
+  },
+  "order": 8,
+  "rows": [
+    {
+      "assignments": 16,
+      "holes": 4,
+      "line": 1,
+      "normalized_child_codes_sha256": "bcd23db799260b8e32a4c7cc22d3a412cb4bdcd1587af6720f72a2440709caa8",
+      "parent_code": "45711642438494",
+      "valid_completions": 16
+    },
+    {
+      "assignments": 16,
+      "holes": 4,
+      "line": 2,
+      "normalized_child_codes_sha256": "467a7077e0764ebe1d6f4fe146ff851a6247c80bb329058d6a5d7532cf213c63",
+      "parent_code": "45742899027601",
+      "valid_completions": 16
+    },
+    {
+      "assignments": 16,
+      "holes": 4,
+      "line": 3,
+      "normalized_child_codes_sha256": "96e4c7b20da57c31c50cd93e661d4332ba229804321ec985efc84cde884a29b9",
+      "parent_code": "45690506149148",
+      "valid_completions": 16
+    },
+    {
+      "assignments": 16,
+      "holes": 4,
+      "line": 4,
+      "normalized_child_codes_sha256": "e0346ebe06c8daeb325dd10ffc761a842e887a8efa186b9aca1e3795c7f78139",
+      "parent_code": "45523225279466",
+      "valid_completions": 16
+    },
+    {
+      "assignments": 16,
+      "holes": 4,
+      "line": 5,
+      "normalized_child_codes_sha256": "2a17d8475da76bdbf8367e807c3b50ce9f7fe16f6c107580c9a546b024a55632",
+      "parent_code": "45659383900877",
+      "valid_completions": 16
+    },
+    {
+      "assignments": 16,
+      "holes": 4,
+      "line": 6,
+      "normalized_child_codes_sha256": "3556f02322e53d9bed655de987a20df2ad2aabba492a2a99afcc63d3e5fe95d7",
+      "parent_code": "43957822384478",
+      "valid_completions": 16
+    },
+    {
+      "assignments": 16,
+      "holes": 4,
+      "line": 7,
+      "normalized_child_codes_sha256": "2547b356b85fbe4ec688dcd6a183cfaf2c47198fae80c302814fce426d5baab0",
+      "parent_code": "45741944418458",
+      "valid_completions": 16
+    },
+    {
+      "assignments": 16,
+      "holes": 4,
+      "line": 8,
+      "normalized_child_codes_sha256": "db7205ec98b5332c18a5e9576d98d795b2fd36c08dafb5c80df4d22d1bef60dd",
+      "parent_code": "39806248853873",
+      "valid_completions": 16
+    },
+    {
+      "assignments": 16,
+      "holes": 4,
+      "line": 9,
+      "normalized_child_codes_sha256": "b7a11597d78a3ac2476ae8c4397ed579aa61c780f6be630588c8a7adb54cdd2e",
+      "parent_code": "45638123976960",
+      "valid_completions": 16
+    },
+    {
+      "assignments": 16,
+      "holes": 4,
+      "line": 10,
+      "normalized_child_codes_sha256": "aba04bccbb4ae95af41435507bf9b94b2251f7e5b0fe78e87fef59a7493091cf",
+      "parent_code": "27395564048477",
+      "valid_completions": 16
+    },
+    {
+      "assignments": 16,
+      "holes": 4,
+      "line": 11,
+      "normalized_child_codes_sha256": "5c2c886a04b7c00357d2c50a545a4ee5d940250417d443306d7ae038833a8362",
+      "parent_code": "25374743716097",
+      "valid_completions": 16
+    },
+    {
+      "assignments": 16,
+      "holes": 4,
+      "line": 12,
+      "normalized_child_codes_sha256": "725abc3955dc3be3926bd157c73a9468317b0b7d55847e2d82af62cc1575d401",
+      "parent_code": "43839196172665",
+      "valid_completions": 16
+    },
+    {
+      "assignments": 16,
+      "holes": 4,
+      "line": 13,
+      "normalized_child_codes_sha256": "527e13393d5f2b9e8bbe4115815fb8584348f2fc6f9ca39451fcc5cb8c403786",
+      "parent_code": "44010047422565",
+      "valid_completions": 16
+    },
+    {
+      "assignments": 16,
+      "holes": 4,
+      "line": 14,
+      "normalized_child_codes_sha256": "7610970237794339a2bd2d30f5145eb3504cc689fa06062ff83c339b0e5aa5bf",
+      "parent_code": "45115358019902",
+      "valid_completions": 16
+    },
+    {
+      "assignments": 16,
+      "holes": 4,
+      "line": 15,
+      "normalized_child_codes_sha256": "765fdf36ca357902cc7c73793b4a4fabcaae418fdb66f18a48bbb1833cbdbcd7",
+      "parent_code": "40648917467241",
+      "valid_completions": 16
+    },
+    {
+      "assignments": 16,
+      "holes": 4,
+      "line": 16,
+      "normalized_child_codes_sha256": "c00bc08568c9dfb8aa887342eac0df2363f9dca45bd600df9f2cf32ddc584bc1",
+      "parent_code": "38127977419259",
+      "valid_completions": 16
+    },
+    {
+      "assignments": 4,
+      "holes": 2,
+      "line": 17,
+      "normalized_child_codes_sha256": "5d9469a3822e3ddf73b839e047a9c52b0c8845e96ffc1d0d3ff852fa723d7e8e",
+      "parent_code": "30491885929029",
+      "valid_completions": 4
+    },
+    {
+      "assignments": 16,
+      "holes": 4,
+      "line": 18,
+      "normalized_child_codes_sha256": "8329955fe215b3f9496316770b38c8c615c825764bb89c029e5d1e5a2cf7a71e",
+      "parent_code": "45648836094921",
+      "valid_completions": 16
+    },
+    {
+      "assignments": 16,
+      "holes": 4,
+      "line": 19,
+      "normalized_child_codes_sha256": "16aa877feb89c2f57a55f92f1ec339078b48162b66f94be8d97c91ffebad51a0",
+      "parent_code": "45742948977735",
+      "valid_completions": 16
+    },
+    {
+      "assignments": 16,
+      "holes": 4,
+      "line": 20,
+      "normalized_child_codes_sha256": "030c65d74f3877ddde405d83267c6998e0b8e17f31b4e315e2c874d1368d7ce1",
+      "parent_code": "30484519701677",
+      "valid_completions": 16
+    },
+    {
+      "assignments": 8,
+      "holes": 3,
+      "line": 21,
+      "normalized_child_codes_sha256": "3f27909b1175a16facddc307268d97933fae7cd5e4e7de47cf620da6a3c54b7d",
+      "parent_code": "45178221529831",
+      "valid_completions": 8
+    },
+    {
+      "assignments": 1,
+      "holes": 0,
+      "line": 22,
+      "normalized_child_codes_sha256": "f381edcaa36d4bcfe9eb14218d322727803be6e06c9336f24cc19859bdb66b3a",
+      "parent_code": "45743079357988",
+      "valid_completions": 1
+    },
+    {
+      "assignments": 1,
+      "holes": 0,
+      "line": 23,
+      "normalized_child_codes_sha256": "8dd8d7325827fb949d617fb17a1699dfeb3ca77489e2e108410334c65aae8c5d",
+      "parent_code": "45743080958873",
+      "valid_completions": 1
+    },
+    {
+      "assignments": 1,
+      "holes": 0,
+      "line": 24,
+      "normalized_child_codes_sha256": "afa5df10418e95a8bd05a4e7843486b2f4dbac3f9d4cb5fa2ddac32cf7322532",
+      "parent_code": "45753526901690",
+      "valid_completions": 1
+    },
+    {
+      "assignments": 1,
+      "holes": 0,
+      "line": 25,
+      "normalized_child_codes_sha256": "f2829e0e3e73d0937d5b8351dbae781ae49bf48952e94a11786ff577b2bc34a8",
+      "parent_code": "45742562617972",
+      "valid_completions": 1
+    },
+    {
+      "assignments": 1,
+      "holes": 0,
+      "line": 26,
+      "normalized_child_codes_sha256": "c8ab1c33a7439d2bc204a424845d9e8319f396d36620e030d43d6d322914b0d3",
+      "parent_code": "45711680767268",
+      "valid_completions": 1
+    },
+    {
+      "assignments": 1,
+      "holes": 0,
+      "line": 27,
+      "normalized_child_codes_sha256": "8c1b5a9f938a2f83f53527a3e8f5973f4615a433e8e1ebe08ea18e1f70676a56",
+      "parent_code": "45743080958842",
+      "valid_completions": 1
+    }
+  ],
+  "schema": "ramsey55.generalized-graph-cover-local-audit.v1",
+  "summary": {
+    "all_local_completions_covered_up_to_isomorphism": true,
+    "generalized_graphs": 27,
+    "maximum_holes": 4,
+    "normalized_children": 179
+  }
+}

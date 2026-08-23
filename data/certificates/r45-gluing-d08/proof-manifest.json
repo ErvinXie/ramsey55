@@ -1,0 +1,1914 @@
+{
+  "branch_manifest": {
+    "path": "build/r45-gluing-d08-v1/manifest.json",
+    "schema": "ramsey55.r45-gluing-branches.v1",
+    "sha256": "868fbdcc094e14840c9589480cd134b6ae3a08fd2a8933e73bb09b98ef60e60b"
+  },
+  "checker": {
+    "path": ".tools/src/drat-trim/drat-trim",
+    "sha256": "8de9a77e5ddf754f10cce7980a7495810ce9f4328c2df4e55419970ae1858d42"
+  },
+  "results": [
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00000-j00000.checker.log",
+        "sha256": "20c2129c35b00a1ac9866340075eb7d87c895b1919c3f20729b4d10d4497359a"
+      },
+      "checker_time": {
+        "bytes": 868,
+        "path": "r45-glue-d08-i00000-j00000.checker.time.log",
+        "sha256": "5e8ed187199963f4070d9e46c066fe246eda9f1ce2d7ed1ff3cdfd28412e695f"
+      },
+      "cnf": {
+        "clauses": 3656,
+        "path": "r45-glue-d08-i00000-j00000.cnf",
+        "sha256": "c5823a8d4d6e3a1403808a1f6416c555e5fa1344b646fcc4968badd0e536d8d2",
+        "variables": 276
+      },
+      "pair_index": 0,
+      "proof": {
+        "bytes": 5880885,
+        "path": "r45-glue-d08-i00000-j00000.drat",
+        "sha256": "a1291f2f3ed72ba2a5a50b416c4bc25f1e5c6829620f6b097dde34d3ea98f7ed"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00000-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 911,
+        "path": "r45-glue-d08-i00000-j00000.solver.time.log",
+        "sha256": "6a806c312a1430b187540e69551ac82b88dd1f8a15f587f8d2624e7c92463414"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00000-j00001.checker.log",
+        "sha256": "1a9f16c903d7017a5a772911aa7f4af1dd18c24a0b7dae39afac14bf460541cc"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00000-j00001.checker.time.log",
+        "sha256": "c4df9c3a8a454de9d47944788c6a99c1e764972f216eebe5381f7ed484904a7f"
+      },
+      "cnf": {
+        "clauses": 3656,
+        "path": "r45-glue-d08-i00000-j00001.cnf",
+        "sha256": "0b5c86d961c486ab0aee3e1bcf0c4d13559308b949008cb6e469f3aa32e175e3",
+        "variables": 276
+      },
+      "pair_index": 1,
+      "proof": {
+        "bytes": 6161421,
+        "path": "r45-glue-d08-i00000-j00001.drat",
+        "sha256": "6cad0dd8ad4958e6cfd89685b67a8c7032501a6c2fd0c54bee3c0c1e546e227f"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00000-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 911,
+        "path": "r45-glue-d08-i00000-j00001.solver.time.log",
+        "sha256": "8206ebbe068b25baa2fb68e341a3fed3b7dead6ee230edeb6d080f7af7296ce5"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00001-j00000.checker.log",
+        "sha256": "657d42c19857ff08d2822c6b14ace3a14efc4afdda3307a31c6a4ecc24b0d186"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00001-j00000.checker.time.log",
+        "sha256": "f7d975a65fdb42c975a1e70ae850709ef55354196bfe969f2aefa49488c5e4db"
+      },
+      "cnf": {
+        "clauses": 3448,
+        "path": "r45-glue-d08-i00001-j00000.cnf",
+        "sha256": "848bf70832be2bbfba72aee3c5c7faa1db8a3d81026f4ad0cfda62d836c9b5c5",
+        "variables": 276
+      },
+      "pair_index": 2,
+      "proof": {
+        "bytes": 5055661,
+        "path": "r45-glue-d08-i00001-j00000.drat",
+        "sha256": "7ddc467ecb01d800c00132532d6aab243af75af44a13c1c3d2e7e291578af95c"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00001-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 910,
+        "path": "r45-glue-d08-i00001-j00000.solver.time.log",
+        "sha256": "e3130947390d2cb5f02dc34b9de46f0d0d581745afd4de44b9abd15d1ad4dfdd"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 458,
+        "path": "r45-glue-d08-i00001-j00001.checker.log",
+        "sha256": "6e6973a5fb7b1e07a1141b9448a83d446e38314688ba0c0ea0fd2ddce950e1b5"
+      },
+      "checker_time": {
+        "bytes": 868,
+        "path": "r45-glue-d08-i00001-j00001.checker.time.log",
+        "sha256": "a1958daee3bcac019089cea50a5445a5b4f29b0d8049af9fac2d065d083514f6"
+      },
+      "cnf": {
+        "clauses": 3448,
+        "path": "r45-glue-d08-i00001-j00001.cnf",
+        "sha256": "61a4700f4a8b34bbc524f0db5dd36500282c8b2b97e7c8596b9bc75d4b8ad984",
+        "variables": 276
+      },
+      "pair_index": 3,
+      "proof": {
+        "bytes": 7095410,
+        "path": "r45-glue-d08-i00001-j00001.drat",
+        "sha256": "a32535f1322f0eb152c7343934e4b5f2f6f5d87dc58e21c525e5fd76f7a97a8c"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00001-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 911,
+        "path": "r45-glue-d08-i00001-j00001.solver.time.log",
+        "sha256": "1adc6729b4bbcd34eb22e30d06fbb73870cb38c0f02a150d4d682ef247f19aa1"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00002-j00000.checker.log",
+        "sha256": "c2304604f2364ce864b9e06c6b675ed5452b58d30bb6fdb8bf67994df2ed9cf5"
+      },
+      "checker_time": {
+        "bytes": 868,
+        "path": "r45-glue-d08-i00002-j00000.checker.time.log",
+        "sha256": "9c930f69b7e553501003365cf6bf021793ca21fcb0844a3942250082b90b1a95"
+      },
+      "cnf": {
+        "clauses": 3732,
+        "path": "r45-glue-d08-i00002-j00000.cnf",
+        "sha256": "2825303b18f012de83653b8cc5a6befd2b9f15ad50e43c2f1828c95b7d6fd2f5",
+        "variables": 276
+      },
+      "pair_index": 4,
+      "proof": {
+        "bytes": 4929030,
+        "path": "r45-glue-d08-i00002-j00000.drat",
+        "sha256": "24092695769609da21e7a5125127d60b0f956de9c67bf3469040a15b962cf976"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00002-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 910,
+        "path": "r45-glue-d08-i00002-j00000.solver.time.log",
+        "sha256": "1b35665ce706f36cde1f5e83de6bbe0c73446badf15d74673f479d7d565b2790"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 458,
+        "path": "r45-glue-d08-i00002-j00001.checker.log",
+        "sha256": "d2065fcd8f84bc355c146ba89fb50c4f75106e138dbbce241bb06e3033ab8862"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00002-j00001.checker.time.log",
+        "sha256": "0658d4c544b18ecb2040e9408d99dc695020a6355f25ce5cc535cf558bb944ec"
+      },
+      "cnf": {
+        "clauses": 3732,
+        "path": "r45-glue-d08-i00002-j00001.cnf",
+        "sha256": "8552e65c7c86c8a112c0dca4e1099c7846ddb46e1a9d2e50e84e3c495aff3ddc",
+        "variables": 276
+      },
+      "pair_index": 5,
+      "proof": {
+        "bytes": 7024653,
+        "path": "r45-glue-d08-i00002-j00001.drat",
+        "sha256": "a04345c00470c429033fe97d71586c21f9d44f2e28b3c0b014d4ef2636ab1fea"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00002-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 912,
+        "path": "r45-glue-d08-i00002-j00001.solver.time.log",
+        "sha256": "82a103d3bb710fc3afd3f2553eabb9eb10b2ed73eece88940a3ecd237c159f0c"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00003-j00000.checker.log",
+        "sha256": "9432d2df0fa491cf0d4ea16d95c56c9ab2feff82f4e493d64386857a0cdeb054"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00003-j00000.checker.time.log",
+        "sha256": "6bd96d7dcc6dde53401f3c9b07b563d661252a9dd43a32c807dccaa842029c51"
+      },
+      "cnf": {
+        "clauses": 3164,
+        "path": "r45-glue-d08-i00003-j00000.cnf",
+        "sha256": "18cd4a9330d89d5008a3899496894413c2e9a3d4ad5c4427e89a5054e98fa6ed",
+        "variables": 276
+      },
+      "pair_index": 6,
+      "proof": {
+        "bytes": 6582076,
+        "path": "r45-glue-d08-i00003-j00000.drat",
+        "sha256": "165c5e3431831c062b59539e3c97547719a68ac2033bd4327d51e5244e4b393e"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00003-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 912,
+        "path": "r45-glue-d08-i00003-j00000.solver.time.log",
+        "sha256": "36533e39e3d334da24b7adf3d56a62fe2e516ef3727e813e88ea31f3cad0f04d"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 459,
+        "path": "r45-glue-d08-i00003-j00001.checker.log",
+        "sha256": "121cccc568fcc8d6fefd40c0f3bfbc8a07d1df7f54d2513e36bb7aaa5ec64455"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00003-j00001.checker.time.log",
+        "sha256": "6e232ef0599c35e4eda31370bc5798156223f897818c1433ada9548600be0c8e"
+      },
+      "cnf": {
+        "clauses": 3164,
+        "path": "r45-glue-d08-i00003-j00001.cnf",
+        "sha256": "dc3ab712011c7fb3a22e0c286d2c7e56175f1a2184c16a13d09816406f81ffac",
+        "variables": 276
+      },
+      "pair_index": 7,
+      "proof": {
+        "bytes": 10195988,
+        "path": "r45-glue-d08-i00003-j00001.drat",
+        "sha256": "0b3113bfe6ac74f73ce774cb3b00d4979dc9e71006702f0a99f58e3ed5eef1d3"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00003-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 912,
+        "path": "r45-glue-d08-i00003-j00001.solver.time.log",
+        "sha256": "5a291d3f92560e00d076e4535cb562999b5e513a4e7f42a8499345219d85899d"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00004-j00000.checker.log",
+        "sha256": "58fd9a2c103b80d2ae603c67113a06b2b4ba5dd2ea97f694ccb2ecfe68a88076"
+      },
+      "checker_time": {
+        "bytes": 868,
+        "path": "r45-glue-d08-i00004-j00000.checker.time.log",
+        "sha256": "76efab20856e98f24fde5cea7905baafb52f55430346af95aaea3c0e167116c5"
+      },
+      "cnf": {
+        "clauses": 3848,
+        "path": "r45-glue-d08-i00004-j00000.cnf",
+        "sha256": "3eff0d60120a77e1a772767b6d81ce7b3b351a386fcc67259001e041b8442b70",
+        "variables": 276
+      },
+      "pair_index": 8,
+      "proof": {
+        "bytes": 6404493,
+        "path": "r45-glue-d08-i00004-j00000.drat",
+        "sha256": "6895852eb085e29ec3181e14d9645a8ddc1b75f7e04779504c177becbf2dff33"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00004-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 912,
+        "path": "r45-glue-d08-i00004-j00000.solver.time.log",
+        "sha256": "e74a60584584aa7618e6ed555a99956246c05540d7860801e5cca3521b33b771"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00004-j00001.checker.log",
+        "sha256": "2e929c4b41966a69694ef67134ee3cfff0317e3588f17d0eb28133fe1c4b4156"
+      },
+      "checker_time": {
+        "bytes": 868,
+        "path": "r45-glue-d08-i00004-j00001.checker.time.log",
+        "sha256": "8ce0eaa160307e8ee8fc9ce8c2d15fdcba77ca7cb5855a820df94371287af8bc"
+      },
+      "cnf": {
+        "clauses": 3848,
+        "path": "r45-glue-d08-i00004-j00001.cnf",
+        "sha256": "003a85b0ef7738345311a42e840f6f873341a9b87c454350bbc31462a078faf0",
+        "variables": 276
+      },
+      "pair_index": 9,
+      "proof": {
+        "bytes": 4888993,
+        "path": "r45-glue-d08-i00004-j00001.drat",
+        "sha256": "bdfd3a8db529dc95443f5c755ef330249755b6388d5682d7279dfba831509efe"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00004-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 911,
+        "path": "r45-glue-d08-i00004-j00001.solver.time.log",
+        "sha256": "b9aa679392a8765bbbdfe3b97eb399dde5825b80b1dab2bf402942cd3c9172d7"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 458,
+        "path": "r45-glue-d08-i00005-j00000.checker.log",
+        "sha256": "9b10861cbadb3af46ba2289b98e0f0164f4696e0253a5903fa9facea3e1563e6"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00005-j00000.checker.time.log",
+        "sha256": "78db29d82f0fb23a396f6155a72d9c7f195b48c5b93985052a490ed9d4a9e2db"
+      },
+      "cnf": {
+        "clauses": 3392,
+        "path": "r45-glue-d08-i00005-j00000.cnf",
+        "sha256": "480b46002d7a9e4e339f4ac6af66b5fc66de2ff3d9ddf4c90960049644110460",
+        "variables": 276
+      },
+      "pair_index": 10,
+      "proof": {
+        "bytes": 7334594,
+        "path": "r45-glue-d08-i00005-j00000.drat",
+        "sha256": "d0bf4ce4a212917b05bf8ec4ace46ae99f71ffed0c058aa2ff517887690358a0"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00005-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 913,
+        "path": "r45-glue-d08-i00005-j00000.solver.time.log",
+        "sha256": "0ebf753757484a1ea040caf305f77c6c14064f9ff42efc08642587e5ef23786c"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 459,
+        "path": "r45-glue-d08-i00005-j00001.checker.log",
+        "sha256": "a89ba67b25dcffbf5ec5827969004206713174213ff8ed1841f3fbc05a2c3093"
+      },
+      "checker_time": {
+        "bytes": 868,
+        "path": "r45-glue-d08-i00005-j00001.checker.time.log",
+        "sha256": "9d9e9f0f9d3ca547a12acbff081ec0e821db5189c9c7ff5dd7b5284534fd8e4a"
+      },
+      "cnf": {
+        "clauses": 3392,
+        "path": "r45-glue-d08-i00005-j00001.cnf",
+        "sha256": "b64522ab92cba8db73ceb2d35c6ea76812c879d90447a873cb4f6c5cb363cc32",
+        "variables": 276
+      },
+      "pair_index": 11,
+      "proof": {
+        "bytes": 12351343,
+        "path": "r45-glue-d08-i00005-j00001.drat",
+        "sha256": "ba720dd363373bfa5e05a6bc73fcbeac3293665f0dbfa8b0123c8b351e9a8b00"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00005-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 914,
+        "path": "r45-glue-d08-i00005-j00001.solver.time.log",
+        "sha256": "860a66429dfc329a4df7d572c09693b0d157d9f6b59533f811c719b3e0e7d232"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00006-j00000.checker.log",
+        "sha256": "fd77ef3bc018af0aa9a5eef1e1b1447a1521cf61a929ba14f9aa70902b97e931"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00006-j00000.checker.time.log",
+        "sha256": "66dead7c80efc39e41fafee1cfbbf4d4e976d062f23f4e3d845f86ce1c28e90e"
+      },
+      "cnf": {
+        "clauses": 3732,
+        "path": "r45-glue-d08-i00006-j00000.cnf",
+        "sha256": "12334a407a08bb6716de3c9958d82d7cf81500177fc1eeaad7d3465c9a952471",
+        "variables": 276
+      },
+      "pair_index": 12,
+      "proof": {
+        "bytes": 6229676,
+        "path": "r45-glue-d08-i00006-j00000.drat",
+        "sha256": "c01a23e21c01d83f6280d63aec35cef0dfd9f9a93b90f168ca53b3df61c07afd"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00006-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 911,
+        "path": "r45-glue-d08-i00006-j00000.solver.time.log",
+        "sha256": "07cd81eb4323b27a4786acfbdd85f6570b079fa632b1e92a7d83c3a57145cfab"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00006-j00001.checker.log",
+        "sha256": "0e906129e8f237c22ff02288bb136e488f1c405bf6d8713b631cea8ee98d96a7"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00006-j00001.checker.time.log",
+        "sha256": "7dce11264d0f07e57ef64cb0d58438077929629a7e7cf5cccad8af3aad5f9cef"
+      },
+      "cnf": {
+        "clauses": 3732,
+        "path": "r45-glue-d08-i00006-j00001.cnf",
+        "sha256": "f58beab76d48101fcee8ff534e76449f8baa7803399974e305854297ce3edfbe",
+        "variables": 276
+      },
+      "pair_index": 13,
+      "proof": {
+        "bytes": 7141259,
+        "path": "r45-glue-d08-i00006-j00001.drat",
+        "sha256": "2bc06d56165e67df97ab4991cae6141371f5fb4cf125cb92325a796de58d7fb4"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00006-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 912,
+        "path": "r45-glue-d08-i00006-j00001.solver.time.log",
+        "sha256": "8c5d1b3b93873f88a594d22d6e0dde61811f101da67fa7f98ed178ee6235f065"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 459,
+        "path": "r45-glue-d08-i00007-j00000.checker.log",
+        "sha256": "0cc6e30be0b18e5668fc9fac2d179617f1750f306148a2ce31075014aac50426"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00007-j00000.checker.time.log",
+        "sha256": "34333b1aae55648ec537d8dc3aacd2c884fbd6bdae0ecaa9684bd76bc35f3163"
+      },
+      "cnf": {
+        "clauses": 3448,
+        "path": "r45-glue-d08-i00007-j00000.cnf",
+        "sha256": "db5887561e6219a4e002c184121093413e72728dfdb59a93aaa1c53d9547b651",
+        "variables": 276
+      },
+      "pair_index": 14,
+      "proof": {
+        "bytes": 10177665,
+        "path": "r45-glue-d08-i00007-j00000.drat",
+        "sha256": "3ee90c4f47d1a6284e64a67897ed51dcf403298f3b08f19d14899aabc91ad1e3"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00007-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 912,
+        "path": "r45-glue-d08-i00007-j00000.solver.time.log",
+        "sha256": "7f5e305b41343fdd17e2d14c65d1618a72a96ab9c6d085a7fe1eb822de846a04"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 460,
+        "path": "r45-glue-d08-i00007-j00001.checker.log",
+        "sha256": "51977323c1104db4c6c058a0078ed1ee1dd292f9d020f5c87fa395417eba1f6e"
+      },
+      "checker_time": {
+        "bytes": 869,
+        "path": "r45-glue-d08-i00007-j00001.checker.time.log",
+        "sha256": "bd272dad10f0a8cdb24bb15f147aeb98d8935c35546549accc71a897be8c69aa"
+      },
+      "cnf": {
+        "clauses": 3448,
+        "path": "r45-glue-d08-i00007-j00001.cnf",
+        "sha256": "03937f7717e0c63288136401538ea5eee6466e0bdc6bf8b49ac25fdf1bce5b53",
+        "variables": 276
+      },
+      "pair_index": 15,
+      "proof": {
+        "bytes": 18430637,
+        "path": "r45-glue-d08-i00007-j00001.drat",
+        "sha256": "cc10946b1a8181cbcd9558e4a943f90cffd8d485c6f756cbc45bbeb8ac52aebd"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00007-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 915,
+        "path": "r45-glue-d08-i00007-j00001.solver.time.log",
+        "sha256": "2bc091b71298ec774e938b195db81769eba4e860272c5147de35f1dec0cf3bf1"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00008-j00000.checker.log",
+        "sha256": "d824ddbcf8cb3745a6f410c49cbcd4ec3f060bf3856f5779b3f29cff2a2b60c1"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00008-j00000.checker.time.log",
+        "sha256": "3c147e7d50f15f768d4fe7a6d12ca9913ffb3972253f98e7e0704c6f0639652f"
+      },
+      "cnf": {
+        "clauses": 4148,
+        "path": "r45-glue-d08-i00008-j00000.cnf",
+        "sha256": "e1a7cc3f49aa32614407aca6b2e4142310290f9d64514f3c31b378726214493c",
+        "variables": 276
+      },
+      "pair_index": 16,
+      "proof": {
+        "bytes": 5353635,
+        "path": "r45-glue-d08-i00008-j00000.drat",
+        "sha256": "721137d4af377bf7cbb176448c587e1249aa2dd9c6946d3fe50e6ab485f7ee39"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00008-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 911,
+        "path": "r45-glue-d08-i00008-j00000.solver.time.log",
+        "sha256": "f825a836f3553190a18fe79593d245b34221d1b617b37ccdb1bee62bedf076c5"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00008-j00001.checker.log",
+        "sha256": "819cb6f626e0444f4254cbb6e7dbc98d41bf0ccbf405cce7841d159beb414134"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00008-j00001.checker.time.log",
+        "sha256": "16cb0d65cae55d1d29c774817e53828485e18f05bcffbf07ae71b638f248a56b"
+      },
+      "cnf": {
+        "clauses": 4148,
+        "path": "r45-glue-d08-i00008-j00001.cnf",
+        "sha256": "edfef0d4c6792f06740b78c9dc4cedbffabcd2be571cc739b6c7fada43f0e416",
+        "variables": 276
+      },
+      "pair_index": 17,
+      "proof": {
+        "bytes": 6524901,
+        "path": "r45-glue-d08-i00008-j00001.drat",
+        "sha256": "6fa5380326de163b27736c9c76a1bf93126426acc7d25c43b9ebd232b09e7be3"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00008-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 911,
+        "path": "r45-glue-d08-i00008-j00001.solver.time.log",
+        "sha256": "fe859fa70245510031bea485c36e411669bc758453cfc72c5f3560181c763833"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 458,
+        "path": "r45-glue-d08-i00009-j00000.checker.log",
+        "sha256": "1770a7df46d57f55dd172677ab70e3c3999a2bfa53ff26fd5abe3f152637da40"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00009-j00000.checker.time.log",
+        "sha256": "6914852b996b6201519b992fb1f9462a68be649fc1ed138e465b37e9f0be77c1"
+      },
+      "cnf": {
+        "clauses": 3448,
+        "path": "r45-glue-d08-i00009-j00000.cnf",
+        "sha256": "d1c76f37acc8fb9560339230da5a1affc9ebdf5ec0f93cc893e48fd433ef887f",
+        "variables": 276
+      },
+      "pair_index": 18,
+      "proof": {
+        "bytes": 6978228,
+        "path": "r45-glue-d08-i00009-j00000.drat",
+        "sha256": "797e9bcc7be4a558d19b5c6958568fbcc5b4b319082d168c730a37b9571360ff"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00009-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 912,
+        "path": "r45-glue-d08-i00009-j00000.solver.time.log",
+        "sha256": "cb85985c5c6b50bf67055b23defd0f6aa266bfbad39c968d225d787ba31a8a58"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 459,
+        "path": "r45-glue-d08-i00009-j00001.checker.log",
+        "sha256": "74bb3deb6eb894b0859f3212656b2970e8813c0005956fb12d8ad386bea75733"
+      },
+      "checker_time": {
+        "bytes": 868,
+        "path": "r45-glue-d08-i00009-j00001.checker.time.log",
+        "sha256": "475da2e94c5a1a19a7977bfa735500a8bb295ec8948fb6b6b4cca4d6723fa7ca"
+      },
+      "cnf": {
+        "clauses": 3448,
+        "path": "r45-glue-d08-i00009-j00001.cnf",
+        "sha256": "73c2a6d20a0d489d14f1fb8d802e239b75a9fbb14cd789b727e35ce565b0b93d",
+        "variables": 276
+      },
+      "pair_index": 19,
+      "proof": {
+        "bytes": 14783308,
+        "path": "r45-glue-d08-i00009-j00001.drat",
+        "sha256": "e3960c10b0a3d99791b4ca0a69b0815681b52c0f9046a33e36dcf71238fc25e7"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00009-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 914,
+        "path": "r45-glue-d08-i00009-j00001.solver.time.log",
+        "sha256": "865104712d29de99f11b6ad4fabb0a1300eefe89b966c67c2771cbe4784891ea"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 461,
+        "path": "r45-glue-d08-i00010-j00000.checker.log",
+        "sha256": "a985c28646c1d94f1ec999619f86734d83bd4aa812f271f0885359e74487dda8"
+      },
+      "checker_time": {
+        "bytes": 869,
+        "path": "r45-glue-d08-i00010-j00000.checker.time.log",
+        "sha256": "82989ef317de3305b47e4f29ef30b2e81b7f2d8d06ab093b522f5e6415f80ed1"
+      },
+      "cnf": {
+        "clauses": 2936,
+        "path": "r45-glue-d08-i00010-j00000.cnf",
+        "sha256": "573369dff123a4226c8ec53b285a97f6d4256caf872b9369c367ba6aa466d885",
+        "variables": 276
+      },
+      "pair_index": 20,
+      "proof": {
+        "bytes": 22089747,
+        "path": "r45-glue-d08-i00010-j00000.drat",
+        "sha256": "0167e51649feae7899af82d9db8cc422c5f7520fd1be7e46de99521b04ba8ef4"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00010-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 915,
+        "path": "r45-glue-d08-i00010-j00000.solver.time.log",
+        "sha256": "a4602ddae81a7441dc07896e276285de70f416079f2dc827bf1c9195d9888343"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 465,
+        "path": "r45-glue-d08-i00010-j00001.checker.log",
+        "sha256": "5dbece5bf58cd8072933133cdea24c079fca5b162cecc0daa9bd842aa19d9bb3"
+      },
+      "checker_time": {
+        "bytes": 874,
+        "path": "r45-glue-d08-i00010-j00001.checker.time.log",
+        "sha256": "198bdd910e23ca997e8bd6227cb9f5c79be135ad2adc949ba27f4eb32344a7ac"
+      },
+      "cnf": {
+        "clauses": 2936,
+        "path": "r45-glue-d08-i00010-j00001.cnf",
+        "sha256": "acbeb5c28590e4d62d10e0cbd400138ea176374fb2ba1228f6ba6b2ef6550d5d",
+        "variables": 276
+      },
+      "pair_index": 21,
+      "proof": {
+        "bytes": 103204793,
+        "path": "r45-glue-d08-i00010-j00001.drat",
+        "sha256": "18dc812d5fddd6275c72de295dfb7ed0ed3a89c6d8020b62fbf8242ee71b2693"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00010-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 919,
+        "path": "r45-glue-d08-i00010-j00001.solver.time.log",
+        "sha256": "0822f1803ee21e0602ebda5d5e85c300328fdb60871106f153d9808120c8877b"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 458,
+        "path": "r45-glue-d08-i00011-j00000.checker.log",
+        "sha256": "36701ca3f36d4ac2b55ca594732197bcaf194411a2981b96c55e2b9937223233"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00011-j00000.checker.time.log",
+        "sha256": "57d983914553927a5d923b27f6d71d54f2cc6f8516eb84d6d8beffd6010667d8"
+      },
+      "cnf": {
+        "clauses": 3448,
+        "path": "r45-glue-d08-i00011-j00000.cnf",
+        "sha256": "a18bdcc4361cceea6b433ea1bff61429fd7b668ad4c326cc9fcb7564f7b07fbd",
+        "variables": 276
+      },
+      "pair_index": 22,
+      "proof": {
+        "bytes": 7388815,
+        "path": "r45-glue-d08-i00011-j00000.drat",
+        "sha256": "13ef454ed4736d3297e575c6c46fbd5162b64f96412a769906fdb751ad2fc299"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00011-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 913,
+        "path": "r45-glue-d08-i00011-j00000.solver.time.log",
+        "sha256": "dd9386009f6423aa8dfba93c7025da055a355673f5f94c3725694d0c2489c738"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 458,
+        "path": "r45-glue-d08-i00011-j00001.checker.log",
+        "sha256": "02c081465085a650e03207d473e5da80248730b391182e77d36798f1a8928c87"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00011-j00001.checker.time.log",
+        "sha256": "3921aed78682e13bbcbc9bd028528a8e8cae6fe04369bf383bf4039da3c41c33"
+      },
+      "cnf": {
+        "clauses": 3448,
+        "path": "r45-glue-d08-i00011-j00001.cnf",
+        "sha256": "a5c8137a4771c7a9e96dbfe06f35d63731982bc43acd35daef95f83d7a045de4",
+        "variables": 276
+      },
+      "pair_index": 23,
+      "proof": {
+        "bytes": 9343270,
+        "path": "r45-glue-d08-i00011-j00001.drat",
+        "sha256": "92c625e74d1aba374f6ee9e42a2bfa9c9042a81161471488a516918e351ac52a"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00011-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 912,
+        "path": "r45-glue-d08-i00011-j00001.solver.time.log",
+        "sha256": "72a0c36da7cc618800dde7b2b7cc09b203d1c4ca70fbb731ebbda1c655ca4059"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 459,
+        "path": "r45-glue-d08-i00012-j00000.checker.log",
+        "sha256": "b4bf69ea42f7cd097ac494c44d7cc8cba2f904d6d6d44e93de686c9454cef44c"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00012-j00000.checker.time.log",
+        "sha256": "49e120541b41c5e9d71c8e99736930a7dbc3b7f88c50267f62bdbb89f815825e"
+      },
+      "cnf": {
+        "clauses": 3280,
+        "path": "r45-glue-d08-i00012-j00000.cnf",
+        "sha256": "50321d1d76a03fde5724bdfc7af6d7a95b1d56f256af2358207ec0d2c1c51ea4",
+        "variables": 276
+      },
+      "pair_index": 24,
+      "proof": {
+        "bytes": 10666566,
+        "path": "r45-glue-d08-i00012-j00000.drat",
+        "sha256": "dc29242b7a7691dfddb3aa6ea01e2cc13f745cd57cdb8d133513825ab2c72ea8"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00012-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 913,
+        "path": "r45-glue-d08-i00012-j00000.solver.time.log",
+        "sha256": "4480ece531715fb23fced37afb39e658076ec9529b6906beffc81f58e5cda479"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 461,
+        "path": "r45-glue-d08-i00012-j00001.checker.log",
+        "sha256": "74d70e94672c238e85dc1053404c779d573f35d7bb8b165315346862324edcca"
+      },
+      "checker_time": {
+        "bytes": 870,
+        "path": "r45-glue-d08-i00012-j00001.checker.time.log",
+        "sha256": "26f8fc33e0517a945bbfc21babcf46a323d60fcd63ab2016de74e66e4878700c"
+      },
+      "cnf": {
+        "clauses": 3280,
+        "path": "r45-glue-d08-i00012-j00001.cnf",
+        "sha256": "af067463c0698b40ce163e9c0d384eea0e8d4cf2b3e666e225bc97ea95b01b2a",
+        "variables": 276
+      },
+      "pair_index": 25,
+      "proof": {
+        "bytes": 30465260,
+        "path": "r45-glue-d08-i00012-j00001.drat",
+        "sha256": "fa25f8ffc48f9aa40db575674d3af18b47b9330bfa57de1e00924291a314902e"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00012-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 916,
+        "path": "r45-glue-d08-i00012-j00001.solver.time.log",
+        "sha256": "17176edcde899241301a313e5dea7807eda830a5e017d002eaadc2cc283125d2"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00013-j00000.checker.log",
+        "sha256": "9bcdf5fe80bce4d85901b1624252643ed9c297da080737d5b320f96a4187db36"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00013-j00000.checker.time.log",
+        "sha256": "4d3ed7a68f29724c66b145585c627efd8a6449844a786c67c66e60d2afc9fa99"
+      },
+      "cnf": {
+        "clauses": 3392,
+        "path": "r45-glue-d08-i00013-j00000.cnf",
+        "sha256": "c0f659c3173a3441c3b9b25fe6b5225e5823bd7d5d79965c2e8a08b5e98d8e66",
+        "variables": 276
+      },
+      "pair_index": 26,
+      "proof": {
+        "bytes": 5904644,
+        "path": "r45-glue-d08-i00013-j00000.drat",
+        "sha256": "bc8895fee841982abf4df32fe755b6d3d196aa0faeb3723b136aafc51086de17"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00013-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 913,
+        "path": "r45-glue-d08-i00013-j00000.solver.time.log",
+        "sha256": "dbee1fc7a5250c6445c8a777503657a0395a7bdefaf61b67633aba6dfc790449"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 458,
+        "path": "r45-glue-d08-i00013-j00001.checker.log",
+        "sha256": "77722636bad2e74ce58155f3b8c00fbff433df95663509a322ba84b4caaef0de"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00013-j00001.checker.time.log",
+        "sha256": "42d758c8d9f40f699b2d7f73ea8f2ccb8313e7005c35ead8130bdbea5ae82dcd"
+      },
+      "cnf": {
+        "clauses": 3392,
+        "path": "r45-glue-d08-i00013-j00001.cnf",
+        "sha256": "7a146bc52e774a6745d9226ace5bb98b7e813f811f114bf38a7d50586fec73b2",
+        "variables": 276
+      },
+      "pair_index": 27,
+      "proof": {
+        "bytes": 7752970,
+        "path": "r45-glue-d08-i00013-j00001.drat",
+        "sha256": "b22f1e91b01739702d0c45b92e54706430a1746bcf4327ed36dcb969b7c93739"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00013-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 911,
+        "path": "r45-glue-d08-i00013-j00001.solver.time.log",
+        "sha256": "29fb28bcae7cc9b8391b6c66ecf0515e71eb716f1e40ab536a6333b34a7fe4a5"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00014-j00000.checker.log",
+        "sha256": "59fa9a9224de1e236373331dd832813d39ba10957d6ac2939d5623e1f405294e"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00014-j00000.checker.time.log",
+        "sha256": "fae76f179ef9a646ea102ab095bc2694dcf42fec1d5bbd85581b2cd5d0be3632"
+      },
+      "cnf": {
+        "clauses": 3940,
+        "path": "r45-glue-d08-i00014-j00000.cnf",
+        "sha256": "63f4ee14a3d09df38a2937cfcef9e33d60ef6ffefe51cee1de8a6f32d4fa7a82",
+        "variables": 276
+      },
+      "pair_index": 28,
+      "proof": {
+        "bytes": 4855149,
+        "path": "r45-glue-d08-i00014-j00000.drat",
+        "sha256": "c4b93f54a66901b6f15b83610fe339bda2554bd42879d2563141bce7f948b502"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00014-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 910,
+        "path": "r45-glue-d08-i00014-j00000.solver.time.log",
+        "sha256": "b7b3efe5db5717c1da7ae822a96434774617685c55fc445f734fc22219e75fad"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00014-j00001.checker.log",
+        "sha256": "b29285718bcd7476216c6efbef1577563629228edd5f25a13862d402c8d626d0"
+      },
+      "checker_time": {
+        "bytes": 868,
+        "path": "r45-glue-d08-i00014-j00001.checker.time.log",
+        "sha256": "19ff7c600ec9cc1e96813c402b9f48d07df8694693d2e6e82742088f995f06b6"
+      },
+      "cnf": {
+        "clauses": 3940,
+        "path": "r45-glue-d08-i00014-j00001.cnf",
+        "sha256": "d3bd69d82ece92349d866200452ea67e0f737fcc1f31967e146a29de2267d056",
+        "variables": 276
+      },
+      "pair_index": 29,
+      "proof": {
+        "bytes": 5573289,
+        "path": "r45-glue-d08-i00014-j00001.drat",
+        "sha256": "ba0db5135988e03eb35f043832589c36c8749577a459d4de7907c682a5e1a6ac"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00014-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 911,
+        "path": "r45-glue-d08-i00014-j00001.solver.time.log",
+        "sha256": "bec8e05a02e9f8ff4e5b1bae854c6b5d526a3f6c361320324575ceb97946b480"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 458,
+        "path": "r45-glue-d08-i00015-j00000.checker.log",
+        "sha256": "d4c91c584b69fcbe0e8f25eebe8b69fbd06433fd3aaf5e77f47aced549d66acc"
+      },
+      "checker_time": {
+        "bytes": 868,
+        "path": "r45-glue-d08-i00015-j00000.checker.time.log",
+        "sha256": "f720492e021c72e4a867c76e056ba33399df4fa7d6bfe19110d51d963fff0309"
+      },
+      "cnf": {
+        "clauses": 3848,
+        "path": "r45-glue-d08-i00015-j00000.cnf",
+        "sha256": "8a84c85c28ecde577a0aac834ffbfa3a3e2503be48c0dedab93a53ca9a8d78ab",
+        "variables": 276
+      },
+      "pair_index": 30,
+      "proof": {
+        "bytes": 7238700,
+        "path": "r45-glue-d08-i00015-j00000.drat",
+        "sha256": "9494c097af85ae62992709d9cad0258963ee514bc4d08e959f3fc5dd56d9b907"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00015-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 912,
+        "path": "r45-glue-d08-i00015-j00000.solver.time.log",
+        "sha256": "1117f3544a7d1fa6cfcceddca90d00328cd9eb31a98b778e30162841129b58d2"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00015-j00001.checker.log",
+        "sha256": "5d2f0eb7c6bb7a134df80b95e854c2b786ddf6aa666321c98e709eddaab969ac"
+      },
+      "checker_time": {
+        "bytes": 868,
+        "path": "r45-glue-d08-i00015-j00001.checker.time.log",
+        "sha256": "bc6faf61237dd16b0c7b5a383526faf3cc934a0d2379f2f93560ac6b510059a1"
+      },
+      "cnf": {
+        "clauses": 3848,
+        "path": "r45-glue-d08-i00015-j00001.cnf",
+        "sha256": "f09f08934ee51fd789799fa637eebd924241d1c875543ccaf0133d1c65050db8",
+        "variables": 276
+      },
+      "pair_index": 31,
+      "proof": {
+        "bytes": 6765665,
+        "path": "r45-glue-d08-i00015-j00001.drat",
+        "sha256": "b4cd6c3818d7f7f3764533362d7966f1f62a113230ffee174531a4441d806a80"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00015-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 911,
+        "path": "r45-glue-d08-i00015-j00001.solver.time.log",
+        "sha256": "65f3268199c3ca5b366fb25892fa7cc915a9606b22a45bd329adfbf686724ecb"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00016-j00000.checker.log",
+        "sha256": "3cfe64ce16b5855e4d42a205ebcf97767b083f87640e1ef757359d14a38d0aa7"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00016-j00000.checker.time.log",
+        "sha256": "de714e08b4065e8afcb852295682fd479cdffa31d734b2bb0b011cadf41102c7"
+      },
+      "cnf": {
+        "clauses": 3344,
+        "path": "r45-glue-d08-i00016-j00000.cnf",
+        "sha256": "afab050d7c7384b8fa0ca89c4bbc8de7a06ce36fd9eb109649a89591e5807a8c",
+        "variables": 276
+      },
+      "pair_index": 32,
+      "proof": {
+        "bytes": 6404070,
+        "path": "r45-glue-d08-i00016-j00000.drat",
+        "sha256": "628feaf297d71757cbe6fcc571a9fa645c17d3eb4bc03d090302c68796de9dbe"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00016-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 912,
+        "path": "r45-glue-d08-i00016-j00000.solver.time.log",
+        "sha256": "d50f24ef5cb9682bd6ce3eef7d811583d221072cc8b1fc376348d12431289f6d"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 458,
+        "path": "r45-glue-d08-i00016-j00001.checker.log",
+        "sha256": "22f800cb0fae5fb5572a60060e7b881ee6c245233edf70a21204483da43d2162"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00016-j00001.checker.time.log",
+        "sha256": "aedf7f25010f880860e7bf5b4236d01b1f8acac786203597fdefef15b1cbdddc"
+      },
+      "cnf": {
+        "clauses": 3344,
+        "path": "r45-glue-d08-i00016-j00001.cnf",
+        "sha256": "8e6082fa5c2a6d2487698527e9609287e5fdc22732cfdd28bc639774955018bb",
+        "variables": 276
+      },
+      "pair_index": 33,
+      "proof": {
+        "bytes": 8852223,
+        "path": "r45-glue-d08-i00016-j00001.drat",
+        "sha256": "fc020ad5710c3376baace7d98c8f5a6930d0fbb3dbdd6c79ddf059fee06d85b0"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00016-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 913,
+        "path": "r45-glue-d08-i00016-j00001.solver.time.log",
+        "sha256": "d5c9f8b03fd755353697fed2d003cd379db5c0d1fdd0b4daa59cab70eb804170"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00017-j00000.checker.log",
+        "sha256": "f37a999685679f7cd3c4ca7ce745e06b63dd23fb05aaa85d60b263308c0c22db"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00017-j00000.checker.time.log",
+        "sha256": "9056ee807a38312d0494d9947a1ff3cc7f9276d3434c62280122076cd6aad3f8"
+      },
+      "cnf": {
+        "clauses": 3312,
+        "path": "r45-glue-d08-i00017-j00000.cnf",
+        "sha256": "4a4b8d51419a5b208bc4444d898ec91417108f85a623df19f134668e8305a298",
+        "variables": 276
+      },
+      "pair_index": 34,
+      "proof": {
+        "bytes": 5450182,
+        "path": "r45-glue-d08-i00017-j00000.drat",
+        "sha256": "4709951f595eade9882d072c34ff63f53e0b82ea4be18dcd75f1f3a20695a012"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00017-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 911,
+        "path": "r45-glue-d08-i00017-j00000.solver.time.log",
+        "sha256": "7312daa5fd3e87ce83a809153dcb1bc53fada0fa4e2b24c3a9dcadf4a0a5c9b0"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 458,
+        "path": "r45-glue-d08-i00017-j00001.checker.log",
+        "sha256": "4b505e6208062df2708b73b636bf910175667048f209f8da811c6061294a1ade"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00017-j00001.checker.time.log",
+        "sha256": "2a2496b7ff580860dccab72404cb14e06bd35c29985d0c73a177bb6ccab556b5"
+      },
+      "cnf": {
+        "clauses": 3312,
+        "path": "r45-glue-d08-i00017-j00001.cnf",
+        "sha256": "d44f365999a5c9116df3a87ffbcc54120f57ea2909d85d8ee2df2c7982ceb19f",
+        "variables": 276
+      },
+      "pair_index": 35,
+      "proof": {
+        "bytes": 8219673,
+        "path": "r45-glue-d08-i00017-j00001.drat",
+        "sha256": "4164eafe8aa977c6112d5ef992df0ce9379bcbde66c57ea7558bc7b2b116ffad"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00017-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 912,
+        "path": "r45-glue-d08-i00017-j00001.solver.time.log",
+        "sha256": "28009a7ae0a755c9ece2ef67d4a978d74a228fd7c42d4ee031e28fe580ccc21b"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 458,
+        "path": "r45-glue-d08-i00018-j00000.checker.log",
+        "sha256": "c1d7436c24e9ed029abbb3991bbc87ea49d94f849fcd503c60b6817374b32101"
+      },
+      "checker_time": {
+        "bytes": 868,
+        "path": "r45-glue-d08-i00018-j00000.checker.time.log",
+        "sha256": "adc5b9ea46bfabdbb03626b7b29fe13936d54476d21b6ddfcf7e19af484b9b06"
+      },
+      "cnf": {
+        "clauses": 3848,
+        "path": "r45-glue-d08-i00018-j00000.cnf",
+        "sha256": "b98bac02d0f5a38d6a7deef0b4c8df81098624883b4973001cdc5c2aef4466d3",
+        "variables": 276
+      },
+      "pair_index": 36,
+      "proof": {
+        "bytes": 7316581,
+        "path": "r45-glue-d08-i00018-j00000.drat",
+        "sha256": "0145fda63222665ced7fd00d1779bbfd62d707349ec3872c0e5a65abc489b5c4"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00018-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 913,
+        "path": "r45-glue-d08-i00018-j00000.solver.time.log",
+        "sha256": "cf1b584708bceb2a5c56905bc7f63efbbcb567e304a2edafedf791dff977739e"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 458,
+        "path": "r45-glue-d08-i00018-j00001.checker.log",
+        "sha256": "8a363076f09e1959a6cf916bf557b25487ed1ba4fde5ebbdc48e34d473b3252b"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00018-j00001.checker.time.log",
+        "sha256": "fa19fd1ae6ec584002b8bba28d516fd9e95cb49c1e4d62d57c0236f00905b3f5"
+      },
+      "cnf": {
+        "clauses": 3848,
+        "path": "r45-glue-d08-i00018-j00001.cnf",
+        "sha256": "2a28ac422110d0b93dc7aea50bce64f520140b78ea4003a028fcbc031a1701c0",
+        "variables": 276
+      },
+      "pair_index": 37,
+      "proof": {
+        "bytes": 7725367,
+        "path": "r45-glue-d08-i00018-j00001.drat",
+        "sha256": "2b54d4d0eb16fc484d613ba9875cd4b46ced61a81ab522bde44423b877e0fbed"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00018-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 912,
+        "path": "r45-glue-d08-i00018-j00001.solver.time.log",
+        "sha256": "1d395aa9b8a4cb2ea4efd5fb42ff5536d573e35826776ace25980b4a38b85b38"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 458,
+        "path": "r45-glue-d08-i00019-j00000.checker.log",
+        "sha256": "825fe2eb24c3edeb64f0c4967907be8ca6216326a30c8e6407bbba48cc93f39b"
+      },
+      "checker_time": {
+        "bytes": 869,
+        "path": "r45-glue-d08-i00019-j00000.checker.time.log",
+        "sha256": "a94f24b532faebb5c01dafcdb62a798fe22f62584624c85eb966331d4ee3dd42"
+      },
+      "cnf": {
+        "clauses": 3524,
+        "path": "r45-glue-d08-i00019-j00000.cnf",
+        "sha256": "8e8c1ebe2659c03ed28ff5b333b8fc4767357448b24f98e068697e5c6a41b64b",
+        "variables": 276
+      },
+      "pair_index": 38,
+      "proof": {
+        "bytes": 7809590,
+        "path": "r45-glue-d08-i00019-j00000.drat",
+        "sha256": "4f87fce32d30e2b48fd1eb6bd9725abd2db106a0d85a83a0342e43baaa742325"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00019-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 913,
+        "path": "r45-glue-d08-i00019-j00000.solver.time.log",
+        "sha256": "3bd9103ab55cc10bee284ff23e94881e9a3cda51bd4dd2c27874c2e92e7a717e"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 459,
+        "path": "r45-glue-d08-i00019-j00001.checker.log",
+        "sha256": "f29f8942af1b644415fc93e43b763edb46e5909cb314d091f5410985858e446d"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00019-j00001.checker.time.log",
+        "sha256": "2a5caaad182b60e387ce31999f3ad4458fd7b96f4a2986777e5a8ed8d4255f8f"
+      },
+      "cnf": {
+        "clauses": 3524,
+        "path": "r45-glue-d08-i00019-j00001.cnf",
+        "sha256": "bc42e5769e990f14d533354837b56666062b4ea96f1387751518c76d4b4862e1",
+        "variables": 276
+      },
+      "pair_index": 39,
+      "proof": {
+        "bytes": 10111386,
+        "path": "r45-glue-d08-i00019-j00001.drat",
+        "sha256": "630df692f4c09ce8fcb8669e2c89e30a083cfcb7ea10bdb8d63cebbee68fa564"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00019-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 912,
+        "path": "r45-glue-d08-i00019-j00001.solver.time.log",
+        "sha256": "82ce4e0d49718fea8fa169a5d6672b61782e2b2f458a0ae169ec000f823a5731"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00020-j00000.checker.log",
+        "sha256": "f5c4a50b05e9e2e93d56a4a0e36d751b6c1e7a47ceb1797c21ad78e2859c7a19"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00020-j00000.checker.time.log",
+        "sha256": "9a7bbaa5444599043431e6616e790a5c897eab6f84238c32beeca4e90e3100f6"
+      },
+      "cnf": {
+        "clauses": 3540,
+        "path": "r45-glue-d08-i00020-j00000.cnf",
+        "sha256": "f0f2f57db95b093f320c5ae22fb85a6b12b58a2fd5a381eeca559504eaa670ce",
+        "variables": 276
+      },
+      "pair_index": 40,
+      "proof": {
+        "bytes": 5870882,
+        "path": "r45-glue-d08-i00020-j00000.drat",
+        "sha256": "72a812dcc8ff3369d48538ca3c69471ec4eaf60b99232d409f27b29f268658df"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00020-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 912,
+        "path": "r45-glue-d08-i00020-j00000.solver.time.log",
+        "sha256": "8bc20aa28fba78d64297782c93dededda2b1fc60d0fe8a20d03a79c4f7f25307"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00020-j00001.checker.log",
+        "sha256": "8a729fcc9eb9def267d7db349ae7e51280a16c0f8f77473c19fe6ccbb51bc1b3"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00020-j00001.checker.time.log",
+        "sha256": "5a1e05a49d77ead6a049de52ab90c6588619b021f0e1fcc4866361759a5acdd9"
+      },
+      "cnf": {
+        "clauses": 3540,
+        "path": "r45-glue-d08-i00020-j00001.cnf",
+        "sha256": "2ab89f726f67a5efe0e987558f2ad26ff90fe8ec48a36f7fde703f69a9a6f6b1",
+        "variables": 276
+      },
+      "pair_index": 41,
+      "proof": {
+        "bytes": 5487009,
+        "path": "r45-glue-d08-i00020-j00001.drat",
+        "sha256": "bd2794ed78cb68446a349bc12634d02eb141278820772e90ac925b3ba9c61857"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00020-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 911,
+        "path": "r45-glue-d08-i00020-j00001.solver.time.log",
+        "sha256": "97567c01ce34649e65245ac552e4244432044cd2f9d51cf1cade997fb9c0c5e7"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00021-j00000.checker.log",
+        "sha256": "0fe801e06094894bb6e271553c20db23e976923adc1999d4781ba3dc4cd6e3c9"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00021-j00000.checker.time.log",
+        "sha256": "0f8ccd52a5f15d7a637d457460f07ed2d6c7473e6403ee3d1dafb1772536fef4"
+      },
+      "cnf": {
+        "clauses": 3340,
+        "path": "r45-glue-d08-i00021-j00000.cnf",
+        "sha256": "55c44a59f71cb0374037c5e69612cea9e889840d985288ea16a56fc5ea6e57b5",
+        "variables": 276
+      },
+      "pair_index": 42,
+      "proof": {
+        "bytes": 5605896,
+        "path": "r45-glue-d08-i00021-j00000.drat",
+        "sha256": "615000485f9655ca413694a2b5519dbd70d7bb14c1e8270fa1547ee2389990e5"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00021-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 911,
+        "path": "r45-glue-d08-i00021-j00000.solver.time.log",
+        "sha256": "44c5d9d01bbe269884d486193c21ba84f1eea510eea21d38a291ae0649dba0e9"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00021-j00001.checker.log",
+        "sha256": "a94fbbb5dc73ea94d1ef59d587c77ac3a5d45362384a203c70d74b9603bc9259"
+      },
+      "checker_time": {
+        "bytes": 868,
+        "path": "r45-glue-d08-i00021-j00001.checker.time.log",
+        "sha256": "43bd559256dfb068cb6135c22871edf10217a3cfba462e68290e5ff0857e8b6c"
+      },
+      "cnf": {
+        "clauses": 3340,
+        "path": "r45-glue-d08-i00021-j00001.cnf",
+        "sha256": "4b74de39d091c9b1caff370dbc2d47667a154bcbf0e98cfcf1b4842f92e5dae4",
+        "variables": 276
+      },
+      "pair_index": 43,
+      "proof": {
+        "bytes": 5117454,
+        "path": "r45-glue-d08-i00021-j00001.drat",
+        "sha256": "e8dad2b1d86880f12aa6a0c93544ad577ab8f0b9c37502cd77e471048efb6529"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00021-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 911,
+        "path": "r45-glue-d08-i00021-j00001.solver.time.log",
+        "sha256": "104c1ff5e0c377ee44d073eeb73ce9b0c8555dfbd5040fcecb92905407ad0a04"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 454,
+        "path": "r45-glue-d08-i00022-j00000.checker.log",
+        "sha256": "85121dc0cee8128019337903306d0c9fb436594d769cb8b52354c82189fb5758"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00022-j00000.checker.time.log",
+        "sha256": "5cd7d2c97e712f29ba3ef78ef9574be68548d7412eeee7ce2b2eaa763c7f54bc"
+      },
+      "cnf": {
+        "clauses": 4208,
+        "path": "r45-glue-d08-i00022-j00000.cnf",
+        "sha256": "700552f90d9f5c8b7b728658e62ed4adc0ff2ef3c1646750f82ab2a8f3a0a7b3",
+        "variables": 276
+      },
+      "pair_index": 44,
+      "proof": {
+        "bytes": 1428160,
+        "path": "r45-glue-d08-i00022-j00000.drat",
+        "sha256": "6a2efad11b548be97512b87752daf8435a8f81988513e967a9cc568e1d828c88"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00022-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 910,
+        "path": "r45-glue-d08-i00022-j00000.solver.time.log",
+        "sha256": "f80b897aa87431de3879956ffd73ef81607076fc54202bb8d767663fa512798a"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 454,
+        "path": "r45-glue-d08-i00022-j00001.checker.log",
+        "sha256": "21a2e6bd0efb1dd1dd9f104add2cc8d899f8e22efd2afadb51f0561f8adec32c"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00022-j00001.checker.time.log",
+        "sha256": "296fe0918e22dc525e9396b0e280657e13fd46343786f4165f9cb7012a5ca0b4"
+      },
+      "cnf": {
+        "clauses": 4208,
+        "path": "r45-glue-d08-i00022-j00001.cnf",
+        "sha256": "dfe039d897eafec3d4779033d58b7a1f6e275ad1e35801fd1620aca2f0e49819",
+        "variables": 276
+      },
+      "pair_index": 45,
+      "proof": {
+        "bytes": 1687551,
+        "path": "r45-glue-d08-i00022-j00001.drat",
+        "sha256": "a074de8caf964bb05b300226833a48f5be740a5d69e7af44aa2bae17bf0ba9f5"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00022-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 911,
+        "path": "r45-glue-d08-i00022-j00001.solver.time.log",
+        "sha256": "68de7ceefcf3726674f57b668b59c7d98b33751f68569d01f29de9720c219891"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00023-j00000.checker.log",
+        "sha256": "d4b8ab64f9b10f4fcdf85b63d8571dd005082a437d4e55b102c99bf0a84923e0"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00023-j00000.checker.time.log",
+        "sha256": "4a3efe4b2fbc0e5166189676c6fb8a34fc39fef26aa2cb2ab4547f2d3f98689c"
+      },
+      "cnf": {
+        "clauses": 3416,
+        "path": "r45-glue-d08-i00023-j00000.cnf",
+        "sha256": "7d8b7f33d00ab80773895c68014f1bce508d9b96014efb4489fe6bfe6fbbbbfd",
+        "variables": 276
+      },
+      "pair_index": 46,
+      "proof": {
+        "bytes": 5928711,
+        "path": "r45-glue-d08-i00023-j00000.drat",
+        "sha256": "263877bea939c20f14557d9d96bb0c23bf1a783be7a1db6dbb0c2bfee85761c7"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00023-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 913,
+        "path": "r45-glue-d08-i00023-j00000.solver.time.log",
+        "sha256": "7138d7489af8f16f5daf4b2fad070b40b01845825116447cf7fdba52e1b2fc16"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00023-j00001.checker.log",
+        "sha256": "e4fba2f0d747a94d8e93c7aa65e2bb23f49b272495527cd827e420511a859007"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00023-j00001.checker.time.log",
+        "sha256": "fb9998017b79916f58b2b7f1ee312e7875e08216330b7ff89322a00b65361607"
+      },
+      "cnf": {
+        "clauses": 3416,
+        "path": "r45-glue-d08-i00023-j00001.cnf",
+        "sha256": "99be0095b1534aee467d314a6349163eb6d826998df9ebe0158e1dd971b370f8",
+        "variables": 276
+      },
+      "pair_index": 47,
+      "proof": {
+        "bytes": 5801811,
+        "path": "r45-glue-d08-i00023-j00001.drat",
+        "sha256": "712fb1a35b893fd61eda8bb58b4016953729bae1f9875cf6f678b3a537bb5bee"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00023-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 912,
+        "path": "r45-glue-d08-i00023-j00001.solver.time.log",
+        "sha256": "c79b5f6af4618f3edd2dbb8e0455e7516c85e2d2645212a1aafc50396aae756f"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00024-j00000.checker.log",
+        "sha256": "6e039ebde5318479bfb207b4316dbebd86c70ddde531205cb2d87c9fa160067c"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00024-j00000.checker.time.log",
+        "sha256": "07ccaf54ae399ae78cbe935efafb8ada490578e458dafd2978eaa2599085b392"
+      },
+      "cnf": {
+        "clauses": 2776,
+        "path": "r45-glue-d08-i00024-j00000.cnf",
+        "sha256": "e81df18ea04eb8193576d46e50fb88c6813d80d16058fbde310cd8b596fadd20",
+        "variables": 276
+      },
+      "pair_index": 48,
+      "proof": {
+        "bytes": 5437640,
+        "path": "r45-glue-d08-i00024-j00000.drat",
+        "sha256": "149cc6d33a1b768ae20a00cf979b8ea4da7ad97c585506bdd0f1e966f1d2613f"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00024-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 912,
+        "path": "r45-glue-d08-i00024-j00000.solver.time.log",
+        "sha256": "2bbf6796c23274d3526ee0269f135b488e92426401a8ddc227c10d1d7e0ab413"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 458,
+        "path": "r45-glue-d08-i00024-j00001.checker.log",
+        "sha256": "7f709aeb98004996995c5005aaf5f0cea620136686a6acabb1e44e6f8e8edc36"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00024-j00001.checker.time.log",
+        "sha256": "d6cc31f8fecc14f4f29d954ea0cb8ca80333f2b245c8e561d36428ea2d38adbf"
+      },
+      "cnf": {
+        "clauses": 2776,
+        "path": "r45-glue-d08-i00024-j00001.cnf",
+        "sha256": "031da25e85f26b49151cb27a54bc457ff9b7815fc3939f10ca442c509cfba016",
+        "variables": 276
+      },
+      "pair_index": 49,
+      "proof": {
+        "bytes": 7373146,
+        "path": "r45-glue-d08-i00024-j00001.drat",
+        "sha256": "1e7713d0735e80c5a4a1d6c59220aa3a5321b63ba05f2a86b9f899849460688b"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00024-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 913,
+        "path": "r45-glue-d08-i00024-j00001.solver.time.log",
+        "sha256": "e8ff70f5bea70779961f7feb1b02e7a0135b7e38548ec978c7884e1c78cb8391"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00025-j00000.checker.log",
+        "sha256": "afa12391d4708ca754a2dce360a7d381179c166cfdbb1df514bcd8fc54c074f0"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00025-j00000.checker.time.log",
+        "sha256": "27652f2f0d8ba53cef86af6ff4f8c9323a1ed6b2e0e54ca7dd7159f4143d6220"
+      },
+      "cnf": {
+        "clauses": 2828,
+        "path": "r45-glue-d08-i00025-j00000.cnf",
+        "sha256": "695d05c41e9acdc393ce842ba2badf06205614cf481670a0a89ed9695f56691e",
+        "variables": 276
+      },
+      "pair_index": 50,
+      "proof": {
+        "bytes": 5793341,
+        "path": "r45-glue-d08-i00025-j00000.drat",
+        "sha256": "7619d4396df6877f41221e252c28e667c8f577b258254e5d8203e48c2c6c38f1"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00025-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 912,
+        "path": "r45-glue-d08-i00025-j00000.solver.time.log",
+        "sha256": "0b217104aefc5190a7d866b20d1c3ae25eddaf7306c4377882f21cf73e9b8e1e"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 457,
+        "path": "r45-glue-d08-i00025-j00001.checker.log",
+        "sha256": "d559cdc2643c280a06927b270d486ea1d31063ee8e55cc4bbe2e45e751c32eca"
+      },
+      "checker_time": {
+        "bytes": 868,
+        "path": "r45-glue-d08-i00025-j00001.checker.time.log",
+        "sha256": "bbee261106f6b6e3a9bcb4ca0faad01cbeb8bd4deac79054a8f2f75389d43d62"
+      },
+      "cnf": {
+        "clauses": 2828,
+        "path": "r45-glue-d08-i00025-j00001.cnf",
+        "sha256": "8df0ebcb536b9f99ba55845320cf9628a1c065f7c2128efc39adff004f3eeb55",
+        "variables": 276
+      },
+      "pair_index": 51,
+      "proof": {
+        "bytes": 5469010,
+        "path": "r45-glue-d08-i00025-j00001.drat",
+        "sha256": "a268bfdca7a84aa43667571801cf4710b332137b2e09f1f342f2c52981c6c27b"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00025-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 911,
+        "path": "r45-glue-d08-i00025-j00001.solver.time.log",
+        "sha256": "c1f8c6bca323def2025f2fe46b216bfb56598ee7a5095dd38c9434245f5a3b6d"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 456,
+        "path": "r45-glue-d08-i00026-j00000.checker.log",
+        "sha256": "e3db568df4d59c71645a146c206978c9c3a36a285425bc9a48e46c9d14219b9c"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00026-j00000.checker.time.log",
+        "sha256": "10c97257a30e390c1dfe5248f172a2c2af4a2188782eee13f1937fa8e36ca3a4"
+      },
+      "cnf": {
+        "clauses": 3568,
+        "path": "r45-glue-d08-i00026-j00000.cnf",
+        "sha256": "3a07e843804854f0fd0cd047a2774d9c5e36a40e2f0fff55eeca4400796614f6",
+        "variables": 276
+      },
+      "pair_index": 52,
+      "proof": {
+        "bytes": 3249509,
+        "path": "r45-glue-d08-i00026-j00000.drat",
+        "sha256": "24ee7060226702d472345fe268de78e98bcf577a8ee4ca573ec768735d4ade51"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00026-j00000.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 910,
+        "path": "r45-glue-d08-i00026-j00000.solver.time.log",
+        "sha256": "c811653e57ffdbf1fc225f95b9c5c9e1534ab9b8325e7bb80cbc4e20d470c47f"
+      },
+      "status": "VERIFIED_UNSAT"
+    },
+    {
+      "checker_log": {
+        "bytes": 456,
+        "path": "r45-glue-d08-i00026-j00001.checker.log",
+        "sha256": "d54d4263d99d42247e9be152ac70fa4c7e292f549df84f11fec7e904e383d7f6"
+      },
+      "checker_time": {
+        "bytes": 867,
+        "path": "r45-glue-d08-i00026-j00001.checker.time.log",
+        "sha256": "be7fda87c6b5bcf0987155bdbb45d94b0aaaad58d12339fef883b65f8b64d655"
+      },
+      "cnf": {
+        "clauses": 3568,
+        "path": "r45-glue-d08-i00026-j00001.cnf",
+        "sha256": "d0445c96868dafca2791a803a198b4db846e3ef7256f4de576e7fe03f12d7e8f",
+        "variables": 276
+      },
+      "pair_index": 53,
+      "proof": {
+        "bytes": 3960364,
+        "path": "r45-glue-d08-i00026-j00001.drat",
+        "sha256": "e6e8f964321e22ff9a999251682ffb381b073513f9f844e05bac1cc4ceb9e0bd"
+      },
+      "solver_log": {
+        "bytes": 16,
+        "path": "r45-glue-d08-i00026-j00001.solver.log",
+        "sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "solver_time": {
+        "bytes": 911,
+        "path": "r45-glue-d08-i00026-j00001.solver.time.log",
+        "sha256": "68c61f642c408f551fa59fcc25764c73cd8ac9dc5408ec0cea8f34fb91e24217"
+      },
+      "status": "VERIFIED_UNSAT"
+    }
+  ],
+  "schema": "ramsey55.r45-gluing-proofs.v1",
+  "solver": {
+    "path": ".tools/src/cadical/build/cadical",
+    "sha256": "c42ba87b1af1c11b564aa6754a4c55911c7c99834a69eb3d802b938dcefc587c"
+  },
+  "summary": {
+    "complete_unsat": true,
+    "formulas": 54,
+    "proof_bytes": 510872280,
+    "verified_unsat": 54
+  }
+}

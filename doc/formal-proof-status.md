@@ -527,6 +527,20 @@ All artifacts and an independently rerunnable audit are retained under
 so only the degree-8, degree-10, and degree-12 UNSAT certificates remain on
 this `R(4,5) <= 25` route. No new `R(4,5)=25` claim is made yet.
 
+The degree-8 branch now has a complete conditional gluing certificate layer;
+see [r45-gluing-certificates.md](r45-gluing-certificates.md).  Two independent
+implementations reconstructed all 54 reduced CNFs from the published 27-by-2
+generalized-cover product.  CaDiCaL emitted 510,872,280 proof bytes and
+ordinary `drat-trim` accepted every formula twice; the proof manifest and
+second audit hash to
+`dd3bb57079f53d5e153c1a6146174364716ea2e7b57d66b05f2a99c4ca23858f`
+and
+`8e070a197e5c2676f2b2c2e0e3ffe6382a35481cde83c5c4d7db713a5c26847d`.
+The local cover/witness audit also passed, but global enumeration of all
+`R(3,5;8)` and `R(4,4;16)` isomorphism classes remains an explicit formal
+boundary.  Therefore this checkpoint does not yet discharge the direct d08
+UNSAT hypothesis.
+
 The complete incremental ARM build now covers 95 jobs and hashes to
 `e095dde784f4d6062277f93b24d7208cd50ab8aa4a7d25d3d8340e3d363571d2`.
 The full dependency-free suite passes all 232 tests; its log SHA-256 is

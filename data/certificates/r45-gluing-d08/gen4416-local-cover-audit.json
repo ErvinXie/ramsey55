@@ -1,0 +1,38 @@
+{
+  "claim": "all locally valid completions of every listed generalized graph are represented up to isomorphism; global exhaustiveness still depends on an independently checked Ramsey-graph enumeration",
+  "cover": {
+    "bytes": 312,
+    "path": "/data/ramsey55/external/barakeel-gen/gen4416",
+    "sha256": "d342d951433311239ba7ab5c0eef809a7588b41c0e8a472e8930bd77d5489c6c"
+  },
+  "forbidden_cliques": {
+    "blue": 4,
+    "red": 4
+  },
+  "order": 16,
+  "rows": [
+    {
+      "assignments": 1,
+      "holes": 0,
+      "line": 1,
+      "normalized_child_codes_sha256": "5baf348b9e2b334cbef282b415d208398c046b60748b0c759796dfdef65e440c",
+      "parent_code": "3583333754570559034715360012962377664510025546852272054849",
+      "valid_completions": 1
+    },
+    {
+      "assignments": 1,
+      "holes": 0,
+      "line": 2,
+      "normalized_child_codes_sha256": "81639a470c2b8b3c88e71e3d32ac8b8e8cc166e63049bf95cf58ebafc2508295",
+      "parent_code": "3583333758674368197732360914071565186738705964924502796773",
+      "valid_completions": 1
+    }
+  ],
+  "schema": "ramsey55.generalized-graph-cover-local-audit.v1",
+  "summary": {
+    "all_local_completions_covered_up_to_isomorphism": true,
+    "generalized_graphs": 2,
+    "maximum_holes": 0,
+    "normalized_children": 2
+  }
+}
