@@ -6961,6 +6961,22 @@ complements, seed37/phase0 terminal runs, and deep-route complements returned
 proof-producing replay, and no scout remains active.  Subsequent compute is
 reserved for the certificate-producing DFS trees and ordinary checkers.
 
+The second deep completion is f33-sub1 original root 3 / deep root 0.
+Seed2357/phase1 closes it in five attempts and two splits, at maximum depth
+two.  Its 629,900,535-byte proof and selection manifest hash to
+`99eb956572e8a0fe51540eeefed9ea7d643a1b27d5259d43a3668ac03516cbd5`
+and
+`e8f38044bfb1bb026789d666ab2761bd5dacdfd6c9cfc11b6bf07de50e71c7f2`.
+Deep progress is 2/14, while J297 top-level terminal progress remains 13/27.
+
+The third is f33-sub1 original root 2 / deep root 0.  Seed2347/phase1 closes
+it in the same five-attempt, two-split shape.  Its 645,756,797-byte proof and
+selection manifest hash to
+`de9a0ad30eae7126c1cf1652c6f4f3d16e62a348b659320e77ee27fbf77ce4a2`
+and
+`a31ccb9ce689ad9c4b162d6a682ea15adc533a1e289a6601f82c3d727d688d32`.
+Deep progress is 3/14; its sibling and all enclosing gates remain open.
+
 In parallel, the original 1,239 upstream HOL enumeration theories for orders
 8--17 completed their five-artifact build with exit zero in 7:26:35.  Their
 historical inventory hash is
