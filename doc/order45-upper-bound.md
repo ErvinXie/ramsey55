@@ -7160,6 +7160,46 @@ The v411 historical validation race has composed a 5,195,788,941-byte
 fragment and 5,195,788,943-byte standalone proof.  Its ordinary checker is
 running; no acceptance is claimed before that check and both audit gates.
 
+Fresh f2-sub1 then closes directly from the exact original `f2-row-1.icnf`
+source.  Seed2609/phase1 needs nine attempts and four splits, at maximum depth
+four.  Its independently replayed 732,116,918-byte proof and source-root
+selection manifest hash to
+`e0bca226948ed53e4fc17737fd48d3b240db6648a0159f374fe6af66d99b9d8d`
+and
+`8f7252471ab2f660c06877b6e99ff9315ea05059d5d16cb7112fa09ced3f9c7e`.
+This bypasses the previously rejected f2-sub1 historical prefix; the parent
+still waits for fresh f2-sub2 and its full checker/audit chain.
+
+The v411 historical validation does not survive its first mandatory gate.
+Ordinary `drat-trim` reads the complete 5,195,788,943-byte stream and returns
+`ERROR: no conflict`, `s NOT VERIFIED`, and exit one after 144.426 checker
+seconds.  No final proof stream, manifest, or audit survives.  The checker,
+finalizer, and GNU-time logs hash to
+`9abeff4b3f2c14fb6fd679d55b9696f0a5c47a1b8793328d391e2ac0fecbcb23`,
+`cb4b8502bf89e80e9a4f31649f1f9ea0becddd7a0e51aa00e641380b2e3ae403`,
+and
+`47e1da244933e66a7e9bd2388c0ff52bcb23c57df7ed13e430c71eebf69292ab`.
+Thus even a byte-framed legacy running copy is not evidence that its proof and
+separately copied TSV snapshot are atomic.  Only the fresh v411 source route
+remains eligible for certification.
+
+Six 600-second seed37/opposite-phase no-proof scouts now test the remaining
+fresh source roots.  A seventh f2-sub1 scout was stopped once its source proof
+completed.  These runs write no DRAT and receive no proof credit; an UNSAT
+diagnostic can only trigger a proof-producing replay.
+
+The complete fresh-source scout matrix finds no direct whole-root shortcut.
+Six seed37/opposite-phase and twelve seed0/both-phase CaDiCaL runs, plus six
+independent Kissat runs, all return exact `UNKNOWN` rows at about 600 seconds
+with GNU-time exit zero; the Kissat stderr files are empty.  Ordered
+TSV/log/time inventory summaries hash to
+`09f14bddd732d6b9057ee215f580f2fa47c1c886b4f33ee24c69926176515daf`,
+`f3872af886576ecaebab4ce4560e00002fd36ba72aaa653b4d46e7dbbcb39abf`,
+and
+`ee875628a81d83853275dc8d58632db3a32b9a2487af1743d86539bf98304a03`.
+These diagnostics produce no proof and launch no further race; the existing
+fresh proof-producing DFS routes remain authoritative.
+
 In parallel, the original 1,239 upstream HOL enumeration theories for orders
 8--17 completed their five-artifact build with exit zero in 7:26:35.  Their
 historical inventory hash is
