@@ -466,6 +466,47 @@ the Lean kernel here. Upstream's own reproduction guide reports about
 current 244 GiB ARM host, so duplicating that completed computation is not the
 best use of the order-45 search machine.
 
+There is now a second, self-contained route to the same input in
+[Ramsey45Target.lean](../formal/Ramsey55/Ramsey45Target.lean). Lean proves
+that injective relabeling preserves `IsRamsey45Coloring`, that every simple
+25-vertex graph has degree in `0..24`, and that excluding the 25 fixed-star
+degree branches implies `ForcesRed4OrBlue5 25`. It also defines the exact
+65,780-clause direct formula (negative six-edge clauses for every four-set,
+then positive ten-edge clauses for every five-set), appends the 24 fixed-star
+units, constructs the graph assignment, and proves every one of the 25 exact
+65,804-clause formulas complete for its branch. Consequently
+
+    forcesRed4OrBlue5_of_exactFixedStarUnsat
+
+has only the 25 formula-UNSAT facts as hypotheses. Its axiom audit contains
+only `propext`, `Classical.choice`, and `Quot.sound`, with no `sorryAx` or
+native decision. `VerifyRamsey45ExactBranches.lean` converted all typed
+literals back to signed DIMACS and compared every line of all 25 generated
+files on ARM in 9.54 seconds with 535,764 KiB peak RSS. The log SHA-256 is
+`5ba01356fc090a96e9401224527711e41842e9648b6ade40c61cd36fc820fba5`.
+The separate Python reconstruction also passed. This removes branch coverage
+and encoding semantics from the external `R(4,5)=25` trust boundary; the 25
+UNSAT certificates themselves remain open.
+
+The classical smaller-Ramsey reduction is now checked as well. From
+`ForcesRed3OrBlue5 14`, a vertex neighbourhood has size at most 13; from
+`ForcesRed4OrBlue4 18`, its nonneighbourhood bound gives degree at least 7.
+The handshake lemma on 25 vertices then supplies an even-degree vertex, so
+only degrees 8, 10, and 12 remain after fixed-star relabeling. The theorem
+
+    forcesRed4OrBlue5_of_threeExactFixedStarUnsat
+
+therefore derives `ForcesRed4OrBlue5 25` from the two smaller Ramsey inputs
+and UNSAT of those three exact typed formulas. This is the same three-degree
+shape used by the published HOL4 gluing proof, now connected directly to the
+repository DIMACS definitions. No new `R(4,5)=25` claim is made: the two
+smaller inputs and three hard UNSAT certificates remain explicit.
+
+The complete incremental ARM build now covers 93 jobs and hashes to
+`a14fa295ac1732c7e0f753cdbcf80e027b4eb9df8e4cb456965dab97e67c4f0e`.
+The full dependency-free suite passes all 223 tests; its log SHA-256 is
+`ddcb2a6d150b65d5cb9980aa8747cead1f8cf5022080143c748490dd0f37bdba`.
+
 [Symmetry.lean](../formal/Ramsey55/Symmetry.lean) adds the generic bridge for
 an optional symmetry-reduced route. It proves that a nonempty finite orbit
 closed under a listed family of transformations has a least representative;

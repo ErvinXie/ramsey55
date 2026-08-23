@@ -5906,8 +5906,24 @@ Four focused tests, including a genuine checker regression, and the complete
 3,916,568,669-byte proof with 29,631,565 additions, 29,077,845 retained
 deletions, and 61,659 protected deletions omitted. Its SHA-256 is
 `b13e0b6d5b826898657344feb53b92f301dc97025afaba12f9dc435f60c8ff0e`.
-The ordinary checker is still running, so this artifact is an experiment and
-has not replaced any addition-only finalization.
+Ordinary `drat-trim` subsequently verified the proof in 12,823.761 seconds:
+10,357,168 of 29,631,566 lemmas were in the backward core, with zero RAT
+lemmas. The checker-log SHA-256 is
+`b80cd5810ac6ad45c8dbc7df706d53399b473a2d6da0d8954ff1c03fcc5ec50b`.
+
+`tools/audit_binary_drat_protect_cnf.py` independently audits the composition
+without importing its producer. Instead of trusting the producer's 128-bit
+fingerprints, it stores all 118,906 exact canonical CNF clauses, parses both
+source fragments, independently decides every protected deletion, recomputes
+all counts and hashes, and reconstructs the exact expected output digest. It
+also binds the checker binary and requires an exact `s VERIFIED` log line.
+The full f221 audit passed in 608.22 seconds with 112,364 KiB peak RSS; its log
+SHA-256 is
+`5e42086bdc1c518afc705c0f4d159ad9ece5eec5cb0d792fdbd5c4b414e4cbd3`.
+This accepts the f221 augmented CNF as UNSAT evidence. It does not close f220
+or f222, the enclosing f22 group, strengthened parent 1, either fixed-pair
+mother, or the order-45 theorem. The addition-only finalizer races remain
+independent alternatives.
 
 The formal non-lex mother assignment is now constructive. The new
 `Order45DegreeWindowAssignment.lean` identifies each generator incident stream
@@ -5976,6 +5992,29 @@ Together these checks close the concrete typed-formula-to-DIMACS sequence
 boundary. They do not establish any leaf UNSAT result. The remaining proof
 inputs are the external `R(4,5)=25` fact, the five catalog edge ranges, and
 all 109 leaf refutations.
+
+The external `R(4,5)=25` input now has an exact in-repository replacement
+target. `Ramsey45Target.lean` proves that the 25 fixed-star degree branches
+cover every hypothetical `R(4,5,25)` colouring and that the exact direct
+65,804-clause typed formula is complete for each branch. A direct Lean
+executable compared all 25 typed formulas line-for-line with the generated
+DIMACS files in 9.54 seconds (log SHA-256
+`5ba01356fc090a96e9401224527711e41842e9648b6ade40c61cd36fc820fba5`).
+Thus this dependency is now isolated to 25 explicit UNSAT certificates,
+rather than an unformalized appeal to branch symmetry or encoder semantics.
+Scouting runs closed 17 branches quickly, including degree 21 in 88 seconds,
+but they intentionally emitted no proof. Degrees 3 and 7--13 remain difficult
+under the tested lex/fix/Schreier preprocessing, so no `R(4,5)=25` theorem is
+claimed yet.
+
+The optimized Lean reduction further replaces the 25-way obligation by the
+standard `R(3,5) <= 14` and `R(4,4) <= 18` inputs plus only the degree-8,
+degree-10, and degree-12 UNSAT certificates. Neighbourhood and
+nonneighbourhood induction prove the 7--13 window, and the already formalized
+handshake parity argument selects an even degree. The resulting theorem is
+`forcesRed4OrBlue5_of_threeExactFixedStarUnsat`. These three are among the
+hard scouting branches, matching the structure and difficulty of the
+published HOL4 gluing computation.
 
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.

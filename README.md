@@ -33,6 +33,32 @@ The formal development is pinned to Lean 4.31.0:
 
     lake build
 
+Generate the direct `R(4,5,25)` formula and its complete 25-way fixed-star
+symmetry cover, then check the generated files with both independent Python
+and the typed Lean formulas:
+
+    PYTHONPATH=src:tools python3 tools/generate_r45_upper_bound_cnf.py
+    PYTHONPATH=src:tools python3 tools/verify_r45_upper_bound_cnf.py \
+      build/r45-upper-bound/manifest.json
+    PYTHONPATH=src:tools python3 tools/generate_r45_fixed_star_branches.py
+    PYTHONPATH=src:tools python3 tools/verify_r45_fixed_star_branches.py \
+      build/r45-fixed-star/manifest.json
+    lake env lean --run tools/VerifyRamsey45ExactBranches.lean \
+      build/r45-fixed-star
+
+Lean proves that UNSAT for all 25 exact branch formulas implies
+`ForcesRed4OrBlue5 25`. Those 25 UNSAT certificates have not yet been
+produced, so this is a checked reduction rather than a new proof of
+`R(4,5)=25`. The optimized theorem
+`forcesRed4OrBlue5_of_threeExactFixedStarUnsat` uses the standard
+`R(3,5) <= 14` and `R(4,4) <= 18` inputs plus handshake parity to require
+only the degree-8, degree-10, and degree-12 UNSAT certificates.
+
+The two smaller direct CNFs can be generated and independently reconstructed
+with `generate_asymmetric_ramsey_cnf.py` and
+`verify_asymmetric_ramsey_cnf.py`; solver output is not accepted until its
+proof is checked against the unsymmetrized generated formula.
+
 The principal theorems already checked by Lean are:
 
 - `Ramsey55.not_forcesMonochromatic5_42`, the lower bound
