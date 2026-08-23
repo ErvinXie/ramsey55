@@ -103,9 +103,20 @@ sample means persist over unsampled pairs and makes no UNSAT claim for them.
 It also shows that the present 2 TB ARM data disk cannot retain the full d10
 certificate family without batched export to larger durable storage.
 
-The matching d12 128-formula production sample is still being independently
-checked on the ARM host.  No d12 sample summary or full-product conclusion is
-recorded until every selected proof has an accepted checker result.
+The matching d12 production sample has also completed.  All 128 selected
+formulas returned UNSAT and were accepted by ordinary `drat-trim`.  The
+branch, proof, and summary manifests hash to
+`78aa98e1832ddb588f166b0d667a7d1694eb9126504a4c09b9e4b67e5936049d`,
+`0d59f039b91d686d3ca7420190005b39644492df44e936652958d54e850c50bf`,
+and
+`12c46c8fc98d7becf3aaee40933716db6262d2159bf1475252a8a2451b993159`.
+The proofs total 8,264,274,560 bytes, with 12,451,360-byte median,
+327,474,304-byte 95th percentile, and 1,127,021,956-byte maximum.  Solver and
+checker user times total 22,119.62 and 31,493.05 seconds.  The full d12 product
+contains 322,140 pairs; mechanical sample-mean scaling gives about 20.80 TB
+of raw proofs and 24.45 days of solve-plus-check CPU time on 64 cores.  These
+figures are capacity estimates only and make no claim about the 322,012
+unsampled pairs.
 
 ## Selector-formula experiment
 

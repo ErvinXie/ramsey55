@@ -464,14 +464,18 @@ degree-8/10/12 exclusions and the order-24 witness into the theorem
 `RAMSEY 4 5 25` before the exact-value statement.
 
 A clean source replay is now active on `sglang-arm-builder`, rather than
-merely inspecting those files.  The old bundled MiniSat 1.14p is unsound on
-this ARM host for formulas containing root-level unit clauses, so its binary
-is deliberately non-executable and HOL4 uses its internal proof-producing
-DPLL path.  With that trust-boundary correction, the pinned HOL4 system built
-successfully, followed by `src/def` and `src/basicRamsey`.  The generated
-theory hashes and build-log hashes are recorded in the
+merely inspecting those files.  The old bundled MiniSat 1.14p initially
+misclassified formulas containing root-level unit clauses because AArch64's
+default unsigned `char` cannot represent the solver's stored `-1` Boolean.
+An exact-commit `-fsigned-char` build now passes both its internal resolution
+traversal and HOL4 kernel proof replay on the retained regression.  Its build
+and replay tools, narrow claim boundary, and exact hashes are recorded in the
 [upstream HOL4 replay note](r45-upstream-hol-replay.md).  In particular, the
-checked conditional theorem `ramsey_4_5_25_hyp` has precisely the three
+currently running enumeration still uses the deliberately non-executable old
+binary and therefore the uniform internal proof-producing DPLL path.  Before
+this solver diagnosis, the pinned HOL4 system built successfully, followed by
+`src/def` and `src/basicRamsey`.  The checked conditional theorem
+`ramsey_4_5_25_hyp` has precisely the three
 degree-8/10/12 gluing obligations plus the order-24 witness as hypotheses.
 The separate `r4524existTheory` witness stage has also replayed successfully;
 it remains logically distinct from the unfinished upper-bound enumeration and

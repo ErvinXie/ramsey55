@@ -6260,5 +6260,25 @@ the latter reran the source audit and reports `verified: true`.  Thus f220 and
 the earlier f221 are both recursively consumable.  f222 is still open, so
 the enclosing f22 group is not closed.
 
+The first continuation below the selected v419 checkpoint has now completed
+the same acceptance chain.  Both opposite-phase races closed v421 row 0;
+schema v3 selected the smaller seed887/phase1 trace, whose source proof hashes
+to
+`21eec7d2eef88bee1106ba4ffd850f7f40403fb7625d2312fdea2dc178681a40`.
+Independent materialization produced the exact 127,012-clause child CNF with
+SHA-256
+`3201c70e545259f1772aff51375f5e51094a15765456b9033661bbb7fa69070d`.
+The protected-CNF standalone proof is 111,204,606 bytes and hashes to
+`2a9e920add0d6f9c7da3bbbab37ae6b238bc61b848f96221d2e481595029e7bd`;
+ordinary `drat-trim` emitted exact `s VERIFIED` with exit zero.  Removing only
+its final empty addition gave the 111,204,604-byte embeddable fragment with
+SHA-256
+`4c4840ff182d1cd3c807c5e113f1a6b2e51cd7fe2b60c737772ccf15e0cfab52`.
+The final promotion audit reran the source audit, reports `verified: true`,
+and hashes to
+`fc14a2833b6894139f37159ad80cf507ca135d35f8b4781994cb70c2a80afe73`.
+This accepts v421 row 0 only.  Its row 1 race and the other v422/v423 rows
+remain search state, so neither v419 nor f222 is closed.
+
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.
