@@ -6624,5 +6624,57 @@ exit zero.  Its verbose and GNU-time log SHA-256 values are
 and
 `6a1eb36fc625d320c23cdee484891ddb5ab07fdc01c9a4a61d26ae91af5edd1b`.
 
+The next recursive gate was also prepared without modifying either historical
+f32/f33 parent prefix.  For f32, the 1,874,305,024-byte raw file with SHA-256
+`305cf7f481ae0b9217f4f13ec09038a3bb6057daaad09d3f896d6b88e9cc7463`
+lost only its 91-byte incomplete tail, whose hash is
+`9a0b6267de5e7336dd192a60007669d739d2ff708dfa804905818c9660793825`.
+The 1,874,304,933-byte framed copy hashes to
+`0f9916d19073fa5da12ae5f8ba2fdbbd500c2c1bcc3f59f8371cec1703587b0b`;
+its framing manifest hashes to
+`785a89b7dd880edf8e344ce2a34131adfede8860f2b1b60a81db9fd116724717`.
+For f33, the corresponding raw/framed sizes are 1,827,135,488 and
+1,827,135,429 bytes, the raw/framed hashes are
+`3138888bbb37ff087b64d43a76191ee22571dccdfd24f53aef48152d0164d941`
+and
+`d03b17bbcd34743ad9eac86f87ac4ffba347981dbab134b1f5e030b56c025053`,
+and the 59-byte tail hashes to
+`7f79a1ddabb53f617e73e2473979a71d7ab09d5dd917118c99c1fb796331c9ba`.
+Its framing-manifest hash is
+`e08d726ad1a0b384ad0e46f6e734473caa7a27b4970004a14f6860c2aecd3734`.
+
+Fresh schema-v2 replays then parsed the original f32/f33 parent snapshots
+independently and bound the framed prefixes.  They record 190 attempts / 96
+splits / maximum depth 39 and 194 attempts / 98 splits / maximum depth 36.
+Their three-cube outputs hash to the historical expected values
+`555a441958eee000c7fb36096356cc297591b07217c3a786717a9acab84b24bc`
+and
+`358f246cd6609edff162972d20b03181887b766a6bb228b546b5e45fd2a409ce`;
+an explicit byte comparison against both old frontier files succeeded.  The
+new replay manifests hash to
+`c45d389326f11aa7b05c880d512cde460b5c7deb731d9fcb8686d9cf1e69713a`
+and
+`ad06aa5eaf4a36489ca7a2e42725388d2677f2d48bdbc3a636ff9c1fd58f1cfd`.
+
+Public commit `9f443e1` adds
+`scripts/watch_recursive_cadical_dfs_checkpoint_finalization.sh`.  Given
+explicit ordered proof/evidence pairs, it waits for exact producer completion
+or an atomic checker-verified child finalization, takes the shared global
+final-check lock, invokes the standard deletion-normalizing finalizer, and
+requires the recursive auditor to report exact child count, independently
+verified schema-v2 replay, and a successful fresh checker run.  A real Linux
+end-to-end fixture plus the eight focused auditor tests pass 9/9 on ARM.  Two
+nice-15 sleeping instances now await, in order, the direct f32/f33 sub-0
+producer and the sub-1/sub-2 recursive finalizations.  They do no parent work
+until all three inputs exist and are valid.  This is readiness automation, not
+parent acceptance.
+
+The complete ARM regression at `9f443e1` passed all 308 tests in 57.122
+seconds / 57.43 seconds wall with 197,880 KiB peak RSS and exit zero.  The
+verbose and GNU-time logs hash to
+`80b641ea4bf27e5c225e0a9a412f5b2d0da5895b975fe709e13873be51c254db`
+and
+`213f2ef18cb3355f4d7515a727567ddc617bff778d8cd84fdc16536cbc324472`.
+
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.
