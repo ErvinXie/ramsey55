@@ -108,7 +108,7 @@ class ProtectedCnfCompositionTests(unittest.TestCase):
             self.assertEqual(checked.returncode, 0, checked.stdout)
             self.assertIn("s VERIFIED", checked.stdout)
 
-    def test_rejects_binary_literal_outside_cnf_range(self) -> None:
+    def test_accepts_fresh_proof_variable_outside_cnf_range(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             cnf = root / "input.cnf"
@@ -129,8 +129,34 @@ class ProtectedCnfCompositionTests(unittest.TestCase):
                 stderr=subprocess.PIPE,
                 text=True,
             )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            self.assertEqual(
+                (root / "output.drat").read_bytes(), binary_clause("a", 2)
+            )
+
+    def test_rejects_binary_literal_outside_signed_int32_range(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            cnf = root / "input.cnf"
+            fragment = root / "fragment.drat"
+            cnf.write_text("p cnf 1 1\n1 0\n", encoding="ascii")
+            fragment.write_bytes(binary_clause("a", 2_147_483_648))
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(TOOL),
+                    str(cnf),
+                    str(root / "output.drat"),
+                    str(fragment),
+                    "--manifest",
+                    str(root / "manifest.json"),
+                ],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
             self.assertNotEqual(completed.returncode, 0)
-            self.assertIn("outside CNF variable range", completed.stderr)
+            self.assertIn("outside signed int32 range", completed.stderr)
 
     def test_rejects_embedded_empty_addition(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

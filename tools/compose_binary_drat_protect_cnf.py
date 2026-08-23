@@ -19,6 +19,7 @@ from typing import Any, Iterable
 
 SCHEMA = "ramsey55.binary-drat-protected-cnf-composition.v1"
 PERSON = b"r55-cnf-clause"
+MAX_DRAT_VARIABLE = 2_147_483_647
 
 
 def file_sha256(path: Path) -> str:
@@ -92,7 +93,7 @@ def read_cnf_clause_fingerprints(path: Path) -> tuple[set[bytes], int, int]:
     return fingerprints, variables, clauses
 
 
-def decode_binary_clause(clause: bytes, variables: int) -> tuple[bool, list[int]]:
+def decode_binary_clause(clause: bytes) -> tuple[bool, list[int]]:
     if not clause or clause[0] not in (ord("a"), ord("d")):
         raise ValueError("invalid binary DRAT clause marker")
     literals: list[int] = []
@@ -106,8 +107,8 @@ def decode_binary_clause(clause: bytes, variables: int) -> tuple[bool, list[int]
                 raise ValueError("oversized binary DRAT literal")
             continue
         variable = value >> 1
-        if variable == 0 or variable > variables:
-            raise ValueError("binary DRAT literal outside CNF variable range")
+        if variable == 0 or variable > MAX_DRAT_VARIABLE:
+            raise ValueError("binary DRAT literal outside signed int32 range")
         literals.append(-variable if value & 1 else variable)
         value = 0
         shift = 0
@@ -120,7 +121,6 @@ def compose(
     target: Any,
     fragments: list[Path],
     protected: set[bytes],
-    variables: int,
 ) -> tuple[list[dict[str, Any]], dict[str, int]]:
     fragment_records: list[dict[str, Any]] = []
     totals = {
@@ -140,7 +140,7 @@ def compose(
                 clauses = (pending + block).split(b"\0")
                 pending = clauses.pop()
                 for clause in clauses:
-                    addition, literals = decode_binary_clause(clause, variables)
+                    addition, literals = decode_binary_clause(clause)
                     if addition:
                         if not literals:
                             raise ValueError(
@@ -196,7 +196,7 @@ def main() -> None:
     try:
         with output_temporary.open("wb") as target:
             fragment_records, totals = compose(
-                target, arguments.fragments, protected, variables
+                target, arguments.fragments, protected
             )
             if arguments.append_empty:
                 target.write(b"a\0")

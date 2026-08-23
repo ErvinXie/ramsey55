@@ -27,6 +27,7 @@ COUNT_KEYS = (
     "empty_additions",
     "empty_deletions",
 )
+MAX_DRAT_VARIABLE = 2_147_483_647
 
 
 def file_sha256(path: Path) -> str:
@@ -153,7 +154,7 @@ def read_cnf(path: Path) -> tuple[set[tuple[int, ...]], int, int, str]:
     return clauses, variables, clause_count, digest.hexdigest()
 
 
-def decode_clause(raw: bytes, variables: int, label: str) -> tuple[bool, tuple[int, ...]]:
+def decode_clause(raw: bytes, label: str) -> tuple[bool, tuple[int, ...]]:
     if not raw or raw[0] not in (ord("a"), ord("d")):
         raise ValueError(f"invalid binary DRAT clause marker in {label}")
     literals: list[int] = []
@@ -167,8 +168,10 @@ def decode_clause(raw: bytes, variables: int, label: str) -> tuple[bool, tuple[i
                 raise ValueError(f"oversized binary DRAT literal in {label}")
             continue
         variable = encoded >> 1
-        if variable == 0 or variable > variables:
-            raise ValueError(f"binary DRAT literal outside CNF range in {label}")
+        if variable == 0 or variable > MAX_DRAT_VARIABLE:
+            raise ValueError(
+                f"binary DRAT literal outside signed int32 range in {label}"
+            )
         literals.append(-variable if encoded & 1 else variable)
         encoded = 0
         shift = 0
@@ -204,7 +207,6 @@ def validate_counts(value: Any, label: str) -> dict[str, int]:
 
 def audit_fragment(
     path: Path,
-    variables: int,
     protected: set[tuple[int, ...]],
     expected_output: Any,
 ) -> tuple[dict[str, int], str, int]:
@@ -216,7 +218,7 @@ def audit_fragment(
             digest.update(block)
             size += len(block)
             for raw in framed:
-                addition, literals = decode_clause(raw, variables, str(path))
+                addition, literals = decode_clause(raw, str(path))
                 if addition:
                     if not literals:
                         raise ValueError(f"source fragment has empty addition: {path}")
@@ -288,7 +290,7 @@ def audit(
             record.get("composition_counts"), f"fragment {index}"
         )
         observed_counts, observed_hash, observed_size = audit_fragment(
-            path, variables, protected, expected_output
+            path, protected, expected_output
         )
         if observed_hash != record["sha256"]:
             raise ValueError(f"fragment {index} hash mismatch: {path}")

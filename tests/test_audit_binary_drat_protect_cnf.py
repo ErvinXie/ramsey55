@@ -42,8 +42,8 @@ class AuditProtectedCnfCompositionTests(unittest.TestCase):
         cnf.write_text("p cnf 130 3\n1 -130 0\n2 0\n1 -130 0\n", encoding="ascii")
         fragment.write_bytes(
             binary_clause("d", -130, 1)
-            + binary_clause("a", 3)
-            + binary_clause("d", 3)
+            + binary_clause("a", 131)
+            + binary_clause("d", 131)
         )
         subprocess.run(
             [
