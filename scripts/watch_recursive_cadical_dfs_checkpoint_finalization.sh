@@ -50,8 +50,13 @@ done
 repository=${repository%/}
 data_root=${data_root%/}
 directory=$data_root/$directory_rel
-checker=$repository/.tools/src/drat-trim/drat-trim
+checker=${RAMSEY55_DRAT_CHECKER:-$repository/.tools/src/drat-trim/drat-trim}
 final=$directory/$prefix-final-v1
+
+if [[ $checker != /* ]]; then
+  echo "RAMSEY55_DRAT_CHECKER must be an absolute path" >&2
+  exit 2
+fi
 
 test -d "$repository"
 test -d "$data_root"

@@ -7211,3 +7211,14 @@ status is recorded in the upstream HOL replay note.
 No J297/J326 root certificate, parent-1 UNSAT, fixed-pair UNSAT, order-45
 UNSAT, or `R(5,5) <= 45` theorem is claimed by these preparations or leaf
 selections.
+
+The recursive and root checkpoint watchers now accept an explicit absolute
+`RAMSEY55_DRAT_CHECKER` override.  The default remains the pinned ordinary
+`drat-trim`; when an unchanged multi-gigabyte proof reaches only the checker's
+resource limit, a retry may instead select the pinned 120,000-second wrapper.
+The selected executable is recorded in the finalization manifest and the
+independent auditor invokes that same executable for its fresh checker rerun.
+The ARM override fixture deliberately makes the default checker fail and the
+explicit checker succeed; its passing log has SHA-256
+`a0fc967e40570e3ec96f54172d7ebe635b57dcc585345c1207040ab6fc61eabb`.
+This option does not relax the required exact `s VERIFIED` line.

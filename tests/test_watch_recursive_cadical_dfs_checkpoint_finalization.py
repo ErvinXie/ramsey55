@@ -33,16 +33,22 @@ class WatchRecursiveCadicalDfsCheckpointFinalizationTests(unittest.TestCase):
             directory = data_root / "build/run"
             tools = repository / "tools"
             checker = repository / ".tools/src/drat-trim/drat-trim"
+            override_checker = repository / "long-checker"
             tools.mkdir(parents=True)
             checker.parent.mkdir(parents=True)
             directory.mkdir(parents=True)
             shutil.copyfile(FINALIZER, tools / FINALIZER.name)
             shutil.copyfile(AUDITOR, tools / AUDITOR.name)
             checker.write_text(
-                "#!/usr/bin/env python3\nprint('s VERIFIED')\n",
+                "#!/usr/bin/env python3\nraise SystemExit(1)\n",
                 encoding="utf-8",
             )
             checker.chmod(0o755)
+            override_checker.write_text(
+                "#!/usr/bin/env python3\nprint('s VERIFIED')\n",
+                encoding="utf-8",
+            )
+            override_checker.chmod(0o755)
 
             cnf = directory / "base.cnf"
             source_root = directory / "source.icnf"
@@ -100,6 +106,7 @@ class WatchRecursiveCadicalDfsCheckpointFinalizationTests(unittest.TestCase):
                 {
                     "RAMSEY55_POLL_SECONDS": "1",
                     "RAMSEY55_FINALIZER_LOCK": str(root / "finalizer.lock"),
+                    "RAMSEY55_DRAT_CHECKER": str(override_checker),
                 }
             )
             completed = subprocess.run(
