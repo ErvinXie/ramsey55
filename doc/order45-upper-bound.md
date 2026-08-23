@@ -5976,6 +5976,21 @@ after confirming that the 64-core builder had load below 9 and 790 GiB free
 on `/data`. These active jobs are search state only; they are not UNSAT
 evidence until finalized and independently checked.
 
+The first checkpoint-8 leaf has since closed at the producer layer. Both
+v418 row-0 races exhausted their exact one-root DFS trees; the smaller
+seed743/phase1 run used 17 attempts and 8 splits. Its framed 301,508,712-byte
+no-empty fragment hashes to
+`b188656e5925cca002ae1a675cbcc44cd499e90f9fc5e7e32e74ec58ba6b741b`,
+while its producer log and TSV hash to
+`53bfc937fdb0ab4162ca284a98fc5ad75db53821d7d30655d3c5549e07b7b080`
+and
+`bba97dff3bee2a9e41de26d0edbf4ee6a5dc11e8fe9846bba6be4760e5ff9129`.
+The exact independently materialized child CNF hashes to
+`84e9deb1777a7d66a8ad83d3c71e9d67de7ac76b73620e5282ccc73e6128abb7`.
+A protected-CNF ordinary check and the two independent promotion audits are
+running; the producer result is therefore not yet accepted as an embeddable
+child. v418 row 1 and the three v419/v420 rows remain active.
+
 The formal non-lex mother assignment is now constructive. The new
 `Order45DegreeWindowAssignment.lean` identifies each generator incident stream
 with the corresponding graph degree, fills all 35,200 degree-counter state
@@ -6106,6 +6121,20 @@ internal wall checkpoint as the order-45 work. Their seed/phase pairs are
 d12. The unsymmetrized formulas deliberately avoid making Satsuma's VeriPB
 symmetry proof a new trust/composition dependency. These are active searches,
 not accepted UNSAT facts.
+
+The successful f221 deletion-preserving strategy is also being evaluated on
+the already closed f220, f31s1, and f320 candidate compositions in parallel
+with their slower addition-only checks. The reusable
+`scripts/run_checked_protected_cnf_promotion.sh` now performs the complete
+non-overwriting pipeline: protect exact mother-CNF deletions, retain learned
+deletions, append and ordinarily check one final empty addition, independently
+audit the source composition, remove exactly that final `a\0`, and rerun the
+independent source audit from the promotion auditor. Its end-to-end ARM smoke
+test passed in 0.77 seconds with 63,488 KiB peak RSS; the log SHA-256 is
+`f235ed9085c43673ce3db39cbf1487a9bd2d0cff37a288255607ee9b604d6270`.
+Production watchers require both checker exit status 0 and the exact logical
+`s VERIFIED` line before emitting any promoted evidence. No result from these
+three new checks is claimed while they remain active.
 
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.

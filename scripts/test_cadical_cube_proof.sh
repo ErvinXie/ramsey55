@@ -114,6 +114,25 @@ python3 "$root/tools/compose_binary_drat.py" --append-empty \
   > "$temporary/composed-root-checker.log"
 grep -q "s VERIFIED" "$temporary/composed-root-checker.log"
 
+# Exercise the complete reusable protected-CNF pipeline: compose the two
+# no-empty fragments while preserving learned deletions, verify the resulting
+# standalone proof, independently audit it, and promote it back to a checked
+# embeddable fragment.
+RAMSEY55_DRAT_TRIM="$root/.tools/src/drat-trim/drat-trim" \
+  "$root/scripts/run_checked_protected_cnf_promotion.sh" \
+  "$temporary/root-augmented.cnf" "$temporary/checked-root" \
+  "$temporary/fragment-positive.drat" \
+  "$temporary/fragment-negative.drat" \
+  > "$temporary/checked-root-pipeline.log"
+grep -q '^verified promotion:' "$temporary/checked-root-pipeline.log"
+python3 - "$temporary/checked-root-promotion-audit.json" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], encoding="utf-8") as stream:
+    assert json.load(stream)["verified"] is True
+PY
+
 set +e
 "$root/.tools/src/drat-trim/drat-trim" \
   "$root/tests/data/cube-leaf-smoke.cnf" "$temporary/root-proof.drat" \

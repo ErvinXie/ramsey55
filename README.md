@@ -68,6 +68,19 @@ with:
 Lean proves the exact CNF UNSAT fact implies `ForcesRed3OrBlue4 9`, which in
 turn implies both `ForcesRed3OrBlue5 14` and `ForcesRed4OrBlue4 18`.
 
+For a completed set of binary no-empty DRAT fragments, run the complete
+deletion-preserving verification and promotion pipeline with:
+
+    scripts/run_checked_protected_cnf_promotion.sh \
+      path/to/input.cnf path/to/output-prefix \
+      path/to/fragment-0.drat [path/to/fragment-1.drat ...]
+
+The script refuses existing outputs, checks the standalone composition with
+ordinary `drat-trim`, runs an independent exact-clause source audit, removes
+only the final binary empty addition, and reruns that audit from a separate
+promotion auditor. Set `RAMSEY55_DRAT_TRIM` only when the checker is not at
+`.tools/src/drat-trim/drat-trim`.
+
 The principal theorems already checked by Lean are:
 
 - `Ramsey55.not_forcesMonochromatic5_42`, the lower bound
