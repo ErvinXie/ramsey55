@@ -6305,5 +6305,29 @@ and the final promotion audit reran the source audit, reports
 This accepts v423 row 0 only.  v423 row 1 remains open, so the enclosing v420
 row 1 and v420 checkpoint are not closed.
 
+The direct v420 row-0 race has now completed independently.  The v2 selector
+chose seed727/phase1; its selection manifest and source proof hash to
+`a7be83b4589c150f79cb34555cc265a1d1b0bf3f817d61ae1b7b008d3d3c7aad`
+and
+`2c8af28a58525e6e48f6f8bbdb65015eb040c2f22094b958596d64d6fd974c24`.
+Independent materialization produced the exact 126,898-clause child CNF with
+SHA-256
+`8c611f82a3d4a2d75cb4ccffd50fad7b48282bc2111b2f8c6d4867de675474c1`.
+Ordinary `drat-trim` checked the 3,501,746,741-byte standalone proof, emitted
+exact `s VERIFIED`, and exited zero; the proof hashes to
+`72b18547680863895536747864da607e569eac0424ba45ff17981f257e7b30d6`.
+The source-composition audit reports `verified: true` and hashes to
+`a773da886a661419ca67d3d0df8463348e4b61324d2804c4eadd5dbb0e0956a4`.
+Removing exactly the final binary empty addition produced the
+3,501,746,739-byte embeddable fragment with SHA-256
+`836f527b6bf7b7c5c3517361b34bd20a301f65041d360b6d39cb4073f07a1868`.
+The promotion manifest hashes to
+`9f2fbaa717f4a0baee2a9e2e532873e84ea29a5216f0873bd698c5939db8e833`;
+the final promotion audit reran the source audit, reports `verified: true`,
+and hashes to
+`a9b45f2c46dab591fd9a7341efed1acb83c02d717a51eb48e7f9f88fa518ebe3`.
+This accepts v420 row 0.  Its row 1 still depends on both v423 continuations;
+only v423 row 0 is accepted so far, so v420 remains open.
+
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.

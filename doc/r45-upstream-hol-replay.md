@@ -198,6 +198,60 @@ This fixes and audits the finite gluing task index only.  It neither proves
 that the published cover files are globally exhaustive nor checks a gluing
 leaf theorem; those remain separate kernel and computation obligations.
 
+### Sequential kernel-leaf runner and pilots
+
+[`run_upstream_hol_gluing_batch.sh`](../scripts/run_upstream_hol_gluing_batch.sh)
+now executes the same generated gluing script one pair at a time through
+HOL4's `smlExecScripts.exec_script`.  It deliberately bypasses upstream
+`run_script_pbl`'s 40-way queue setup while preserving the exact script text,
+the signed MiniSat call, and the HOL kernel boundary.  On the retained d10
+pilot, the old and new `Script.sml` files are byte-identical with SHA-256
+`918a48bfc47279946198ba8cd191fd6a856c49d2f426941d696c6f74883ade61`.
+The direct route reduced that same leaf from 669.39 user seconds / 40.65 wall
+to 13.79 user seconds / 15.45 wall.
+
+[`audit_upstream_hol_gluing_theories.sh`](../scripts/audit_upstream_hol_gluing_theories.sh)
+generates the standard `.ui`/`.uo` dependencies, loads every exported theorem
+in a new HOL4 session, and then invokes the independent
+[`audit_upstream_hol_gluing_theories.py`](../tools/audit_upstream_hol_gluing_theories.py)
+auditor.  For every listed pair it requires the exact generated script, all
+six nonempty script/theory/dependency artifacts, exact child-build success
+markers without warning or fallback, and a freshly loaded theorem whose
+conclusion is `F`, whose hypotheses contain both published `C4524` clique
+conditions, and whose hypotheses do not contain `F`.  The audit also
+hash-binds the config, runtime entry point, signed MiniSat binary, and runner
+sources.
+
+The first deterministic pair in each large product passed this complete
+pilot gate:
+
+| degree | build wall / peak RSS | problem-list SHA-256 | audit SHA-256 |
+|---:|---:|---|---|
+| 10 | 15.45 s / 492,812 KiB | `d4bb3a857029e02cff5011b333a500988cb097a779ea43bbaf69557be46b0981` | `01143874abda4e6fbc5304c897b1b5311f9f3057ed2bd9366c306f9fb2fe302b` |
+| 12 | 8.90 s / 283,256 KiB | `df4e0aa4d9dce5702e2dec413c8ac0d9cbd1908e7b1ecb4a0cf437639c748177` | `6cf3881780aaa0b570e98a0dc5db4b0a37b7c32792f17ae9f9f4bbb153337ba2` |
+
+The d10 build/load log hashes are
+`c7f64e2956879109555fcb098d43ceded08bdf3207337079b340febcb22b9c36`
+and
+`c30f0fccd147cd4a016a995ccebd62bb9c42ca086a2a0af60ba2912990cbc8ec`;
+their time-log hashes are
+`296d9e07fdd38a7e925a65cfb9b98471d96ebcba56853df212ae83c24863e2ee`
+and
+`9149e650e0d57f524ae2bf3385d8d78b4816e52c79ef071d9b857cbe5e0c5223`.
+The corresponding d12 hashes are
+`8f9ae6f522d1b95ce8cbded18b7ef7147811b1689291fea7790c9ca38b73522b`,
+`99e5e68db60f969e4c95b848120cf1fd69e33d54b2fed0444be74c8c6d9c2b5b`,
+`39242088fce2ef96ac24c19ca6416f901d81075d275ba990f7c3aa09bdb068b1`,
+and
+`61e8210170920ea5eb68157bd8bcf307c739abff69c931502f2676a21de2528a`.
+
+These are two checked leaves, not representative timing samples and not
+evidence for the other 827,474 d10/d12 pairs.  The important operational
+result is that temporary solver traces need not be retained: each checked
+leaf leaves only small HOL theory artifacts, removing the multi-terabyte
+persistent-DRAT disk requirement.  Total computation and worst-case per-leaf memory remain
+open capacity questions.
+
 ## Active enumeration stage
 
 An interactive HOL4 run generated the published parallel enumeration scripts

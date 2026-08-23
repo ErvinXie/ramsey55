@@ -504,6 +504,18 @@ the [upstream HOL4 replay note](r45-upstream-hol-replay.md).  This establishes
 the task index, not global cover exhaustiveness or any unsampled gluing
 refutation.
 
+A new sequential HOL4 gluing runner removes the upstream 40-way queue setup
+while still emitting byte-identical gluing scripts and invoking the same
+signed MiniSat plus HOL kernel path.  Independently audited first-pair pilots
+for d10 and d12 completed in 15.45 and 8.90 wall seconds with sub-512 MiB peak
+RSS; fresh sessions loaded both results as `F` conclusions with the two
+required `C4524` hypotheses and no `F` hypothesis.  The retained theory files
+are only kilobytes, so this streamed kernel route avoids keeping the many-TB
+raw DRAT family estimated from the sparse samples.  The pilots cover only two
+leaves; full-product time, tail memory, and all unsampled theorems remain
+open.  Exact artifacts and audit hashes are in the
+[upstream HOL4 replay note](r45-upstream-hol-replay.md).
+
 There is now a second, self-contained route to the same input in
 [Ramsey45Target.lean](../formal/Ramsey55/Ramsey45Target.lean). Lean proves
 that injective relabeling preserves `IsRamsey45Coloring`, that every simple
