@@ -6295,6 +6295,17 @@ and
 That parent run has no acceptance result yet, so the v396 f31 checkpoint and
 its ancestors remain open.
 
+The composition stage has since published atomically.  After dropping exactly
+61,596 deletions of protected CNF clauses and appending one empty addition,
+the standalone proof is 9,390,175,543 bytes with SHA-256
+`f2e0dc0f6dab301fb67d0b7085bebcf0fc997b8898d5ce12835c71d1d4ec0855`.
+Its composition manifest hashes to
+`fb70725f6774f02d3c24db3ac5392a8926f2d8c885244b6432d5af525dd5c162`
+and records 70,386,776 retained additions, 68,882,362 retained deletions, and
+one empty addition against the exact augmented CNF above.  An ordinary
+`drat-trim` run is active on this CNF/proof pair.  Composition alone is not
+acceptance: exact checker success and both independent audits remain required.
+
 The first continuation below the selected v419 checkpoint has now completed
 the same acceptance chain.  Both opposite-phase races closed v421 row 0;
 schema v3 selected the smaller seed887/phase1 trace, whose source proof hashes
