@@ -6845,6 +6845,43 @@ siblings, insert only the future checker-audited recovery child at its exact
 position, and feed the existing deterministic choice gate.  Launch and
 watcher readiness add no proof credit.
 
+Public commit `2c26df6` also removes the transient lock handoff delay from all
+three polling watchers.  Each `sleep` child now explicitly closes the watcher
+lock descriptor, so terminating a watcher releases its lock immediately.  The
+full local suite passes 323 tests with four platform skips, and the focused
+real-Linux recovery/watcher suite passes all six tests on ARM.
+
+The next accepted terminal leaf is v411 row1 root 0.  Seed2113/phase0 closes
+it in 13 attempts and six splits at maximum depth six.  Its selected
+1,139,789,718-byte proof and schema-v3 selection manifest hash to
+`82dfb4116ec3e846d9589aec1f03701cb03f16c47f5fdfd94b0702a05a317909`
+and
+`7f8a81e12471e2b3da966c8e0c6f2194e15990ac93d3b49e31952ab3561dcd34`.
+The terminal count is therefore 5/16; the other v411 root and all enclosing
+parents remain open.
+
+As a strategy check, each of the five newly recovered deep roots also ran one
+default-CaDiCaL, no-proof scout for 600 seconds.  Every scout returned
+`UNKNOWN` with exit zero.  Consequently no default-strategy proof rerun was
+started; those diagnostics have no proof status and the fragment-producing
+recursive routes remain authoritative.
+
+The last two older deep producers, v421 seed907 root 3 and v423 seed971 root
+3, then reached exact four-hour checkpoint exits.  Both have exit zero,
+`status=0`, 38 attempts, and 19 splits.  Their 2,874,544,425-byte and
+2,912,628,143-byte framed prefixes hash to
+`6d631f1876da434632d618f6b0ca31471f9105e6d1eede3124184229f8816454`
+and
+`96daf06626e47fde420298f47f025aa2391583ae1c1f38c7e73299656fa15e06`.
+Independent atomic replay reconstructs exactly one root from each; the two
+recovery manifests hash to
+`723f960dde59e8933a7c3b786149c721d73198a86600f5d2023aca30a2d96b7b`
+and
+`d35d0d35e4230a89dd6d29988f752077567b2a8849bc7e44ffd95289c1c1556e`.
+Only those roots were launched, at seed2207/phase0 and seed2221/phase0.  Each
+four-child route watcher now keeps its three completed direct siblings in
+their original order and awaits the checker-audited recovery child.
+
 In parallel, the original 1,239 upstream HOL enumeration theories for orders
 8--17 completed their five-artifact build with exit zero in 7:26:35.  Their
 historical inventory hash is
