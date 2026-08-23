@@ -6007,15 +6007,25 @@ Thus v418 row 0 is now accepted as a recursively embeddable child. v418 row 1
 and the three v419/v420 rows remain active.
 
 `tools/select_cadical_dfs_race.py` makes the choice between redundant races
-machine-checkable. It replays every final TSV, checks the exact DFS stack and
+machine-checkable. It replays every final TSV, checks the exact DFS stacks and
 producer totals, rejects SAT rows, unframed streams, and status/frontier
 disagreement, hashes every input, and chooses a complete race before applying
-minimum-frontier and minimum-proof-size tie-breaks. Four focused tests cover
-those gates. Applied to the two complete v418 row-0 races, it selected the
-smaller seed743/phase1 proof; the selection manifest hashes to
+minimum-frontier and minimum-proof-size tie-breaks. Schema v2 extends the
+replay to ordered forests: it verifies `root_index=all` and the source-root
+count, forbids an early transition to a later root, accounts for untouched
+later roots in checkpoint frontiers, and treats only a replayed `core=0` row
+as an early global closure. Eight focused tests cover the one- and two-root
+gates. All six live d08/d10/d12 snapshots replay correctly against the real
+two-root `split-var1.icnf`. Applied again to the two complete v418 row-0 races,
+schema v2 selected the smaller seed743/phase1 proof; its manifest hashes to
+`876920d5c33cc04f7b243d90491a0501d4668aeeb71499829ce1a67f31aa1dde`.
+The earlier single-root v1 manifest remains
 `5ef6567f0edb1494e962e9bb703e77f3eea77c33e98ec2b9ba7109781a81f325`.
-The complete ARM suite passes all 236 tests in 27.321 seconds; its log hashes
-to `26134751d4350258ff464450b9d5e7e6bd86ca963c8eebe9982db745c62ea03f`.
+The complete ARM suite passes all 240 tests in 27.799 seconds with 197,664 KiB
+peak RSS; its log hashes to
+`a1b3e9003b4959c6b45461e250a1ce6ef7b813147930eef1616d232d40d07f2b`,
+and the GNU-time log hashes to
+`d97ad168aa2125bfcc874f46b63f7ad5c0b2abe3191af794bb5d2f136798e938`.
 
 The formal non-lex mother assignment is now constructive. The new
 `Order45DegreeWindowAssignment.lean` identifies each generator incident stream

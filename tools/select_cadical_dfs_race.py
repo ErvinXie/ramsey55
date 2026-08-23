@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Select one completed or checkpointed CaDiCaL DFS race exactly."""
+"""Select one completed or checkpointed CaDiCaL DFS-forest race exactly."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 
 
-SCHEMA = "ramsey55.cadical-dfs-race-selection.v1"
+SCHEMA = "ramsey55.cadical-dfs-race-selection.v2"
 HEADER = "root\tattempt\tdepth\tlimit\tstatus\tcore\tsplit\tseconds"
 
 
@@ -30,7 +30,7 @@ def file_record(path: Path) -> dict[str, Any]:
     }
 
 
-def read_single_root(path: Path) -> tuple[int, ...]:
+def read_roots(path: Path) -> tuple[tuple[int, ...], ...]:
     roots: list[tuple[int, ...]] = []
     for line_number, raw in enumerate(path.read_text(encoding="ascii").splitlines(), 1):
         fields = raw.split()
@@ -48,19 +48,23 @@ def read_single_root(path: Path) -> tuple[int, ...]:
         if not cube or 0 in cube or len({abs(value) for value in cube}) != len(cube):
             raise ValueError(f"invalid root cube at line {line_number}")
         roots.append(cube)
-    if len(roots) != 1:
-        raise ValueError("exactly one source root is required")
-    return roots[0]
+    if not roots:
+        raise ValueError("at least one source root is required")
+    return tuple(roots)
 
 
-def parse_log(path: Path) -> dict[str, int]:
-    values: dict[str, int] = {}
+def parse_log(path: Path) -> dict[str, int | str]:
+    values: dict[str, int | str] = {}
     for raw in path.read_text(encoding="utf-8", errors="strict").splitlines():
         fields = raw.split()
         if len(fields) != 2:
             continue
         key, value = fields
-        if key in {
+        if key == "root_index":
+            if key in values:
+                raise ValueError(f"duplicate {key} in producer log: {path}")
+            values[key] = value
+        elif key in {
             "proof_fragment",
             "checkpoint",
             "status",
@@ -74,12 +78,18 @@ def parse_log(path: Path) -> dict[str, int]:
             values[key] = int(value)
     if values.get("proof_fragment") != 1:
         raise ValueError(f"producer log is not for a proof fragment: {path}")
+    if values.get("root_index") != "all":
+        raise ValueError(f"producer log is not for all source roots: {path}")
     if values.get("status") not in (0, 20):
         raise ValueError(f"producer log lacks final status 0 or 20: {path}")
     if values["status"] == 0 and values.get("checkpoint") != 1:
         raise ValueError(f"status-0 producer log lacks checkpoint=1: {path}")
-    if values["status"] == 20 and values.get("cubes") != 1:
-        raise ValueError(f"completed producer log does not record one cube: {path}")
+    if values["status"] == 20 and (
+        not isinstance(values.get("cubes"), int) or values["cubes"] < 1
+    ):
+        raise ValueError(
+            f"completed producer log does not record a positive cube count: {path}"
+        )
     for key in ("attempts", "splits", "maximum_extra_depth"):
         if key not in values or values[key] < 0:
             raise ValueError(f"producer log lacks valid {key}: {path}")
@@ -87,12 +97,16 @@ def parse_log(path: Path) -> dict[str, int]:
 
 
 def replay_snapshot(
-    root: tuple[int, ...], snapshot: Path
-) -> tuple[list[tuple[int, ...]], dict[str, int]]:
+    roots: tuple[tuple[int, ...], ...], snapshot: Path
+) -> tuple[list[tuple[int, ...]], dict[str, Any]]:
     lines = snapshot.read_text(encoding="ascii").splitlines()
     if not lines or lines[0] != HEADER:
         raise ValueError(f"unexpected DFS snapshot header: {snapshot}")
-    stack: list[tuple[tuple[int, ...], int]] = [(root, 0)]
+    stacks: list[list[tuple[tuple[int, ...], int]]] = [
+        [(root, 0)] for root in roots
+    ]
+    active_root = 0
+    globally_unsat = False
     attempts = splits = closed = maximum_depth = 0
     for line_number, raw in enumerate(lines[1:], 2):
         if not raw:
@@ -101,11 +115,18 @@ def replay_snapshot(
         if len(fields) != 8:
             raise ValueError(f"invalid DFS row at line {line_number}: {snapshot}")
         root_index, attempt, depth, limit, status, core, split, seconds = fields
-        if int(root_index) != 0 or int(attempt) != attempts:
+        parsed_root = int(root_index)
+        if int(attempt) != attempts:
             raise ValueError(f"unexpected root or attempt at line {line_number}")
-        if not stack:
-            raise ValueError(f"DFS snapshot continues after root closure at line {line_number}")
-        cube, expected_depth = stack.pop()
+        while active_root < len(stacks) and not stacks[active_root]:
+            active_root += 1
+        if globally_unsat or active_root == len(stacks):
+            raise ValueError(
+                f"DFS snapshot continues after forest closure at line {line_number}"
+            )
+        if parsed_root != active_root:
+            raise ValueError(f"unexpected root or attempt at line {line_number}")
+        cube, expected_depth = stacks[active_root].pop()
         parsed_depth = int(depth)
         parsed_limit = int(limit)
         parsed_status = int(status)
@@ -125,21 +146,34 @@ def replay_snapshot(
             if parsed_split != 0:
                 raise ValueError(f"UNSAT row has a split at line {line_number}")
             closed += 1
+            if parsed_core == 0:
+                globally_unsat = True
             continue
         if parsed_status == 10:
             raise ValueError(f"SAT row requires investigation at line {line_number}")
-        if parsed_status != 0 or parsed_split == 0:
+        if parsed_status != 0 or parsed_core != 0 or parsed_split == 0:
             raise ValueError(f"invalid status or split at line {line_number}")
         if abs(parsed_split) in {abs(literal) for literal in cube}:
             raise ValueError(f"repeated split variable at line {line_number}")
         splits += 1
-        stack.append((cube + (-parsed_split,), parsed_depth + 1))
-        stack.append((cube + (parsed_split,), parsed_depth + 1))
-    return [cube for cube, _ in reversed(stack)], {
+        stacks[active_root].append((cube + (-parsed_split,), parsed_depth + 1))
+        stacks[active_root].append((cube + (parsed_split,), parsed_depth + 1))
+    if globally_unsat:
+        frontier: list[tuple[int, ...]] = []
+        root_frontier_counts = [0] * len(roots)
+    else:
+        root_frontiers = [
+            [cube for cube, _ in reversed(stack)] for stack in stacks
+        ]
+        frontier = [cube for root_frontier in root_frontiers for cube in root_frontier]
+        root_frontier_counts = [len(root_frontier) for root_frontier in root_frontiers]
+    return frontier, {
         "attempts": attempts,
         "splits": splits,
         "closed": closed,
         "maximum_depth": maximum_depth,
+        "global_unsat": globally_unsat,
+        "root_frontier_counts": root_frontier_counts,
     }
 
 
@@ -152,7 +186,7 @@ def proof_is_framed(path: Path) -> bool:
 
 
 def inspect_race(
-    root: tuple[int, ...], proof: Path, snapshot: Path, log: Path
+    roots: tuple[tuple[int, ...], ...], proof: Path, snapshot: Path, log: Path
 ) -> dict[str, Any]:
     for path in (proof, snapshot, log):
         if not path.is_file():
@@ -160,7 +194,7 @@ def inspect_race(
     if not proof_is_framed(proof):
         raise ValueError(f"proof is not binary-clause framed: {proof}")
     producer = parse_log(log)
-    frontier, replay = replay_snapshot(root, snapshot)
+    frontier, replay = replay_snapshot(roots, snapshot)
     if producer["attempts"] != replay["attempts"]:
         raise ValueError(f"producer/replay attempt mismatch: {log}")
     if producer["splits"] != replay["splits"]:
@@ -168,7 +202,9 @@ def inspect_race(
     if producer["maximum_extra_depth"] != replay["maximum_depth"]:
         raise ValueError(f"producer/replay maximum-depth mismatch: {log}")
     completed = producer["status"] == 20
-    if completed != (not frontier):
+    if completed and producer.get("cubes") != len(roots):
+        raise ValueError(f"producer/source root-count mismatch: {log}")
+    if completed != (replay["global_unsat"] or not frontier):
         raise ValueError(f"producer status disagrees with replayed frontier: {log}")
     return {
         "proof": {**file_record(proof), "binary_clause_framed": True},
@@ -180,7 +216,9 @@ def inspect_race(
         "splits": replay["splits"],
         "closed_nodes": replay["closed"],
         "maximum_depth": replay["maximum_depth"],
+        "global_unsat": replay["global_unsat"],
         "frontier_count": len(frontier),
+        "root_frontier_counts": replay["root_frontier_counts"],
         "frontier_sha256": hashlib.sha256(
             "".join(
                 "a " + " ".join(map(str, cube)) + " 0\n" for cube in frontier
@@ -216,9 +254,9 @@ def main() -> None:
     if not arguments.source_root.is_file():
         parser.error(f"source root does not exist: {arguments.source_root}")
 
-    root = read_single_root(arguments.source_root)
+    roots = read_roots(arguments.source_root)
     races = [
-        inspect_race(root, *(Path(value) for value in race))
+        inspect_race(roots, *(Path(value) for value in race))
         for race in arguments.race
     ]
     chosen_index = min(
@@ -233,6 +271,7 @@ def main() -> None:
     document = {
         "schema": SCHEMA,
         "source_root": file_record(arguments.source_root),
+        "root_count": len(roots),
         "races": races,
         "selection_policy": [
             "completed first",

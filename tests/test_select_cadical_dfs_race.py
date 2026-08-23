@@ -13,10 +13,13 @@ TOOL = ROOT / "tools/select_cadical_dfs_race.py"
 HEADER = "root\tattempt\tdepth\tlimit\tstatus\tcore\tsplit\tseconds\n"
 
 
-def producer_log(status: int, attempts: int, splits: int, depth: int) -> str:
-    extra = "checkpoint\t1\n" if status == 0 else "cubes\t1\n"
+def producer_log(
+    status: int, attempts: int, splits: int, depth: int, cubes: int = 1
+) -> str:
+    extra = "checkpoint\t1\n" if status == 0 else f"cubes\t{cubes}\n"
     return (
         "proof_fragment\t1\n"
+        "root_index\tall\n"
         + extra
         + f"status\t{status}\n"
         + f"attempts\t{attempts}\n"
@@ -31,9 +34,10 @@ class CadicalDfsRaceSelectionTests(unittest.TestCase):
         directory: Path,
         races: list[tuple[bytes, str, str]],
         expect_success: bool = True,
+        roots: str = "a 1 0\n",
     ) -> subprocess.CompletedProcess[str]:
         root = directory / "root.icnf"
-        root.write_text("a 1 0\n", encoding="ascii")
+        root.write_text(roots, encoding="ascii")
         command = [sys.executable, str(TOOL), str(root)]
         for index, (proof, snapshot, log) in enumerate(races):
             proof_path = directory / f"race-{index}.drat"
@@ -103,6 +107,68 @@ class CadicalDfsRaceSelectionTests(unittest.TestCase):
                 Path(raw),
                 [(b"a\x02\0", snapshot, producer_log(20, 1, 1, 0))],
                 expect_success=False,
+            )
+
+    def test_replays_complete_two_root_forest(self) -> None:
+        snapshot = (
+            HEADER
+            + "0\t0\t0\t10\t20\t1\t0\t0.1\n"
+            + "1\t1\t0\t10\t20\t1\t0\t0.1\n"
+        )
+        with tempfile.TemporaryDirectory() as raw:
+            directory = Path(raw)
+            self.run_tool(
+                directory,
+                [(b"a\x02\0", snapshot, producer_log(20, 2, 0, 0, 2))],
+                roots="a 1 0\na -1 0\n",
+            )
+            document = json.loads((directory / "selection.json").read_text())
+            self.assertEqual(document["root_count"], 2)
+            self.assertEqual(
+                document["races"][0]["root_frontier_counts"], [0, 0]
+            )
+            self.assertTrue(document["races"][0]["completed"])
+
+    def test_replays_two_root_checkpoint(self) -> None:
+        snapshot = (
+            HEADER
+            + "0\t0\t0\t10\t20\t1\t0\t0.1\n"
+            + "1\t1\t0\t10\t0\t0\t2\t0.1\n"
+        )
+        with tempfile.TemporaryDirectory() as raw:
+            directory = Path(raw)
+            self.run_tool(
+                directory,
+                [(b"a\x02\0", snapshot, producer_log(0, 2, 1, 0))],
+                roots="a 1 0\na -1 0\n",
+            )
+            race = json.loads((directory / "selection.json").read_text())["races"][0]
+            self.assertEqual(race["root_frontier_counts"], [0, 2])
+            self.assertEqual(race["frontier_count"], 2)
+            self.assertFalse(race["completed"])
+
+    def test_accepts_global_unsat_core_before_later_root(self) -> None:
+        snapshot = HEADER + "0\t0\t0\t10\t20\t0\t0\t0.1\n"
+        with tempfile.TemporaryDirectory() as raw:
+            directory = Path(raw)
+            self.run_tool(
+                directory,
+                [(b"a\x02\0", snapshot, producer_log(20, 1, 0, 0, 2))],
+                roots="a 1 0\na -1 0\n",
+            )
+            race = json.loads((directory / "selection.json").read_text())["races"][0]
+            self.assertTrue(race["global_unsat"])
+            self.assertEqual(race["frontier_count"], 0)
+            self.assertTrue(race["completed"])
+
+    def test_rejects_root_transition_before_prior_closure(self) -> None:
+        snapshot = HEADER + "1\t0\t0\t10\t20\t1\t0\t0.1\n"
+        with tempfile.TemporaryDirectory() as raw:
+            self.run_tool(
+                Path(raw),
+                [(b"a\x02\0", snapshot, producer_log(0, 1, 0, 0))],
+                expect_success=False,
+                roots="a 1 0\na -1 0\n",
             )
 
 
