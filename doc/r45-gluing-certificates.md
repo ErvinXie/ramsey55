@@ -160,6 +160,30 @@ The manifests, logs, problem list, and both audits are retained under
 [`data/certificates/r45-gluing-d12-hardest128-pilot/`](../data/certificates/r45-gluing-d12-hardest128-pilot/README.md).
 This closes one sampled leaf only; all unsampled d12 pairs remain open.
 
+The matching d12 sample now also has a complete checked-core storage chain.
+For every listed formula, `drat-trim -l -C` accepted the source proof and
+emitted a core which a second ordinary `drat-trim` invocation accepted.  All
+128 results were published atomically after 3:36:20 wall time.  The
+8,264,274,560 source bytes became 5,154,970,064 core bytes; the core manifest
+hashes to
+`b32f0ee688a66842f974a0682ef72ec6c081d051474c4a14a0f4f0448e3cf2c9`.
+Lossless zstd level-1 storage reduced this to 1,598,927,229 bytes, with
+compressed manifest SHA-256
+`8f28017592ab6b0e77df13fce92d448dc151b911b65b97338ee3389b0dae3380`.
+
+The independent archive auditor reloaded the complete manifest chain,
+rehashed all cores and all 256 checker logs, required one exact
+`s VERIFIED` per log, and streamed all 128 compressed files through zstd for
+an independent byte-count and SHA-256 comparison.  It reports 128/128 exact
+decompression identities and `verified: true`; its JSON and GNU-time log
+hash to
+`bd2f79382d91c85f6222bcb86b8fda842f462680e4ba1ebf0e58a4b7bf002489`
+and
+`8bc107a189ba6b99ce9e66b905dd2e4e8d4ba02f43323f34d25a6470ba620f50`.
+The complete ARM regression with four new corruption tests passed all 296
+tests in 34.960 seconds.  This is durable storage evidence for the selected
+sample, not coverage of any unsampled d12 pair.
+
 ## Selector-formula experiment
 
 As an alternative to one proof per Cartesian pair, one exact selector CNF

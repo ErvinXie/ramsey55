@@ -1,0 +1,37 @@
+{
+  "audit": {
+    "bytes": 54758,
+    "sha256": "bd2f79382d91c85f6222bcb86b8fda842f462680e4ba1ebf0e58a4b7bf002489",
+    "summary": {
+      "complete_for_listed_formulas": true,
+      "compressed_bytes": 1598927229,
+      "compressed_to_core_ratio": 0.310171972,
+      "compressed_to_source_ratio": 0.193474602,
+      "core_checker_logs_exact_verified": 128,
+      "core_proof_bytes": 5154970064,
+      "core_to_source_ratio": 0.623765586,
+      "decompressed_identities": 128,
+      "formulas": 128,
+      "source_checker_logs_exact_verified": 128,
+      "source_proof_bytes": 8264274560
+    },
+    "verified": true
+  },
+  "claim": "checked and losslessly compressed core proofs for the listed 128 degree-12 sample formulas only",
+  "compressed_manifest_sha256": "8f28017592ab6b0e77df13fce92d448dc151b911b65b97338ee3389b0dae3380",
+  "core_manifest_sha256": "b32f0ee688a66842f974a0682ef72ec6c081d051474c4a14a0f4f0448e3cf2c9",
+  "logs": {
+    "audit": "0c5d4597002b56d824e77cd5bf83acc9b2d6bbe014b822a3dd653beceb5e19fc",
+    "audit_time": "8bc107a189ba6b99ce9e66b905dd2e4e8d4ba02f43323f34d25a6470ba620f50",
+    "compression": "2b93b25917495fecbb14dbda79dc4ca008e2637af6dfd3cfcb9e69d69b94a4b8",
+    "compression_time": "cc64da4056fac191098d0537fae90bc323218faee43ab6e9f1318f63e7e803eb",
+    "core_compaction": "410e0aa70fd357b04e7306875dc7acf227db82beaf8be30d61c0d0cf836208f4",
+    "core_compaction_time": "cf73a151080df5833f9a19ce423cc743cb1732e52f2304b28500da428218ab64"
+  },
+  "regression": {
+    "arm_tests": 296,
+    "log_sha256": "2b05b87942a370a7fe63d6d892b41b3ce47e28d16c1de3344dbbb0d41bbdc25c",
+    "time_log_sha256": "9b4f125f69749fe67a4182cd2e3d1bbf786591993d87f14d3410bdec1e5b2872"
+  },
+  "schema": "ramsey55.r45-gluing-d12-core-archive-summary.v1"
+}

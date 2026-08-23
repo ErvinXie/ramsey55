@@ -32,6 +32,27 @@ six-file generated theory and its child log remain under
 `work_glue3512_ramsey55_hardest128_pilot_v1/`.  Their exact hashes are bound
 by the committed audits.
 
+## Checked core archive
+
+Every one of the 128 raw proofs was independently passed through ordinary
+`drat-trim -l CORE -C`, requiring exact `s VERIFIED`, and the resulting core
+was then replayed again by ordinary `drat-trim`.  The atomically published
+core manifest covers 128/128 listed formulas: 8,264,274,560 source bytes
+became 5,154,970,064 core bytes, a ratio of 0.623765586.  The four-worker run
+took 3:36:20 wall time, used 42,112.96 aggregate user seconds, peaked at
+1,634,368 KiB RSS, and exited zero.
+
+Each core was then compressed with zstd level 1 and immediately decompressed
+and rehashed before atomic publication.  The 128 compressed files total
+1,598,927,229 bytes, or 0.193474602 of the raw sample.  A separate auditor
+then reloaded the upstream branch/proof/core/compressed manifest chain,
+rehashed all 5.155 GB of cores and all 256 checker logs, required one exact
+`s VERIFIED` in every log, and independently decompressed and rehashed all
+128 zstd files.  It reports `verified: true` with 128/128 decompression
+identities in 4.91 seconds.  Exact hashes and run summaries are committed in
+`core-archive-audit-summary.json`; the large proof archives remain at the
+recorded ARM paths.
+
 ## Fixed evidence
 
 - branch manifest:
@@ -56,7 +77,13 @@ by the committed audits.
   `7efd71d0b886389a45567bd52325db8399098fd9f004a695745b0abba853d985` /
   `b6d785fcb6ad490793fc76a971dbf914596a7a3167bdfed09a56b21c62e8dcfa`;
 - final HOL theory audit:
-  `f867b5c755bf744ea14a5311dbec0a3bbe3579bce442cabf1632a90b3ef8536e`.
+  `f867b5c755bf744ea14a5311dbec0a3bbe3579bce442cabf1632a90b3ef8536e`;
+- checked-core manifest / compressed-core manifest:
+  `b32f0ee688a66842f974a0682ef72ec6c081d051474c4a14a0f4f0448e3cf2c9` /
+  `8f28017592ab6b0e77df13fce92d448dc151b911b65b97338ee3389b0dae3380`;
+- independent core-archive audit / GNU-time log:
+  `bd2f79382d91c85f6222bcb86b8fda842f462680e4ba1ebf0e58a4b7bf002489` /
+  `8bc107a189ba6b99ce9e66b905dd2e4e8d4ba02f43323f34d25a6470ba620f50`.
 
 The theory audit additionally binds all six generated theory artifacts, the
 child build log, the signed MiniSat executable, the HOL entry point, and the
@@ -79,6 +106,17 @@ python3 tools/audit_r45_gluing_hol_pilot_selection.py \
 
 The upstream build and fresh-load commands are documented in
 [`doc/r45-upstream-hol-replay.md`](../../../doc/r45-upstream-hol-replay.md).
+
+With the retained core and compressed directories, rerun the independent
+storage audit with:
+
+```bash
+python3 tools/audit_r45_gluing_compressed_core_proofs.py \
+  /data/ramsey55/build/r45-gluing-d12-stratified128-v1/core-proofs-v1/manifest.json \
+  /data/ramsey55/build/r45-gluing-d12-stratified128-v1/core-proofs-compressed-v1/manifest.json \
+  --zstd /usr/bin/zstd --project-root /root/ramsey55 --jobs 4 \
+  --output build/d12-core-archive-audit.json
+```
 
 This closes exactly one sampled degree-12 gluing leaf at the HOL kernel
 boundary.  It does not cover any of the 322,012 unsampled degree-12 pairs,
