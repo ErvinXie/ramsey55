@@ -6364,5 +6364,24 @@ and hashes to
 This accepts v420 row 0.  Its row 1 still depends on both v423 continuations;
 only v423 row 0 is accepted so far, so v420 remains open.
 
+An audit of a later six-run residual-search launch found a configuration
+error before any result was accepted.  The original files named for
+seed/phase pairs 1009/0, 1013/1, 1019/0, 1021/1, 1031/0, and 1033/1 were
+actually produced with the defaults `cadical_seed=0` and `cadical_phase=1`:
+only the wall-clock environment variable had been exported, while the
+positional value intended as phase had changed
+`maximum_primary_split_variable` to 0 or 1.  The exact six processes were
+stopped after 1,223 seconds.  Their logs, TSVs, and partial DRAT files remain
+under the misleading original names solely as superseded recovery material;
+they provide no independent-search, replayable-checkpoint, or UNSAT evidence.
+
+Fresh searches use distinct `-v2` stems and explicitly set all three
+environment variables.  Their checked headers bind seed/phase pairs 1009/0,
+1013/1, 1019/0, 1021/1, 1031/0, and 1033/1, together with
+`maximum_primary_split_variable=0`, the 60-second per-cube solve limit, the
+14,400-second internal wall checkpoint, and fragment mode.  This correction
+changes search accounting only; none of the three residual rows is thereby
+closed.
+
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.
