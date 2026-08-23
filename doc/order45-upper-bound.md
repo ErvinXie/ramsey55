@@ -6237,8 +6237,9 @@ Its promotion manifest hashes to
 and the final independent promotion audit reran the source audit, reported
 `verified: true`, and hashes to
 `0d302aea8b3d6e5da089fa0364724357ff92a217fcfad6b8f517204f256dc1ae`.
-Thus f320 is accepted as a recursively embeddable child.  Its sibling f321,
-the enclosing f32 group, and f31s1 remain open at this checkpoint.
+Thus f320 is accepted as a recursively embeddable child.  Its sibling f321
+and the enclosing f32 group remain open; the later f31s1 result is recorded
+below.
 
 The f220 protected-CNF alternative has independently completed the same
 acceptance chain.  Its exact augmented CNF hashes to
@@ -6259,6 +6260,40 @@ and
 the latter reran the source audit and reports `verified: true`.  Thus f220 and
 the earlier f221 are both recursively consumable.  f222 is still open, so
 the enclosing f22 group is not closed.
+
+The v399 f31s1 protected-CNF alternative has now passed the complete
+acceptance chain as well.  Its exact augmented CNF hashes to
+`beaf355020e2f9f2aa8a8faec6e114b4970b2092db493f75f32855c1bfdc7955`.
+Ordinary `drat-trim` accepted the 7,270,644,954-byte standalone proof with
+SHA-256
+`ae0bbc8f2e7dbf23aee8c6ba90469ad27dca9ddd945284e4bc849144d082ae21`.
+It emitted one exact `s VERIFIED` line and exited zero after 7:33:42 wall and
+27,210.77 user seconds, with 9,320,312 KiB peak RSS.  The independent source
+audit reports `verified: true` and hashes to
+`e3462795678556f603fb9685e25ac409a90e4e5704b4a19927219638417e1457`.
+
+Removing only the final binary empty addition produced the
+7,270,644,952-byte recursively embeddable fragment with SHA-256
+`7d8ded1524582d26eaad2df52a66550369b38b15464996e2f6bb697b3d117201`.
+The promotion manifest hashes to
+`4c6d0c48232cb8d5129f0f1fc730eb2c7cf06c5eea4e9c9f58d0856b66020ef9`.
+The final promotion audit reran the complete source audit, reports
+`verified: true`, and hashes to
+`452490fa6f05a7a74473c81aba419f03dc928dda38993a6efa750734168a59cc`.
+Thus f31s1 is accepted as a child of the v396 f31 checkpoint.
+
+The enclosing f31 protected-CNF promotion has started with exact augmented
+CNF SHA-256
+`1ce50db7fa47873c80008766e7e48e44dd66d35ca5503dc701cea28197a44f14`.
+Its three ordered fragments are the 1,757,114,344-byte framed prefix, the
+362,895,147-byte direct row-0 fragment, and the accepted f31s1 fragment;
+their SHA-256 values are respectively
+`26c2ad320c5cb04f0699a795ade3f1caa934e6b18ca9a161e46e9ac0bbbe7111`,
+`064a3b7ece92cfe0572d2f896dda96bb8c5277da341a36bd5f4317195bc590ce`,
+and
+`7d8ded1524582d26eaad2df52a66550369b38b15464996e2f6bb697b3d117201`.
+That parent run has no acceptance result yet, so the v396 f31 checkpoint and
+its ancestors remain open.
 
 The first continuation below the selected v419 checkpoint has now completed
 the same acceptance chain.  Both opposite-phase races closed v421 row 0;
