@@ -75,6 +75,43 @@ class AuditSmallRamseyCertificateTests(unittest.TestCase):
             self.assertNotEqual(completed.returncode, 0)
             self.assertIn("lacks an exact s VERIFIED", completed.stderr)
 
+    def test_rejects_dense_lrat_tampering(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            document = json.loads(MANIFEST.read_text())
+            dense_lrat = root / "dense.lrat"
+            dense_lrat.write_bytes(
+                (ROOT / document["lrat"]["dense"]["path"]).read_bytes() + b"\n"
+            )
+            document["lrat"]["dense"]["path"] = str(dense_lrat)
+            manifest = root / "manifest.json"
+            manifest.write_text(json.dumps(document), encoding="utf-8")
+            completed = self.audit(manifest)
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn("dense LRAT size mismatch", completed.stderr)
+
+    def test_rejects_rehashed_lean_lrat_log_without_verified_status(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            document = json.loads(MANIFEST.read_text())
+            lean_log = root / "lean-lrat.log"
+            lean_log.write_text("typed r34 LRAT check failed\n", encoding="utf-8")
+            document["lrat"]["lean_core_check"]["log"].update(
+                {
+                    "path": str(lean_log),
+                    "sha256": sha256(lean_log),
+                    "size": lean_log.stat().st_size,
+                }
+            )
+            manifest = root / "manifest.json"
+            manifest.write_text(json.dumps(document), encoding="utf-8")
+            completed = self.audit(manifest)
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn(
+                "Lean core LRAT log lacks the expected verification line",
+                completed.stderr,
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -55,18 +55,26 @@ smaller inputs from the retained `R(3,4) <= 9` certificate and uses handshake
 parity to require only the degree-8, degree-10, and degree-12 UNSAT
 certificates.
 
-The 36-variable / 210-clause `R(3,4,9)` CNF, its 210,962-byte DRAT proof, and
-all checker logs are retained in `data/certificates/r34-n9`. Recheck its file
-bindings, independently reconstructed CNF, typed Lean formula, and DRAT proof
+The 36-variable / 210-clause `R(3,4,9)` CNF, its 210,962-byte DRAT proof,
+the derived LRAT certificates, and all checker logs are retained in
+`data/certificates/r34-n9`. Recheck its file bindings, independently
+reconstructed CNF, typed Lean formula, DRAT proof, deterministic LRAT
+conversion/normalization, Lean-core LRAT check, and independent C LRAT checks
 with:
 
     python3 tools/audit_small_ramsey_certificate.py \
       data/certificates/r34-n9/manifest.json --root . \
       --checker .tools/src/drat-trim/drat-trim \
-      --rerun-checker --rerun-reconstructor --rerun-typed
+      --rerun-checker --rerun-reconstructor --rerun-typed \
+      --lrat-checker-source .tools/src/drat-trim/lrat-check.c --rerun-lrat
 
-Lean proves the exact CNF UNSAT fact implies `ForcesRed3OrBlue4 9`, which in
-turn implies both `ForcesRed3OrBlue5 14` and `ForcesRed4OrBlue4 18`.
+The original 13,707-action LRAT permits gaps in added-clause identifiers.
+`NormalizeLratIds.lean` produces a semantics-preserving dense numbering for
+Lean 4.31's compact LRAT checker; the independent checker accepts both byte
+streams with identical 9397-addition / 9380-deletion / 870-peak statistics.
+`forcesRed3OrBlue4_9_of_exactLratCheck` connects a successful verified-core
+check of the exact typed formula to `ForcesRed3OrBlue4 9`, which in turn
+implies both `ForcesRed3OrBlue5 14` and `ForcesRed4OrBlue4 18`.
 
 For a completed set of binary no-empty DRAT fragments, run the complete
 deletion-preserving verification and promotion pipeline with:

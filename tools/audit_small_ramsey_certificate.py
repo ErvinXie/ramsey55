@@ -10,10 +10,11 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import tempfile
 from typing import Any
 
 
-SCHEMA = "ramsey55.checked-small-ramsey-certificate.v1"
+SCHEMA = "ramsey55.checked-small-ramsey-certificate.v2"
 GENERATOR_SCHEMA = "ramsey55.asymmetric-ramsey-upper-bound.v1"
 
 
@@ -66,6 +67,10 @@ def exact_status_line(path: Path, expected: str) -> bool:
         line.strip("\r") == expected
         for line in path.read_text(encoding="utf-8", errors="strict").splitlines()
     )
+
+
+def output_has_exact_line(output: str, expected: str) -> bool:
+    return any(line.strip("\r") == expected for line in output.splitlines())
 
 
 def read_cnf_dimensions(path: Path) -> tuple[int, int, int]:
@@ -126,6 +131,8 @@ def audit(
     rerun_checker: bool,
     rerun_reconstructor: bool,
     rerun_typed: bool,
+    lrat_checker_source: Path | None,
+    rerun_lrat: bool,
 ) -> dict[str, Any]:
     document = json.loads(manifest_path.read_text(encoding="utf-8"))
     if not isinstance(document, dict) or document.get("schema") != SCHEMA:
@@ -209,6 +216,107 @@ def audit(
     if not re.search(rf"^verified .+: {clauses} clauses$", typed_text, re.MULTILINE):
         raise ValueError("typed-formula log lacks the expected verification line")
 
+    lrat = document.get("lrat")
+    if not isinstance(lrat, dict) or lrat.get("verified") is not True:
+        raise ValueError("LRAT record lacks verified=true")
+    actions = lrat.get("actions")
+    if not isinstance(actions, int) or actions <= 0:
+        raise ValueError("LRAT record has invalid action count")
+    original_lrat_record, original_lrat_path = checked_file_record(
+        lrat.get("original"), "original LRAT", root
+    )
+    dense_lrat_record, dense_lrat_path = checked_file_record(
+        lrat.get("dense"), "dense LRAT", root
+    )
+
+    conversion = lrat.get("conversion")
+    if not isinstance(conversion, dict) or conversion.get("verified") is not True:
+        raise ValueError("LRAT conversion record lacks verified=true")
+    if require_sha256(conversion.get("checker_sha256"), "LRAT converter") != checker_hash:
+        raise ValueError("LRAT converter hash differs from DRAT checker hash")
+    conversion_log_record, conversion_log_path = checked_file_record(
+        conversion.get("log"), "LRAT conversion log", root
+    )
+    conversion_time_record, _ = checked_file_record(
+        conversion.get("timing_log"), "LRAT conversion timing log", root
+    )
+    if not exact_status_line(conversion_log_path, "s VERIFIED"):
+        raise ValueError("LRAT conversion log lacks an exact s VERIFIED line")
+
+    normalizer = lrat.get("normalizer")
+    if not isinstance(normalizer, dict) or normalizer.get("verified") is not True:
+        raise ValueError("LRAT normalizer record lacks verified=true")
+    normalizer_tool = resolve_path(root, normalizer.get("tool", ""))
+    if not normalizer_tool.is_file():
+        raise ValueError(f"LRAT normalizer does not exist: {normalizer_tool}")
+    if file_sha256(normalizer_tool) != require_sha256(
+        normalizer.get("tool_sha256"), "LRAT normalizer tool"
+    ):
+        raise ValueError("LRAT normalizer tool hash mismatch")
+    normalizer_log_record, normalizer_log_path = checked_file_record(
+        normalizer.get("log"), "LRAT normalizer log", root
+    )
+    expected_normalizer_line = (
+        f"normalized {actions} LRAT actions ({actions} emitted)"
+    )
+    if not exact_status_line(normalizer_log_path, expected_normalizer_line):
+        raise ValueError("LRAT normalizer log lacks the expected action count")
+
+    lean_lrat = lrat.get("lean_core_check")
+    if not isinstance(lean_lrat, dict) or lean_lrat.get("verified") is not True:
+        raise ValueError("Lean core LRAT record lacks verified=true")
+    lean_lrat_tool = resolve_path(root, lean_lrat.get("tool", ""))
+    if not lean_lrat_tool.is_file():
+        raise ValueError(f"Lean core LRAT tool does not exist: {lean_lrat_tool}")
+    if file_sha256(lean_lrat_tool) != require_sha256(
+        lean_lrat.get("tool_sha256"), "Lean core LRAT tool"
+    ):
+        raise ValueError("Lean core LRAT tool hash mismatch")
+    lean_lrat_log_record, lean_lrat_log_path = checked_file_record(
+        lean_lrat.get("log"), "Lean core LRAT log", root
+    )
+    expected_lean_lrat_line = f"verified typed r34 LRAT: {actions} actions"
+    if not exact_status_line(lean_lrat_log_path, expected_lean_lrat_line):
+        raise ValueError("Lean core LRAT log lacks the expected verification line")
+
+    formal_bridge_record, _ = checked_file_record(
+        lrat.get("formal_bridge"), "LRAT formal bridge", root
+    )
+    formal_target_record, _ = checked_file_record(
+        lrat.get("formal_target"), "LRAT formal target", root
+    )
+
+    independent_lrat = lrat.get("independent_check")
+    if (
+        not isinstance(independent_lrat, dict)
+        or independent_lrat.get("verified") is not True
+    ):
+        raise ValueError("independent LRAT record lacks verified=true")
+    independent_source_hash = require_sha256(
+        independent_lrat.get("source_sha256"), "independent LRAT checker source"
+    )
+    original_lrat_log_record, original_lrat_log_path = checked_file_record(
+        independent_lrat.get("original_log"), "original independent LRAT log", root
+    )
+    dense_lrat_log_record, dense_lrat_log_path = checked_file_record(
+        independent_lrat.get("dense_log"), "dense independent LRAT log", root
+    )
+    for label, log_path in (
+        ("original", original_lrat_log_path),
+        ("dense", dense_lrat_log_path),
+    ):
+        if not exact_status_line(log_path, "c VERIFIED"):
+            raise ValueError(
+                f"{label} independent LRAT log lacks an exact c VERIFIED line"
+            )
+    if lrat_checker_source is not None:
+        if not lrat_checker_source.is_file():
+            raise ValueError(
+                f"independent LRAT checker source does not exist: {lrat_checker_source}"
+            )
+        if file_sha256(lrat_checker_source) != independent_source_hash:
+            raise ValueError("independent LRAT checker source hash mismatch")
+
     checker_rerun: dict[str, Any] | None = None
     if checker_path is not None:
         if not checker_path.is_file():
@@ -225,8 +333,8 @@ def audit(
             text=True,
             check=False,
         )
-        if completed.returncode or not any(
-            line.strip("\r") == "s VERIFIED" for line in completed.stdout.splitlines()
+        if completed.returncode or not output_has_exact_line(
+            completed.stdout, "s VERIFIED"
         ):
             raise RuntimeError(
                 f"checker rerun rejected proof (exit {completed.returncode})"
@@ -284,8 +392,137 @@ def audit(
             "output_sha256": hashlib.sha256(completed.stdout.encode()).hexdigest(),
         }
 
+    lrat_rerun: dict[str, Any] | None = None
+    if rerun_lrat:
+        if checker_path is None:
+            raise ValueError("--rerun-lrat requires --checker")
+        if lrat_checker_source is None:
+            raise ValueError("--rerun-lrat requires --lrat-checker-source")
+        with tempfile.TemporaryDirectory(prefix="ramsey55-r34-lrat-") as temporary:
+            temporary_root = Path(temporary)
+            regenerated_original = temporary_root / "r34-n9.lrat"
+            regenerated_dense = temporary_root / "r34-n9-dense.lrat"
+            independent_checker = temporary_root / "lrat-check"
+
+            converted = subprocess.run(
+                [
+                    str(checker_path),
+                    str(cnf_path),
+                    str(proof_path),
+                    "-L",
+                    str(regenerated_original),
+                ],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                check=False,
+            )
+            if converted.returncode or not output_has_exact_line(
+                converted.stdout, "s VERIFIED"
+            ):
+                raise RuntimeError(
+                    f"DRAT-to-LRAT rerun failed (exit {converted.returncode})"
+                )
+            if file_sha256(regenerated_original) != original_lrat_record["sha256"]:
+                raise RuntimeError("DRAT-to-LRAT rerun changed original LRAT bytes")
+
+            normalized = subprocess.run(
+                [
+                    "lake",
+                    "env",
+                    "lean",
+                    "--run",
+                    str(normalizer_tool),
+                    str(clauses),
+                    str(regenerated_original),
+                    str(regenerated_dense),
+                ],
+                cwd=root,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                check=False,
+            )
+            if normalized.returncode or not output_has_exact_line(
+                normalized.stdout, expected_normalizer_line
+            ):
+                raise RuntimeError(
+                    f"LRAT normalization rerun failed (exit {normalized.returncode})"
+                )
+            if file_sha256(regenerated_dense) != dense_lrat_record["sha256"]:
+                raise RuntimeError("LRAT normalization rerun changed dense LRAT bytes")
+
+            lean_checked = subprocess.run(
+                [
+                    "lake",
+                    "env",
+                    "lean",
+                    "--run",
+                    str(lean_lrat_tool),
+                    str(regenerated_dense),
+                ],
+                cwd=root,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                check=False,
+            )
+            if lean_checked.returncode or not output_has_exact_line(
+                lean_checked.stdout, expected_lean_lrat_line
+            ):
+                raise RuntimeError(
+                    f"Lean core LRAT rerun failed (exit {lean_checked.returncode})"
+                )
+
+            compiled = subprocess.run(
+                ["cc", "-O2", "-o", str(independent_checker), str(lrat_checker_source)],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                check=False,
+            )
+            if compiled.returncode:
+                raise RuntimeError(
+                    f"independent LRAT checker compilation failed (exit {compiled.returncode})"
+                )
+            independent_outputs: dict[str, str] = {}
+            for label, candidate in (
+                ("original", regenerated_original),
+                ("dense", regenerated_dense),
+            ):
+                checked = subprocess.run(
+                    [str(independent_checker), str(cnf_path), str(candidate)],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    text=True,
+                    check=False,
+                )
+                if checked.returncode or not output_has_exact_line(
+                    checked.stdout, "c VERIFIED"
+                ):
+                    raise RuntimeError(
+                        f"independent {label} LRAT rerun failed "
+                        f"(exit {checked.returncode})"
+                    )
+                independent_outputs[label] = hashlib.sha256(
+                    checked.stdout.encode()
+                ).hexdigest()
+            lrat_rerun = {
+                "conversion_output_sha256": hashlib.sha256(
+                    converted.stdout.encode()
+                ).hexdigest(),
+                "normalizer_output_sha256": hashlib.sha256(
+                    normalized.stdout.encode()
+                ).hexdigest(),
+                "lean_output_sha256": hashlib.sha256(
+                    lean_checked.stdout.encode()
+                ).hexdigest(),
+                "independent_output_sha256": independent_outputs,
+                "verified": True,
+            }
+
     return {
-        "schema": "ramsey55.checked-small-ramsey-certificate-audit.v1",
+        "schema": "ramsey55.checked-small-ramsey-certificate-audit.v2",
         "manifest_sha256": file_sha256(manifest_path),
         "cnf_sha256": cnf_record["sha256"],
         "generator_manifest_sha256": generator_record["sha256"],
@@ -294,9 +531,20 @@ def audit(
         "checker_log_sha256": checker_log_record["sha256"],
         "typed_log_sha256": typed_log_record["sha256"],
         "typed_timing_log_sha256": timing_record["sha256"],
+        "original_lrat_sha256": original_lrat_record["sha256"],
+        "dense_lrat_sha256": dense_lrat_record["sha256"],
+        "lrat_conversion_log_sha256": conversion_log_record["sha256"],
+        "lrat_conversion_timing_log_sha256": conversion_time_record["sha256"],
+        "lrat_normalizer_log_sha256": normalizer_log_record["sha256"],
+        "lean_lrat_log_sha256": lean_lrat_log_record["sha256"],
+        "formal_bridge_sha256": formal_bridge_record["sha256"],
+        "formal_target_sha256": formal_target_record["sha256"],
+        "original_independent_lrat_log_sha256": original_lrat_log_record["sha256"],
+        "dense_independent_lrat_log_sha256": dense_lrat_log_record["sha256"],
         "checker_rerun": checker_rerun,
         "reconstructor_rerun": reconstructor_rerun,
         "typed_rerun": typed_rerun,
+        "lrat_rerun": lrat_rerun,
         "verified": True,
     }
 
@@ -309,6 +557,8 @@ def main() -> None:
     parser.add_argument("--rerun-checker", action="store_true")
     parser.add_argument("--rerun-reconstructor", action="store_true")
     parser.add_argument("--rerun-typed", action="store_true")
+    parser.add_argument("--lrat-checker-source", type=Path)
+    parser.add_argument("--rerun-lrat", action="store_true")
     arguments = parser.parse_args()
     if not arguments.manifest.is_file():
         parser.error(f"manifest does not exist: {arguments.manifest}")
@@ -319,6 +569,8 @@ def main() -> None:
         arguments.rerun_checker,
         arguments.rerun_reconstructor,
         arguments.rerun_typed,
+        arguments.lrat_checker_source,
+        arguments.rerun_lrat,
     )
     print(json.dumps(report, sort_keys=True))
 

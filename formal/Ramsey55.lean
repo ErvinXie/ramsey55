@@ -19,6 +19,7 @@ import Ramsey55.Order45LexAssignment
 import Ramsey55.Order45LexRelabeling
 import Ramsey55.Order45Window
 import Ramsey55.CubeCover
+import Ramsey55.LratBridge
 import Ramsey55.CnfCardinality
 import Ramsey55.CnfLex
 import Ramsey55.Order45CubeCover
@@ -27,5 +28,6 @@ import Ramsey55.Order45Target
 import Ramsey55.Ramsey45Target
 import Ramsey55.RamseySmallBounds
 import Ramsey55.Ramsey34Target
+import Ramsey55.Ramsey34LratTarget
 import Ramsey55.Order45ConcreteTarget
 import Ramsey55.Symmetry

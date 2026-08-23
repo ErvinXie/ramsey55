@@ -6177,11 +6177,21 @@ and
 `6410b4135b83c8040024d32688b453954447f71ef7fb704d5f235041394ae2c6`.
 The retained certificate auditor rechecked every artifact hash, independently
 reconstructed the CNF, reran the exact typed Lean comparison, and reran
-`drat-trim`; its report hashes to
-`93d2ac434d6a4623c2588497805222a19899c96ee894bb677e7269861a92b4e5`.
-`RamseySmallBounds.lean` formally derives both `R(3,5) <= 14` and
-`R(4,4) <= 18` from this single fact, while `Ramsey34Target.lean` proves the
-exact 210-clause formula complete. Thus
+`drat-trim`.  The DRAT was also converted deterministically to a
+13,707-action LRAT.  Because Lean 4.31's compact checker indexes additions by
+array position, `NormalizeLratIds.lean` densely renumbers the legal gaps and
+all of their RUP/RAT/delete references.  Lean's verified LRAT checker accepts
+the dense stream, while the separately compiled upstream `lrat-check.c`
+accepts both original and dense streams with identical 9397-addition,
+9380-deletion, and 870-peak-live statistics.  The complete rerun audit report
+hashes to
+`2e1a66c7bed7ee8119d1f5131bc497533c8ca2b5934b30b34b73c52454f8f0b1`.
+`LratBridge.lean` proves the one-based typed-DIMACS to zero-based core-CNF
+semantic bridge, and `forcesRed3OrBlue4_9_of_exactLratCheck` connects a
+successful core check to the small Ramsey theorem.  Its axiom audit contains
+only `propext`, `Classical.choice`, and `Quot.sound`.  `RamseySmallBounds.lean`
+formally derives both `R(3,5) <= 14` and `R(4,4) <= 18` from this single fact,
+while `Ramsey34Target.lean` proves the exact 210-clause formula complete. Thus
 `forcesRed4OrBlue5_of_r34ExactCnfAndThreeExactFixedStarUnsat` leaves only the
 d08/d10/d12 UNSAT facts. By contrast, the superseded raw R(3,5,14) and
 R(4,4,18) Kissat probes both timed out at 1,800 seconds after producing 1.1

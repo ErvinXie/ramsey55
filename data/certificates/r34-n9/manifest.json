@@ -1,5 +1,5 @@
 {
-  "schema": "ramsey55.checked-small-ramsey-certificate.v1",
+  "schema": "ramsey55.checked-small-ramsey-certificate.v2",
   "statement": "R(3,4) <= 9",
   "dimensions": {
     "variables": 36,
@@ -60,10 +60,91 @@
     "matched_clauses": 210,
     "verified": true
   },
+  "lrat": {
+    "actions": 13707,
+    "original": {
+      "path": "data/certificates/r34-n9/r34-n9.lrat",
+      "sha256": "5cea42ba1b2d422066862a3f78c5cd1abc3ca0b8e4f64789a7a3b2b70936fcc0",
+      "size": 974358
+    },
+    "dense": {
+      "path": "data/certificates/r34-n9/r34-n9-dense.lrat",
+      "sha256": "76b9c953f700ce1cd154134d70539bb318038d4162149301eed9c353195359ed",
+      "size": 946127
+    },
+    "conversion": {
+      "tool": "drat-trim -L",
+      "checker_sha256": "8de9a77e5ddf754f10cce7980a7495810ce9f4328c2df4e55419970ae1858d42",
+      "log": {
+        "path": "data/certificates/r34-n9/r34-n9-lrat-conversion.log",
+        "sha256": "b85f3a6c9a5a4ef99703737c5766cdca0f12924e22c1ef56a84a59d58020c068",
+        "size": 417
+      },
+      "timing_log": {
+        "path": "data/certificates/r34-n9/r34-n9-lrat-conversion-time.log",
+        "sha256": "9a22077e9f5074ec8f2e876e138c09c6c2de4a5ea62f2444dd9159ebafd9c6a3",
+        "size": 853
+      },
+      "verified": true
+    },
+    "normalizer": {
+      "tool": "tools/NormalizeLratIds.lean",
+      "tool_sha256": "c2d2b81205c404f42132991a3a018bb411c5bde3dc7b5e702646689e23f8512b",
+      "log": {
+        "path": "data/certificates/r34-n9/r34-n9-lrat-normalize.log",
+        "sha256": "4b9f40faf8261d9feacc0084fb23c6861a316aa2c7cd33c190fe266573985600",
+        "size": 46
+      },
+      "verified": true
+    },
+    "lean_core_check": {
+      "lean_version": "4.31.0",
+      "tool": "tools/VerifyR34Lrat.lean",
+      "tool_sha256": "6a6c074aad6ea9eaa03db14e33877bda358f1c598b6abc08bf86bcd2860a37ec",
+      "log": {
+        "path": "data/certificates/r34-n9/r34-n9-core-lrat-check.log",
+        "sha256": "c46609eda0f703c9f61f60058767aed2f341aad73526652794e86d62567d202a",
+        "size": 39
+      },
+      "verified": true
+    },
+    "formal_bridge": {
+      "path": "formal/Ramsey55/LratBridge.lean",
+      "sha256": "a2d2360d79dceeb2f3c8e44b8ef2ec5d0524b292b89e787a61a7c7cdd6cdcf56",
+      "size": 4862
+    },
+    "formal_target": {
+      "path": "formal/Ramsey55/Ramsey34LratTarget.lean",
+      "sha256": "fea10b145d0133883138a450559898b4ef06fdd2c6e9524224451910125a697a",
+      "size": 3018
+    },
+    "independent_check": {
+      "source": ".tools/src/drat-trim/lrat-check.c",
+      "source_sha256": "bf07c2ac96b9035da1ebcc578cb95e956a2b795629d613154cdb307f8a8f4a95",
+      "original_log": {
+        "path": "data/certificates/r34-n9/r34-n9-original-lrat-check.log",
+        "sha256": "5d5ad43adec30ff953a9d17072a1e8bcb0120f5c73d9f89e6839029ea024f113",
+        "size": 999
+      },
+      "dense_log": {
+        "path": "data/certificates/r34-n9/r34-n9-dense-independent-lrat-check.log",
+        "sha256": "707a7b46d52bd6e75d501ac073fd81b4eedd1d4099b7179b4e0cb919d3f03a12",
+        "size": 1006
+      },
+      "verified": true
+    },
+    "verified": true
+  },
   "reproduction": [
     "PYTHONPATH=src:tools python3 tools/verify_asymmetric_ramsey_cnf.py data/certificates/r34-n9/r34-n9.json --cnf-dir data/certificates/r34-n9",
     "lake env lean --run tools/VerifyRamsey34Exact.lean data/certificates/r34-n9/r34-n9.cnf",
-    ".tools/src/drat-trim/drat-trim data/certificates/r34-n9/r34-n9.cnf data/certificates/r34-n9/r34-n9.drat"
+    ".tools/src/drat-trim/drat-trim data/certificates/r34-n9/r34-n9.cnf data/certificates/r34-n9/r34-n9.drat",
+    ".tools/src/drat-trim/drat-trim data/certificates/r34-n9/r34-n9.cnf data/certificates/r34-n9/r34-n9.drat -L /tmp/r34-n9.lrat",
+    "lake env lean --run tools/NormalizeLratIds.lean 210 /tmp/r34-n9.lrat /tmp/r34-n9-dense.lrat",
+    "lake env lean --run tools/VerifyR34Lrat.lean /tmp/r34-n9-dense.lrat",
+    "cc -O2 -o /tmp/lrat-check .tools/src/drat-trim/lrat-check.c",
+    "/tmp/lrat-check data/certificates/r34-n9/r34-n9.cnf /tmp/r34-n9.lrat",
+    "/tmp/lrat-check data/certificates/r34-n9/r34-n9.cnf /tmp/r34-n9-dense.lrat"
   ],
   "verified": true
 }
