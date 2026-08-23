@@ -6882,6 +6882,40 @@ Only those roots were launched, at seed2207/phase0 and seed2221/phase0.  Each
 four-child route watcher now keeps its three completed direct siblings in
 their original order and awaits the checker-audited recovery child.
 
+J297 also gained one terminal leaf: v394 f11-sub2 root 2 closes at
+seed1961/phase0 in 29 attempts and 14 splits, at maximum depth 14.  The
+1,692,129,229-byte proof and schema-v3 selection manifest hash to
+`6da0bf721b6056e63a0efd8d1e1d6c54151840d36c2a9e4daf33a124bab6cbd3`
+and
+`f63be04c5784a424382ae89ee3c6c733cac55fdc50f7076ea72b4ab6d7e2ff82`.
+This moves J297 terminal recovery to 12/27 and that subgroup to 3/4; no parent
+acceptance follows yet.
+
+Public commit `ed6d7ef` makes the no-proof CaDiCaL scout accept the same
+validated seed/phase environment controls as the proof producer while
+preserving seed0/phase1 defaults.  A reusable smoke gate checks both default
+and seed37/phase0 UNSAT runs and rejects an invalid phase.  The ARM build and
+smoke gate exited zero, and the installed binary hashes to
+`f5f604c326af7b7954ea3f4c24fa246dcd0561dc0e82930c81446540790a362d`.
+This enables orthogonal strategy tests without opening more DRAT streams.
+Nice-19 seed0/phase0 scouts were started only on the seven oldest v396 leaves
+and ten one-leaf subgroup blockers; they have diagnostic status until a
+result is reproduced by a proof-producing route and independently selected.
+Both phases subsequently returned `UNKNOWN` at 600 seconds on all seven v396
+leaves, and phase0 returned `UNKNOWN` on all ten blockers; every run exited
+zero.  Released cores were recycled into the complementary phase1 blocker
+batch and both phases on the previously unscouted J326 leaves, without adding
+any DRAT writer.
+
+J297 v403 f21 root 0 subsequently closes at seed1979/phase0 in 31 attempts
+and 15 splits, at maximum depth 15.  Its 2,064,437,765-byte proof and
+selection manifest hash to
+`712fb0d006e5e1267fa17c99e2cdfcb0e7a888d2e5a6396a3a32ebaf0121e2fc`
+and
+`598446bf13aa4bcc5b423826cc8f32ca0bf449ac76dee1fcaf0e5dec7c83ef3b`.
+J297 terminal recovery is therefore 13/27 and the f21 recovery group is 1/2;
+its remaining root still blocks the subgroup and all ancestors.
+
 In parallel, the original 1,239 upstream HOL enumeration theories for orders
 8--17 completed their five-artifact build with exit zero in 7:26:35.  Their
 historical inventory hash is
