@@ -3,11 +3,11 @@ set -euo pipefail
 shopt -s nullglob
 
 usage() {
-  echo "usage: $0 REPOSITORY DATA_ROOT DIRECTORY_REL PREFIX ROOT_COUNT" >&2
+  echo "usage: $0 REPOSITORY DATA_ROOT DIRECTORY_REL PREFIX ROOT_COUNT [BASE_CNF FRONTIER_MANIFEST PREFIX_PROOF]" >&2
   exit 2
 }
 
-if [[ $# -ne 5 ]]; then
+if [[ $# -ne 5 && $# -ne 8 ]]; then
   usage
 fi
 
@@ -37,19 +37,30 @@ for part in "${directory_parts[@]}"; do
     exit 2
   fi
 done
-if [[ -z $prefix || $prefix = */* || $prefix != *-checkpoint1 ]]; then
-  echo "PREFIX must be a checkpoint1 basename" >&2
+if [[ -z $prefix || $prefix = */* ]]; then
+  echo "PREFIX must be a basename" >&2
   exit 2
 fi
 
 repository=${repository%/}
 data_root=${data_root%/}
 directory=$data_root/$directory_rel
-base_cnf=$repository/build/order45-fixed-pairs/h0-j326185-nosym.cnf
 checker=$repository/.tools/src/drat-trim/drat-trim
-prefix_proof=$directory/${prefix%-checkpoint1}.drat
-frontier=$directory/$prefix-frontier.json
 final=$directory/$prefix-final-v1
+
+if [[ $# -eq 5 ]]; then
+  if [[ $prefix != *-checkpoint1 ]]; then
+    echo "the default path layout requires a checkpoint1 prefix" >&2
+    exit 2
+  fi
+  base_cnf=$repository/build/order45-fixed-pairs/h0-j326185-nosym.cnf
+  prefix_proof=$directory/${prefix%-checkpoint1}.drat
+  frontier=$directory/$prefix-frontier.json
+else
+  base_cnf=$6
+  frontier=$7
+  prefix_proof=$8
+fi
 
 test -d "$repository"
 test -d "$data_root"
@@ -157,6 +168,7 @@ printf 'RAMSEY55_PREFIX_AUDIT_START %s %s\n' \
 jq -e --argjson roots "$root_count" \
   '.schema == "ramsey55.cadical-dfs-checkpoint-finalization-audit.v1" and
    .verified == true and .children == $roots and
+   .replay_independently_verified == true and
    .checker_rerun.verified == true' \
   "$final.audit.log" > /dev/null
 

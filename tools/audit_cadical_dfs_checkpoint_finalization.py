@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 import subprocess
 from typing import Any
@@ -17,6 +18,8 @@ REPLAY_SCHEMAS = {
     "ramsey55.cadical-dfs-prefix-replay.v1",
     "ramsey55.cadical-dfs-prefix-replay.v2",
 }
+REPLAY_V2_SCHEMA = "ramsey55.cadical-dfs-prefix-replay.v2"
+DFS_HEADER = "root\tattempt\tdepth\tlimit\tstatus\tcore\tsplit\tseconds"
 
 
 def file_sha256(path: Path) -> str:
@@ -110,6 +113,141 @@ def checked_file_record(
     if file_sha256(path) != validated["sha256"]:
         raise ValueError(f"{label} hash mismatch: {path}")
     return validated, path
+
+
+def replay_roots(path: Path) -> tuple[tuple[int, ...], ...]:
+    roots: list[tuple[int, ...]] = []
+    for line_number, raw in enumerate(
+        path.read_text(encoding="ascii").splitlines(), 1
+    ):
+        fields = raw.split()
+        if not fields or fields[0] == "c":
+            continue
+        if fields[0] == "a":
+            literals = fields[1:]
+        else:
+            if int(fields[0]) != len(roots):
+                raise ValueError(
+                    f"replay source has nonconsecutive root id at line {line_number}"
+                )
+            literals = fields[1:]
+        if len(literals) < 2 or literals[-1] != "0":
+            raise ValueError(f"invalid replay source row at line {line_number}")
+        cube = tuple(map(int, literals[:-1]))
+        if (
+            not cube
+            or 0 in cube
+            or len({abs(literal) for literal in cube}) != len(cube)
+        ):
+            raise ValueError(f"invalid replay source cube at line {line_number}")
+        roots.append(cube)
+    if not roots:
+        raise ValueError("replay source has no roots")
+    return tuple(roots)
+
+
+def audit_replay_v2(replay: dict[str, Any], root: Path) -> None:
+    required_paths = ("source_root", "snapshot", "output")
+    paths: dict[str, Path] = {}
+    for field in required_paths:
+        recorded = replay.get(field)
+        if not isinstance(recorded, str) or not recorded:
+            raise ValueError(f"replay manifest has invalid {field}")
+        path = resolve_path(root, recorded)
+        if not path.is_file():
+            raise ValueError(f"replay {field} does not exist: {path}")
+        expected_hash = replay.get(f"{field}_sha256")
+        if file_sha256(path) != expected_hash:
+            raise ValueError(f"replay {field} hash mismatch: {path}")
+        paths[field] = path
+
+    roots = replay_roots(paths["source_root"])
+    lines = paths["snapshot"].read_text(encoding="ascii").splitlines()
+    if not lines or lines[0] != DFS_HEADER:
+        raise ValueError("replay snapshot has an unexpected header")
+    stacks: list[list[tuple[tuple[int, ...], int]]] = [
+        [(cube, 0)] for cube in roots
+    ]
+    active_root = 0
+    globally_unsat = False
+    expected_attempt = 0
+    splits = 0
+    maximum_depth = 0
+    snapshot_rows = 0
+    for line_number, raw in enumerate(lines[1:], 2):
+        if not raw:
+            continue
+        snapshot_rows += 1
+        fields = raw.split("\t")
+        if len(fields) != 8:
+            raise ValueError(f"invalid replay snapshot row {line_number}")
+        root_index, attempt, depth, limit, status, core, split, seconds = fields
+        parsed_root = int(root_index)
+        parsed_attempt = int(attempt)
+        parsed_depth = int(depth)
+        parsed_limit = int(limit)
+        parsed_status = int(status)
+        parsed_core = int(core)
+        parsed_split = int(split)
+        parsed_seconds = float(seconds)
+        if (
+            parsed_attempt != expected_attempt
+            or parsed_limit <= 0
+            or parsed_core < 0
+            or not math.isfinite(parsed_seconds)
+            or parsed_seconds < 0
+        ):
+            raise ValueError(f"invalid replay telemetry at row {line_number}")
+        expected_attempt += 1
+        while active_root < len(stacks) and not stacks[active_root]:
+            active_root += 1
+        if globally_unsat or active_root == len(stacks) or parsed_root != active_root:
+            raise ValueError(f"unexpected replay root at row {line_number}")
+        cube, pending_depth = stacks[active_root].pop()
+        if parsed_depth != pending_depth:
+            raise ValueError(f"replay depth mismatch at row {line_number}")
+        maximum_depth = max(maximum_depth, parsed_depth)
+        if parsed_status == 20:
+            if parsed_split != 0:
+                raise ValueError(f"replay UNSAT row has a split at row {line_number}")
+            if parsed_core == 0:
+                globally_unsat = True
+            continue
+        if parsed_status == 10:
+            raise ValueError(f"replay snapshot contains SAT at row {line_number}")
+        if parsed_status != 0 or parsed_core != 0 or parsed_split == 0:
+            raise ValueError(f"invalid replay result at row {line_number}")
+        if abs(parsed_split) in {abs(literal) for literal in cube}:
+            raise ValueError(f"replay repeats a split variable at row {line_number}")
+        splits += 1
+        stacks[active_root].append((cube + (-parsed_split,), parsed_depth + 1))
+        stacks[active_root].append((cube + (parsed_split,), parsed_depth + 1))
+
+    if globally_unsat:
+        root_frontiers: list[list[tuple[int, ...]]] = [[] for _ in roots]
+    else:
+        root_frontiers = [
+            [cube for cube, _ in reversed(stack)] for stack in stacks
+        ]
+    frontier = [cube for per_root in root_frontiers for cube in per_root]
+    expected_output = "".join(
+        "a " + " ".join(map(str, cube)) + " 0\n" for cube in frontier
+    ).encode("ascii")
+    if paths["output"].read_bytes() != expected_output:
+        raise ValueError("replay output is not the independently reconstructed frontier")
+
+    expected_fields: dict[str, Any] = {
+        "source_root_count": len(roots),
+        "snapshot_rows": snapshot_rows,
+        "processed_attempts": expected_attempt,
+        "processed_splits": splits,
+        "maximum_processed_depth": maximum_depth,
+        "root_frontier_counts": [len(per_root) for per_root in root_frontiers],
+        "output_count": len(frontier),
+    }
+    for field, expected in expected_fields.items():
+        if replay.get(field) != expected:
+            raise ValueError(f"replay {field} mismatch")
 
 
 def scan_and_hash_emitted(
@@ -262,6 +400,9 @@ def audit_manifest(
             or replay.get("schema") not in REPLAY_SCHEMAS
         ):
             raise ValueError(f"unexpected replay manifest schema: {replay_path}")
+        replay_independently_verified = replay.get("schema") == REPLAY_V2_SCHEMA
+        if replay_independently_verified:
+            audit_replay_v2(replay, root)
 
         expected_digest = hashlib.sha256()
         prefix_record, _, prefix_scan, prefix_size = checked_binary_record(
@@ -411,6 +552,7 @@ def audit_manifest(
             "output_fragment_sha256": fragment_record["sha256"],
             "standalone_proof_sha256": standalone_record["sha256"],
             "checker_log_sha256": file_sha256(checker_log),
+            "replay_independently_verified": replay_independently_verified,
             "checker_rerun": rerun,
             "verified": True,
         }

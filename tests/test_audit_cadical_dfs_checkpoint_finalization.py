@@ -28,6 +28,7 @@ class AuditCadicalDfsCheckpointFinalizationTests(unittest.TestCase):
         child_proof: Path | None = None,
         child_evidence: Path | None = None,
         drop_deletions: bool = True,
+        replay_v2: bool = False,
     ) -> Path:
         cnf = root / f"{stem}.cnf"
         replay = root / f"{stem}-replay.json"
@@ -50,16 +51,44 @@ class AuditCadicalDfsCheckpointFinalizationTests(unittest.TestCase):
                 "maximum_extra_depth\t0\n",
                 encoding="ascii",
             )
-        replay.write_text(
-            json.dumps(
-                {
-                    "schema": "ramsey55.cadical-dfs-prefix-replay.v1",
-                    "proof_prefix_sha256": sha256(prefix),
-                    "output_count": 1,
-                }
-            ),
-            encoding="utf-8",
-        )
+        replay_document: dict[str, object]
+        if replay_v2:
+            source_root = root / f"{stem}-root.icnf"
+            snapshot = root / f"{stem}-snapshot.tsv"
+            output = root / f"{stem}-frontier.icnf"
+            source_root.write_text("a 1 0\n", encoding="ascii")
+            snapshot.write_text(
+                "root\tattempt\tdepth\tlimit\tstatus\tcore\tsplit\tseconds\n"
+                "0\t0\t0\t100\t0\t0\t2\t0.125\n"
+                "0\t1\t1\t100\t20\t1\t0\t0.250\n",
+                encoding="ascii",
+            )
+            output.write_text("a 1 -2 0\n", encoding="ascii")
+            replay_document = {
+                "schema": "ramsey55.cadical-dfs-prefix-replay.v2",
+                "source_root": str(source_root),
+                "source_root_sha256": sha256(source_root),
+                "snapshot": str(snapshot),
+                "snapshot_sha256": sha256(snapshot),
+                "snapshot_rows": 2,
+                "processed_attempts": 2,
+                "processed_splits": 1,
+                "maximum_processed_depth": 1,
+                "source_root_count": 1,
+                "root_frontier_counts": [1],
+                "output": str(output),
+                "output_sha256": sha256(output),
+                "output_count": 1,
+                "proof_prefix": str(prefix),
+                "proof_prefix_sha256": sha256(prefix),
+            }
+        else:
+            replay_document = {
+                "schema": "ramsey55.cadical-dfs-prefix-replay.v1",
+                "proof_prefix_sha256": sha256(prefix),
+                "output_count": 1,
+            }
+        replay.write_text(json.dumps(replay_document), encoding="utf-8")
         checker.write_text(
             "#!/usr/bin/env python3\nprint('s VERIFIED')\n", encoding="utf-8"
         )
@@ -120,6 +149,52 @@ class AuditCadicalDfsCheckpointFinalizationTests(unittest.TestCase):
             )
             self.assertEqual(completed.returncode, 0, completed.stderr)
             self.assertTrue(json.loads(completed.stdout)["verified"])
+
+    def test_independently_replays_v2_frontier(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            manifest = self.finalize(root, "leaf", replay_v2=True)
+            completed = self.audit(manifest)
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            report = json.loads(completed.stdout)
+            self.assertTrue(report["replay_independently_verified"])
+
+    def test_rejects_rehashed_false_v2_replay_telemetry(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            manifest = self.finalize(root, "leaf", replay_v2=True)
+            finalization = json.loads(manifest.read_text(encoding="utf-8"))
+            replay = Path(finalization["replay_manifest"]["path"])
+            replay_document = json.loads(replay.read_text(encoding="utf-8"))
+            replay_document["processed_splits"] = 2
+            replay.write_text(json.dumps(replay_document), encoding="utf-8")
+            finalization["replay_manifest"]["sha256"] = sha256(replay)
+            finalization["replay_manifest"]["size"] = replay.stat().st_size
+            manifest.write_text(json.dumps(finalization), encoding="utf-8")
+            completed = self.audit(manifest)
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn("replay processed_splits mismatch", completed.stderr)
+
+    def test_rejects_rehashed_false_v2_frontier(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            manifest = self.finalize(root, "leaf", replay_v2=True)
+            finalization = json.loads(manifest.read_text(encoding="utf-8"))
+            replay = Path(finalization["replay_manifest"]["path"])
+            replay_document = json.loads(replay.read_text(encoding="utf-8"))
+            output = Path(replay_document["output"])
+            output.write_text("a 1 2 0\n", encoding="ascii")
+            replay_document["output_sha256"] = sha256(output)
+            replay.write_text(json.dumps(replay_document), encoding="utf-8")
+            finalization["replay_manifest"]["sha256"] = sha256(replay)
+            finalization["replay_manifest"]["size"] = replay.stat().st_size
+            manifest.write_text(json.dumps(finalization), encoding="utf-8")
+            completed = self.audit(manifest)
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn(
+                "replay output is not the independently reconstructed frontier",
+                completed.stderr,
+            )
 
     def test_rejects_hash_bound_output_tampering(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
