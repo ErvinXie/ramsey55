@@ -1,6 +1,6 @@
 # Order-45 upper-bound program
 
-Updated: 2026-08-23
+Updated: 2026-08-24
 
 ## Current status
 
@@ -6186,6 +6186,16 @@ exact 210-clause formula complete. Thus
 d08/d10/d12 UNSAT facts. By contrast, the superseded raw R(3,5,14) and
 R(4,4,18) Kissat probes both timed out at 1,800 seconds after producing 1.1
 and 1.2 GiB incomplete traces; they are strategy evidence, not certificates.
+
+As an independent formal-computation cross-check, the pinned upstream HOL4
+enumeration has now completed its corrected 1,240-theory family and final
+`enumf` merge.  A fresh session loaded all 25 final theorems with exact
+hypotheses and accepted terminal `R4418`; the fail-closed audit reports
+`verified: true` and hashes to
+`cfb1d377c1f7b1cd1d118d12b095e3258445a47025b3b441c6edb6a20da9ba1f`.
+This closes the upstream small-Ramsey enumeration gate, but not its
+degree-10/12 gluing families or final `R(4,5)=25` theorem, and it does not
+change the open order-45 leaf obligations.
 
 A direct proof-producing attack on those three remaining facts now runs in
 parallel with the order-45 branch search. The durable source-family manifest

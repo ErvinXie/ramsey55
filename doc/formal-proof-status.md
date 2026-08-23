@@ -1,6 +1,6 @@
 # R(5,5) formal proof status
 
-Updated: 2026-08-23
+Updated: 2026-08-24
 
 ## Target theorem
 
@@ -463,8 +463,8 @@ degree-8/10/12 exclusions and the order-24 witness into the theorem
 `69b249e6a1fd59e5a77f4b4a710807f98331540d` and explicitly derives
 `RAMSEY 4 5 25` before the exact-value statement.
 
-A clean source replay is now active on `sglang-arm-builder`, rather than
-merely inspecting those files.  The old bundled MiniSat 1.14p initially
+A clean source replay is running on `sglang-arm-builder`, rather than merely
+inspecting those files.  The old bundled MiniSat 1.14p initially
 misclassified formulas containing root-level unit clauses because AArch64's
 default unsigned `char` cannot represent the solver's stored `-1` Boolean.
 An exact-commit `-fsigned-char` build now passes both its internal resolution
@@ -504,16 +504,23 @@ hashes to
 `6c9a429655bd8774a3dfcaaf4826d02ea6e2001785bc06e753cf60f9b207b922`.
 The repository audit now checks the exact per-order family, requires the
 terminal batch, and refuses the former 1,239-theory manifest.  A regenerated
-`enumf` script imports exactly those 1,240 theories, and its fresh 50,000 MB
-build/load gate is active.  The independent auditor still checks all 25
-exported theorem shapes, including the expected intermediate `G` cover
-hypotheses and their absence from terminal `R3514` and `R4418`; this remains
-partial replay evidence, not a completed merge until the gate and fresh load
-both exit zero.
+`enumf` script imports exactly those 1,240 theories.  Its fresh 50,000 MB
+build saved all 25 expected theorems, including `R4418`, and exited zero in
+12:07.61 with 10,349,552 KiB peak RSS.  A separate fresh HOL4 session loaded
+all 25 in order with exact hypotheses, `F` conclusions, no false hypothesis,
+and no cover hypothesis on terminal `R3514`/`R4418`; it exited zero in 5:05.19.
+The independent audit reports `verified: true` and hashes to
+`cfb1d377c1f7b1cd1d118d12b095e3258445a47025b3b441c6edb6a20da9ba1f`.
+The build and accepted fresh-load logs hash to
+`5c9c11d102e12323048503af690bef59fbe37c4f73ab4c46675309495d1afd07`
+and
+`ec5070daf1c59d2e2061e7e6a3fc25217bed964b9a9ad19637a58df2fce647b5`.
+This closes the pinned upstream enumeration/`R4418` substage at the HOL4
+kernel boundary.
 The upstream reproduction guide used 40 cores and about 500 GB RAM for this stage,
 so the 244 GiB ARM host trades wall time for a safe memory margin.  This is
-therefore a partial replay checkpoint, not a new `R(4,5)=25` result and not an
-import into the Lean kernel.
+still not a replay of the degree-10/12 gluing families or final
+`R(4,5)=25` merge, and it is not an import into the Lean kernel.
 
 Ahead of the gluing stage, the pinned HOL4 runtime has now written all three
 deterministic fixed-star problem lists, and a separate repository auditor has

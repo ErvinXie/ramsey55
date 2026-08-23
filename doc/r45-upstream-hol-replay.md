@@ -1,6 +1,6 @@
 # Upstream HOL4 replay for R(4,5)=25
 
-Updated: 2026-08-23
+Updated: 2026-08-24
 
 This note records the clean ARM replay of the formal computation published in
 `barakeel/ramsey`.  It separates source/build provenance, already checked
@@ -336,10 +336,11 @@ dependencies, contains 379 files totaling only 1,067,129 bytes.
 
 This closes the exact listed d08 gluing leaves at the HOL kernel boundary.
 It does not prove that the listed generalized graphs exhaust all required
-isomorphism classes.  The corrected 1,240-theory global enumeration, final
-merge, and connection to the fixed-star theorem remain separate open gates.
+isomorphism classes.  The corrected 1,240-theory enumeration and final merge
+are completed below, but their connection to this fixed-star gluing product
+remains a separate open gate.
 
-## Active enumeration stage
+## Enumeration and final merge stage
 
 An interactive HOL4 run originally generated the published parallel
 enumeration scripts for sizes 8 through 17.  Inspection after the failed final
@@ -457,14 +458,47 @@ manifest hashes to
 The regenerated final open template imports those 1,240 theories and exactly
 one `ramseyEnum4418_0Theory`; its hash is
 `3cde91b4ab3f50b2ade0904d00a52eb58ddb792c727544f92f68ae6566193dd4`.
-The 50,000 MB enumf v2 build/load/audit gate is now active.  These successful
-preconditions do not establish `R4418` until that gate and its independent
-fresh load both exit zero.
+The corrected 50,000 MB enumf v2 build then saved all 25 expected theorems,
+including terminal `R4418`, exported `ramseyEnumTheory`, and exited zero in
+12:07.61 with 10,349,552 KiB peak RSS.  Its captured Holmake transcript and
+GNU-time log hash to
+`5c9c11d102e12323048503af690bef59fbe37c4f73ab4c46675309495d1afd07`
+and
+`3ff75ff3687a692a1b4d6791036b0e4b24df83df8875ef24e83f69c152523974`.
+This HOL4 version does not retain the internal `buildheap` transcript assumed
+by the first auditor draft.  Public commit `50c558a` therefore applies the
+same exact theory-creation, 25 theorem-save, export, timing, and failure-marker
+checks directly to the controlled top-level Holmake transcript.  The standard
+local regression passes all 318 tests with four platform skips.
+
+A separate fresh HOL4 session then loaded all 25 theorems in order.  Every
+conclusion was `F`, every hypothesis set was exact and contained no `F`, and
+terminal `R3514` and `R4418` had no cover hypothesis.  The accepted v4 load
+exited zero in 5:05.19 with 7,730,788 KiB peak RSS; its log and GNU-time log
+hash to
+`ec5070daf1c59d2e2061e7e6a3fc25217bed964b9a9ad19637a58df2fce647b5`
+and
+`e06d871d577e54f49c680f549b6863cb9697a58bee9d5e24038cd2ea0d4388da`.
+Earlier diagnostic loads were correctly rejected because the interactive HOL
+prompt prefixed the first marker or because the explicit memory marker was
+missing; they receive no proof credit.
+
+The independent audit reports `verified: true`, 1,240 enumeration theories,
+six nonempty final-theory artifacts, 25 exact build markers, and 25 exact
+fresh-load theorem shapes.  Its JSON hashes to
+`cfb1d377c1f7b1cd1d118d12b095e3258445a47025b3b441c6edb6a20da9ba1f`.
+The audit stdout and GNU-time records hash to
+`f74b4f28f2be1efb9a497bd3f13ad71d43600eca5cb71d97ae47b7341a657564`
+and
+`7f4005627ea348433f807f0fea11ef0bc0b56ebbd388bfbb85730f1d5b91321e`.
+This closes the pinned upstream enumeration and `R4418` final-merge gate at
+the HOL4 kernel boundary.  It does not close any degree-10/12 gluing product,
+the final `R(4,5)=25` merge, or the order-45 computation.
 
 ## Claim boundary
 
-At this checkpoint we may claim a clean, pinned HOL4 runtime build and two
-checked upstream theory stages.  We may not claim global enumeration
-completeness, any degree-10 or degree-12 full gluing product, `R(4,5)=25`, or
-`R(5,5) <= 45`.  Those statements remain contingent on the unfinished stages
-above and their independently audited computational leaves.
+At this checkpoint we may claim a clean, pinned HOL4 runtime build, the exact
+1,240-theory enumeration family, and a checked final `R4418` merge/fresh load.
+We may not claim any degree-10 or degree-12 full gluing product,
+`R(4,5)=25`, or `R(5,5) <= 45`.  Those statements remain contingent on the
+unfinished stages above and their independently audited computational leaves.
