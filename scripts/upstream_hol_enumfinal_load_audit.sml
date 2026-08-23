@@ -85,7 +85,8 @@ fun ramsey55_check (name,size,bluen,redn,has_cover) =
   end;
 
 val _ =
-  ((app ramsey55_check ramsey55_expected;
+  ((print "\n";
+    app ramsey55_check ramsey55_expected;
     print ("RAMSEY55_ENUMF_KERNEL_LOAD_" ^
            Int.toString (length ramsey55_expected) ^ "_OK\n");
     OS.Process.exit OS.Process.success)
