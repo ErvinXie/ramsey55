@@ -17,7 +17,7 @@ edge map, substitution loop, and line-by-line DIMACS reconstruction.
 For degree 8, the published cover has 27 `R(3,5;8)` generalized graphs and
 two `R(4,4;16)` graphs, hence 54 formulas.  Generation took 5.99 seconds and
 independent reconstruction took 4.53 seconds on the ARM host.  The formulas
-have 276 declared edge variables and between roughly 2,700 and 3,600 reduced
+have 276 declared edge variables and between roughly 2,700 and 4,200 reduced
 clauses.  The family manifest SHA-256 is
 `868fbdcc094e14840c9589480cd134b6ae3a08fd2a8933e73bb09b98ef60e60b`.
 
@@ -47,6 +47,61 @@ The formulas, source covers, manifests, compact logs, and reproduction
 instructions are retained in
 [`data/certificates/r45-gluing-d08/`](../data/certificates/r45-gluing-d08/README.md).
 
+## Degree-10 and degree-12 sizing samples
+
+The published products beyond d08 are much larger, so a deterministic sparse
+sample is used to measure the certificate route before committing to the full
+Cartesian products.  For a cover with `L` left rows, `R` right rows, and a
+128-point sample, sample number `k` uses
+
+```text
+(k mod L) * R + floor((2*k + 1) * R / 256).
+```
+
+The generator records these sorted pair indices under the sparse branch
+schema; an independent verifier reconstructs every selected CNF.  The proof
+collector binds the exact sparse branch manifest, so `complete_unsat` means
+complete for those 128 listed formulas only.
+
+For d10, all 128 selected formulas were reported UNSAT by CaDiCaL and accepted
+by ordinary `drat-trim`.  The branch, proof, and measurement-summary manifest
+SHA-256 values are respectively
+`4cc5400ac50b48d0e52aa29cb43686692a7b3bba0b76b03b1072b7bfd38ac9b3`,
+`23f7c9ccc1cdcdd3f1ab0cd0ca5e03d55de7eb6b93c55e882a0aeda37991d209`,
+and
+`0a13cf86128e6cd5373b9c171fc3eeda7e05ce14235a4c40dbf48d1c3d236818`.
+The 128 proofs total 7,053,352,972 bytes.  Proof sizes have median 42,139,126,
+95th percentile 151,309,304, and maximum 235,039,916 bytes under the exact
+nearest-rank definition.  Solver user time totals 13,419.93 seconds and
+checker user time totals 16,514.65 seconds.  The complete d10 product contains
+505,336 pairs, so this is sizing evidence, not a d10 theorem.
+
+The matching d12 128-formula production sample is still being independently
+checked on the ARM host.  No d12 sample summary or full-product conclusion is
+recorded until every selected proof has an accepted checker result.
+
+## Selector-formula experiment
+
+As an alternative to one proof per Cartesian pair, one exact selector CNF
+existentially chooses at least one generalized graph on each side and
+conditions every non-hole edge of each selected row.  No at-most-one clauses
+are required: any satisfying pair extends to selector values, while any
+satisfying selector assignment supplies at least one compatible pair.  A
+second implementation independently reconstructed the d08 formula.
+
+The d08 selector formula has 305 variables, 54,047 clauses, and SHA-256
+`ff624fde6a2a767983b9c7accabf05720a64116ed940a5d32f56f68dffc23f0f`;
+its manifest hashes to
+`27fc655783131319d696954d425b59500e38da1c85372f1504078395f1928f55`.
+After 1,047.81 user seconds CaDiCaL had not returned UNSAT and its partial
+binary DRAT trace had reached 551,006,208 bytes, already larger than the
+510,872,280-byte aggregate of the 54 independently solved formulas.  The run
+was deliberately terminated and the trace retained as `.drat.partial` with
+SHA-256
+`6323efa357ecc1cf4b3095a8f1f53c9fb6f1cec4a62867e0604c9cc13cbdfc6c`.
+It has no accepted checker result.  This negative experiment favors separate
+branch proofs; it proves no UNSAT statement.
+
 ## Cover boundary
 
 `verify_generalized_graph_cover.py` independently checks each witness
@@ -61,8 +116,10 @@ and
 
 This does not by itself prove that those 179 and two isomorphism classes
 exhaust all Ramsey graphs of the respective orders.  A clean upstream HOL4
-tree pinned to commit `065c07054483e3132f12909103e6d0e35e912c28` is being
-built on the ARM host to replay that enumeration boundary.  Until the global
-cover theorem and its merge into the direct d08 fixed-star obligation are
-checked, the repository does not claim the d08 theorem, `R(4,5) <= 25`, or
-`R(5,5) <= 45`.
+tree pinned to commit `065c07054483e3132f12909103e6d0e35e912c28` now has a
+successful runtime, definition-theory, and basic-reduction build on the ARM
+host.  Its 1,239-way global enumeration is the active stage; exact pins and
+hashes are in the [upstream replay note](r45-upstream-hol-replay.md).  Until
+that enumeration, its final merge, and the connection to the direct d08
+fixed-star obligation are checked, the repository does not claim the d08
+theorem, `R(4,5) <= 25`, or `R(5,5) <= 45`.

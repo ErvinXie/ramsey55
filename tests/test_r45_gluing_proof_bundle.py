@@ -32,8 +32,8 @@ class R45GluingProofBundleTests(unittest.TestCase):
                     str(covers),
                     "--degree",
                     "8",
-                    "--pair-count",
-                    "1",
+                    "--pair-index",
+                    "0",
                     "--output-dir",
                     str(branches),
                 ],
@@ -42,7 +42,11 @@ class R45GluingProofBundleTests(unittest.TestCase):
                 text=True,
             )
             branch_manifest = branches / "manifest.json"
-            branch = json.loads(branch_manifest.read_text())["files"][0]
+            branch_document = json.loads(branch_manifest.read_text())
+            self.assertEqual(
+                branch_document["schema"], "ramsey55.r45-gluing-branches.v2"
+            )
+            branch = branch_document["files"][0]
             stem = Path(branch["path"]).stem
             proofs = root / "proofs"
             proofs.mkdir()

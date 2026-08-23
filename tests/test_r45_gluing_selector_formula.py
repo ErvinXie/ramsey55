@@ -8,28 +8,21 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-GENERATOR = ROOT / "tools/generate_r45_gluing_branches.py"
-VERIFIER = ROOT / "tools/verify_r45_gluing_branches.py"
+GENERATOR = ROOT / "tools/generate_r45_gluing_selector_formula.py"
+VERIFIER = ROOT / "tools/verify_r45_gluing_selector_formula.py"
 
 
-class R45GluingBranchTests(unittest.TestCase):
-    def generate(
-        self, root: Path, *, sparse: bool = False
-    ) -> tuple[Path, Path]:
+class R45GluingSelectorFormulaTests(unittest.TestCase):
+    def generate(self, root: Path) -> tuple[Path, Path]:
         covers = root / "covers"
         covers.mkdir()
-        # A leading one followed by all-zero ternary digits encodes an all-hole graph.
         (covers / "gen358").write_text(
             f"{3 ** 28} witness\n{3 ** 28} duplicate\n", encoding="ascii"
         )
         (covers / "gen4416").write_text(
             f"{3 ** 120} witness\n{3 ** 120} duplicate\n", encoding="ascii"
         )
-        output = root / "branches"
-        selection = ["--pair-index", "0", "--pair-index", "3"] if sparse else [
-            "--pair-count",
-            "1",
-        ]
+        output = root / "selector"
         subprocess.run(
             [
                 sys.executable,
@@ -38,7 +31,6 @@ class R45GluingBranchTests(unittest.TestCase):
                 str(covers),
                 "--degree",
                 "8",
-                *selection,
                 "--output-dir",
                 str(output),
             ],
@@ -48,7 +40,7 @@ class R45GluingBranchTests(unittest.TestCase):
         )
         return output / "manifest.json", covers
 
-    def test_independent_reconstruction_accepts_generated_branch(self) -> None:
+    def test_independent_reconstruction_accepts_formula(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             manifest, covers = self.generate(Path(raw))
             subprocess.run(
@@ -64,40 +56,17 @@ class R45GluingBranchTests(unittest.TestCase):
                 text=True,
             )
             document = json.loads(manifest.read_text())
-            self.assertEqual(document["schema"], "ramsey55.r45-gluing-branches.v1")
-            self.assertEqual(document["total_pairs"], 4)
-            self.assertEqual(document["files"][0]["variables"], 276)
-            self.assertEqual(document["files"][0]["clauses"], 53130)
-
-    def test_sparse_family_is_reconstructed(self) -> None:
-        with tempfile.TemporaryDirectory() as raw:
-            manifest, covers = self.generate(Path(raw), sparse=True)
-            subprocess.run(
-                [
-                    sys.executable,
-                    str(VERIFIER),
-                    str(manifest),
-                    "--cover-dir",
-                    str(covers),
-                ],
-                check=True,
-                stdout=subprocess.PIPE,
-                text=True,
-            )
-            document = json.loads(manifest.read_text())
-            self.assertEqual(document["schema"], "ramsey55.r45-gluing-branches.v2")
-            self.assertEqual(document["pair_indices"], [0, 3])
-            self.assertEqual(
-                [record["pair_index"] for record in document["files"]], [0, 3]
-            )
+            self.assertEqual(document["variables"], 280)
+            self.assertEqual(document["clauses"], 53132)
+            self.assertEqual(document["pair_count"], 4)
 
     def test_independent_reconstruction_rejects_clause_change(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             manifest, covers = self.generate(Path(raw))
             document = json.loads(manifest.read_text())
-            cnf = manifest.parent / document["files"][0]["path"]
+            cnf = manifest.parent / document["cnf"]["path"]
             lines = cnf.read_text(encoding="ascii").splitlines()
-            lines[1] = "1 0"
+            lines[-1] = "277 0"
             cnf.write_text("\n".join(lines) + "\n", encoding="ascii")
             completed = subprocess.run(
                 [
@@ -112,7 +81,7 @@ class R45GluingBranchTests(unittest.TestCase):
                 check=False,
             )
             self.assertNotEqual(completed.returncode, 0)
-            self.assertIn("clause 1 differs", completed.stderr)
+            self.assertIn("clause", completed.stderr)
 
 
 if __name__ == "__main__":

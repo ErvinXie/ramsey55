@@ -450,21 +450,37 @@ precise contract, not a discharged upper bound: the external `R(4,5)=25`
 input, concrete graph-to-DIMACS completeness, and checked leaf UNSAT data are
 still explicit hypotheses.
 
-The published HOL4 source for the first input is now pinned independently.
-The upstream repository `barakeel/ramsey` was inspected at commit
-`065c07054483e3132f12909103e6d0e35e912c28` (2025-05-16). Its final
+The published HOL4 source for the first input is pinned independently.  The
+upstream repository is fixed at commit
+`065c07054483e3132f12909103e6d0e35e912c28` (2025-05-16), with its HOL4
+submodule fixed at `cf03ce2dc756feb6c0bc4b042f879595d21f2e68` and Poly/ML
+fixed at tag commit `4557554077078decce4ce5f90da00a713cfc32e4`. Its final
 `src/mergef/r45_equals_25Script.sml` blob is
 `5e211cf623ee268c0404fc70852b33cdc8307ff0`; it combines the kernel-checked
 degree-8/10/12 exclusions and the order-24 witness into the theorem
 `r45_equals_25`. The generic reduction source
 `src/basicRamsey/basicRamseyScript.sml` is blob
 `69b249e6a1fd59e5a77f4b4a710807f98331540d` and explicitly derives
-`RAMSEY 4 5 25` before the exact-value statement. This is a version-locked
-formal source for the mathematical input, but it has not been imported into
-the Lean kernel here. Upstream's own reproduction guide reports about
-500 GB RAM for the enumeration proof and multi-week gluing stages, beyond the
-current 244 GiB ARM host, so duplicating that completed computation is not the
-best use of the order-45 search machine.
+`RAMSEY 4 5 25` before the exact-value statement.
+
+A clean source replay is now active on `sglang-arm-builder`, rather than
+merely inspecting those files.  The old bundled MiniSat 1.14p is unsound on
+this ARM host for formulas containing root-level unit clauses, so its binary
+is deliberately non-executable and HOL4 uses its internal proof-producing
+DPLL path.  With that trust-boundary correction, the pinned HOL4 system built
+successfully, followed by `src/def` and `src/basicRamsey`.  The generated
+theory hashes and build-log hashes are recorded in the
+[upstream HOL4 replay note](r45-upstream-hol-replay.md).  In particular, the
+checked conditional theorem `ramsey_4_5_25_hyp` has precisely the three
+degree-8/10/12 gluing obligations plus the order-24 witness as hypotheses.
+
+The global generalized-graph enumeration is the current long-running stage.
+Exactly 1,239 generated `R(4,4,k)` theory scripts for `k=8..17` are being
+checked eight at a time; the subsequent `enumf` merge has not yet run.  The
+upstream reproduction guide used 40 cores and about 500 GB RAM for this stage,
+so the 244 GiB ARM host trades wall time for a safe memory margin.  This is
+therefore a partial replay checkpoint, not a new `R(4,5)=25` result and not an
+import into the Lean kernel.
 
 There is now a second, self-contained route to the same input in
 [Ramsey45Target.lean](../formal/Ramsey55/Ramsey45Target.lean). Lean proves

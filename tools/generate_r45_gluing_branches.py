@@ -10,7 +10,8 @@ import json
 from collections.abc import Iterator
 from pathlib import Path
 
-SCHEMA = "ramsey55.r45-gluing-branches.v1"
+CONTIGUOUS_SCHEMA = "ramsey55.r45-gluing-branches.v1"
+SPARSE_SCHEMA = "ramsey55.r45-gluing-branches.v2"
 ORDER = 24
 VARIABLES = ORDER * (ORDER - 1) // 2
 DEGREE_SOURCES = {
@@ -134,6 +135,13 @@ def main() -> None:
     parser.add_argument("--degree", type=int, choices=DEGREE_SOURCES, default=8)
     parser.add_argument("--start-pair", type=int, default=0)
     parser.add_argument("--pair-count", type=int)
+    parser.add_argument(
+        "--pair-index",
+        type=int,
+        action="append",
+        dest="pair_indices",
+        help="select one Cartesian pair; repeat for a sparse family",
+    )
     parser.add_argument("--archive", type=Path)
     parser.add_argument(
         "--output-dir",
@@ -145,6 +153,10 @@ def main() -> None:
         parser.error("--start-pair must be nonnegative")
     if arguments.pair_count is not None and arguments.pair_count <= 0:
         parser.error("--pair-count must be positive")
+    if arguments.pair_indices is not None and (
+        arguments.start_pair != 0 or arguments.pair_count is not None
+    ):
+        parser.error("--pair-index cannot be combined with an interval selection")
 
     manifest_path = arguments.output_dir / "manifest.json"
     if manifest_path.exists():
@@ -157,16 +169,29 @@ def main() -> None:
     left_codes = read_cover(left_path, left_size)
     right_codes = read_cover(right_path, right_size)
     total_pairs = len(left_codes) * len(right_codes)
-    stop_pair = total_pairs
-    if arguments.pair_count is not None:
-        stop_pair = min(total_pairs, arguments.start_pair + arguments.pair_count)
-    if arguments.start_pair >= stop_pair:
-        parser.error(
-            f"empty pair interval [{arguments.start_pair}, {stop_pair}) for {total_pairs} pairs"
-        )
+    if arguments.pair_indices is not None:
+        pair_indices = sorted(arguments.pair_indices)
+        if len(pair_indices) != len(set(pair_indices)):
+            parser.error("--pair-index values must be distinct")
+        if not pair_indices or pair_indices[0] < 0 or pair_indices[-1] >= total_pairs:
+            parser.error(f"--pair-index values must lie in [0, {total_pairs})")
+        schema = SPARSE_SCHEMA
+        selection = {"pair_indices": pair_indices}
+    else:
+        stop_pair = total_pairs
+        if arguments.pair_count is not None:
+            stop_pair = min(total_pairs, arguments.start_pair + arguments.pair_count)
+        if arguments.start_pair >= stop_pair:
+            parser.error(
+                f"empty pair interval [{arguments.start_pair}, {stop_pair}) "
+                f"for {total_pairs} pairs"
+            )
+        pair_indices = list(range(arguments.start_pair, stop_pair))
+        schema = CONTIGUOUS_SCHEMA
+        selection = {"pair_interval": [arguments.start_pair, stop_pair]}
 
     records = []
-    for pair_index in range(arguments.start_pair, stop_pair):
+    for pair_index in pair_indices:
         left_index, right_index = divmod(pair_index, len(right_codes))
         left_code = left_codes[left_index]
         right_code = right_codes[right_index]
@@ -203,7 +228,7 @@ def main() -> None:
             "source_url": SOURCE_URL,
         }
     document = {
-        "schema": SCHEMA,
+        "schema": schema,
         "claim": "branch formulas only; this manifest contains no UNSAT result",
         "order": ORDER,
         "ramsey_parameters": [4, 5],
@@ -211,7 +236,6 @@ def main() -> None:
         "variables": VARIABLES,
         "substitution": "two generalized diagonal blocks; color 0 remains free",
         "graph_encoding": "leading-one row-major upper-triangle base three",
-        "pair_interval": [arguments.start_pair, stop_pair],
         "total_pairs": total_pairs,
         "archive": archive,
         "covers": [
@@ -232,6 +256,7 @@ def main() -> None:
         ],
         "files": records,
     }
+    document.update(selection)
     manifest_path.write_text(
         json.dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )

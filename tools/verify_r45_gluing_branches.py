@@ -10,7 +10,9 @@ import json
 from collections.abc import Iterator
 from pathlib import Path
 
-SCHEMA = "ramsey55.r45-gluing-branches.v1"
+CONTIGUOUS_SCHEMA = "ramsey55.r45-gluing-branches.v1"
+SPARSE_SCHEMA = "ramsey55.r45-gluing-branches.v2"
+SCHEMAS = {CONTIGUOUS_SCHEMA, SPARSE_SCHEMA}
 ORDER = 24
 VARIABLES = 276
 DEGREE_SOURCES = {
@@ -123,7 +125,8 @@ def verify_manifest(
     archive_path: Path | None = None,
 ) -> None:
     document = json.loads(manifest_path.read_text(encoding="utf-8"))
-    if document.get("schema") != SCHEMA:
+    schema = document.get("schema")
+    if schema not in SCHEMAS:
         raise ValueError("unexpected gluing manifest schema")
     degree = document.get("fixed_star_degree")
     if (
@@ -152,15 +155,29 @@ def verify_manifest(
         code_sets.append(codes)
     left_codes, right_codes = code_sets
     total_pairs = len(left_codes) * len(right_codes)
-    interval = document.get("pair_interval")
-    if (
-        not isinstance(interval, list)
-        or len(interval) != 2
-        or not all(isinstance(value, int) for value in interval)
-        or not 0 <= interval[0] < interval[1] <= total_pairs
-        or document.get("total_pairs") != total_pairs
-    ):
-        raise ValueError("invalid Cartesian pair interval")
+    if document.get("total_pairs") != total_pairs:
+        raise ValueError("incorrect Cartesian pair total")
+    if schema == CONTIGUOUS_SCHEMA:
+        interval = document.get("pair_interval")
+        if (
+            not isinstance(interval, list)
+            or len(interval) != 2
+            or not all(isinstance(value, int) for value in interval)
+            or not 0 <= interval[0] < interval[1] <= total_pairs
+        ):
+            raise ValueError("invalid Cartesian pair interval")
+        expected_indices = list(range(interval[0], interval[1]))
+    else:
+        expected_indices = document.get("pair_indices")
+        if (
+            not isinstance(expected_indices, list)
+            or not expected_indices
+            or not all(isinstance(value, int) for value in expected_indices)
+            or expected_indices != sorted(set(expected_indices))
+            or expected_indices[0] < 0
+            or expected_indices[-1] >= total_pairs
+        ):
+            raise ValueError("invalid sparse Cartesian pair selection")
 
     archive = document.get("archive")
     if archive_path is not None and (
@@ -170,7 +187,6 @@ def verify_manifest(
         raise ValueError("cover archive SHA-256 mismatch")
 
     records = document.get("files")
-    expected_indices = list(range(interval[0], interval[1]))
     if (
         not isinstance(records, list)
         or [record.get("pair_index") for record in records] != expected_indices

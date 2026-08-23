@@ -6185,8 +6185,27 @@ independent source audit from the promotion auditor. Its end-to-end ARM smoke
 test passed in 0.77 seconds with 63,488 KiB peak RSS; the log SHA-256 is
 `f235ed9085c43673ce3db39cbf1487a9bd2d0cff37a288255607ee9b604d6270`.
 Production watchers require both checker exit status 0 and the exact logical
-`s VERIFIED` line before emitting any promoted evidence. No result from these
-three new checks is claimed while they remain active.
+`s VERIFIED` line before emitting any promoted evidence.
+
+The f320 protected-CNF alternative has now passed that complete gate.  Its
+exact 118,872-clause augmented CNF hashes to
+`58ab1c35e0c3476fc241c5aace4bcb0272b96d33ff2c80aa574f8f91ad658b9b`.
+The 4,265,217,107-byte standalone proof hashes to
+`c6c9680612b3b2ea4c10aeb158ee7e4381b9daddcb1530c56d9d0390fac49b08`;
+ordinary `drat-trim` emitted one exact `s VERIFIED` line after 9,556.37 user
+seconds with exit status zero.  The independent source-composition audit
+passed and hashes to
+`c630e8db5abe50d21b3aab02206c006bd7cc27567b23c0ad3c375824c3cc8edd`.
+Removing exactly the final binary empty addition produced the
+4,265,217,105-byte embeddable fragment with SHA-256
+`aca69df4aa4601340f0b3b3089624ac750dfee16c7379cd99de873847924fc6d`.
+Its promotion manifest hashes to
+`02925690340242f1374b6a5a85350dc037297433690162646581e6d899e2fc89`,
+and the final independent promotion audit reran the source audit, reported
+`verified: true`, and hashes to
+`0d302aea8b3d6e5da089fa0364724357ff92a217fcfad6b8f517204f256dc1ae`.
+Thus f320 is accepted as a recursively embeddable child.  Its sibling f321,
+the enclosing f32 group, f220, and f31s1 remain open at this checkpoint.
 
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.

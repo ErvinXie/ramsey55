@@ -8,7 +8,10 @@ import hashlib
 import json
 from pathlib import Path
 
-BRANCH_SCHEMA = "ramsey55.r45-gluing-branches.v1"
+BRANCH_SCHEMAS = {
+    "ramsey55.r45-gluing-branches.v1",
+    "ramsey55.r45-gluing-branches.v2",
+}
 SCHEMA = "ramsey55.r45-gluing-proofs.v1"
 
 
@@ -46,7 +49,8 @@ def collect(
     cnf_dir: Path | None = None,
 ) -> dict[str, object]:
     branches = json.loads(branch_manifest_path.read_text(encoding="utf-8"))
-    if branches.get("schema") != BRANCH_SCHEMA:
+    branch_schema = branches.get("schema")
+    if branch_schema not in BRANCH_SCHEMAS:
         raise ValueError("unexpected gluing branch schema")
     branch_records = branches.get("files")
     if not isinstance(branch_records, list) or not branch_records:
@@ -100,7 +104,7 @@ def collect(
         "branch_manifest": {
             "path": str(branch_manifest_path),
             "sha256": file_sha256(branch_manifest_path),
-            "schema": BRANCH_SCHEMA,
+            "schema": branch_schema,
         },
         "solver": {"path": str(solver), "sha256": file_sha256(solver)},
         "checker": {"path": str(checker), "sha256": file_sha256(checker)},

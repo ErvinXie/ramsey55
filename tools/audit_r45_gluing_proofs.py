@@ -11,7 +11,10 @@ import subprocess
 import time
 from pathlib import Path
 
-BRANCH_SCHEMA = "ramsey55.r45-gluing-branches.v1"
+BRANCH_SCHEMAS = {
+    "ramsey55.r45-gluing-branches.v1",
+    "ramsey55.r45-gluing-branches.v2",
+}
 PROOF_SCHEMA = "ramsey55.r45-gluing-proofs.v1"
 SCHEMA = "ramsey55.r45-gluing-proof-audit.v1"
 
@@ -47,12 +50,15 @@ def audit(
 ) -> dict[str, object]:
     proofs = json.loads(proof_manifest_path.read_text(encoding="utf-8"))
     branches = json.loads(branch_manifest_path.read_text(encoding="utf-8"))
-    if proofs.get("schema") != PROOF_SCHEMA or branches.get("schema") != BRANCH_SCHEMA:
+    if (
+        proofs.get("schema") != PROOF_SCHEMA
+        or branches.get("schema") not in BRANCH_SCHEMAS
+    ):
         raise ValueError("unexpected gluing proof or branch schema")
     link = proofs.get("branch_manifest")
     if not isinstance(link, dict) or link.get("sha256") != file_sha256(
         branch_manifest_path
-    ):
+    ) or link.get("schema") != branches.get("schema"):
         raise ValueError("proof manifest does not bind the branch manifest")
     branch_records = branches.get("files")
     proof_records = proofs.get("results")
