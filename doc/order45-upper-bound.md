@@ -5971,8 +5971,10 @@ All five rows were launched with the internally framed v7 runner, 500,000
 base conflicts, 1,000,000 maximum conflicts, one-second lookahead,
 60-second solve slices, and a 14,400-second wall checkpoint. Distinct
 seed/phase pairs are 701/0, 709/1, 719/0, 727/1, and 733/0. These active jobs
-are search state only; they are not UNSAT evidence until finalized and
-independently checked.
+were paired with opposite-phase races 743/1, 751/0, 757/1, 761/0, and 769/1
+after confirming that the 64-core builder had load below 9 and 790 GiB free
+on `/data`. These active jobs are search state only; they are not UNSAT
+evidence until finalized and independently checked.
 
 The formal non-lex mother assignment is now constructive. The new
 `Order45DegreeWindowAssignment.lean` identifies each generator incident stream
@@ -6084,6 +6086,26 @@ exact 210-clause formula complete. Thus
 d08/d10/d12 UNSAT facts. By contrast, the superseded raw R(3,5,14) and
 R(4,4,18) Kissat probes both timed out at 1,800 seconds after producing 1.1
 and 1.2 GiB incomplete traces; they are strategy evidence, not certificates.
+
+A direct proof-producing attack on those three remaining facts now runs in
+parallel with the order-45 branch search. The durable source-family manifest
+hashes to
+`7a88819560bc19bbd4e4696e81b46000949911db8b969c0d272d54fac716533e`;
+the exact unsymmetrized d08/d10/d12 CNF hashes are
+`8c0935f6f795dfb059e6f9c5ba3bd1ae48856e90d3b652b7a81886629b6744db`,
+`974750e1771b1d81687d075faa112f545a7fab34dd4148358ed40755def51339`,
+and
+`f9864879bd1e57f1f0448d89373be24b44cb6228dc299a6ae75c78febc798e7d`.
+Each formula is covered by the exact two-row `x1`/`not x1` ICNF cover, whose
+SHA-256 is
+`8eac79bf2c6cc51e29803f40261ef477d5a7ce1ae6f4000281cce22b15a61f4b`.
+Two opposite-phase v7 runs per degree use the same replayable 500,000--
+1,000,000 conflict DFS policy, 60-second solve slices, and 14,400-second
+internal wall checkpoint as the order-45 work. Their seed/phase pairs are
+801/0 and 809/1 for d08, 811/0 and 821/1 for d10, and 823/0 and 827/1 for
+d12. The unsymmetrized formulas deliberately avoid making Satsuma's VeriPB
+symmetry proof a new trust/composition dependency. These are active searches,
+not accepted UNSAT facts.
 
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.
