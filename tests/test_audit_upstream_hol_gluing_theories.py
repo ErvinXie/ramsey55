@@ -42,6 +42,7 @@ class UpstreamHolGluingTheoryAuditTests(unittest.TestCase):
             )
         build_log = root / "build.log"
         build_log.write_text(
+            "RAMSEY55_GLUE358_MEMORY_MB 8000\n"
             "RAMSEY55_GLUE358_START 0 11 17\n"
             "RAMSEY55_GLUE358_DONE 0\n"
             "RAMSEY55_GLUE358_START 1 13 19\n"
@@ -70,13 +71,14 @@ class UpstreamHolGluingTheoryAuditTests(unittest.TestCase):
         }
 
     def audit(self, paths: dict[str, Path]) -> dict[str, object]:
-        return MODULE.audit(label="GLUE358", **paths)
+        return MODULE.audit(label="GLUE358", expected_memory_mb=8000, **paths)
 
     def test_accepts_exact_theory_family(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             document = self.audit(self.populate(Path(raw)))
             self.assertTrue(document["verified"])
             self.assertEqual(document["summary"]["fresh_loaded_false_theorems"], 2)
+            self.assertEqual(document["summary"]["build_memory_limit_mb"], 8000)
 
     def test_rejects_nonexact_script(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
@@ -119,6 +121,7 @@ class UpstreamHolGluingTheoryAuditTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as raw:
             paths = self.populate(Path(raw))
             paths["build_log"].write_text(
+                "RAMSEY55_GLUE358_MEMORY_MB 8000\n"
                 "RAMSEY55_GLUE358_START 0 11 17\n"
                 "RAMSEY55_GLUE358_START 1 13 19\n"
                 "RAMSEY55_GLUE358_DONE 0\n"
@@ -127,6 +130,18 @@ class UpstreamHolGluingTheoryAuditTests(unittest.TestCase):
                 encoding="utf-8",
             )
             with self.assertRaisesRegex(ValueError, "not sequential"):
+                self.audit(paths)
+
+    def test_rejects_wrong_memory_marker(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            paths = self.populate(Path(raw))
+            paths["build_log"].write_text(
+                paths["build_log"].read_text(encoding="utf-8").replace(
+                    "MEMORY_MB 8000", "MEMORY_MB 20000"
+                ),
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "memory marker"):
                 self.audit(paths)
 
     def test_rejects_reordered_build_markers(self) -> None:

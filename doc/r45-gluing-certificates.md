@@ -95,6 +95,29 @@ Compressing every checked core with zstd level 1 and hashing the decompressed
 stream reduced the sample further to 1,513,909,974 bytes, or 0.214636922 of
 the original proofs.  The compressed-family manifest hashes to
 `0ac30aeb681584afef201478064ce74f5cf11fdc8ac4795e6c73b83f724d4808`.
+A reproducible replacement for that original manual compression pass is now
+provided by
+[`compress_r45_gluing_core_proofs.py`](../tools/compress_r45_gluing_core_proofs.py).
+It validates the checked-core manifest and every source hash, writes into a
+temporary sibling directory, decompresses and rehashes every generated zstd
+stream, and publishes atomically only after all records agree.  A fresh
+four-worker replay on the same 128 d10 cores reproduced every old compressed
+byte count and SHA-256 exactly.  Its expanded manifest, run log, and GNU-time
+log hash to
+`048e21224288e48817297d1fbdbea0c304796e56a200cedb95cab58f7b6ed7d2`,
+`0b37d4911200dbc9fe4fa831cda0d8b521fedd6c988afa3548bf6c9e9e18f5f3`,
+and
+`fcbd3c23f8a31f27bac11bd5a3985c3dae8964a7513056f00998ebe58a73bcc9`.
+The replay took 13.39 seconds wall time and binds zstd 1.5.5 at executable
+SHA-256
+`de8edfe03230ae3f378e21d845424d7df16803a5d034037bcb0d7d817e792c8e`.
+The production form is:
+
+```bash
+python3 tools/compress_r45_gluing_core_proofs.py CORE_MANIFEST \
+  --output-dir NEW_DIRECTORY --zstd /usr/bin/zstd --level 1 --jobs 4
+```
+
 A purely mechanical multiplication of these sample totals by
 `505336 / 128` estimates about 5.98 TB of retained compressed d10 proofs and
 about 22.85 days on 64 cores for solving, core emission, and core replay.

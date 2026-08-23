@@ -210,6 +210,13 @@ pilot, the old and new `Script.sml` files are byte-identical with SHA-256
 The direct route reduced that same leaf from 669.39 user seconds / 40.65 wall
 to 13.79 user seconds / 15.45 wall.
 
+The runner also takes an explicit positive `MEMORY_MB` argument rather than
+silently inheriting upstream's global 8,000 MB setting.  It passes that value
+only to the child HOL buildheap, emits it as a unique build marker, and the
+auditor requires the exact requested value and records it in the audit JSON.
+This keeps the upstream configuration file untouched while making a
+high-memory leaf's resource boundary part of the checked evidence.
+
 [`audit_upstream_hol_gluing_theories.sh`](../scripts/audit_upstream_hol_gluing_theories.sh)
 generates the standard `.ui`/`.uo` dependencies, loads every exported theorem
 in a new HOL4 session, and then invokes the independent

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -ne 7 ]]; then
-  echo "usage: $0 UPSTREAM_ROOT PBL THEORY_DIR LABEL BUILD_LOG BUILD_TIME OUTPUT_PREFIX" >&2
+if [[ $# -ne 8 ]]; then
+  echo "usage: $0 UPSTREAM_ROOT PBL THEORY_DIR LABEL BUILD_LOG BUILD_TIME MEMORY_MB OUTPUT_PREFIX" >&2
   exit 2
 fi
 
@@ -12,11 +12,16 @@ theory_directory=$3
 label=$4
 build_log=$5
 build_time_log=$6
-output_prefix=$7
+memory_mb=$7
+output_prefix=$8
 repository_root=$(cd "$(dirname "$0")/.." && pwd -P)
 
 if [[ ! $label =~ ^GLUE[0-9]+$ ]]; then
   echo "LABEL must match GLUE followed by decimal digits" >&2
+  exit 2
+fi
+if [[ ! $memory_mb =~ ^[1-9][0-9]*$ ]]; then
+  echo "MEMORY_MB must be a positive integer" >&2
   exit 2
 fi
 if [[ ! -x $upstream_root/HOL/bin/hol || ! -x $upstream_root/HOL/bin/genscriptdep ]]; then
@@ -105,6 +110,7 @@ python3 "$repository_root/tools/audit_upstream_hol_gluing_theories.py" \
   --build-time-log "$build_time_log" \
   --load-log "$load_log" \
   --load-time-log "$load_time_log" \
+  --expected-memory-mb "$memory_mb" \
   --evidence "$upstream_root/src/config" \
   --evidence "$upstream_root/src/dir.sml" \
   --evidence "$upstream_root/HOL/bin/hol" \

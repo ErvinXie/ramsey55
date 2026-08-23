@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -ne 6 ]]; then
-  echo "usage: $0 UPSTREAM_ROOT PBL THEORY_DIR LABEL EXPECTED_COUNT OUTPUT_PREFIX" >&2
+if [[ $# -ne 7 ]]; then
+  echo "usage: $0 UPSTREAM_ROOT PBL THEORY_DIR LABEL EXPECTED_COUNT MEMORY_MB OUTPUT_PREFIX" >&2
   exit 2
 fi
 
@@ -11,7 +11,8 @@ problem_list=$2
 theory_directory=$3
 label=$4
 expected_count=$5
-output_prefix=$6
+memory_mb=$6
+output_prefix=$7
 repository_root=$(cd "$(dirname "$0")/.." && pwd -P)
 
 if [[ ! $label =~ ^GLUE[0-9]+$ ]]; then
@@ -20,6 +21,10 @@ if [[ ! $label =~ ^GLUE[0-9]+$ ]]; then
 fi
 if [[ ! $expected_count =~ ^[1-9][0-9]*$ ]]; then
   echo "EXPECTED_COUNT must be a positive integer" >&2
+  exit 2
+fi
+if [[ ! $memory_mb =~ ^[1-9][0-9]*$ ]]; then
+  echo "MEMORY_MB must be a positive integer" >&2
   exit 2
 fi
 if [[ ! -x $upstream_root/HOL/bin/hol ]]; then
@@ -60,6 +65,7 @@ TMPDIR="$temporary_directory" \
       RAMSEY55_GLUE_PBL="$problem_list" \
       RAMSEY55_GLUE_THEORY_DIR="$theory_directory" \
       RAMSEY55_GLUE_EXPECTED_COUNT="$expected_count" \
+      RAMSEY55_GLUE_MEMORY_MB="$memory_mb" \
   "$upstream_root/HOL/bin/hol" --q \
   < "$repository_root/scripts/upstream_hol_gluing_batch.sml" \
   > "$build_log" 2>&1

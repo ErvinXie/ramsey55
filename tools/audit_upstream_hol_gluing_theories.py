@@ -116,9 +116,20 @@ def require_buildheap_log(path: Path, name: str) -> None:
 
 
 def require_build_markers(
-    text: str, label: str, pairs: list[tuple[int, int]]
-) -> None:
+    text: str,
+    label: str,
+    pairs: list[tuple[int, int]],
+    expected_memory_mb: int | None,
+) -> int | None:
     prefix = f"RAMSEY55_{label}"
+    memory_matches = re.findall(rf"{re.escape(prefix)}_MEMORY_MB\s+(\d+)", text)
+    if expected_memory_mb is not None:
+        if expected_memory_mb <= 0:
+            raise ValueError("expected memory must be positive")
+        if memory_matches != [str(expected_memory_mb)]:
+            raise ValueError("build memory marker does not match expected limit")
+    elif len(memory_matches) > 1:
+        raise ValueError("build log contains multiple memory markers")
     starts = [
         (int(index), int(left), int(right))
         for index, left, right in re.findall(
@@ -148,6 +159,7 @@ def require_build_markers(
     final_marker = f"{prefix}_KERNEL_FULL_{len(pairs)}_OK"
     if text.count(final_marker) != 1 or text.find(final_marker, cursor) < 0:
         raise ValueError(f"expected one final build marker: {final_marker}")
+    return int(memory_matches[0]) if memory_matches else None
 
 
 def require_load_markers(
@@ -178,6 +190,7 @@ def audit(
     load_log: Path,
     load_time_log: Path,
     evidence: list[Path] | None = None,
+    expected_memory_mb: int | None = None,
 ) -> dict[str, object]:
     if not re.fullmatch(r"GLUE\d+", label):
         raise ValueError("label must match GLUE followed by decimal digits")
@@ -186,7 +199,9 @@ def audit(
     pairs = read_problem_list(problem_list)
     build_text = require_clean_log(build_log)
     load_text = require_clean_log(load_log)
-    require_build_markers(build_text, label, pairs)
+    memory_limit_mb = require_build_markers(
+        build_text, label, pairs, expected_memory_mb
+    )
     require_load_markers(load_text, label, pairs)
     require_exit_zero(build_time_log)
     require_exit_zero(load_time_log)
@@ -269,6 +284,7 @@ def audit(
             "exact_successful_buildheap_logs": len(theories),
             "fresh_loaded_false_theorems": len(theories),
             "fresh_loaded_theorems_without_false_hypothesis": len(theories),
+            "build_memory_limit_mb": memory_limit_mb,
         },
         "theories": theories,
     }
@@ -284,6 +300,7 @@ def main() -> None:
     parser.add_argument("--load-log", type=Path, required=True)
     parser.add_argument("--load-time-log", type=Path, required=True)
     parser.add_argument("--evidence", type=Path, action="append", default=[])
+    parser.add_argument("--expected-memory-mb", type=int)
     parser.add_argument("--output", type=Path, required=True)
     arguments = parser.parse_args()
     if arguments.output.exists():
@@ -298,6 +315,7 @@ def main() -> None:
             arguments.load_log,
             arguments.load_time_log,
             arguments.evidence,
+            arguments.expected_memory_mb,
         )
     except (OSError, UnicodeError, ValueError) as error:
         parser.error(str(error))

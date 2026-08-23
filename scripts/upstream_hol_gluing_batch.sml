@@ -15,6 +15,7 @@ val ramsey55_label = ramsey55_env "RAMSEY55_GLUE_LABEL";
 val ramsey55_pbl = read_pbl (ramsey55_env "RAMSEY55_GLUE_PBL");
 val ramsey55_directory = ramsey55_env "RAMSEY55_GLUE_THEORY_DIR";
 val ramsey55_expected = ramsey55_positive_int "RAMSEY55_GLUE_EXPECTED_COUNT";
+val ramsey55_memory = ramsey55_positive_int "RAMSEY55_GLUE_MEMORY_MB";
 
 fun ramsey55_write_script file (left,right) =
   let
@@ -43,9 +44,12 @@ fun ramsey55_run_one (pair as (left,right)) =
   end;
 
 val _ = smlExecScripts.buildheap_dir := ramsey55_directory ^ "/buildheap";
-val _ = smlExecScripts.buildheap_options := "--maxheap " ^ its memory;
+val _ = smlExecScripts.buildheap_options := "--maxheap " ^ its ramsey55_memory;
 val _ = app mkDir_err [ramsey55_directory,!smlExecScripts.buildheap_dir];
 val _ = writel (ramsey55_directory ^ "/Holmakefile") ["INCLUDES = .."];
+val _ =
+  print ("RAMSEY55_" ^ ramsey55_label ^ "_MEMORY_MB " ^
+         its ramsey55_memory ^ "\n");
 
 fun ramsey55_run index pairs =
   case pairs of
