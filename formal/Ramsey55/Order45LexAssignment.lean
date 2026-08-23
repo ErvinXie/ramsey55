@@ -1169,6 +1169,24 @@ theorem order45Degree22FullMotherFormula_satisfied
   · exact order45Degree22FullMotherCounterTail_satisfied color simple fixed
       edgesH edgesJ counts hLower hUpper jLower jUpper dense
 
+/-- Fully concrete typed mothers matching the five emitted DIMACS blocks.
+Unlike the generic wrappers above, these definitions contain the exact
+Ramsey and fixed-star prefix streams rather than accepting shape hypotheses. -/
+def order45Degree20ExactFullMotherFormula : CnfFormula (78697 + 1) :=
+  order45Degree20FullMotherFormula
+    (order45ExactRamseyFormula 78697)
+    (order45ExactFixedStarFormula 78697 20)
+
+def order45Degree21ExactFullMotherFormula : CnfFormula (77148 + 1) :=
+  order45Degree21FullMotherFormula
+    (order45ExactRamseyFormula 77148)
+    (order45ExactFixedStarFormula 77148 21)
+
+def order45Degree22ExactFullMotherFormula : CnfFormula (76651 + 1) :=
+  order45Degree22FullMotherFormula
+    (order45ExactRamseyFormula 76651)
+    (order45ExactFixedStarFormula 76651 22)
+
 #print axioms order45LexStateEntryKeys_nodup
 #print axioms order45LexAssignment_eq_source_below_36190
 #print axioms order45LexAssignment_represents_primary

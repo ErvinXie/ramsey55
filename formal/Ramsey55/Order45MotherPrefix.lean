@@ -1,4 +1,7 @@
 import Ramsey55.Order45CounterAssignment
+import Init.Data.List.Nat.Range
+import Init.Data.List.Pairwise
+import Init.Data.List.Sublist
 
 namespace Ramsey55
 
@@ -21,6 +24,64 @@ def order45FiveSetClause (maximum a b c d e : Nat) (positive : Bool) :
     order45EdgeLiteral maximum c d positive,
     order45EdgeLiteral maximum c e positive,
     order45EdgeLiteral maximum d e positive]
+
+/-- All `count`-element sublists, in the same include-first order used by
+Python's `itertools.combinations`.  Recursion is on the input list so the
+second recursive call may retain the requested cardinality. -/
+def listCombinationsExact {alpha : Type} :
+    List alpha → Nat → List (List alpha)
+  | [], 0 => [[]]
+  | [], _ + 1 => []
+  | _ :: _, 0 => [[]]
+  | head :: tail, count + 1 =>
+      (listCombinationsExact tail count).map (head :: ·) ++
+        listCombinationsExact tail (count + 1)
+
+theorem mem_listCombinationsExact_length_sublist {alpha : Type} :
+    ∀ (values : List alpha) (count : Nat) (chosen : List alpha),
+      chosen ∈ listCombinationsExact values count →
+        chosen.length = count ∧ List.Sublist chosen values := by
+  intro values
+  induction values with
+  | nil =>
+      intro count chosen membership
+      cases count with
+      | zero =>
+          simp [listCombinationsExact] at membership
+          subst chosen
+          exact ⟨rfl, .slnil⟩
+      | succ count =>
+          simp [listCombinationsExact] at membership
+  | cons head tail inductionHypothesis =>
+      intro count chosen membership
+      cases count with
+      | zero =>
+          simp [listCombinationsExact] at membership
+          subst chosen
+          exact ⟨rfl, List.nil_sublist (head :: tail)⟩
+      | succ count =>
+          simp only [listCombinationsExact, List.mem_append] at membership
+          rcases membership with membership | membership
+          · rw [List.mem_map] at membership
+            rcases membership with ⟨tailChosen, tailMembership, rfl⟩
+            rcases inductionHypothesis count tailChosen tailMembership with
+              ⟨length, sublist⟩
+            exact ⟨by simp [length], sublist.cons_cons head⟩
+          · rcases inductionHypothesis (count + 1) chosen membership with
+              ⟨length, sublist⟩
+            exact ⟨length, sublist.cons head⟩
+
+/-- The exact Ramsey-prefix stream emitted by `ramsey55_clauses(45)`: the
+negative clause followed by the positive clause for every increasing
+five-set in lexicographic combination order. -/
+def order45ExactRamseyFormula (maximum : Nat) :
+    CnfFormula (maximum + 1) :=
+  (listCombinationsExact (List.range 45) 5).flatMap fun vertices =>
+    match vertices with
+    | [a, b, c, d, e] =>
+        [order45FiveSetClause maximum a b c d e false,
+          order45FiveSetClause maximum a b c d e true]
+    | _ => []
 
 theorem order45EdgeLiteral_holds_iff
     (maximum : Nat) (assignment : CnfAssignment (maximum + 1))
@@ -124,6 +185,32 @@ def IsOrder45RamseyFormula (maximum : Nat)
       (clause = order45FiveSetClause maximum a b c d e false ∨
         clause = order45FiveSetClause maximum a b c d e true)
 
+theorem order45ExactRamseyFormula_shape (maximum : Nat) :
+    IsOrder45RamseyFormula maximum
+      (order45ExactRamseyFormula maximum) := by
+  intro clause membership
+  simp only [order45ExactRamseyFormula, List.mem_flatMap] at membership
+  rcases membership with
+    ⟨vertices, verticesMembership, clauseMembership⟩
+  rcases mem_listCombinationsExact_length_sublist
+      (List.range 45) 5 vertices verticesMembership with
+    ⟨verticesLength, verticesSublist⟩
+  rcases list_eq_five_of_length verticesLength with
+    ⟨a, b, c, d, e, rfl⟩
+  have increasing : [a, b, c, d, e].Pairwise (· < ·) :=
+    List.Pairwise.sublist verticesSublist
+      (List.pairwise_lt_range (n := 45))
+  have eInside : e < 45 := by
+    apply List.mem_range.mp
+    exact verticesSublist.subset (by simp)
+  simp at increasing
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at clauseMembership
+  rcases clauseMembership with rfl | rfl
+  · exact ⟨a, b, c, d, e, by omega, by omega, by omega, by omega,
+      eInside, Or.inl rfl⟩
+  · exact ⟨a, b, c, d, e, by omega, by omega, by omega, by omega,
+      eInside, Or.inr rfl⟩
+
 theorem order45RamseyFormula_satisfied
     (maximum : Nat) (formula : CnfFormula (maximum + 1))
     (shape : IsOrder45RamseyFormula maximum formula)
@@ -142,6 +229,13 @@ theorem order45RamseyFormula_satisfied
 def order45FixedStarClause (maximum degree vertex : Nat) :
     CnfClause (maximum + 1) :=
   [order45EdgeLiteral maximum 0 vertex (decide (vertex ≤ degree))]
+
+/-- The exact 44 unit clauses emitted by `fixed_star_clauses(45, degree)`,
+in increasing endpoint order. -/
+def order45ExactFixedStarFormula (maximum degree : Nat) :
+    CnfFormula (maximum + 1) :=
+  (List.range 44).map fun offset =>
+    order45FixedStarClause maximum degree (offset + 1)
 
 theorem order45FixedStarClause_satisfied
     (maximum : Nat) (assignment : CnfAssignment (maximum + 1))
@@ -169,6 +263,20 @@ def IsOrder45FixedStarFormula (maximum degree : Nat)
     0 < vertex ∧ vertex < 45 ∧
       clause = order45FixedStarClause maximum degree vertex
 
+theorem order45ExactFixedStarFormula_shape (maximum degree : Nat) :
+    IsOrder45FixedStarFormula maximum degree
+      (order45ExactFixedStarFormula maximum degree) := by
+  intro clause membership
+  rw [order45ExactFixedStarFormula, List.mem_map] at membership
+  rcases membership with ⟨offset, offsetMembership, rfl⟩
+  have offsetBound : offset < 44 := List.mem_range.mp offsetMembership
+  exact ⟨offset + 1, by omega, by omega, rfl⟩
+
+@[simp] theorem order45ExactFixedStarFormula_length
+    (maximum degree : Nat) :
+    (order45ExactFixedStarFormula maximum degree).length = 44 := by
+  simp [order45ExactFixedStarFormula]
+
 theorem order45FixedStarFormula_satisfied
     (maximum degree : Nat) (formula : CnfFormula (maximum + 1))
     (shape : IsOrder45FixedStarFormula maximum degree formula)
@@ -182,8 +290,11 @@ theorem order45FixedStarFormula_satisfied
     degree vertex fixed positive inside
 
 #print axioms order45FiveSetClause_satisfied
+#print axioms mem_listCombinationsExact_length_sublist
+#print axioms order45ExactRamseyFormula_shape
 #print axioms order45RamseyFormula_satisfied
 #print axioms order45FixedStarClause_satisfied
+#print axioms order45ExactFixedStarFormula_shape
 #print axioms order45FixedStarFormula_satisfied
 
 end Ramsey55

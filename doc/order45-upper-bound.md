@@ -5949,5 +5949,33 @@ contains no `sorryAx` or native-decision axiom. Exact external DIMACS stream
 binding, the external `R(4,5)=25` and catalog-range facts, and the 109 leaf
 UNSAT certificates remain open.
 
+The Ramsey and fixed-star blocks are no longer represented only by formula-
+shape premises. `Order45MotherPrefix.lean` defines exact-cardinality sublists
+in include-first order, proves that each selected five-set is an increasing
+sublist of `List.range 45`, and emits the negative clause followed by the
+positive clause for each such set. It separately emits the 44 fixed-star
+units in increasing endpoint order. These streams instantiate the concrete
+`order45Degree20/21/22ExactFullMotherFormula` definitions, and the
+corresponding completeness theorems have no Ramsey/fixed-star shape
+parameters. The 92-job ARM build log hashes to
+`d4433f785b3280bf4f35123530f4be9f090f9b83ef100b4cc49cc6034439616c`;
+the new declarations use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+`tools/VerifyOrder45ExactMothers.lean` supplies the direct file boundary. It
+is compiled from the concrete typed formulas, converts each `CnfLiteral` back
+to a signed DIMACS integer, and streams a line-by-line comparison against the
+three generated files. The clean ARM run checked 2,751,846, 2,745,658, and
+2,743,672 clauses in 147.99 seconds with 5,960,796 KiB peak RSS; its log
+SHA-256 is
+`a7e0cbe9ce5adf4cf38a4813a12856cc344690cd3044961d2e6e767b83f4f275`.
+As a separate implementation, `verify_order45_edge_strata.py` reconstructed
+the same three complete streams plus their 28/36/45 disjoint cube records in
+24.67 seconds; that log hashes to
+`ad51396add1618d2be8b5bcfab8a32727fe7c4177d5470357ecc3b78071f7f47`.
+Together these checks close the concrete typed-formula-to-DIMACS sequence
+boundary. They do not establish any leaf UNSAT result. The remaining proof
+inputs are the external `R(4,5)=25` fact, the five catalog edge ranges, and
+all 109 leaf refutations.
+
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.

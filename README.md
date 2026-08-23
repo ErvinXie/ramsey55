@@ -99,6 +99,8 @@ Generate and independently verify the exact local-edge cube strata with:
     PYTHONPATH=src:tools python3 tools/generate_order45_edge_strata.py
     PYTHONPATH=src:tools python3 tools/verify_order45_edge_strata.py \
       build/order45-strata/manifest.json --cnf-dir build/order45-strata
+    lake env lean --run tools/VerifyOrder45ExactMothers.lean \
+      build/order45-strata
     sh scripts/build_cadical_assumption_scan.sh
 
 Reproduce the unique-H100 reduction and the complete two-formula H100/J132

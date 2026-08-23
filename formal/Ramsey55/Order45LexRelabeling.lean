@@ -763,6 +763,43 @@ theorem order45Degree22FullMotherFormula_complete
     relabeledFixed edgesH edgesJ relabeledCounts hLower hUpper jLower jUpper
     dense (order45Degree22FullMotherAssignment_lexSorted_after_relabel color)
 
+/-- Completeness of the concrete generated degree-20 mother.  The Ramsey and
+fixed-star prefix premises have been discharged by their exact enumerators. -/
+theorem order45Degree20ExactFullMotherFormula_complete
+    (r45 : ForcesRed4OrBlue5 25) :
+    CatalogBoundedDenseExcessCnfComplete
+      20 226 68 100 116 132 order45Degree20ExactFullMotherFormula := by
+  simpa only [order45Degree20ExactFullMotherFormula] using
+    order45Degree20FullMotherFormula_complete
+      (order45ExactRamseyFormula 78697)
+      (order45ExactFixedStarFormula 78697 20)
+      (order45ExactRamseyFormula_shape 78697)
+      (order45ExactFixedStarFormula_shape 78697 20) r45
+
+/-- Completeness of the concrete generated degree-21 mother. -/
+theorem order45Degree21ExactFullMotherFormula_complete
+    (r45 : ForcesRed4OrBlue5 25) :
+    CatalogBoundedDenseExcessCnfComplete
+      21 222 77 107 101 122 order45Degree21ExactFullMotherFormula := by
+  simpa only [order45Degree21ExactFullMotherFormula] using
+    order45Degree21FullMotherFormula_complete
+      (order45ExactRamseyFormula 77148)
+      (order45ExactFixedStarFormula 77148 21)
+      (order45ExactRamseyFormula_shape 77148)
+      (order45ExactFixedStarFormula_shape 77148 21) r45
+
+/-- Completeness of the concrete generated degree-22 mother. -/
+theorem order45Degree22ExactFullMotherFormula_complete
+    (r45 : ForcesRed4OrBlue5 25) :
+    CatalogBoundedDenseExcessCnfComplete
+      22 220 88 114 88 114 order45Degree22ExactFullMotherFormula := by
+  simpa only [order45Degree22ExactFullMotherFormula] using
+    order45Degree22FullMotherFormula_complete
+      (order45ExactRamseyFormula 76651)
+      (order45ExactFixedStarFormula 76651 22)
+      (order45ExactRamseyFormula_shape 76651)
+      (order45ExactFixedStarFormula_shape 76651 22) r45
+
 #print axioms order45ColorCrossRowKey_le_implication
 #print axioms order45SortedNeighborMap_injective
 #print axioms order45SortedNeighborMap_keys_ordered
@@ -785,5 +822,8 @@ theorem order45Degree22FullMotherFormula_complete
 #print axioms order45Degree20FullMotherFormula_complete
 #print axioms order45Degree21FullMotherFormula_complete
 #print axioms order45Degree22FullMotherFormula_complete
+#print axioms order45Degree20ExactFullMotherFormula_complete
+#print axioms order45Degree21ExactFullMotherFormula_complete
+#print axioms order45Degree22ExactFullMotherFormula_complete
 
 end Ramsey55
