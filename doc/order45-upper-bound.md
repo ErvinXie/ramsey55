@@ -6436,5 +6436,19 @@ fragments are only candidate children: a residual row is accepted only after
 every ordered child is present and the reconstructed prefix-plus-children
 proof passes the ordinary checker and independent finalization audit.
 
+The opposite-phase v422 seed929 frontier root 0 also completed.  Schema-v3
+selection replayed both complete DFS traces and selected the smaller
+54,210,703-byte seed1433/phase1 proof with SHA-256
+`1dade8f74a4ad94a87e477d8342b0c5d086c7eb5be9ec5c4f2d872b36d1dd141`;
+its selection manifest hashes to
+`3f6a3d750ad42fb9a8a92302cf1701041531b1b4dc7df5f71f64b2dd6d8b4beb`.
+The one-race selector manifests for the three earlier fast roots hash to
+`a03eae717ce2c486b51c8f8d2ef0bbb38a76893f359426d324f2e7c991dc1ba9`,
+`0ab4f97d70d19a7a80bae930ef64b9affd7fce2476d7e0c3971285b50ecbadd3`,
+and
+`c480260081a08e3cc8c60b5ca1e563791fc7cc8e6e1f29c54282acb0b1fc7e77`.
+These machine-checked leaf choices still do not close any complete residual
+row.
+
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.
