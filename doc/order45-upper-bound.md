@@ -6678,3 +6678,81 @@ and
 
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.
+
+### Recursive recovery through the J297 state-3704 root
+
+A later whole-dependency audit found that the first recursive recovery stopped
+at v396 and therefore omitted a second required J297 branch.  The complete
+prepared dependency graph now contains all of the following independently
+replayed checkpoint paths:
+
+- v412 -> v409 -> v402 -> v401 -> v400-f31;
+- v415/v416/v417 -> v406 -> v400-f32/f33 -> v391 -> v387-f2;
+- v396-f31/f32/f33 -> v387-f3;
+- v410 -> v403-f10 -> v397-f10 -> v394-f10, together with recovered
+  v394-f11, feeding v389-f1;
+- recovered v403-f21 -> v397-f21 -> v394-f21, feeding v389-f2;
+- v389-f1/f2 -> v378-f2 and v387-f2/f3 -> v378-f3;
+- direct v372 fragments 0/1 plus checked v378-f2/f3 -> the state-3704 root.
+
+Each arrow is implemented by an ordered recursive watcher.  A watcher accepts
+only an atomic checker-verified child manifest or an exact direct fragment log,
+then serializes composition, ordinary `drat-trim`, structural rehashing,
+independent schema-v2 DFS replay, recursive child audit, and a fresh checker
+rerun.  None of these nodes is accepted merely because its watcher exists.
+
+The historical v412 checkpoint in fact had two complete child proofs.  Their
+SHA-256 values are
+`cd98db225f6964c4fcbe26ed3db52902b3715241cc4faddefaf7dc9245bb1558`
+and
+`05c91a44aace069aa3e2f62914deb6b5520d619d4771d27cae1066f55ec9e354`.
+A fresh replay records 387 attempts, 194 splits, maximum depth 55, and two
+frontier roots; its manifest hash is
+`343d6dee1398f8fbffbd1349de3f7a2e65dd89bf5a483c83a221c1328e6e5e03`.
+The parent checker is active, so these child facts are not yet a v412
+acceptance.  A similar audit found that all three v410 leaves were complete;
+that parent gate is queued behind v412 on the single heavy-check lock.
+
+Fourteen genuine terminal recovery roots remained elsewhere: 1/3/1/2 roots
+under selected v415/v416/v417 traces and 1/4/2 roots under v394-f11 and the
+shortest exact v403-f21 trace.  All were split into one-row ICNFs and started
+with explicit seed/phase pairs 1901/0 through 1987/1, a 2,000,000-conflict
+initial budget, 4,000,000 ceiling, 600-second solve limit, 14,400-second wall
+limit, fragment mode, and nice 19.  Seed1949/phase0 closed the first v394
+f11-sub-2 root in one attempt and 9.78 seconds.  Its proof and replayed race
+selection hash to
+`8d743262919cc19fdbb0c25395292f62b80d167af6e949612dd522c5ade6de0e`
+and
+`494a4cade222245fb590824bd7d734e20be6d1c39ff771ee9834683f771948c7`.
+The other three roots of that subgroup still have to close before its parent
+can be checked.
+
+The final recovered checkpoint connection is exact.  Replaying the v372
+snapshot from the one-row state-3704 source, SHA-256
+`d74b5927a13d1f1ef4a3fe3236224ee7071387d7f85aa6ddf740b6653f6685ee`,
+processes 223 attempts and 113 splits at maximum depth 28.  It reconstructs
+the historical four-row frontier byte-for-byte at
+`433679b71f11382c04b80ade656085996e5911fe1521a4ac3deb2db20ddd5fdd`.
+The raw 2,559,893,504-byte binary prefix ended 43 bytes inside a clause.  Its
+immutable framed copy hashes to
+`4672ace0c07be748d80b89ddd828213070d874bf0f1a1343c7e6e72afb476b46`;
+the bound replay and framing manifests hash to
+`125dd4ded66d5a451696c3530310e59fafc8ee6b2843047ccaecc4f245f549da`
+and
+`9261eda8c94071a662adf6e2847057fa31527a5f29316bb46c92619564bf1d63`.
+Thus a future accepted v372 composition will close exactly the certified
+state-3704 residual cube.  It will still have to be imported through the
+materialized-proof auditor and selective-residual join before it contributes
+to a fixed-pair or global conclusion.
+
+In parallel, all 1,239 upstream HOL enumeration theories completed their
+five-artifact build with exit zero in 7:26:35.  The audited inventory hash is
+`a592041145d80d92d6c50f9375fa08c3ace563e701c5955a7e612ac2aea570ba`.
+The generated `enumf` theory imports exactly those audited theories and is now
+running its one-core final build/load gate with the configuration memory
+setting raised from 8,000 to 50,000.  This establishes a reproducible formal
+enumeration boundary, not the final gluing theorem.
+
+No J297/J326 root certificate, parent-1 UNSAT, fixed-pair UNSAT, order-45
+UNSAT, or `R(5,5) <= 45` theorem is claimed by these preparations or leaf
+selections.
