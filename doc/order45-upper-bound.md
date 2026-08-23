@@ -5987,9 +5987,35 @@ and
 `bba97dff3bee2a9e41de26d0edbf4ee6a5dc11e8fe9846bba6be4760e5ff9129`.
 The exact independently materialized child CNF hashes to
 `84e9deb1777a7d66a8ad83d3c71e9d67de7ac76b73620e5282ccc73e6128abb7`.
-A protected-CNF ordinary check and the two independent promotion audits are
-running; the producer result is therefore not yet accepted as an embeddable
-child. v418 row 1 and the three v419/v420 rows remain active.
+The deletion-preserving composition produced a 300,958,672-byte standalone
+proof with SHA-256
+`2ea20b6485b562b34108769c9ab62219e2ba48e02cd34a8a1064904f9c35bce9`.
+Ordinary `drat-trim` verified it in 701.55 seconds with 537,736 KiB peak RSS;
+the checker-log SHA-256 is
+`b12136b31e4724469ba430b5aa0fea6fe26a8a10bdb1e70971380653b4cf31a1`.
+The independent source audit passed in 52.47 seconds and hashes to
+`4d92ff1915e2993d50ce944318ddd17e8ce66bc757d5f4daa0be12a53af122ab`.
+Removing exactly the final binary empty addition yielded a 300,958,670-byte
+embeddable fragment with SHA-256
+`8c97f588e42b0ca5243390dbb5e1b833b9d8c7bae9ccdb8f0f6b0efcc3412973`.
+Its promotion manifest hashes to
+`79647c1e83a553801c75789e636050778a3c50774740c0d0dbcf87c0f475999b`,
+and the final independent audit reran the source audit, passed in 58.10
+seconds, and hashes to
+`508681fcf858bf775029188163b41b0e19e120849d4041ef50f9ee5bfbd9315d`.
+Thus v418 row 0 is now accepted as a recursively embeddable child. v418 row 1
+and the three v419/v420 rows remain active.
+
+`tools/select_cadical_dfs_race.py` makes the choice between redundant races
+machine-checkable. It replays every final TSV, checks the exact DFS stack and
+producer totals, rejects SAT rows, unframed streams, and status/frontier
+disagreement, hashes every input, and chooses a complete race before applying
+minimum-frontier and minimum-proof-size tie-breaks. Four focused tests cover
+those gates. Applied to the two complete v418 row-0 races, it selected the
+smaller seed743/phase1 proof; the selection manifest hashes to
+`5ef6567f0edb1494e962e9bb703e77f3eea77c33e98ec2b9ba7109781a81f325`.
+The complete ARM suite passes all 236 tests in 27.321 seconds; its log hashes
+to `26134751d4350258ff464450b9d5e7e6bd86ca963c8eebe9982db745c62ea03f`.
 
 The formal non-lex mother assignment is now constructive. The new
 `Order45DegreeWindowAssignment.lean` identifies each generator incident stream
