@@ -101,7 +101,7 @@ for ((index=0; index<root_count; index++)); do
       if [[ ${#completed[@]} -gt 0 ]]; then
         break
       fi
-      sleep "$poll_seconds"
+      sleep "$poll_seconds" 8>&-
     done
 
     selection_stem=${selection%.json}

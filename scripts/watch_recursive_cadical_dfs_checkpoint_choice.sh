@@ -94,7 +94,7 @@ while :; do
     exit "$status"
   fi
   rm -f "$selection.stdout.tmp" "$selection.stderr.tmp"
-  sleep "$poll_seconds"
+  sleep "$poll_seconds" 8>&-
 done
 
 choice_proof=$(jq -er '.selected.proof.path' "$selection")

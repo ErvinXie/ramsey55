@@ -104,7 +104,7 @@ while :; do
   if [[ $ready -eq 1 ]]; then
     break
   fi
-  sleep "$poll_seconds"
+  sleep "$poll_seconds" 8>&-
 done
 
 for suffix in \
