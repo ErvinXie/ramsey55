@@ -1,0 +1,669 @@
+
+---------------------------------------------------------------------
+       HOL-4 [Kananaskis 14 (stdknl, built Sun Aug 23 12:45:43 2026)]
+
+       For introductory HOL help, type: help "hol";
+       To exit type <Control>-D
+---------------------------------------------------------------------
+** Load path (see loadPath variable) now contains 2 entries
+** after consulting Holmakefiles
+
+> val it = (): unit
+> exception NotFound
+val absolute_deviation = fn: real list -> real
+val abstract_time = 0: int
+val add_time = fn: ('a -> 'b) -> 'a -> 'b * real
+val all_5cliques = fn: int -> graph.mat -> (int * int * int * int * int) list
+val all_bvar = fn: term -> term list
+val all_cedges = fn: graph.mat -> edge list
+val all_clique_mat = fn: graph.mat -> int * int -> int list list
+val all_cliques = fn: int -> int -> graph.mat -> int list list
+val all_coloring = fn: edge list -> coloring list
+val all_edges = fn: int -> edge list
+val all_holes = fn: graph.mat -> edge list
+val all_pairs = fn: 'a list -> ('a * 'a) list
+val all_subterms = fn: term -> term list
+val append_endline = fn: string -> string -> unit
+val append_file = fn: string -> string -> unit
+val apply_coloring = fn: graph.mat -> coloring -> graph.mat
+val approx = fn: int -> real -> real
+val arb0 = 0: IntInf.int
+val arb1 = 1: IntInf.int
+val arity_of = fn: term -> int
+val array_to_list = fn: 'a array -> 'a list
+val average_int = fn: int list -> real
+val average_real = fn: real list -> real
+val bare_readl = fn: string -> string list
+val benchmark = fn:
+   string -> int -> IntInf.int list -> IntInf.int list -> unit
+val benchmark_pbl = fn: string -> (IntInf.int * IntInf.int) list -> unit
+val benchspec =
+   {function = fn, parallel_dir =
+    "/data/ramsey55/external/barakeel-formal-poly592/src/parallel_search",
+    read_arg = fn, read_param = fn, read_result = fn, reflect_globals = fn,
+    self = "glue.benchspec", self_dir =
+    "/data/ramsey55/external/barakeel-formal-poly592/src", write_arg = fn,
+    write_param = fn, write_result = fn}:
+   (unit, IntInf.int * IntInf.int, real) smlParallel.extspec
+val best_in_distrib = fn: ('a * real) list -> 'a
+val best_n = fn: ('a * 'a -> order) -> int -> 'a list -> 'a list
+val best_n_rmaxu = fn:
+   ('a * 'a -> order) -> int -> ('a * real) list -> 'a list
+val better_cover = fn: string -> int * int * int * real -> unit
+val bin_rep = fn: int -> int -> real list
+val blue = 1: int
+val bts = fn: bool -> string
+val can_extend_edge = fn: int * int -> graph.mat -> edge -> bool
+val cartesian_product = fn: 'a list -> 'b list -> ('a * 'b) list
+val cartesian_productl = fn: 'a list list -> 'a list list
+val clean_dir = fn: string -> unit
+val cmd_in_dir = fn: string -> string -> unit
+eqtype color
+type coloring = (edge * color) list
+val combine_triple = fn: 'a list * 'b list * 'c list -> ('a * 'b * 'c) list
+val commonneighbor_of = fn: int -> graph.mat -> int * int -> int list
+val compare_imax = fn: ('a * int) * ('a * int) -> order
+val compare_imin = fn: ('a * int) * ('a * int) -> order
+val compare_rmax = fn: ('a * real) * ('a * real) -> order
+val compare_rmin = fn: ('a * real) * ('a * real) -> order
+val compute_scover_para = fn:
+   int ->
+     int -> int * int -> (IntInf.int * (IntInf.int * int list) list) list
+type conv = term -> thm
+val count_dict = fn: ('a, int) dict -> 'a list -> ('a, int) dict
+val cpl_compare = fn:
+   ('a * 'b -> order) -> ('c * 'd -> order) -> ('a * 'c) * ('b * 'd) -> order
+val cut_modulo = fn: int -> 'a list -> 'a list list
+val cut_n = fn: int -> 'a list -> 'a list list
+val dadd = fn: 'a -> 'b -> ('a, 'b) dict -> ('a, 'b) dict
+val daddi = fn: 'a -> 'b -> ('a, 'b) dict ref -> unit
+val daddl = fn: ('a * 'b) list -> ('a, 'b) dict -> ('a, 'b) dict
+val daddset = fn: 'a list -> ('a, unit) dict -> ('a, unit) dict
+val dapp = fn: ('a * 'b -> unit) -> ('a, 'b) dict -> unit
+val dappend = fn: 'a * 'b -> ('a, 'b list) dict -> ('a, 'b list) dict
+val dappendl = fn: ('a * 'b) list -> ('a, 'b list) dict -> ('a, 'b list) dict
+val dconcat = fn:
+   ('a * 'a -> order) -> ('a, 'b list) dict list -> ('a, 'b list) dict
+val debug = fn: string -> unit
+val debug_flag = ref false: bool ref
+val debugf = fn: string -> ('a -> string) -> 'a -> unit
+val dec_real = fn: HOLsexp_dtype.t -> real option
+val decr = fn: int ref -> unit
+val dempty = fn: ('a * 'a -> order) -> ('a, 'b) dict
+val dfind = fn: 'a -> ('a, 'b) dict -> 'b
+val dfindo = fn: 'a -> ('a, 'b) dict -> 'b option
+val dfoldl = fn: ('a * 'b * 'c -> 'c) -> 'c -> ('a, 'b) dict -> 'c
+val diag_mat = fn: graph.mat -> graph.mat -> graph.mat
+type ('a, 'b) dict
+val dict_sort = fn: ('a * 'a -> order) -> 'a list -> 'a list
+val difficulty_pair = fn: IntInf.int * IntInf.int -> real
+val disable_log = ref false: bool ref
+val distrib = fn: ('a * 'b list) list -> ('a * 'b) list
+val div_equal = fn: int -> int -> int list
+val dkeys = fn: ('a, 'b) dict -> 'a list
+val dlength = fn: ('a, 'b) dict -> int
+val dlist = fn: ('a, 'b) dict -> ('a * 'b) list
+val dmap = fn: ('a * 'b -> 'c) -> ('a, 'b) dict -> ('a, 'c) dict
+val dmem = fn: 'a -> ('a, 'b) dict -> bool
+val dmemi = fn: 'a -> ('a, 'b) dict ref -> bool
+val dnew = fn: ('a * 'a -> order) -> ('a * 'b) list -> ('a, 'b) dict
+val dregroup = fn: ('a * 'a -> order) -> ('a * 'b) list -> ('a, 'b list) dict
+val drem = fn: 'a -> ('a, 'b) dict -> ('a, 'b) dict
+val dreml = fn: 'a list -> ('a, 'b) dict -> ('a, 'b) dict
+val drop_sig = fn: string -> string
+val dset = fn: ('a * 'a -> order) -> 'a list -> ('a, unit) dict
+val dsum = fn: ('a * 'a -> order) -> ('a * int) list -> ('a, int) dict
+val duplicate = fn: int -> 'a list -> 'a list
+val eadd = fn: 'a -> 'a set -> 'a set
+val eaddi = fn: 'a -> 'a set ref -> unit
+val eaddl = fn: 'a list -> 'a set -> 'a set
+val eapp = fn: ('a -> unit) -> 'a set -> unit
+type edge = int * int
+val edge_compare = fn: (int * int) * (int * int) -> order
+val edge_of_string = fn: string -> edge
+val edgec_compare = fn: ((int * int) * int) * ((int * int) * int) -> order
+val edgec_of_string = fn: string -> edge * color
+val edgecl_of_string = fn: string -> coloring
+val edgecl_to_mat = fn: int -> coloring -> graph.mat
+val edgel_of_string = fn: string -> edge list
+val eempty = fn: ('a * 'a -> order) -> 'a set
+val efoldl = fn: ('a * 'b -> 'b) -> 'b -> 'a set -> 'b
+val elength = fn: 'a set -> int
+val elist = fn: 'a set -> 'a list
+val emem = fn: 'a -> 'a set -> bool
+val ememi = fn: 'a -> 'a set ref -> bool
+val emin = fn: 'a set -> 'a
+val enc_real = fn: real -> HOLsexp_dtype.t
+val enew = fn: ('a * 'a -> order) -> 'a list -> 'a set
+val enum = fn: int * int -> unit
+val enumspec =
+   {function = fn, parallel_dir =
+    "/data/ramsey55/external/barakeel-formal-poly592/src/parallel_search",
+    read_arg = fn, read_param = fn, read_result = fn, reflect_globals = fn,
+    self = "enum.enumspec", self_dir =
+    "/data/ramsey55/external/barakeel-formal-poly592/src", write_arg = fn,
+    write_param = fn, write_result = fn}:
+   (int * int, int * IntInf.int list, unit) smlParallel.extspec
+val epsilon = 1E~9: real
+val erase_file = fn: string -> unit
+val erem = fn: 'a -> 'a set -> 'a set
+val ereml = fn: 'a list -> 'a set -> 'a set
+val escape = fn: string -> string
+val exist_clique = fn: int -> (int * int -> bool) -> int list -> bool
+val exist_clique_edge = fn: graph.mat -> int * int -> edge -> bool
+val exist_clique_mat = fn: graph.mat -> int * int -> bool
+val exists_file = fn: string -> bool
+val exponent = ref 1.0: real ref
+val export_goal = fn: string -> goal -> unit
+val export_terml = fn: string -> term list -> unit
+val extend_mat = fn: graph.mat -> int -> graph.mat
+val extra_clausel = ref []: ((int * int) * int) list list ref
+val findSome = fn: ('a -> 'b option) -> 'a list -> 'b option
+val first_n = fn: int -> 'a list -> 'a list
+val first_test_n = fn: ('a -> bool) -> int -> 'a list -> 'a list
+val fold_left = fn: ('a -> 'b -> 'b) -> 'a list -> 'b -> 'b
+val fst_compare = fn: ('a * 'b -> 'c) -> ('a * 'd) * ('b * 'e) -> 'c
+val gamma_noise_gen = fn: real -> unit -> real
+val gen = fn: int * int -> int * int -> unit
+val gen_simple = fn:
+   int * int ->
+     ((int * int) * int) list ->
+       int -> IntInf.int -> IntInf.int -> int -> (int * int) list
+val genspec =
+   {function = fn, parallel_dir =
+    "/data/ramsey55/external/barakeel-formal-poly592/src/parallel_search",
+    read_arg = fn, read_param = fn, read_result = fn, reflect_globals = fn,
+    self = "gen.genspec", self_dir =
+    "/data/ramsey55/external/barakeel-formal-poly592/src", write_arg = fn,
+    write_param = fn, write_result = fn}:
+   ((int * int) * IntInf.int set, IntInf.int, IntInf.int * vleafs list)
+   smlParallel.extspec
+type ('a, 'b) gentactic = 'a -> goal list * (thm list -> 'b)
+val get_average35 = fn: IntInf.int list -> ((int * int) * real) list
+val get_average44 = fn: IntInf.int list -> ((int * int) * real) list
+val glue = fn: int * int -> IntInf.int -> IntInf.int -> thm
+val glue_pair = fn: IntInf.int * IntInf.int -> thm
+val glue_pb = fn: int * int -> IntInf.int -> IntInf.int -> term
+type goal = term list * term
+val goal_compare = fn: goal * goal -> order
+val has_boolty = fn: term -> bool
+val hash_string = fn: string -> int
+val hash_string_mod = fn: int -> string -> int
+val hd_string = fn: string -> char
+eqtype hol_type
+val ilts = fn: int list -> string
+val import_goal = fn: string -> goal
+val import_terml = fn: string -> term list
+val incr = fn: int ref -> unit
+val indent = fn: int -> string
+val infts = fn: IntInf.int -> string
+val inneighbor_of = fn: int -> graph.mat -> int -> int list
+val int_div = fn: int -> int -> real
+val int_pow = fn: int -> int -> int
+val int_product = fn: int list -> int
+val inter_increasing = fn: int list -> int list -> int list
+val interleave = fn: int -> 'a list -> 'a list -> 'a list
+val interval = fn: real -> real * real -> real list
+val inv_dict = fn: ('a * 'a -> order) -> ('b, 'a) dict -> ('a, 'b) dict
+val invert_perm = fn: int list -> int list
+val is_ramsey = fn: int * int -> graph.mat -> bool
+val is_singleton = fn: 'a list -> bool
+val its = fn: int -> string
+val link_sigobj = fn: string -> unit
+datatype lisp = Lstring of string | Lterm of lisp list
+val lisp_lexer = fn: string -> string list
+val lisp_parser = fn: string -> lisp list
+val listDir = fn: string -> string list
+val listDir_all = fn: string -> string list
+val list_combine = fn: 'a list list -> 'a list list
+val list_diff = fn: ''a list -> ''a list -> ''a list
+val list_imax = fn: int list -> int
+val list_imin = fn: int list -> int
+val list_mk_binop = fn: term -> term list -> term
+val list_rmax = fn: real list -> real
+type list_tactic = goal list -> goal list * list_validation
+type list_validation = thm list -> thm list
+val load_sigobj = fn: unit -> unit
+val log = fn: string -> unit
+val logfile =
+   ref "/data/ramsey55/external/barakeel-formal-poly592/src/aaa_log":
+   string ref
+val map_assoc = fn: ('a -> 'b) -> 'a list -> ('a * 'b) list
+val map_fst = fn: ('a -> 'b) -> ('a * 'c) list -> ('b * 'c) list
+val map_snd = fn: ('a -> 'b) -> ('c * 'a) list -> ('c * 'b) list
+type mat = graph.mat
+val matK = fn: int -> graph.mat
+val mat_compare = fn: graph.mat * graph.mat -> order
+val mat_compare_fixedsize = fn: int -> graph.mat * graph.mat -> order
+val mat_copy = fn: graph.mat -> graph.mat
+val mat_empty = fn: int -> graph.mat
+val mat_eq = fn: graph.mat -> graph.mat -> bool
+val mat_inject = fn: int -> graph.mat -> int list -> graph.mat
+val mat_merge = fn: graph.mat -> graph.mat -> graph.mat option
+val mat_permute = fn: graph.mat * int -> (int -> int) -> graph.mat
+val mat_set = fn: graph.mat list -> graph.mat list
+val mat_size = fn: graph.mat -> int
+val mat_sub = fn: graph.mat * int * int -> int
+val mat_tabulate = fn: int * (int * int -> int) -> graph.mat
+val mat_to_edgecl = fn: graph.mat -> coloring
+val mat_traverse = fn: (int * int * int -> unit) -> graph.mat -> unit
+val mat_update_sym = fn: graph.mat * int * int * int -> unit
+val maxhole = ref 8: int ref
+val memory = 8000: int
+val mincover = ref 0.125: real ref
+val mkDir_err = fn: string -> unit
+val mk_batch = fn: int -> 'a list -> 'a list list
+val mk_batch_full = fn: int -> 'a list -> 'a list list
+val mk_cumul = fn: ('a * real) list -> ('a * real) list * real
+val mk_fast_set = fn: ('a * 'a -> order) -> 'a list -> 'a list
+val mk_permf = fn: int list -> int -> int
+val mk_sameorder_set = fn: ('a * 'a -> order) -> 'a list -> 'a list
+val mk_string_set = fn: string list -> string list
+val mk_term_set = fn: term list -> term list
+val mk_type_set = fn: hol_type list -> hol_type list
+val model_counter = fn:
+   int -> (int * int) list -> ((int * int) * int) list list -> int
+val name_mat = fn: graph.mat -> string
+val ncore = 40: int
+val neighbor_of = fn: int -> graph.mat -> int -> int list
+val neighborm_of = fn: int -> graph.mat -> int -> graph.mat
+val normalize_distrib = fn: ('a * real) list -> ('a * real) list
+val normalize_proba = fn: real list -> real list
+val number_fst = fn: int -> 'a list -> (int * 'a) list
+val number_list = fn: int -> 'a list -> (int * 'a) list
+val number_of_blueedges = fn: graph.mat -> int
+val number_of_edges = fn: graph.mat -> int
+val number_of_holes = fn: graph.mat -> int
+val number_partition = fn: int -> int -> int list list
+val number_snd = fn: int -> 'a list -> ('a * int) list
+val one_in_n = fn: int -> int -> 'a list -> 'a list
+val only_concl = fn: thm -> term
+val pad = fn: int -> string -> string -> string
+val parmap_sl = fn: int -> string -> string list -> string list
+val part_group = fn: int list -> 'a list -> 'a list list
+val part_n = fn: int -> 'a list -> 'a list * 'a list
+val part_pct = fn: real -> 'a list -> 'a list * 'a list
+val percent = fn: real -> real
+val permutations = fn: 'a list -> 'a list list
+val pow = fn: real -> int -> real
+val pretty_real = fn: real -> string
+val print_endline = fn: string -> unit
+val print_mat = fn: graph.mat -> unit
+val print_time = fn: string -> real -> unit
+val quintuple_of_list = fn: 'a list -> 'a * 'a * 'a * 'a * 'a
+type 'a quotation = 'a frag list
+val ramsey_clauses_mat = fn:
+   int * int -> mat -> ((int * int) * int) list list
+val random_elem = fn: 'a list -> 'a
+val random_full_mat = fn: int -> graph.mat
+val random_int = fn: int * int -> int
+val random_mat = fn: int -> graph.mat
+val random_real = fn: unit -> real
+val random_subgraph = fn: int -> graph.mat -> graph.mat
+val random_subset = fn: int -> 'a list -> 'a list
+val range = fn: int * int * (int -> 'a) -> 'a list
+val read_cover = fn:
+   int -> int * int -> (IntInf.int * (IntInf.int * int list) list) list
+val read_data = fn: (HOLsexp_dtype.t -> 'a option) -> string -> 'a
+val read_enum = fn: int -> int * int -> IntInf.int list
+val read_par = fn: int -> int * int -> IntInf.int list
+val read_pbl = fn: string -> (IntInf.int * IntInf.int) list
+val read_tmdata = fn:
+   ((HOLsexp_dtype.t -> term option) -> HOLsexp_dtype.t -> 'a option) ->
+     string -> 'a
+val readl = fn: string -> string list
+val readl_empty = fn: string -> string list
+val readl_rm = fn: string -> string list
+val real_time = 0.0: real
+val reall_to_string = fn: real list -> string
+val realll_to_string = fn: real list list -> string
+val red = 2: int
+val remove_file = fn: string -> unit
+val rename_allvar = fn: term -> term
+val rename_bvarl = fn: (string -> string) -> term -> term
+val rm_prefix = fn: string -> string -> string
+val rm_space = fn: string -> string
+val rm_squote = fn: string -> string
+val rpt_fun_type = fn: int -> hol_type -> hol_type
+val rpt_split_level = fn: string -> string list -> string list list
+val rpt_split_sl = fn: ''a -> ''a list -> ''a list list
+val rts = fn: real -> string
+val rts_round = fn: int -> real -> string
+type rule = thm -> thm
+val run_cmd = fn: string -> unit
+val run_script_pbl = fn: string -> (IntInf.int * IntInf.int) list -> unit
+val select_basic = ref false: bool ref
+val select_in_cumul = fn: ('a * real) list * real -> 'a
+val select_in_distrib = fn: ('a * real) list -> 'a
+val select_in_distrib_seeded = fn: real -> ('a * real) list -> 'a
+val select_number1 = ref 240: int ref
+val select_number2 = ref 120: int ref
+val selfdir = "/data/ramsey55/external/barakeel-formal-poly592/src": string
+type 'a set
+val shuffle = fn: 'a list -> 'a list
+val sigobj_theories = fn: unit -> string list
+val snd_compare = fn: ('a * 'b -> 'c) -> ('d * 'a) * ('e * 'b) -> 'c
+val sort_thyl = fn: string list -> string list
+val split_level = fn: string -> string list -> string list * string list
+val split_pair = fn: char -> string -> string * string
+val split_sl = fn: ''a -> ''a list -> ''a list * ''a list
+val split_string = fn: string -> string -> string * string
+val split_triple = fn: char -> string -> string * string * string
+val standard_deviation = fn: real list -> real
+val stil = fn: string -> int list
+val stinf = fn: string -> IntInf.int
+val store_log = ref true: bool ref
+val streal = fn: string -> real
+val stream_to_string = fn:
+   string -> (TextIO.outstream -> unit) -> string list
+val string_of_bluegraph = fn: graph.mat -> string
+val string_of_edge = fn: edge -> string
+val string_of_edgec = fn: edge * color -> string
+val string_of_edgecl = fn: coloring -> string
+val string_of_edgel = fn: edge list -> string
+val string_of_goal = fn: goal -> string
+val string_of_goal_noquote = fn: goal -> string
+val string_of_graph = fn: graph.mat -> string
+val string_of_mat = fn: graph.mat -> string
+val string_to_bool = fn: string -> bool
+val string_to_reall = fn: string -> real list
+val string_to_realll = fn: string -> real list list
+val stringspec =
+   {function = fn, parallel_dir =
+    "/data/ramsey55/external/barakeel-formal-poly592/src/parallel_search",
+    read_arg = fn, read_param = fn, read_result = fn, reflect_globals = fn,
+    self = "kernel.stringspec", self_dir =
+    "/data/ramsey55/external/barakeel-formal-poly592/src", write_arg = fn,
+    write_param = fn, write_result = fn}:
+   (unit, string, string) smlParallel.extspec
+val stringspec_fun_default = fn: string -> string
+val stringspec_fun_glob = ref fn: (string -> string) ref
+val stringspec_funname_glob = ref "kernel.stringspec_fun_default": string ref
+val strip_binop = fn: term -> term -> term list
+val strip_type = fn: hol_type -> hol_type list * hol_type
+val strip_type_n = fn: int -> hol_type -> hol_type list * hol_type
+val subset = fn: ''a list -> ''a list -> bool
+val subsets_of_size = fn: int -> 'a list -> 'a list list
+type ('a, 'b) subst = ('a, 'b) Lib.subst
+val subst_sl = fn: string * string -> string list -> string list
+val sum_int = fn: int list -> int
+val sum_real = fn: real list -> real
+val sunzip_mat = fn: string -> graph.mat
+val swap_colors = fn: graph.mat -> graph.mat
+val symmetrify = fn: graph.mat -> graph.mat
+val szip_mat = fn: graph.mat -> string
+type tactic = goal -> goal list * validation
+type term
+val term_of_lisp = fn: lisp -> term
+val test_fun = fn: string -> string
+type thm
+type thm_tactic = thm -> tactic
+type thm_tactical = thm_tactic -> thm_tactic
+val timer_glob1 = ref 0.0: real ref
+val timer_glob2 = ref 0.0: real ref
+val timer_glob3 = ref 0.0: real ref
+val timer_glob4 = ref 0.0: real ref
+val timer_glob5 = ref 0.0: real ref
+val tl_string = fn: string -> string
+val tmsize_compare = fn: term * term -> order
+val topo_sort = fn: ('a * 'a -> order) -> ('a * 'a list) list -> 'a list
+val total_time = fn: real ref -> ('a -> 'b) -> 'a -> 'b
+val trace_tacl = fn: tactic list -> goal -> unit
+val triple_compare = fn:
+   ('a * 'b -> order) ->
+     ('c * 'd -> order) ->
+       ('e * 'f -> order) -> ('a * 'c * 'e) * ('b * 'd * 'f) -> order
+val tts = fn: term -> string
+val tune = fn: string -> int -> int * int * int * real -> unit
+val tune_3510 = fn: string -> int -> int * real -> unit
+val tune_3512 = fn: string -> int -> int * int * real -> unit
+val unescape = fn: string -> string
+val uniform_distrib = fn: 'a list -> ('a * real) list
+val uniform_proba = fn: int -> real list
+val union_dict = fn:
+   ('a * 'a -> order) -> ('a, 'b) dict list -> ('a, 'b) dict
+val unquote_string = fn: string -> string
+val unzip_full = fn: int -> IntInf.int -> graph.mat
+val unzip_full_edgecl = fn: int -> IntInf.int -> ((int * int) * int) list
+val unzip_mat = fn: IntInf.int -> graph.mat
+type validation = thm list -> thm
+val vector_max = fn: ('a -> real) -> 'a vector -> int * real
+val vector_maxi = fn: ('a -> real) -> 'a vector -> int
+val vector_mini = fn: ('a -> real) -> 'a vector -> int
+val vector_to_list = fn: 'a vector -> 'a list
+eqtype vertex
+type vleafs = int * int * (IntInf.int * int list) list
+val write_cover = fn:
+   int ->
+     int * int -> (IntInf.int * (IntInf.int * int list) list) list -> unit
+val write_data = fn: ('a -> HOLsexp_dtype.t) -> string -> 'a -> unit
+val write_enum = fn: int -> int * int -> IntInf.int list -> unit
+val write_file = fn: string -> string -> unit
+val write_latexmat = fn: string -> graph.mat -> unit
+val write_pbl = fn: string -> (IntInf.int * IntInf.int) list -> unit
+val write_texgraph = fn:
+   string -> string * string -> (int * int) list -> unit
+val write_tmdata = fn:
+   ((term -> HOLsexp_dtype.t) -> 'a HOLsexp.encoder) * ('a -> term list) ->
+     string -> 'a -> unit
+val writel = fn: string -> string list -> unit
+val writel_atomic = fn: string -> string list -> unit
+val writel_path = fn: string -> string -> string list -> unit
+val zip_full = fn: graph.mat -> IntInf.int
+val zip_mat = fn: graph.mat -> IntInf.int
+> > # # # val ramsey55_env = fn: string -> string
+> > val ramsey55_label = "GLUE358": string
+> val ramsey55_pbl =
+   [(45711642438494,
+     3583333754570559034715360012962377664510025546852272054849),
+    (45711642438494,
+     3583333758674368197732360914071565186738705964924502796773),
+    (45742899027601,
+     3583333754570559034715360012962377664510025546852272054849),
+    (45742899027601,
+     3583333758674368197732360914071565186738705964924502796773),
+    (45690506149148,
+     3583333754570559034715360012962377664510025546852272054849),
+    (45690506149148,
+     3583333758674368197732360914071565186738705964924502796773),
+    (45523225279466,
+     3583333754570559034715360012962377664510025546852272054849),
+    (45523225279466,
+     3583333758674368197732360914071565186738705964924502796773),
+    (45659383900877,
+     3583333754570559034715360012962377664510025546852272054849),
+    (45659383900877,
+     3583333758674368197732360914071565186738705964924502796773),
+    (43957822384478,
+     3583333754570559034715360012962377664510025546852272054849),
+    (43957822384478,
+     3583333758674368197732360914071565186738705964924502796773),
+    (45741944418458,
+     3583333754570559034715360012962377664510025546852272054849),
+    (45741944418458,
+     3583333758674368197732360914071565186738705964924502796773),
+    (39806248853873,
+     3583333754570559034715360012962377664510025546852272054849),
+    (39806248853873,
+     3583333758674368197732360914071565186738705964924502796773),
+    (45638123976960,
+     3583333754570559034715360012962377664510025546852272054849),
+    (45638123976960,
+     3583333758674368197732360914071565186738705964924502796773),
+    (27395564048477,
+     3583333754570559034715360012962377664510025546852272054849),
+    (27395564048477,
+     3583333758674368197732360914071565186738705964924502796773),
+    (25374743716097,
+     3583333754570559034715360012962377664510025546852272054849),
+    (25374743716097,
+     3583333758674368197732360914071565186738705964924502796773),
+    (43839196172665,
+     3583333754570559034715360012962377664510025546852272054849),
+    (43839196172665,
+     3583333758674368197732360914071565186738705964924502796773),
+    (44010047422565,
+     3583333754570559034715360012962377664510025546852272054849),
+    (44010047422565,
+     3583333758674368197732360914071565186738705964924502796773),
+    (45115358019902,
+     3583333754570559034715360012962377664510025546852272054849),
+    (45115358019902,
+     3583333758674368197732360914071565186738705964924502796773),
+    (40648917467241,
+     3583333754570559034715360012962377664510025546852272054849),
+    (40648917467241,
+     3583333758674368197732360914071565186738705964924502796773),
+    (38127977419259,
+     3583333754570559034715360012962377664510025546852272054849),
+    (38127977419259,
+     3583333758674368197732360914071565186738705964924502796773),
+    (30491885929029,
+     3583333754570559034715360012962377664510025546852272054849),
+    (30491885929029,
+     3583333758674368197732360914071565186738705964924502796773),
+    (45648836094921,
+     3583333754570559034715360012962377664510025546852272054849),
+    (45648836094921,
+     3583333758674368197732360914071565186738705964924502796773),
+    (45742948977735,
+     3583333754570559034715360012962377664510025546852272054849),
+    (45742948977735,
+     3583333758674368197732360914071565186738705964924502796773),
+    (30484519701677,
+     3583333754570559034715360012962377664510025546852272054849),
+    (30484519701677,
+     3583333758674368197732360914071565186738705964924502796773),
+    (45178221529831,
+     3583333754570559034715360012962377664510025546852272054849),
+    (45178221529831,
+     3583333758674368197732360914071565186738705964924502796773),
+    (45743079357988,
+     3583333754570559034715360012962377664510025546852272054849),
+    (45743079357988,
+     3583333758674368197732360914071565186738705964924502796773),
+    (45743080958873,
+     3583333754570559034715360012962377664510025546852272054849),
+    (45743080958873,
+     3583333758674368197732360914071565186738705964924502796773),
+    (45753526901690,
+     3583333754570559034715360012962377664510025546852272054849),
+    (45753526901690,
+     3583333758674368197732360914071565186738705964924502796773),
+    (45742562617972,
+     3583333754570559034715360012962377664510025546852272054849),
+    (45742562617972,
+     3583333758674368197732360914071565186738705964924502796773),
+    (45711680767268,
+     3583333754570559034715360012962377664510025546852272054849),
+    (45711680767268,
+     3583333758674368197732360914071565186738705964924502796773),
+    (45743080958842,
+     3583333754570559034715360012962377664510025546852272054849),
+    (45743080958842,
+     3583333758674368197732360914071565186738705964924502796773)]:
+   (IntInf.int * IntInf.int) list
+> val ramsey55_blue =
+   “∀x0 x1 x2 x3.
+      E x0 x1 ⇒
+      E x0 x2 ⇒
+      E x0 x3 ⇒
+      E x1 x2 ⇒
+      E x1 x3 ⇒
+      E x2 x3 ⇒
+      x0 < 24 ⇒
+      x1 < 24 ⇒
+      x2 < 24 ⇒
+      x3 < 24 ⇒
+      x0 ≠ x1 ⇒
+      x0 ≠ x2 ⇒
+      x0 ≠ x3 ⇒
+      x1 ≠ x2 ⇒
+      x1 ≠ x3 ⇒
+      x2 ≠ x3 ⇒
+      F”: term
+> val ramsey55_red =
+   “∀x0 x1 x2 x3 x4.
+      ¬E x0 x1 ⇒
+      ¬E x0 x2 ⇒
+      ¬E x0 x3 ⇒
+      ¬E x0 x4 ⇒
+      ¬E x1 x2 ⇒
+      ¬E x1 x3 ⇒
+      ¬E x1 x4 ⇒
+      ¬E x2 x3 ⇒
+      ¬E x2 x4 ⇒
+      ¬E x3 x4 ⇒
+      x0 < 24 ⇒
+      x1 < 24 ⇒
+      x2 < 24 ⇒
+      x3 < 24 ⇒
+      x4 < 24 ⇒
+      x0 ≠ x1 ⇒
+      x0 ≠ x2 ⇒
+      x0 ≠ x3 ⇒
+      x0 ≠ x4 ⇒
+      x1 ≠ x2 ⇒
+      x1 ≠ x3 ⇒
+      x1 ≠ x4 ⇒
+      x2 ≠ x3 ⇒
+      x2 ≠ x4 ⇒
+      x3 ≠ x4 ⇒
+      F”: term
+> > val ramsey55_has = fn: term -> term list -> bool
+> > # # # # # # # # # # # # # # # # # # # # # val ramsey55_load = fn: int -> (IntInf.int * IntInf.int) list -> unit
+> > # # # # # # # # RAMSEY55_GLUE358_LOAD 0 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 1 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 2 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 3 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 4 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 5 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 6 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 7 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 8 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 9 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 10 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 11 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 12 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 13 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 14 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 15 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 16 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 17 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 18 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 19 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 20 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 21 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 22 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 23 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 24 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 25 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 26 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 27 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 28 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 29 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 30 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 31 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 32 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 33 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 34 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 35 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 36 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 37 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 38 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 39 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 40 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 41 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 42 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 43 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 44 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 45 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 46 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 47 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 48 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 49 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 50 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 51 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 52 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_LOAD 53 F C4524B C4524R NO_FALSE_HYP
+RAMSEY55_GLUE358_KERNEL_LOAD_54_OK

@@ -1,0 +1,2737 @@
+{
+  "auditor": {
+    "bytes": 12268,
+    "path": "/root/ramsey55/tools/audit_upstream_hol_gluing_theories.py",
+    "sha256": "9c51eead19578607f02fe6333f5fd0ed9bb6e22048e6649b5b5e4edbf29898b1"
+  },
+  "build_log": {
+    "bytes": 33327,
+    "path": "/data/ramsey55/external/barakeel-formal-poly592/glue358-direct-full-v2-build.log",
+    "sha256": "91bfb261155d865a9e58b3b3ce12295d8eb5e2f619042b99a7b84dbb07f7f7f0"
+  },
+  "build_time_log": {
+    "bytes": 1109,
+    "path": "/data/ramsey55/external/barakeel-formal-poly592/glue358-direct-full-v2-build.time.log",
+    "sha256": "f232c90f9fb7a4d0a35cf95d88e12fdceface1641d43529de87c335ee89ad6c1"
+  },
+  "claim": "the exact listed gluing scripts produced nonempty HOL4 theory artifacts and a fresh HOL4 session loaded each exported theorem with conclusion F, both C4524 hypotheses, and no F hypothesis; global cover exhaustiveness is separate",
+  "evidence": [
+    {
+      "bytes": 21,
+      "path": "/data/ramsey55/external/barakeel-formal-poly592/src/config",
+      "sha256": "89d771405673e10517c278e2186613b5b84431dfc3f3aaefa771ecf98e201208"
+    },
+    {
+      "bytes": 106,
+      "path": "/data/ramsey55/external/barakeel-formal-poly592/src/dir.sml",
+      "sha256": "8d6fdf60634dd5afd1d0c7bb593c0718ce3c9a6d18331854e2d9f07ba89a6ec9"
+    },
+    {
+      "bytes": 418,
+      "path": "/data/ramsey55/external/barakeel-formal-poly592/HOL/bin/hol",
+      "sha256": "ae6bcd93973cfd5a9d8b704caac40f2015b3023b4cda8748826049ffe41a8dd8"
+    },
+    {
+      "bytes": 79256,
+      "path": "/data/ramsey55/external/barakeel-formal-poly592/HOL/src/HolSat/sat_solvers/minisat/minisat",
+      "sha256": "4eeb116e0ca97a55c5e1def0f7a9c1559ee04c68690703aee1993818f33053e2"
+    },
+    {
+      "bytes": 2421,
+      "path": "/root/ramsey55/scripts/run_upstream_hol_gluing_batch.sh",
+      "sha256": "e0913792dad4210202e30c8a1bb3d98b115c317bdfa348fa9a3546cdefad07c6"
+    },
+    {
+      "bytes": 2806,
+      "path": "/root/ramsey55/scripts/upstream_hol_gluing_batch.sml",
+      "sha256": "a8dc99b6ff89eebf1a1b496145c722fa6ae17cdf547660c74f4204877b3406cc"
+    },
+    {
+      "bytes": 4195,
+      "path": "/root/ramsey55/scripts/audit_upstream_hol_gluing_theories.sh",
+      "sha256": "880821a8f3feb2b80c1745d2848eb793adb67cd833c1b464bb5b6272dfd2ffc4"
+    },
+    {
+      "bytes": 1644,
+      "path": "/root/ramsey55/scripts/upstream_hol_gluing_load_audit.sml",
+      "sha256": "b814255aeb5c2229f21b040eb599c723d043019556810abea12373333b8fb01f"
+    }
+  ],
+  "label": "GLUE358",
+  "load_log": {
+    "bytes": 30086,
+    "path": "/data/ramsey55/external/barakeel-formal-poly592/glue358-direct-full-v2-load.log",
+    "sha256": "499a99186e8ec8cb773848008a7f8ae696d626da722a6929494517a42c4a5c36"
+  },
+  "load_time_log": {
+    "bytes": 911,
+    "path": "/data/ramsey55/external/barakeel-formal-poly592/glue358-direct-full-v2-load.time.log",
+    "sha256": "f25f9c48ea769d861086c81f9adc2f79ce98ae071eb3e0c924b4c032046cf492"
+  },
+  "problem_list": {
+    "bytes": 3996,
+    "path": "/data/ramsey55/external/barakeel-formal-poly592/src/glue358_pbl_ramsey55_v1",
+    "sha256": "98803bdf4b51f28219821787c1c7e0f842fb31563cc1b39b2da07c8085dc01fb"
+  },
+  "schema": "ramsey55.upstream-hol-gluing-theory-audit.v1",
+  "summary": {
+    "build_memory_limit_mb": 20000,
+    "complete_six_file_theories": 54,
+    "exact_generated_scripts": 54,
+    "exact_successful_buildheap_logs": 54,
+    "fresh_loaded_false_theorems": 54,
+    "fresh_loaded_theorems_without_false_hypothesis": 54,
+    "pairs": 54,
+    "unique_pairs": 54
+  },
+  "theories": [
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45711642438494_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "c714309f34c2c01ee3dd88867ea204e47fc0f37bfeb362687243811b095520eb"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711642438494_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "f111acd9edf095f4ac1a876a80382d294e7379e88b9484c369bae84d304bdfbc"
+        },
+        "Theory.dat": {
+          "bytes": 8641,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711642438494_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "0f6f76898c8cb75760f797d5ca01c831f2bc15beea6097f08f712bec5319eefb"
+        },
+        "Theory.sig": {
+          "bytes": 7514,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711642438494_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "7b9768fab5c1af0a585548269f01f76e20f564d65dfcc389c10612e5348bcd94"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711642438494_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "759c052e0fb46a0112461b01f7e7e0dd2c752bdcc923c69025ed640043982e7e"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711642438494_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "5fa9a643f42b4115282015d76c21a63573a1bf05298c2f8896bcd0581b225823"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711642438494_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "58533f50c12bc7c8506b79882bc06c63f889812f0b409ff5f89462119e394c14"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 0,
+      "left_code": 45711642438494,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_45711642438494_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45711642438494_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "b6304380f4485edb7d6f971990c2bc667fca109d9439864bbe16c98c0766f2d7"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711642438494_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "b8ed303ff77942eb2e703e170b6032ce4dffc46aba45bdf71a442bf71746de49"
+        },
+        "Theory.dat": {
+          "bytes": 8640,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711642438494_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "becc88a088f661a4c44f217695dfe84da8b2fac08d55b21a58047444c0e287d1"
+        },
+        "Theory.sig": {
+          "bytes": 7514,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711642438494_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "8fc514a5640c721bc560754bd605398775cd3e569597f85bb606ee4a858668d6"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711642438494_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "07879af920bddce12e7b90b602d4b4359b1b8efa4dca9271d8757044b6cc29fb"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711642438494_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "589e8d9d44ecd20b422a9c7f59037394ca9e22989a0107c8c2dfdd589a9b9082"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711642438494_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "8c156656fd8fd241a414c45330a4b615e0914bff3100dc5444a43289cd98f186"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 1,
+      "left_code": 45711642438494,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_45711642438494_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45742899027601_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "498a2a05f4a6e3cbdc764eb4242207e588a4b3c60d38c148482d19320f468141"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742899027601_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "9cdb45fd4118361ea6f6ecf5d1f46f776189feed6461744a67dcb2f894901689"
+        },
+        "Theory.dat": {
+          "bytes": 8638,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742899027601_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "e5e7b55908f96782aad71ad022845d841e9bcb1dc0f1845e415dfc8d37930941"
+        },
+        "Theory.sig": {
+          "bytes": 7519,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742899027601_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "a9d299f2654142c4b234439a34fd09afff04595b230da5228fab8945f4220e6a"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742899027601_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "f801126dcc6e86b789242e8c991d7f5abe06edc27403ac4853a9738951185cc1"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742899027601_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "6f47b6b8805dd953118ced6627ac255a5b1a2ad895dac6aa0b63a4c6d01cf6b0"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742899027601_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "f9542b0b1d4ec770ba4d9077665da865c280e0f3557d2ba6c6ee3d8e6c3624b3"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 2,
+      "left_code": 45742899027601,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_45742899027601_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45742899027601_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "6c37d5170bb6d75500d4d105b9e0fdec05d3200188138d6852c20852762802f7"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742899027601_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "f54546b61bd9bb529c0ca3ba0490e0ae975e7c5da1de097039ff73e09deb02a1"
+        },
+        "Theory.dat": {
+          "bytes": 8638,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742899027601_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "516023968b4666d148dfd92c96d26c19b5cf74f12377ea2719fad79e3f4f3b93"
+        },
+        "Theory.sig": {
+          "bytes": 7512,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742899027601_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "17167fab7faa6b2a7e88da803ded66787619e9a60abf0373dc550933a4982193"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742899027601_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "4a144c3f1bd1aa384233ee022f12224ff61fb2117d5efe211f4d7cdd0f1b79dc"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742899027601_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "9bda2548a02d7169b1961be7a6866640fbe589b6afcb11030a2e8d58efe53686"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742899027601_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "43e9e550fe837b3b4ad711eb9a84ef0b2e24c31d279620757482025b6d822c51"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 3,
+      "left_code": 45742899027601,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_45742899027601_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45690506149148_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "4a9529eecfbf4b67f263c4a5d7d8ce8890e3ab44f53b058f5c8f6892e316a1ac"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45690506149148_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "de62bfabe31edc485010d541fdcbad6f37df75619526295f34943816b112ee32"
+        },
+        "Theory.dat": {
+          "bytes": 8642,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45690506149148_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "eefa6e0a81f963888428c4f97d7877eea6744624269e74a3539f30ee9e2e1500"
+        },
+        "Theory.sig": {
+          "bytes": 7514,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45690506149148_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "2f742ea30edfe38b117292f5a80021f453de2cbd9c85387ffbe2129599a59f07"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45690506149148_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "8ddb9bb49537ec102ed9453867b522514d623aeb41e957990cad82431cf546aa"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45690506149148_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "776f3a7cb811226aea7826219e64cb32aaa3874815c63e80871e8ec5cb095122"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45690506149148_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "2f2b440a3a2dfae4b77d4efc69297788400c30fce586cf35768c3d3dba1aa0b6"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 4,
+      "left_code": 45690506149148,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_45690506149148_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45690506149148_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "cece12cb97c303915fc02495703392b2c0c17a06a6e046a5d7fd2fa98c8468a2"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45690506149148_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "89a494ae3c76d8c37ac8586272f2f1ada589b3afdad76e6332cced761e09692e"
+        },
+        "Theory.dat": {
+          "bytes": 8642,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45690506149148_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "5b8a07b442e373ea35cd3516767134ab7d22c1a1066f485306add5b2a09612f4"
+        },
+        "Theory.sig": {
+          "bytes": 7514,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45690506149148_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "dc4f5f92d4f04785bef1dd6cc3aa41ab723c9be2ecfa2024e3945c7c4750a612"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45690506149148_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "6791200e0675b9177e31cb3319db017a19ac0ddb2d1b9c4d9de4d2f0a8102328"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45690506149148_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "57f9a3b5baf89ba93721cf0050ebd495a3d053a1245cf10fe6317471068c7d8b"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45690506149148_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "92693767482b60bd8dace22da8510ff2cf6f3d5ff5ef8f975fc6d67bb65818d1"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 5,
+      "left_code": 45690506149148,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_45690506149148_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45523225279466_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "9bb9289004c819a8bb9936fbbec8ad636f310b50fbaac3cb13d8101b0ee0fc85"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45523225279466_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "f5f7f72a42a25cd3b00edcaa5e0056f88ad10e2f06568943233e50d01bc4c6b6"
+        },
+        "Theory.dat": {
+          "bytes": 8636,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45523225279466_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "b2ce7394e1d67a93a49ce303d238f6e67b996aa71f9ac8660b9604823562dd32"
+        },
+        "Theory.sig": {
+          "bytes": 7517,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45523225279466_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "28b97f1546ec2541737ad66d4cde952d2c945221365a8f37b338d2ef709aba8f"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45523225279466_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "233e064c2d614a9f84eb1d9de513147ca3847bf9f46b1cd289ad03dda74c50e3"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45523225279466_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "62864e42db8f209838c994963453c0822eb88beb1e2aef3d54113228234fdc66"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45523225279466_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "cee44de8dd412050ddeae1af60fae070dcfd69ed840a86b0a91314a842c81605"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 6,
+      "left_code": 45523225279466,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_45523225279466_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 426,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45523225279466_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "b6ebf64b9fa951c082d852726e4f93c35714146a1c39ccfecd0f0b3511217143"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45523225279466_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "6b82eea9d87b036bd2b551cc6e356e9aceb00f3c7b14d647bbf29de29efe744c"
+        },
+        "Theory.dat": {
+          "bytes": 8636,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45523225279466_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "84a39954c207cb1390264cc9be77138e2612aa0a5ffd46ffccf788d1e567acdd"
+        },
+        "Theory.sig": {
+          "bytes": 7517,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45523225279466_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "4101674df441aa34d3ef5c46359803df49c67485a783259adb62441f0788db40"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45523225279466_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "a956c847e186cf7f1242d245495fb676d8d73695a22b686bf4cb6a264c11a086"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45523225279466_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "eee00117e305ef49b7da61062246109c329944a20a7a5466868d05a5f2c8c2ca"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45523225279466_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "7e9fca6b1b81134135ad8e768144a29daf61a431c93ef3624de13965222ea4e9"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 7,
+      "left_code": 45523225279466,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_45523225279466_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45659383900877_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "2b0ed102aa7fd233df1827317da5859f0678660609166d90c7475b9b4ae3cb17"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45659383900877_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "8193baebf368554ce8f900dca40c7b073ccfb1413d80be68a697b0a836f368da"
+        },
+        "Theory.dat": {
+          "bytes": 8642,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45659383900877_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "6b68377a2694cf4f4c3aeee270f17f9b4331c1d79345f968923bc4f06020d596"
+        },
+        "Theory.sig": {
+          "bytes": 7516,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45659383900877_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "9f5696f232d843a3969d5f373e4122581122b44bdaa5c1c588e4f18cdc084e22"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45659383900877_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "5974ce513f1f22f476fdb3417d71535b804ccb0b8504ecbfd02c8d708af2dc19"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45659383900877_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "71867da07ee4445abbac17fb2d1c09bd36d544e617ed3ebc2b107d0b65162a8c"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45659383900877_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "7648ec8b646b7fdea75ca2ee030b360d6cebd58e14f0c748a7c7f16ab2c3ccf3"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 8,
+      "left_code": 45659383900877,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_45659383900877_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45659383900877_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "eef4bb8b64fdd26e1f34489d663f4531483643cc0ca466fd48970c4b3f20a10b"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45659383900877_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "3e23329db29889224ed16865824a48af5ec319d3c2c9ad01a252af9807b2a5e8"
+        },
+        "Theory.dat": {
+          "bytes": 8643,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45659383900877_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "e75c7980d26e25fe0fa2e163f27ce7ffd23d0db25d541277ddab7d8ec53eea73"
+        },
+        "Theory.sig": {
+          "bytes": 7516,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45659383900877_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "bb288566ae69c87f76714a144f04cb1d6628a7072e71934351bd8568b9bbed82"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45659383900877_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "17ab1de9499a2ec976ff801f79e9a2e107556dd3550d6ed311c9bb8b49e57ae5"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45659383900877_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "4188090c13893d7a7f08475d19498a2d9d0c77e7fd014e7bba4a4f38300fab33"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45659383900877_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "8386dc4e846a8c81fc346b834a0bd951306828537f283203073faa89decbba1b"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 9,
+      "left_code": 45659383900877,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_45659383900877_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_43957822384478_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "798476e2be8ee0907feed4f6d1693045ab006a256cc2ab57ade0b37c8a993a1a"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43957822384478_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "164a0e897d771d6a54737f5560e55a3aa33dfaffd9dca746901cb5a65904dae7"
+        },
+        "Theory.dat": {
+          "bytes": 8636,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43957822384478_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "f17933425ad3bbff29513e684e7ea38bdb409f249bdfccf43f12b5f3163e2e75"
+        },
+        "Theory.sig": {
+          "bytes": 7510,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43957822384478_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "66cfd531b0678443b08cf6cbf7c14739f1978960a2cb5d0425ef22e3d0f4fe8a"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43957822384478_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "838f1a0007e59d984051e320c0b32280ca33e5084fa5858aedc187e59c0cc82f"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43957822384478_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "aeb1a711475f7356e66444ee17402d3b9da79f0d13e8df9c9eaf5d4605a79b44"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43957822384478_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "6b0a2f3ef4e087bb6a3a497cb1fc04a9e12a97f3379b80e10909dcae2f4f048a"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 10,
+      "left_code": 43957822384478,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_43957822384478_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 426,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_43957822384478_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "c680a691217a6f1473911d53642c0246131793ae857dc4f2d729e42f284a58fa"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43957822384478_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "04e04492c43c625f133e18201f788d22978716cb796dcf3f12a48a666d2d4db4"
+        },
+        "Theory.dat": {
+          "bytes": 8636,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43957822384478_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "bfb0b815eeda8ebdc0ebe56a0104165614f29e38c19031df18b1ef34a5c4250f"
+        },
+        "Theory.sig": {
+          "bytes": 7510,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43957822384478_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "cf7bd1cc5045bdb7b741ea51ae68703a0517ac12b349b500895b75f4b6425948"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43957822384478_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "7e7ba4be09ef8bd0841e51eaa1ef41efee02020c9ce28bbb3fdfd6d9d087b690"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43957822384478_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "f28dbf56b5f1f5e00252cf549c5e75ce5c374d7ee6b6f587981ab157df23cb1c"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43957822384478_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "64c815eb8e2bfcf1d6e90b7c83edf0f035fe0a518ee93640a5d7847cff3c71d9"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 11,
+      "left_code": 43957822384478,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_43957822384478_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45741944418458_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "378fd0932de5254611a5aa094d4c6f323c45afbeca032816fa6082ee0d9ca228"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45741944418458_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "c8de96c4bafdef7fe12dc030467c57a6a2930ee48a64b12d2bd905f86de5f308"
+        },
+        "Theory.dat": {
+          "bytes": 8640,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45741944418458_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "530ceaab7abd147f5d853b3f9e71bd2ce6097180f856d024ae04de9513c60db7"
+        },
+        "Theory.sig": {
+          "bytes": 7514,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45741944418458_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "d8691e8b0180af1ba23b8a97b2f748f90b1f57dba83974f2357e0ec753e4ad6c"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45741944418458_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "c22a3c5c17ccbc10e061e6ddcfd145cd5fa661a0b007fde8c4dddc05bfe91e1a"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45741944418458_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "aea883df5cd434dc2229ca4fdcaf74c26b5ac57e68334a6c86443a6cebb8ca20"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45741944418458_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "5ab40d60a88f74086bd571719c5f6c55a32561201368294408e27aa474cb10e0"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 12,
+      "left_code": 45741944418458,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_45741944418458_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45741944418458_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "7d49cad9157fc18df725838e2c08a7ba39d3fd7f6e9d4672a090bd3dc280a104"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45741944418458_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "a416016774615de24f31a591cac3c3efb8465b4bc83dde7569add8988ab1a097"
+        },
+        "Theory.dat": {
+          "bytes": 8640,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45741944418458_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "162bc9ac28848a37a0a420014ed1b2078e2d0e47c9ab3a46476af803fe43ca9b"
+        },
+        "Theory.sig": {
+          "bytes": 7514,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45741944418458_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "ca7e87a46e0142ae81b019f8ab137b1f424010719ca507ab72ec0b54c23e0077"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45741944418458_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "6bc38b20ec42f74eb5a476b53cd8a183d7be21acf80e914a021448f7b981db3c"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45741944418458_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "19d086d771fe14df1208560a5b1162ccd6ffad9929ff5cfb6453b94113e532dd"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45741944418458_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "958247a9d4bdfff1840b37750f1a0ec1601d3b3743a31d6ddc53597d0c8adf56"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 13,
+      "left_code": 45741944418458,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_45741944418458_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 426,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_39806248853873_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "ee5889a0d612d836ccb6115b55cb2ff61e296fa1601da2b98d8232a2707843bc"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_39806248853873_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "3f98e8b9f54e2990669111ccf8abdcf1f9f723c6c0c62935d67024cfa456dfc6"
+        },
+        "Theory.dat": {
+          "bytes": 8639,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_39806248853873_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "429977b7c0a4bab2cef753a87350c1c5dea6c35d044fcb35540ae058398052ec"
+        },
+        "Theory.sig": {
+          "bytes": 7519,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_39806248853873_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "1b5b3d098261f5625544e95aa99a617f939104dd1dbe1b192c89715b3c9ea55f"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_39806248853873_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "e83c750692ac69e69a95378bd41827d68f64557e57f1496ebe6e22f9686738dc"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_39806248853873_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "dbc4df3af5d04385987ca414f90a2a87469f0f15a9d175822bf0812dc2b63c14"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_39806248853873_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "3a2fa15d0f4e81e93b2d11711dd910397fc15776358cdd9933504ba69942fdd9"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 14,
+      "left_code": 39806248853873,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_39806248853873_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 426,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_39806248853873_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "7321ef24fbe97ad9555b11996d7f5a0b15935dd47a68d8a42cfa278893fb486e"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_39806248853873_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "ea632e8a73f2d162a1426a6b22397a5c4249b5a95f66258703c931f3bec90627"
+        },
+        "Theory.dat": {
+          "bytes": 8639,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_39806248853873_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "80cbd15f39516b7cd08253deb7f64ba8aac0b4e9cf0f580ef4419d98025ea8d8"
+        },
+        "Theory.sig": {
+          "bytes": 7519,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_39806248853873_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "b36d2fc47290b3fbdde70e355c2a67a5ef2ca53423b63dbb65fbd2f77b6f8223"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_39806248853873_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "076941e42d3c299effb7a861b2db39aca4bad65b422cf9b80c6855a8c120b62a"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_39806248853873_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "2820fd9a88dd51ec23986dbcad58e5dd41faaf297e5a4f88b68ba0b98144b102"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_39806248853873_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "0da46b5428329a46db090015168d2718784f7c6f16a2281e3cdb299366eca25c"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 15,
+      "left_code": 39806248853873,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_39806248853873_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45638123976960_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "ef61827c652c737da3adb074cd5ffbcf62511bf738ab97a72edbe3106046b291"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45638123976960_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "e6f12df5d936fe2492adac666bb39550cd3b4e7f79218a636875e6e7ae9e23de"
+        },
+        "Theory.dat": {
+          "bytes": 8647,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45638123976960_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "e960e15a54fb4135f9c9f82ddd47b8c7d9e3a08a8952eb40aca714a2cf495c07"
+        },
+        "Theory.sig": {
+          "bytes": 7518,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45638123976960_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "5eabe98366c079b02c147f6a35a8c3f0209888e23d922d95ecbaaefba9d4527b"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45638123976960_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "17053b2206ac48246636f7ebe907aadfef51324d08a2a7d3afe725d1054158fd"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45638123976960_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "3e0c91f9f8b581245572027511b6ef098f6d350c35956d6e38a0c3bf00155f3c"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45638123976960_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "2877ad498b3d9e5dbea41a51ce9a7ddeb2a06b46f3232f2f6249b2c0fda1d405"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 16,
+      "left_code": 45638123976960,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_45638123976960_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45638123976960_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "91ce2a50fc741f40f23440f8e8348fd6820ff6f7edf653dbdea59246b01dd33c"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45638123976960_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "a4faaf6864f75b6d79149193270ebfe42114cae4adb662fc203c32c39fb33b1f"
+        },
+        "Theory.dat": {
+          "bytes": 8647,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45638123976960_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "f1f06c8d5a52de3cc3d127a364ad80bef5b35ceef38987ebd4af691320d2d52f"
+        },
+        "Theory.sig": {
+          "bytes": 7518,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45638123976960_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "80489432b0c8c5e1b3ac89ea588b5e110c480a9a25ba9d8c625ccec21cc33ef9"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45638123976960_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "3ffa3db4217b34a32ab7b1179f5be949b7ab0bc9ef242d28281889938968be3a"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45638123976960_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "0834eaf2f77acabc4476eed7c0b0a5ca16d2ddd9673c4e3f65cb635e0292f476"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45638123976960_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "8a3533f6eafae2cee51006fe7617c285120c2d831292a5550600fe0a5f2890ac"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 17,
+      "left_code": 45638123976960,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_45638123976960_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_27395564048477_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "d2e41dead34054df17553bc05c5928ffa6f7cedd37e41be9770b74b7fa78b8e3"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_27395564048477_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "4ac9969dbc86e854a9c409be6fd0d0b7c654d18c19a960f4607a44357476f1bb"
+        },
+        "Theory.dat": {
+          "bytes": 8641,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_27395564048477_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "70a23f86cb9064665bcb48ee1856a2b97639ac5a175f30ed330167acae414824"
+        },
+        "Theory.sig": {
+          "bytes": 7519,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_27395564048477_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "03b413babad36c54f26d27d0558a432e2b9527a70c22fdb5ca8811d2873d82f8"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_27395564048477_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "cf05b6157663b75c5fa3406c6d1729cac9a04ea3c0b05482b932ec20833cfe9d"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_27395564048477_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "3387a17088dca86a1e136bc22e007e78f2c16ce106165cfcfdd93a1e4331b31c"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_27395564048477_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "b65f3f4fabcff49361ce2b434199cf50a967556f7acdfe03e60282bcf020bbcf"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 18,
+      "left_code": 27395564048477,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_27395564048477_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 426,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_27395564048477_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "34577aac94d0213ef66fc048ce7787620f7f36c3ce048ed3d1540713f4745a9b"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_27395564048477_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "67fc3b1796dcbea6811cdcd65743af92a4cfd9c3cd9dcb881ba43b2eb5039f31"
+        },
+        "Theory.dat": {
+          "bytes": 8641,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_27395564048477_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "2226578c11534991866d0d8ebdfad1fd3b7967a298c44e44d7dfdbf060b35b64"
+        },
+        "Theory.sig": {
+          "bytes": 7512,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_27395564048477_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "69cdf9302b05bc0b86a5d0fbac63492ab9efe5edd029a304d17c52f08c5efdd1"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_27395564048477_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "124ccc50e0a5627fea9a917be6a66d5cd5db453b4d137a560ef1bea5426e58c9"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_27395564048477_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "3fa95bd966a96ba382a28b02d301eb3c11080048061f43e75b401a38190959e5"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_27395564048477_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "d7a4c8840ca834c3c82b56db0345d09aa807b896c0c5e16f81ecb7f57fe02653"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 19,
+      "left_code": 27395564048477,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_27395564048477_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 426,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_25374743716097_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "306b28e42ac372e6818f1f27eb09055ef57b0fd8bf7df0a1e07db1c008b803f4"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_25374743716097_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "e08c37db134cd79f5b47995457c165610d0cb70fe772db599838f8de231a877c"
+        },
+        "Theory.dat": {
+          "bytes": 8629,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_25374743716097_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "80b90f7ed11ef678a3ce86d1cd1e986085b44b73502303fc4832bb72df9468a5"
+        },
+        "Theory.sig": {
+          "bytes": 7504,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_25374743716097_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "dceb8f06de06132ce208bfc6c1827fcc897bb4ddcab077046def54e77db5ca2d"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_25374743716097_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "78a6cbd6a831dd2c01a8ac705a69affe0905702725a932b79e660d671117d892"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_25374743716097_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "841e9e560d14294c0a76f9e3ed1999db401559d4803f3dbc81e8cc465ccb1e64"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_25374743716097_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "40cdcbca8505aebcf097dceb955c3a2e262311cf415dcd2da472958e09e99170"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 20,
+      "left_code": 25374743716097,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_25374743716097_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 427,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_25374743716097_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "8e8dba4f7680df7d96273bb3e867111bc20119bf57aae377ed4e2ca0c26accd1"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_25374743716097_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "b92bce57043c87bc6a30264b4f07aa74690d6819b699583de7bdf91536ca9b46"
+        },
+        "Theory.dat": {
+          "bytes": 8629,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_25374743716097_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "2d6cd4a84745303d04446d2e514b4683167fff311bec6d48886bfed91f1d07d4"
+        },
+        "Theory.sig": {
+          "bytes": 7504,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_25374743716097_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "18c1303286e6e835382e75102ccb7a5bcc9c0696492c5f3b0e249e8bd9b029e4"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_25374743716097_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "f06b38abf0b82189897071659165ab9cbebe4bf7bd6b83de5365957e62c8205d"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_25374743716097_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "c20af2f8770e3503e9c4b9f66720f7a2aee28ccdb272e0d736c4b65df0b3db8c"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_25374743716097_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "6d66f0f823f5ff8b73c7fe2bd2f04f9bdeae6a9310b0445d23673af875a4e334"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 21,
+      "left_code": 25374743716097,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_25374743716097_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_43839196172665_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "a8397051c73cdbee9cd02ef4478f8095568a4b9467608ba17c78281ab825f438"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43839196172665_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "499d53536bcefed6d353c721168e577ab55f494965ca4348820ee61c1f20964d"
+        },
+        "Theory.dat": {
+          "bytes": 8638,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43839196172665_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "9d878647f502259d2af9c6744a733a5d589eb0236e7a6aee3da66cee299deb98"
+        },
+        "Theory.sig": {
+          "bytes": 7519,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43839196172665_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "572aa155e3d14ed666c46a18c8c38c27864a7495a2d0d398364a235362801595"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43839196172665_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "cf4527826583e2fe58f450d835750941bb67ca165879735fa8f459b7866f4cf2"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43839196172665_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "c7eff5d73fe45aeb3642679ab0ccd49d43665a95fc8ce1880f1394edeff31488"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43839196172665_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "053f2f4a71f3f8992963736115b05766004b06746ccebe0cf64ee97fd19ea694"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 22,
+      "left_code": 43839196172665,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_43839196172665_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 426,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_43839196172665_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "dbee006671b8a56c07a63cdc6947788ee7b4727e0d4b566698e7c0b9d986e9de"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43839196172665_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "5a489d4e865cca50622f09504d091fee2bdb437dadc2a86f708c093c4cf94ac2"
+        },
+        "Theory.dat": {
+          "bytes": 8639,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43839196172665_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "adb2fdf9ce89f880bd3d7adb019d2085e959fcccbc42d52858ad92a771188db9"
+        },
+        "Theory.sig": {
+          "bytes": 7519,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43839196172665_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "e414f2d94e72665723e59045b0230156c38b8bf2372ea19f8be3be6e31fa1da9"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43839196172665_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "3835a6dc32cab91af9e0046f0b7988589d2f4156eb4b3604240fe7c8b64e1e03"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43839196172665_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "9fd24e059e85143959f689e416956787284aaa3078cc83e8b799bee887058a53"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_43839196172665_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "f5359b9c2065fbe4350faec1477be3c50c17516be21eab08df06dbf1ac3ea64d"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 23,
+      "left_code": 43839196172665,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_43839196172665_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 426,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_44010047422565_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "411c0f6f642d50c5615ff67c44e33dd2686e8888ad73a1a0b3bd3f166c7d75c1"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_44010047422565_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "65a9de7c8ea946c2872d6cd441c0435695007a6983c61d3e2f197ea65f045306"
+        },
+        "Theory.dat": {
+          "bytes": 8639,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_44010047422565_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "3b0966547c1eca33fb34fed8ba377117f36fff505511da5b988015c526cb5eb1"
+        },
+        "Theory.sig": {
+          "bytes": 7519,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_44010047422565_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "1981ad1af5e7bf1b16b97fa046076eb85eed3ad36f1aee55a07e892c128964f4"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_44010047422565_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "cd81bddf319f1a27e2fb23b506e71e4c57b9aa47d0152ae082c0404d087f6bb0"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_44010047422565_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "51b68774140a172778aeb7f05f376f7505d19438afefa5782a3e2a92154138bd"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_44010047422565_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "535ead74efb475145d9f5c9ed955430469dfd7df3240dfc41270aa465ba0abea"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 24,
+      "left_code": 44010047422565,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_44010047422565_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 426,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_44010047422565_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "61dd926a2aff2c3a2e0d504241e526a5f686f6d710973d2dc9a1af85767ed400"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_44010047422565_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "ac2302827e3516537577ca36dbf30a34a568c28cf2c4f78a4b610bf90287ac4a"
+        },
+        "Theory.dat": {
+          "bytes": 8639,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_44010047422565_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "0a78c1df0146bbdf691f07847250553618b3554261abf7c3a8394ba28a83c217"
+        },
+        "Theory.sig": {
+          "bytes": 7519,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_44010047422565_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "7cd7207500eb032929810c81d6ef6b1f3aaf1947bc0b57806a8133c174be8cf8"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_44010047422565_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "1535a678b6d2030f6878f27f4ee96c3bdd98e8f4cf7f942b5dd8c7281b1c9764"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_44010047422565_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "19996d67b3b871ab0693ed647aaf460c281f771ecf85b7c0c2800b99deb832f6"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_44010047422565_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "efbcd548bac744e183a38be01a1f41a109a751f4e04a84b541714dd545e93218"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 25,
+      "left_code": 44010047422565,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_44010047422565_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45115358019902_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "e073c61a69222f93c57fb43e768e4d2a21bf10d37babeb0b9145615edb8841ac"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45115358019902_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "2842074fba826de6ae41256552c2a19e5dede895911935637559bc19c31bc7dd"
+        },
+        "Theory.dat": {
+          "bytes": 8636,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45115358019902_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "ddde0cd4b3a1b52cd61b1609a6a3220f2e8f4171d075769bd761af24890ac967"
+        },
+        "Theory.sig": {
+          "bytes": 7510,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45115358019902_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "cfe22e939b996fe7fa3d1f86ed15c0f7704359f01e0a47cc637f3f46142692d7"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45115358019902_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "15f4af16729fd0ad39bbc3dd1ff409540e415bac0ea46340448137c45b5c15cc"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45115358019902_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "199a48af9f921b294b6b6632df909857686b779fff3184a089f4e3507c58fe5f"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45115358019902_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "d91c8d3597b32e744fa29ac3e9636953bce855587ddee6478e833d5325e493b9"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 26,
+      "left_code": 45115358019902,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_45115358019902_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45115358019902_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "e92fb950c0a2973ce01228688841145c330e204ddbed05e308924a6334ebd3ea"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45115358019902_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "dbe1afd760b775ffa61e5d389dc049bee749312056c88c3583cc2a00491aaf1e"
+        },
+        "Theory.dat": {
+          "bytes": 8636,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45115358019902_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "8c990f2412310794afa81f1afe7921674881be64eb7c8c0d1b40fba3e6329789"
+        },
+        "Theory.sig": {
+          "bytes": 7510,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45115358019902_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "c322f353bd923ba871159384bc6da00cdea3ce6ec797f6640bfd47c5e438944a"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45115358019902_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "8f9428bd798d4464b7a982289e8c7290718f731d309da4653fdad94d38758fa1"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45115358019902_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "86d4bf1b5e8c5a167f1ff00ff68366366371840ffa3c5cd27aed9b43ab69e279"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45115358019902_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "fedd04ef9aa215d9b98599faad968fe9d13920fc4d648059ddd7b4f8d6d1ba05"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 27,
+      "left_code": 45115358019902,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_45115358019902_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_40648917467241_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "c9e320be58ee5a76afb1d966b42663c613b18b87b31b411497446a6b9ee0dc17"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_40648917467241_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "d730c3082cfe3af50a17283289498e03c115e7ef6727f6c58a6c6278d9d0d086"
+        },
+        "Theory.dat": {
+          "bytes": 8645,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_40648917467241_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "c6866a6031ffad78c6b509de5203d60ea434001335a5177af5b5d4a10fbe3e35"
+        },
+        "Theory.sig": {
+          "bytes": 7516,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_40648917467241_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "1b106678a8da4ad0fe2647ae5e99fa2874f9de98605501cc0c95bb38653675e8"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_40648917467241_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "e23082f3ff3d24cc77607817bce95ec964a8e40d1de64d5bc82c40a2c85ff892"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_40648917467241_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "ac3b807205abdc6b6d1aece2aecb722763e31be2bc8611b3901d47c60c0180b1"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_40648917467241_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "83315e10cd499ed0af9e7250c8e9587705ec83f36b9b7a3f3f60deec6135d808"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 28,
+      "left_code": 40648917467241,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_40648917467241_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_40648917467241_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "a62d50f30333e7f4582f9d085a7be8b9ebd6ea1b70860f9a7137a4366690fc0c"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_40648917467241_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "cc029f2a07a5b173a32f822b446310ce99157ba1a601dbcd5727f6fc99abb4b5"
+        },
+        "Theory.dat": {
+          "bytes": 8645,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_40648917467241_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "8ec40e48f80869925b84829eef11071eef82d49ccc06404c9f5fa219ff6f6586"
+        },
+        "Theory.sig": {
+          "bytes": 7516,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_40648917467241_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "74431cbf235ae030398553fbce1dead4c7efcd49ebcad232a677abde48039542"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_40648917467241_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "8cd579dab3c843646b5a7bf98934d4d7c3eaec8eeed9d2f3a5cd449992cdbd4b"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_40648917467241_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "b786dc5ec74dadba15049036f81d3a45023096eee48730b9a74c2cd88edcf0f0"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_40648917467241_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "11e788c9f55c9b584d7a3901085e39608994d2ad63e0dad1d56c690eac191f41"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 29,
+      "left_code": 40648917467241,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_40648917467241_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_38127977419259_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "161c1219c91b8bff9908ae9da8029ddad7b6333f732cbb1c3b85da29887ce152"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_38127977419259_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "9e4cf4d29cbf2cdd9d248fcd9599a964132ec3214b232333a30b60ad3e54a326"
+        },
+        "Theory.dat": {
+          "bytes": 8643,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_38127977419259_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "8f278cac5c4183a53633b878cb40d4af7bd7b973efd1b8d13bc4f128bd118c7e"
+        },
+        "Theory.sig": {
+          "bytes": 7516,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_38127977419259_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "4379f51858d3179f6b4c94ff170a12041eda65f146195418115255a4c60f2460"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_38127977419259_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "4c128f93d75a97397ba48e1f53c6bdc3ce3c9fe84f9eb2a45ccc733ed54e06c0"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_38127977419259_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "7b7acf6057b7312ccedc924eb298e595bab87ce16136bf428df20297eba31898"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_38127977419259_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "a2c5989c1deea1ccb9f3313ddf89f3779157b9def51c2e057947baf4c51a8991"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 30,
+      "left_code": 38127977419259,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_38127977419259_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_38127977419259_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "3b35e0ca0cbd7769c8720d1011bb5a3a38caef242ef451e5b29c94cf32568c9d"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_38127977419259_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "05c1013ee1d2acd1e9d75d4a344981e9ce0511ca631a7898021d6a28a88a7e75"
+        },
+        "Theory.dat": {
+          "bytes": 8643,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_38127977419259_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "b9a95a916fdda641cd6cf4c40258c053303460e2714e5a824dfbb9fba8064e06"
+        },
+        "Theory.sig": {
+          "bytes": 7516,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_38127977419259_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "ef3e23564eb65f64ec2649a614bb7165f872fffcb5bab53270cc6a3dee79df52"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_38127977419259_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "bbde2a0148e2179160417ff8ede1ef422f05c3fa611d7a2f758d5b579355c9e4"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_38127977419259_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "128a9ab07512dda1f57ec4204678c1791359d4d1227681e89a272af372ab28b6"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_38127977419259_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "f39ea5cf368d73a58a5c15aadbffddbfa404dec35c41ea13cbaecac1fa06d510"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 31,
+      "left_code": 38127977419259,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_38127977419259_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_30491885929029_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "628768b2e2b0667fe64410a792837321ef772ad46acf248a074ac2aeaa64f66e"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30491885929029_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "fb54195fab55c7e1a062d21ac8836221c315c385ebbb316dfcd7b0cf18a081db"
+        },
+        "Theory.dat": {
+          "bytes": 8672,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30491885929029_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "11b1df55a70abe8c42e2e49d7f0d72afb3328404a469f2f9571b9ab2d38ecf7b"
+        },
+        "Theory.sig": {
+          "bytes": 7541,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30491885929029_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "81f2fdb0ea44bd95119a0ae64cac830bdab2a04ffc00d5feebbb5b21eeb6c3c0"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30491885929029_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "0abe0eda8af19d18ce372af9b2d8caecd00257eff83f6383465a5994765cfe1c"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30491885929029_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "1b855b90e7403cf69d0b9b7d1f6331908f2da95a41687196439723a1417d4368"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30491885929029_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "9b081b2f03c3cbd0c5aa8a00bf61c7c3af0c780e757d03430d7bda2408f28ca7"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 32,
+      "left_code": 30491885929029,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_30491885929029_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 426,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_30491885929029_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "898ff1381fe2ea109be7272f827b7f4fbe6495d1ee5b7b3151b6d2ec2e8a9c77"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30491885929029_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "6fedf9cf0ef77ca719efa0a723a7c9625313c34f6c06c294069f1201c85dc6f3"
+        },
+        "Theory.dat": {
+          "bytes": 8672,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30491885929029_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "06f0439ba5d8bf239d4664758aa600ac37c2cceaa9356a413655bba9858eb5c6"
+        },
+        "Theory.sig": {
+          "bytes": 7534,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30491885929029_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "ca35a27b9f33593947e7ed4210d166f1c7ea83ab115315ca3968aef15d0a1299"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30491885929029_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "e869a7e03d24b0a14381d9709f333e4e2df5a9ebe0d0544d61694b078c98f1e9"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30491885929029_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "6b8fcf69b505586914eb714c36f7c2a14bce8c89d5f82a05234fe9253a879702"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30491885929029_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "5fb883c734a6915833ef86a3574dd156d7dbd945462465417095b268d327d84d"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 33,
+      "left_code": 30491885929029,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_30491885929029_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45648836094921_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "6d27fac7853e3697277b8bd04e38598559214dd45d983f140601029a5ee9f9a2"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45648836094921_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "2a98606f646c665a0100fcde948bc8c39e308c5b3f5e1476869324e4a407fbdc"
+        },
+        "Theory.dat": {
+          "bytes": 8637,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45648836094921_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "2bcfe4ae3ba0caae5116510da39a0ad6cafb9c029a91b5368c1189b344ee467e"
+        },
+        "Theory.sig": {
+          "bytes": 7519,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45648836094921_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "b04b27647089c4f2b03d83fc435b97df8ad29985fe9521bbd65f19760ce8ce56"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45648836094921_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "37aa6cc07dbadcbd57c83d756a6275631c98c37efc5eb85e1bb5c6d8def5a410"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45648836094921_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "8c08c0b214a6c6e747a427a095580d73a60c920a670e901c97c542b2394f0778"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45648836094921_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "ae29f3455fa7d1ef29dbc36ce125798fd0d4766ccc42bc421ff362642b15498a"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 34,
+      "left_code": 45648836094921,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_45648836094921_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 426,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45648836094921_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "173b17d3134b5a39ab446d4e7bc0fc2f965a1687a4d92dff6a7d3af544c83994"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45648836094921_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "15079c5257fc44c384aec3087a1ca932e29cc45020ba19af7563271973ec29ab"
+        },
+        "Theory.dat": {
+          "bytes": 8637,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45648836094921_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "caea4133bd947cd206ce86c6959f1d3b20326e59ac0010cf06274e4b6e72bae4"
+        },
+        "Theory.sig": {
+          "bytes": 7519,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45648836094921_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "ff598e8969e56df557f9a2b2d58ea2d3fc3160a3b2f5318233f0545e0dc7ce08"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45648836094921_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "258e0ebd7b21c0da8daa76dbad31fe480c46aa3e43129bcd5d9b9590e1304628"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45648836094921_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "8c8e0b00065f2715e1d6f1394a27588fa818c8e86f8ff96148ebc16d839da713"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45648836094921_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "06b2f4b61fa63e4138c530477e36ad12d7bb21c3542fc703869680d274f8eccf"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 35,
+      "left_code": 45648836094921,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_45648836094921_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45742948977735_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "953891de86289c0ab5ccc1723e51fb1908a424ce4d843933592ff285073d8985"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742948977735_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "28442facb20f7cb2868d77b4a35cb297028daf335a5a9f2086da0aab51fbc057"
+        },
+        "Theory.dat": {
+          "bytes": 8643,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742948977735_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "3d7e602c5528f9a847da163dc1bba028cf363d1a429cfd47d1105b570929605e"
+        },
+        "Theory.sig": {
+          "bytes": 7516,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742948977735_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "1abe5d7c3dfccb24f7c4ede1ccf179ffae1cded1061f65cac3ccd63ef8071cdd"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742948977735_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "2a303f91c0acac280ca7b77867b434e8858e1001d71b3645aab3100305c777f5"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742948977735_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "6883adbd2e7cd7b50d7ec27a7fc1f8108918cb8858a1774b063cc71ebc42b763"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742948977735_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "1e256a4462c5028df08054261dbe86d1cf007b828357cdacfd4035bc479fa55f"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 36,
+      "left_code": 45742948977735,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_45742948977735_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45742948977735_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "03710fafbe1ebc099ac56d4de509d15ce8eef6c66a4056619e26386aa89413ea"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742948977735_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "b11746b96727c6573c2c78cb937b4724f9b7047ae5790dc8d86d58de596f71dc"
+        },
+        "Theory.dat": {
+          "bytes": 8643,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742948977735_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "da65c988098a57dbbc858de9813652c03f7f2775d4ecf2a1717944e0e50e2fe1"
+        },
+        "Theory.sig": {
+          "bytes": 7516,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742948977735_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "cb035eabaf4cc96187bedb9f39184d8cf1bedd6c105060f88736daf59afd2ba2"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742948977735_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "f5265d4d26a27a973d0873202f0eee048dc28b5990469d03eede3ad0b58c3f98"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742948977735_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "f9743d13de96bc3db090523e2c65e4d1aa0d4a401a103c5efeb701bb926d7eeb"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742948977735_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "e1626bf2fd4bf77491e49fd04fde9cb0ca5edaf1317cdd9eccd2fb31bd42008d"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 37,
+      "left_code": 45742948977735,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_45742948977735_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_30484519701677_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "55af73058532132cf398973a7fc05dc2f110f80721be62e53a427f5a4e4e02fc"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30484519701677_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "78c2b5e106654d151af0066a472c80923cfda0e7c44f31c7b6f3034a8b510210"
+        },
+        "Theory.dat": {
+          "bytes": 8638,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30484519701677_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "cb05c25be50eb48d8dfce1e2669599038446ae3dda46b8831cf98b301d343d1c"
+        },
+        "Theory.sig": {
+          "bytes": 7519,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30484519701677_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "5a5f7360225658d930747803ee21ca299799287742e723b31550b81cc4e5c8fc"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30484519701677_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "74d15ebf5ffd5673134f2b84ce4b20dea1e44a16e9fde5eb293773662a3ec7c5"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30484519701677_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "f1364ea3aa177685aa92fff3913218fbad1f2f45fafbe9f8143d02b50b8ef65c"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30484519701677_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "49e902ff9e732fa23e023a532365ae6af7ca3319bf4af713de17cbe60a9ff6c4"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 38,
+      "left_code": 30484519701677,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_30484519701677_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 426,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_30484519701677_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "a5f117d8b1f42c5b6d7b85dcc578c452f87982783d55eb403eeb9b1139d8d3d4"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30484519701677_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "a156b306b283317861d06b4ed2723f11071edfdac3c02c54e1e771148570ca31"
+        },
+        "Theory.dat": {
+          "bytes": 8640,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30484519701677_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "2c7ba4ada16acb2cdc7f18078976ec527572e1e940a7fad131d9e6af0346228e"
+        },
+        "Theory.sig": {
+          "bytes": 7519,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30484519701677_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "f829ec3e26a7653874aaf0edf4a2be19b1ff0c474e1c30e7148e61f9624eab1c"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30484519701677_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "e764ada115b67eec29d4e787d41991cb379480c6c12a6ee02e70630aca4cfda7"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30484519701677_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "253d49df42c0b9357875782432c48f39e0f2b69fd93be5dcf09ca2381dfea1f4"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_30484519701677_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "1fa3eccb8cb483e095defb455d8ab4b213f0fac08e24e69d4fe4299fdad51c36"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 39,
+      "left_code": 30484519701677,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_30484519701677_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45178221529831_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "b94c43534329aa073257a84ba6baa06bc6fd24283dc19aef7bbb76acbc61b857"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45178221529831_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "ed5acd90cad1b690f32ffc27d35dde98577fb9a503cfafff726bfa07fb224402"
+        },
+        "Theory.dat": {
+          "bytes": 8652,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45178221529831_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "160059cf7d1c71fd0f089788fbfa8ab7fb812c094d7cb758d89c15c5a1327024"
+        },
+        "Theory.sig": {
+          "bytes": 7530,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45178221529831_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "74d13b4548a1d9dc33b1ffa62bd7fff7d670895fa73ff2ec38c1ff7844b302c4"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45178221529831_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "c5b3885d35f3210c22fd71f3f11ca1c11038a941d0e3ac9c0be1d6827e89194f"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45178221529831_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "b836720322e65276eaf361a1f255d802c8de6d37873bf16196cdf7206de694f8"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45178221529831_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "c6430cec824a8823dd9c563dc5e30212c4e6eac2c270f93895cc7449e2faa40a"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 40,
+      "left_code": 45178221529831,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_45178221529831_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45178221529831_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "69411c49c906917d0e63acb5629d0f20c8bf2c8d9447b05ee19c25741648f59c"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45178221529831_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "c524d1e21bee17f9d9edb5974efa4d2d7d3ebdb58b071115c989347a34a5462f"
+        },
+        "Theory.dat": {
+          "bytes": 8652,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45178221529831_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "6006481eeba44bd4782cb6122618e549282236422c3bd315a70b99a4e6940f47"
+        },
+        "Theory.sig": {
+          "bytes": 7523,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45178221529831_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "5137fcaf3ca02b52f67d0d450939549dd6f6efd0a796236d392503ae2f7b0c10"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45178221529831_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "01616d1ed9d0b6bef5f25fecb4ddf12ff38af34a6f6c8a5fdc53ee16637f7ad2"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45178221529831_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "e7daf1f1be3ec3426865c5a6388f04f1e1dce51077bc6addafad71b2ebbf4e6e"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45178221529831_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "070d25a0828c9d59bb2474ac832a881cc96cfc937036409b0a8bf87932c00ab8"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 41,
+      "left_code": 45178221529831,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_45178221529831_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45743079357988_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "24c9a639c7fc49419320c4465f657233c87a064318dbc06a4c45bc0a957f3191"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743079357988_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "517ce981f234b272b1fac2239ccdec25544b5d1b0108143c759779b885cfef0a"
+        },
+        "Theory.dat": {
+          "bytes": 8701,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743079357988_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "108f4fb0b18997ec009e7173c3d9feb7d50c0f68b3c7c135cef1ce88dde5b5d6"
+        },
+        "Theory.sig": {
+          "bytes": 7565,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743079357988_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "68bc0430f0d9d48af34ad2b8ad3464c2c9300c4832fa6d5bd44781d4e97ab863"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743079357988_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "c97668af21e8dc0f488b230adeaeea9a90499f8a55c1c38f1b05ac6cd736423f"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743079357988_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "f61dc62b0344ab00cf11bf062dd1e34389c6a9ceeb838958a32657a82c703ff6"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743079357988_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "e25e7768c537a051f780929707045f6ba8e73be058fb059c4e4a601509faef00"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 42,
+      "left_code": 45743079357988,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_45743079357988_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45743079357988_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "dbaee6990a935a68984a04e0681835c8ca645627869f446cc938e8a9f5a0e0e1"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743079357988_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "88d6fd10fc3944a6b5912469f05f380bba56964096e53001428cfd706176e252"
+        },
+        "Theory.dat": {
+          "bytes": 8701,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743079357988_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "774b1e206c455255109c1a48ec342ad48df35182997b60f7d4e7d0c4abc45529"
+        },
+        "Theory.sig": {
+          "bytes": 7565,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743079357988_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "4f4e185dec889385ca8a185a16a1f11180832224fed65209368f5f85ac3cddaf"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743079357988_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "f32e0c4da074eb42356c19c8d1fe368991de8c04d9cf0a7916cfa468ed1c953f"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743079357988_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "bb887f360b9d478e6cce46e0447cadf519eb0819e11aa44cfeb9d8631f952e21"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743079357988_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "e07c96e7478ad7c62555874dcc7ac96e0fc68883082e2dfe4aea152c9f67f946"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 43,
+      "left_code": 45743079357988,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_45743079357988_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45743080958873_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "6895b258a822f54332546ba784a44e426591732cd44b0664da8ba670c7c393af"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958873_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "907e4938064afb8be433b309b5556beda592e10d0d4644a3c4ea86afc4879cc0"
+        },
+        "Theory.dat": {
+          "bytes": 8710,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958873_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "e34f1381ded68744b5303a22936bc7d992d0ada1703195734ad753f02dedcda5"
+        },
+        "Theory.sig": {
+          "bytes": 7571,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958873_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "f9e4334969b36d2ac991e2f6d3ab0e4d8e162934d6c0f6888902779a6d826a1e"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958873_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "61b04f2db50715ea07678478c67993fa6f4c489e963c416710621b5d00947325"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958873_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "b682513c79f79eebe49f425b12ac651410b7587bf7457b08da7d9221e5135a83"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958873_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "ff5e794f9eb2fdacdbfe2762104f2d98941202ebdc0eb1c13b2092c921d1eb16"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 44,
+      "left_code": 45743080958873,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_45743080958873_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45743080958873_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "8c3f31e6ecaa6c0588647240542b9cf2ef1925ae5d60c6e6a7c85558d71269c1"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958873_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "4a7ee7ec1e2654dcecf301d50ebded2a04f0ca0e05c7a7de8eb2e6e13d06747f"
+        },
+        "Theory.dat": {
+          "bytes": 8710,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958873_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "75539ad23ffaf9d4668e41253862ba8bab49f6d54c051579c6fb69a8c116f038"
+        },
+        "Theory.sig": {
+          "bytes": 7571,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958873_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "ba114baf39f5325d0f059a964abfb81bd0d3af4c5cdbb72acc5777c1b1f85da4"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958873_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "b9c287f3ced58d878be596a75874b4a71d38176824786b158ee2f71af07a0d16"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958873_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "a7a259ffbf1fbeeb793a6d5bfad17c399daf44467487f562ccfa9c39cc8664dc"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958873_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "cf6962474ff8f66895d1d52c372bbf6c564f689b9a8684560a8ab2faf39759a8"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 45,
+      "left_code": 45743080958873,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_45743080958873_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45753526901690_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "151adbccecbd241d791e46f300b53570e7149cd04b7c58940db02d144f84e61a"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45753526901690_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "f478ea31ef22e7d34b4f8bb989ae26cc129878e71830db6c21ac271e7fa741b6"
+        },
+        "Theory.dat": {
+          "bytes": 8701,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45753526901690_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "8ce52aaca68cc28a45efbebb0b5e9231b68c778761178d71590205fa39c550e8"
+        },
+        "Theory.sig": {
+          "bytes": 7565,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45753526901690_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "08983a0776c1ae2181a8a330b87c843bed38db1a2f904f0b790c6633957aa564"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45753526901690_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "22f9bf1453e54ca3a78e1747882b5596bf8e8d55bd9b45fc444f71a319bb5d9b"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45753526901690_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "abb5861cd4a9a6da8f7c23d5131bfc3fe2e1b573bf9a2d66f1daa684c60f1091"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45753526901690_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "edb9df9adc73d41d2ef850066c66f6d5d29cef04e92511376c50bd211f32360d"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 46,
+      "left_code": 45753526901690,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_45753526901690_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45753526901690_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "6bc86066591ee986b752cf9556ff26ee09ee9fa087b82a9d57375127a0597b8e"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45753526901690_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "66184ca16cf5829f71623c4313bbbff1c05c41361cbcb392218126da35454368"
+        },
+        "Theory.dat": {
+          "bytes": 8700,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45753526901690_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "dd8a3d3645dabf9a61ab00a20913c7f59a93e483ee4f3224315851a1e6be447d"
+        },
+        "Theory.sig": {
+          "bytes": 7565,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45753526901690_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "d51c421fb8d9c902494ab27614555cbbbad51504abc46cf4cac0d8e05408d55f"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45753526901690_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "40c59edbc2ac4cf1db7e273b78e4d606e453c32938cb76c2838723776c7d0c1c"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45753526901690_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "9638da12bb74cce4928bc0905b0e6facb0bf560f66def7e6386f94140be8caf3"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45753526901690_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "f46ce3f05a45bb8fd248c62d9eb8e830a31ba9680f47d7990380be6fe0bece0e"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 47,
+      "left_code": 45753526901690,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_45753526901690_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45742562617972_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "da3d9844b33d228a2ddb8e13072b944044c8548f65dd0bff263ff428b83265b0"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742562617972_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "1b4decbc871c9919359f8b4278b97de311b5b015fe89be65d48d898ff3be6fc8"
+        },
+        "Theory.dat": {
+          "bytes": 8682,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742562617972_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "f2d43a0b89051ef4604b214d65853d8ecfd124363c69c5d05c382a6f43060adb"
+        },
+        "Theory.sig": {
+          "bytes": 7553,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742562617972_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "334505e866e70e6e0e01b9d2e589a090409d46d1284f79fb9413a49ce56468d9"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742562617972_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "c3292bd7b7ba03fc024b248ced35eef0ca8abdf79ec89b8f65ff62ecf3160307"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742562617972_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "8a1ce42a27794e8136a59e9d13ab4e9b8130bfe50cf944bbb403ff6f748385cb"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742562617972_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "e30ca76d618d62f23fb90b0d93bb2a38390b59ff169d3490363dec6ff50c6a41"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 48,
+      "left_code": 45742562617972,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_45742562617972_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45742562617972_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "2ff918f34ecb339dabc3baa6a9052fabc729b8c9d692e3fde1d81c3956cb23f5"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742562617972_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "15257365d3b5955fb7c79b17ec3e76c27eabf3f3ba6536d4cc46d25dfd04b431"
+        },
+        "Theory.dat": {
+          "bytes": 8683,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742562617972_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "b64047bc37446e05dabf3822c5d1f8f1d2c7add353104c3642c18d594857435b"
+        },
+        "Theory.sig": {
+          "bytes": 7553,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742562617972_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "5358296ee2247fdc77dec436255774458763cb62700d6f76d3073768af758bd6"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742562617972_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "3aaef474f0c57ef8589c0cd15af9ec928a9db75c9b6985a1b10043740f51363d"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742562617972_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "750c8e5545b981fb3b55a0512a30e2f44c5b2d200fc00d9514a03ebdd94ac53c"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45742562617972_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "a214bd80ff91d11cc5caee1a92ee5800476ff9e1b0575f77376d9dd39cee7d46"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 49,
+      "left_code": 45742562617972,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_45742562617972_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45711680767268_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "0e39eeeed0e940f6d7ffba58327e08999a1e0779d6e6137d80d52849289581b8"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711680767268_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "6933acc355b727747e27d4e46e0966315317ddc1f3fa39e812416dfa8f084a6d"
+        },
+        "Theory.dat": {
+          "bytes": 8689,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711680767268_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "d9e7f9340df34ee2ee80f557c79caeb0c2b2269e36f2c99f258c0313108ffa9b"
+        },
+        "Theory.sig": {
+          "bytes": 7557,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711680767268_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "e52e4cfcdc764e3dcfa4e0c0eb1a5f3894cd03a79aebabee44e1b9eaaa5c8f40"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711680767268_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "20d0c08617b966b74c7c7de3d615f4efcf4926cb756a1b482c958bc6d012ede8"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711680767268_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "c340c0b64266dd015063c7f81532f26a353e65ed656c437d442559adb508109f"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711680767268_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "be4787a9d3a6411930ab804d9819d6781f42ce235f4777ce3061ba7254528a1b"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 50,
+      "left_code": 45711680767268,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_45711680767268_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45711680767268_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "388857876a5a823b26519dc63afa1fd608f0dc2e9e8fd10e5dcc2d4166043d33"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711680767268_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "6bb3e162c3b10a89aebeb171d67ad9a52420bd08c74d1bf764cc6576fa7ffb41"
+        },
+        "Theory.dat": {
+          "bytes": 8689,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711680767268_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "419dbbb5bf97b6672a8dfb7d8bd0e93c4fc53de3b927c765db69961ccd8b85ae"
+        },
+        "Theory.sig": {
+          "bytes": 7557,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711680767268_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "350f9e388af683d6736a574ccbce5dc82495ad132b589992556219d815d9234a"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711680767268_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "b9bf4dbc0c9b1066391e2669aee3d1b662d9c415f05b820cb14f59e82c6ca1ae"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711680767268_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "32b2714910887f2eaf4e16826bc9cd68596473b10a16d9b65aeda1943a65636e"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45711680767268_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "457a5b62313d6fadbab4b5862e5130fcc0027ff1d508ad8e1cf105dc403a7871"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 51,
+      "left_code": 45711680767268,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_45711680767268_3583333758674368197732360914071565186738705964924502796773"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45743080958842_3583333754570559034715360012962377664510025546852272054849Script",
+        "sha256": "6fae3f9a4e6bdff6d1f30d3bb299768421839faf2fc915d04049a5098a71874c"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958842_3583333754570559034715360012962377664510025546852272054849Script.sml",
+          "sha256": "b3995c4aba9e9ef1d9b77281f4e790ac78517e1a8711665bbdeb032d7adc117f"
+        },
+        "Theory.dat": {
+          "bytes": 8701,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958842_3583333754570559034715360012962377664510025546852272054849Theory.dat",
+          "sha256": "e62ef17025e41a3e7af99063ae864e3870a8657c5c0cb72cb69bc3101f3f6d7d"
+        },
+        "Theory.sig": {
+          "bytes": 7565,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958842_3583333754570559034715360012962377664510025546852272054849Theory.sig",
+          "sha256": "757c7181e4cba54c6cf168798193d4a80b95b8b66723e8b5c9956310b6a9866a"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958842_3583333754570559034715360012962377664510025546852272054849Theory.sml",
+          "sha256": "082299981bdd7e06357c653b6da3338a582defff96237570cb88d966c3af0d82"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958842_3583333754570559034715360012962377664510025546852272054849Theory.ui",
+          "sha256": "1be5a3136154ba2a5dc06c48d059d819fdbbef735db256898defc1b270400937"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958842_3583333754570559034715360012962377664510025546852272054849Theory.uo",
+          "sha256": "0cda9eebfcbea9e6ff00061781c5c4176bc5fe52358751e84ba921b1e7a683fc"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 52,
+      "left_code": 45743080958842,
+      "right_code": 3583333754570559034715360012962377664510025546852272054849,
+      "theory_name": "r45_45743080958842_3583333754570559034715360012962377664510025546852272054849"
+    },
+    {
+      "buildheap_log": {
+        "bytes": 425,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/buildheap/buildheap_r45_45743080958842_3583333758674368197732360914071565186738705964924502796773Script",
+        "sha256": "414f5355eceb4d2b400d5686e790926a428c17b9cf1adc87a1b00480171548ac"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 354,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958842_3583333758674368197732360914071565186738705964924502796773Script.sml",
+          "sha256": "818abd20fdb4cb4404710ca08f3d74b96f77f51bbf3e69b2ef58d199291de13c"
+        },
+        "Theory.dat": {
+          "bytes": 8701,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958842_3583333758674368197732360914071565186738705964924502796773Theory.dat",
+          "sha256": "1047645e770eeb31c9a2c61939132cd4aca137dfed864516c3c5790bb06894c1"
+        },
+        "Theory.sig": {
+          "bytes": 7565,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958842_3583333758674368197732360914071565186738705964924502796773Theory.sig",
+          "sha256": "55fb578ff392177bf247e857593ee9ad7d7d3b59b977a0999e4ddefe1d02e5cc"
+        },
+        "Theory.sml": {
+          "bytes": 1577,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958842_3583333758674368197732360914071565186738705964924502796773Theory.sml",
+          "sha256": "a5a852067eaec9eb217a124cc0f6e8e4c3df1f93f487e762bc24da99ef2d604f"
+        },
+        "Theory.ui": {
+          "bytes": 431,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958842_3583333758674368197732360914071565186738705964924502796773Theory.ui",
+          "sha256": "bd01db885a1f39c5e589272780e9701a604823094f02306e016aaaefbe7d82a6"
+        },
+        "Theory.uo": {
+          "bytes": 793,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2/r45_45743080958842_3583333758674368197732360914071565186738705964924502796773Theory.uo",
+          "sha256": "3334558bd035be95c4178aecabe37b1d71ad541a897b858ad67a97ded225ec9d"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 53,
+      "left_code": 45743080958842,
+      "right_code": 3583333758674368197732360914071565186738705964924502796773,
+      "theory_name": "r45_45743080958842_3583333758674368197732360914071565186738705964924502796773"
+    }
+  ],
+  "theory_directory": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue358_ramsey55_direct_full_v2",
+  "verified": true
+}

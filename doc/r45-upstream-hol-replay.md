@@ -256,8 +256,41 @@ These are two checked leaves, not representative timing samples and not
 evidence for the other 827,474 d10/d12 pairs.  The important operational
 result is that temporary solver traces need not be retained: each checked
 leaf leaves only small HOL theory artifacts, removing the multi-terabyte
-persistent-DRAT disk requirement.  Total computation and worst-case per-leaf memory remain
-open capacity questions.
+persistent-DRAT disk requirement.  Total computation and worst-case per-leaf
+memory remain open capacity questions.
+
+### Complete d08 gluing family
+
+The direct runner completed the exact ordered d08 product of 27 `gen358`
+rows by two `gen4416` rows.  The 54-row problem list hashes to
+`98803bdf4b51f28219821787c1c7e0f842fb31563cc1b39b2da07c8085dc01fb`.
+All 54 child builds completed under an explicit 20,000 MB limit and emitted
+the unique final marker `RAMSEY55_GLUE358_KERNEL_FULL_54_OK`.  The complete
+build took 34:58.55 wall seconds, used 1,957.55 user seconds, peaked at
+15,247,472 KiB RSS, and exited zero.  Its build and GNU-time logs hash to
+`91bfb261155d865a9e58b3b3ce12295d8eb5e2f619042b99a7b84dbb07f7f7f0`
+and
+`f232c90f9fb7a4d0a35cf95d88e12fdceface1641d43529de87c335ee89ad6c1`.
+
+A separate invocation of the audit runner then generated both dependency
+files for every theory and loaded all 54 exported theorems in a fresh HOL4
+session.  It required conclusion `F`, both `C4524B` and `C4524R` hypotheses,
+and no `F` hypothesis for every leaf.  The load took 2.50 seconds, peaked at
+208,772 KiB RSS, and exited zero.  The load log, time log, and final audit
+JSON hash to
+`499a99186e8ec8cb773848008a7f8ae696d626da722a6929494517a42c4a5c36`,
+`f25f9c48ea769d861086c81f9adc2f79ce98ae071eb3e0c924b4c032046cf492`,
+and
+`783ebafadf8369743a11ceb49d7d22c1a19f108858a399b611202d751de1180d`.
+The audit reports `verified: true`, 54 complete six-file theories, 54 exact
+scripts and child logs, and 54 fresh-loaded false conclusions without false
+hypotheses.  The compact PBL, logs, and audit are retained under
+[`data/certificates/r45-gluing-d08/`](../data/certificates/r45-gluing-d08/).
+
+This closes the exact listed d08 gluing leaves at the HOL kernel boundary.
+It does not prove that the listed generalized graphs exhaust all required
+isomorphism classes.  The 1,239-theory global enumeration, final merge, and
+connection to the fixed-star theorem remain separate open gates.
 
 ## Active enumeration stage
 

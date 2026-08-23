@@ -175,6 +175,14 @@ the order-16 side covers two full graphs.  Their audit hashes are
 and
 `c1e17267e8693115a547171521f575355a34e866d12136fe36e4e5266b69c7dd`.
 
+The exact ordered Cartesian product of those 27 and two rows has now passed
+both the retained DRAT route and the upstream HOL4 kernel route.  The latter
+fresh-loaded all 54 false-conclusion theorems under both `C4524` hypotheses;
+its audit SHA-256 is
+`783ebafadf8369743a11ceb49d7d22c1a19f108858a399b611202d751de1180d`.
+The full resource and artifact record is in the
+[upstream replay note](r45-upstream-hol-replay.md).
+
 This does not by itself prove that those 179 and two isomorphism classes
 exhaust all Ramsey graphs of the respective orders.  A clean upstream HOL4
 tree pinned to commit `065c07054483e3132f12909103e6d0e35e912c28` now has a
