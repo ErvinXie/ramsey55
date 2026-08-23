@@ -6417,5 +6417,24 @@ frontiers have checked seed/phase pairs 1109/0, 1117/1, 1123/0, 1129/1,
 fragment output.  A replayed frontier is recovery and coverage state, not an
 UNSAT result, so none of these rows is accepted yet.
 
+The replayed forests have also been split into their exact 18 individual
+rows using the hash-bound `select_cube_rows.py` path.  This makes every
+completed one-row fragment directly consumable by
+`finalize_cadical_dfs_checkpoint.py` in original frontier order and prevents
+one hard cube from serially blocking its siblings.  The first nice-15 race on
+each row uses explicit seeds 1201--1301 with alternating phases.  Three roots
+closed almost immediately at the producer boundary: v421 seed907 frontier
+root 0 produced 11,318,248 bytes at seed1201/phase0, v421 seed911 root 0
+produced 2,160,004 bytes at seed1217/phase1, and v423 seed971 root 0 produced
+5,479,177 bytes at seed1289/phase1.  Each log records `status=20`, `cubes=1`,
+all-root mode, and fragment output.
+
+The remaining 15 roots have a second, opposite-phase nice-19 race at seeds
+1401--1487.  All 33 launch headers and all 18 one-row selection manifests
+were checked against their intended configuration.  The three fast producer
+fragments are only candidate children: a residual row is accepted only after
+every ordered child is present and the reconstructed prefix-plus-children
+proof passes the ordinary checker and independent finalization audit.
+
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.
