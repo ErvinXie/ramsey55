@@ -7032,8 +7032,7 @@ selection manifest hash to
 and
 `574622273a0e87f792f5c1e89e315c8213cd79e266a8e1e5b8ac13bbcafbecfb`.
 This advances J326 terminal recovery to 8/16 and completes f2-sub1's two
-children only at the producer layer.  Its finalizer remains serialized behind
-the older heavy checker; no subgroup or ancestor is yet accepted.
+children only at the producer layer; no subgroup or ancestor is yet accepted.
 
 The finalizer serialization policy was then tuned from measured capacity,
 without weakening a proof gate.  At load 34 on 64 logical CPUs the host still
@@ -7051,6 +7050,31 @@ path and behavior are unchanged.  This permits explicitly bounded checker
 parallelism after a resource audit rather than weakening serialization by
 default.  Shell syntax validation passes, and the local regression passes all
 323 tests with four platform skips.
+
+The first production use of the standard watcher's bounded lock then exposed
+a historical-prefix defect and failed closed.  The f2-sub1 finalizer composed
+its two completed child fragments, but `drat-trim` read the resulting
+3,554,499,266-byte standalone proof and returned `ERROR: no conflict` and
+`s NOT VERIFIED` with exit one.  The finalizer consequently emitted no
+fragment, standalone proof, manifest, audit, or proof credit and deleted both
+temporary proof streams.  Its checker, finalizer, and GNU-time logs hash to
+`86085a92dd0cba566d92ecc975a029acd4e16ff9e970fc9feafaa070b7e11a9d`,
+`7deae5c73c15f0fa3634f25e8a2496cfc3db9fa8dc9136456abcc570f2c05cfc`,
+and
+`fad7592d69956caa5dbd1e2f7d831ec032b3eedd84d9dc6d40bbf3a22dc4185c`.
+
+The rejected route was derived from an old running-copy checkpoint: the raw
+3,976,835,072-byte proof ends 100 bytes beyond its last complete binary DRAT
+clause.  Structural DFS replay can reconstruct two frontier cubes from the
+401 logged attempts, but the ordinary checker demonstrates that the framed
+on-disk prefix does not establish their complete coverage.  Those two child
+closures remain useful leaves but cannot certify the historical parent.
+
+A replacement route now starts directly from the exact original single source
+root `f2-row-1.icnf`, using seed2609/phase1 and the current clean
+2M--4M-conflict, 600-second-solve, 14,400-second-wall atomic checkpoint
+policy.  This deliberately discards the defective historical prefix.  The
+fresh run is in progress and has no proof status yet.
 
 In parallel, the original 1,239 upstream HOL enumeration theories for orders
 8--17 completed their five-artifact build with exit zero in 7:26:35.  Their
