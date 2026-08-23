@@ -6523,5 +6523,27 @@ seed1637/phase1 and seed1639/phase0.  They use the same distinct-output,
 policy.  Thus each of the eight currently unselected leaves has an independent
 long-solve route, but launch remains search state rather than proof evidence.
 
+A second, orthogonal long-solve policy is running only on the four one-leaf
+prefix blockers.  Source inspection confirms that the 2,000,000-conflict
+policy does not raise its budget before DFS depth 512, far below the observed
+trees.  The new seed/phase pairs 1709/1, 1721/0, 1723/1, and 1733/0 therefore
+start at 8,000,000 conflicts, allow 16,000,000, cap each solve at 1,200 seconds,
+and stop after 7,200 wall seconds.  All four use fragment mode, distinct output
+paths, and nice 19.  This tests a deliberate solve-versus-split tradeoff and
+does not add proof coverage at launch.
+
+The eleventh selected leaf is v423 seed971 frontier root 2.  The ordinary
+seed1297/phase1 race completed after 133 attempts, 66 splits, and 67 closed
+nodes, at maximum processed depth 33.  Schema-v3 replay selected its
+1,557,638,172-byte binary-framed proof with SHA-256
+`56f979c9fcf9feebbfcaecaa8ca1d137e8b2e9fd884f55a3f08ef81470d355a9`;
+the selection manifest hashes to
+`5ff5233e88ad2ee0c1672ad0edc5358ae7b6aa467bc38791b535b10761b2371c`.
+This makes the v423 seed971 prefix 3/4, with only root 3 open.  Its two
+still-running redundant single-root searches were stopped precisely and their
+1,518,723,072-byte and 233,455,616-byte partial proofs retained without
+evidentiary credit.  The selected total is now 11/18; no complete prefix has
+yet passed composition and audit.
+
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.
