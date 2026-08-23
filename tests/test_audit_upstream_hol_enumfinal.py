@@ -18,9 +18,8 @@ class UpstreamHolEnumfinalAuditTests(unittest.TestCase):
         upstream = root / "upstream"
         enump = upstream / "src/enump"
         enumf = upstream / "src/enumf"
-        buildheap = enumf / "buildheap"
         enump.mkdir(parents=True)
-        buildheap.mkdir(parents=True)
+        enumf.mkdir(parents=True)
         live_config = upstream / "src/config"
         enumeration_config_snapshot = root / "enumeration-config"
         final_config_snapshot = root / "final-config"
@@ -74,7 +73,8 @@ class UpstreamHolEnumfinalAuditTests(unittest.TestCase):
         )
         for suffix in MODULE.THEORY_SUFFIXES[1:]:
             (enumf / f"ramseyEnum{suffix}").write_text("x\n", encoding="utf-8")
-        buildheap_lines = [
+        build_lines = [
+            "RAMSEY55_ENUMF_MEMORY_MB 50000",
             'Created theory "ramseyEnum"',
             *(
                 f'Saved theorem _____ "{name}"'
@@ -83,11 +83,8 @@ class UpstreamHolEnumfinalAuditTests(unittest.TestCase):
             'Exporting theory "ramseyEnum" ... done.',
             'Theory "ramseyEnum" took 1.0s to build',
         ]
-        (buildheap / "buildheap_ramseyEnumScript").write_text(
-            "\n".join(buildheap_lines) + "\n", encoding="utf-8"
-        )
         build_log = root / "build.log"
-        build_log.write_text("RAMSEY55_ENUMF_MEMORY_MB 50000\n", encoding="utf-8")
+        build_log.write_text("\n".join(build_lines) + "\n", encoding="utf-8")
         load_lines = ["RAMSEY55_ENUMF_LOAD_MEMORY_MB 50000"]
         load_lines.extend(
             f"RAMSEY55_ENUMF_LOAD {name} {size} {bluen} {redn} "
@@ -178,8 +175,13 @@ class UpstreamHolEnumfinalAuditTests(unittest.TestCase):
     def test_rejects_wrong_memory_marker(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             paths = self.populate(Path(raw))
-            paths["build_log"].write_text(
-                "RAMSEY55_ENUMF_MEMORY_MB 8000\n", encoding="utf-8"
+            build_log = paths["build_log"]
+            build_log.write_text(
+                build_log.read_text(encoding="utf-8").replace(
+                    "RAMSEY55_ENUMF_MEMORY_MB 50000",
+                    "RAMSEY55_ENUMF_MEMORY_MB 8000",
+                ),
+                encoding="utf-8",
             )
             with self.assertRaisesRegex(ValueError, "build memory marker"):
                 MODULE.audit(**paths)
@@ -187,12 +189,9 @@ class UpstreamHolEnumfinalAuditTests(unittest.TestCase):
     def test_rejects_missing_saved_theorem_marker(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             paths = self.populate(Path(raw))
-            buildheap = (
-                paths["upstream_root"]
-                / "src/enumf/buildheap/buildheap_ramseyEnumScript"
-            )
-            buildheap.write_text(
-                buildheap.read_text(encoding="utf-8").replace(
+            build_log = paths["build_log"]
+            build_log.write_text(
+                build_log.read_text(encoding="utf-8").replace(
                     'Saved theorem _____ "R4418"\n', ""
                 ),
                 encoding="utf-8",

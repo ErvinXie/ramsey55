@@ -203,21 +203,17 @@ def require_build_markers(text: str, expected_memory_mb: int) -> None:
     memory = re.findall(r"^RAMSEY55_ENUMF_MEMORY_MB\s+(\d+)\s*$", text, re.MULTILINE)
     if memory != [str(expected_memory_mb)]:
         raise ValueError("build memory marker does not match expected limit")
-
-
-def require_buildheap_log(path: Path) -> None:
-    text = require_clean_log(path)
     required = (
         'Created theory "ramseyEnum"',
         'Exporting theory "ramseyEnum" ... done.',
         'Theory "ramseyEnum" took ',
     )
     if any(text.count(marker) != 1 for marker in required):
-        raise ValueError("enumf buildheap log lacks exact theory success markers")
+        raise ValueError("enumf build log lacks exact theory success markers")
     for name, _, _, _, _ in EXPECTED_THEOREMS:
         marker = f'Saved theorem _____ "{name}"'
         if text.count(marker) != 1:
-            raise ValueError(f"enumf buildheap log lacks one theorem marker: {name}")
+            raise ValueError(f"enumf build log lacks one theorem marker: {name}")
 
 
 def require_load_markers(text: str, expected_memory_mb: int) -> None:
@@ -287,8 +283,6 @@ def audit(
         suffix: artifact(final_directory / f"ramseyEnum{suffix}")
         for suffix in THEORY_SUFFIXES
     }
-    buildheap_log = final_directory / "buildheap/buildheap_ramseyEnumScript"
-    require_buildheap_log(buildheap_log)
 
     return {
         "schema": SCHEMA,
@@ -314,7 +308,6 @@ def audit(
             "generated_script": artifact(generated_script),
         },
         "files": files,
-        "buildheap_log": artifact(buildheap_log),
         "build_log": artifact(build_log),
         "build_time_log": artifact(build_time_log),
         "load_log": artifact(load_log),
