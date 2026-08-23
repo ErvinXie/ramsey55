@@ -6450,5 +6450,30 @@ and
 These machine-checked leaf choices still do not close any complete residual
 row.
 
+Four further leaves then completed in both phases and passed the same
+schema-v3 replay/selection gate.  For v421 seed911 root 1, the selector chose
+the 192,916,809-byte seed1223/phase0 proof with SHA-256
+`a0b83ccc1c1871c5f3b4861b7f2534e813cb7c9b2afb41c504431f011ff5d1ce`;
+its selection manifest hashes to
+`a775aca88cd5c6525e907787927ed1eeb91a4cc88395e44a653bdd61cb5ecbfe`.
+For v422 seed937 root 0 it chose the 561,094,475-byte seed1451/phase0 proof
+with SHA-256
+`4ed6f1a5cf14f0fb8329f41541d225617512e25f838cf204916656c18f16dfb5`
+and manifest hash
+`3791f4d4fa0c08f456831650bae4332a3be93cddfb9959c86d62911337e21ef7`.
+For v423 seed967 root 0 it chose the 483,725,219-byte seed1459/phase1 proof
+with SHA-256
+`386e439d49c6cc12a04f4b555127101ca92f627c70019a0c8c269326bffb76c1`
+and manifest hash
+`71425e283b3d6901a2b88c9cc6b9a98d2678704d2c9429d9dc5eefe308a5a68f`.
+For v423 seed971 root 1 it chose the 318,483,350-byte seed1481/phase1 proof
+with SHA-256
+`c723d1d6ebf74d79b85e2efdbfff4110806ab740f774b54317b128901e11d8d7`
+and manifest hash
+`69f82587a32c138ca4a68f2d95d36cec07be7479dddae4f7e60656a4ae8a25fe`.
+Thus 8 of the exact 18 leaves have selected complete fragments.  No one
+prefix yet has every ordered child, so none is checker-accepted as a residual
+row.
+
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.
