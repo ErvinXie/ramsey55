@@ -407,6 +407,19 @@ without that complete manifest and checks that the generated `open_template`
 imports exactly the audited theory set.  This prevents the upstream directory
 scan from silently constructing a partial final enumeration script.
 
+The next boundary is also prepared as a fail-closed build-and-load gate.
+`run_upstream_hol_enumfinal.sh` refuses partial or reused outputs, requires the
+exact 1,239-theory manifest and import set, records separate GNU-time build and
+fresh-load runs, and calls `audit_upstream_hol_enumfinal.py` to hash-bind the
+complete final theory.  The fresh HOL4 process checks all 25 exported
+theorems.  Every theorem must conclude `F`, contain exactly the symmetry and
+two matching no-clique hypotheses, contain no `F` hypothesis, and retain the
+corresponding `G` cover hypothesis exactly at the intermediate orders where
+upstream defines one.  The terminal `R3514` and `R4418` theorems must have no
+cover hypothesis.  This gate is prepared and tested, but it has not run on the
+unfinished enumeration and therefore does not yet establish either terminal
+theorem.
+
 ## Claim boundary
 
 At this checkpoint we may claim a clean, pinned HOL4 runtime build and two
