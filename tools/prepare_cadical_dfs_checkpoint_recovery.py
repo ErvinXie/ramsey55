@@ -239,6 +239,7 @@ def prepare(
     manifest_document: dict[str, object] = {
         "schema": SCHEMA,
         "verified": True,
+        "preparer": artifact(Path(__file__).resolve()),
         "source_root": artifact(source_root),
         "snapshot": artifact(snapshot),
         "proof_prefix": artifact(proof_prefix, proof_sha256),
