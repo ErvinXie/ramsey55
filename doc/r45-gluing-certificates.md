@@ -76,6 +76,33 @@ nearest-rank definition.  Solver user time totals 13,419.93 seconds and
 checker user time totals 16,514.65 seconds.  The complete d10 product contains
 505,336 pairs, so this is sizing evidence, not a d10 theorem.
 
+`compact_r45_gluing_proofs.py` now turns this measurement into an auditable
+storage experiment.  For every listed formula it reruns `drat-trim` with
+binary core-lemma output, requires an exact `s VERIFIED`, and then checks the
+emitted core proof again with ordinary `drat-trim`.  The output directory is
+published atomically only after all listed formulas pass.  All 128 d10 cores
+passed: 7,053,352,972 source-proof bytes became 4,591,869,981 core-proof
+bytes, a ratio of 0.651019451.  The core manifest SHA-256 is
+`7750e655b042d15acd63fb873131319934614a7f649c6cbdf4fb86fe9887a500`.
+The 16-way run took 23:57.36 wall-clock time, used 18,531.27 aggregate user
+seconds, peaked at 417,808 KiB RSS, and exited zero; its run and time logs hash
+to
+`30a52fa46f084a0b4506415f7a5cde9863ec2e340f1c5913b8b0ecff36d0712a`
+and
+`bd43975b3a3b258ab00c7b527ef239f90f042842c828caa0c7a0ca0c248479ae`.
+
+Compressing every checked core with zstd level 1 and hashing the decompressed
+stream reduced the sample further to 1,513,909,974 bytes, or 0.214636922 of
+the original proofs.  The compressed-family manifest hashes to
+`0ac30aeb681584afef201478064ce74f5cf11fdc8ac4795e6c73b83f724d4808`.
+A purely mechanical multiplication of these sample totals by
+`505336 / 128` estimates about 5.98 TB of retained compressed d10 proofs and
+about 22.85 days on 64 cores for solving, core emission, and core replay.
+This extrapolation is capacity planning only: it assumes the deterministic
+sample means persist over unsampled pairs and makes no UNSAT claim for them.
+It also shows that the present 2 TB ARM data disk cannot retain the full d10
+certificate family without batched export to larger durable storage.
+
 The matching d12 128-formula production sample is still being independently
 checked on the ARM host.  No d12 sample summary or full-product conclusion is
 recorded until every selected proof has an accepted checker result.

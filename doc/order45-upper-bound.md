@@ -6205,7 +6205,27 @@ and the final independent promotion audit reran the source audit, reported
 `verified: true`, and hashes to
 `0d302aea8b3d6e5da089fa0364724357ff92a217fcfad6b8f517204f256dc1ae`.
 Thus f320 is accepted as a recursively embeddable child.  Its sibling f321,
-the enclosing f32 group, f220, and f31s1 remain open at this checkpoint.
+the enclosing f32 group, and f31s1 remain open at this checkpoint.
+
+The f220 protected-CNF alternative has independently completed the same
+acceptance chain.  Its exact augmented CNF hashes to
+`b3f60657cfd863b6fb074b7b191174a1a60f5a40c8edd3bf2ee5f9d279f81f38`.
+Ordinary `drat-trim` accepted the 4,572,611,588-byte standalone proof with
+SHA-256
+`f3341dc7bda40e28a31d81e03db4e84e2487b3981bbdae4d9f3d8e1617f332a7`
+after 10,147.07 user seconds, emitting one exact `s VERIFIED` line and exiting
+zero.  The independent source audit hashes to
+`a5d3329a559a4f8ed63ac2d3cd60d08a062243d6eeb222b887692c6b59ffeaa1`.
+Removing only the final empty addition produced a 4,572,611,586-byte
+embeddable fragment with SHA-256
+`047288cff187b5069eee9c85b74ac8dce6a72ca18f683f364cbda8d886287c95`.
+The promotion manifest and final audit hash to
+`6230b8ab51b712c0af85c6a2e3491d292c9829c8d60b3c4e9080e5548b8d63ac`
+and
+`723885859438678aab745a5683e26a29b022ab816c506510784742f047a2cba6`;
+the latter reran the source audit and reports `verified: true`.  Thus f220 and
+the earlier f221 are both recursively consumable.  f222 is still open, so
+the enclosing f22 group is not closed.
 
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.

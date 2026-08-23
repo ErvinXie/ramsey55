@@ -473,6 +473,9 @@ theory hashes and build-log hashes are recorded in the
 [upstream HOL4 replay note](r45-upstream-hol-replay.md).  In particular, the
 checked conditional theorem `ramsey_4_5_25_hyp` has precisely the three
 degree-8/10/12 gluing obligations plus the order-24 witness as hypotheses.
+The separate `r4524existTheory` witness stage has also replayed successfully;
+it remains logically distinct from the unfinished upper-bound enumeration and
+gluing stages.
 
 The global generalized-graph enumeration is the current long-running stage.
 Exactly 1,239 generated `R(4,4,k)` theory scripts for `k=8..17` are being

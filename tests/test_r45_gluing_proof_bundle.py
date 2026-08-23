@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 GENERATOR = ROOT / "tools/generate_r45_gluing_branches.py"
 COLLECTOR = ROOT / "tools/collect_r45_gluing_proofs.py"
 AUDITOR = ROOT / "tools/audit_r45_gluing_proofs.py"
+COMPACTOR = ROOT / "tools/compact_r45_gluing_proofs.py"
 
 
 class R45GluingProofBundleTests(unittest.TestCase):
@@ -64,7 +65,12 @@ class R45GluingProofBundleTests(unittest.TestCase):
                 "Exit status: 0\n", encoding="utf-8"
             )
             fake = root / "fake-checker"
-            fake.write_text("#!/bin/sh\necho 's VERIFIED'\n", encoding="utf-8")
+            fake.write_text(
+                "#!/bin/sh\n"
+                "if [ \"${3-}\" = -l ]; then printf 'synthetic core\\n' > \"$4\"; fi\n"
+                "echo 's VERIFIED'\n",
+                encoding="utf-8",
+            )
             fake.chmod(0o755)
             proof_manifest = proofs / "manifest.json"
             subprocess.run(
@@ -104,6 +110,30 @@ class R45GluingProofBundleTests(unittest.TestCase):
             audit = json.loads(audit_manifest.read_text())
             self.assertTrue(audit["summary"]["complete_unsat"])
             self.assertEqual(audit["summary"]["verified_unsat"], 1)
+
+            cores = root / "cores"
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(COMPACTOR),
+                    str(proof_manifest),
+                    str(branch_manifest),
+                    str(proofs),
+                    "--checker",
+                    str(fake),
+                    "--output-dir",
+                    str(cores),
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+                text=True,
+            )
+            compacted = json.loads((cores / "manifest.json").read_text())
+            self.assertTrue(
+                compacted["summary"]["complete_for_listed_formulas"]
+            )
+            self.assertEqual(compacted["summary"]["verified_unsat"], 1)
+            self.assertEqual(compacted["results"][0]["core_proof"]["bytes"], 15)
 
 
 if __name__ == "__main__":

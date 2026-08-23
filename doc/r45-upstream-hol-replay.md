@@ -95,6 +95,25 @@ obligations and an order-24 Ramsey witness.  Building it validates the
 reduction, definitions, and published cover-dependent theory generation; it
 does not validate global cover exhaustiveness or any gluing leaf by itself.
 
+The separate order-24 witness theory has also built successfully.  Its source
+graph file hashes to
+`683a67ed3cf948a247a30e847a8970091ab25dda8dca53a742b686c4f8de770e`;
+the checked `r4524exist` theorem constructs a symmetric relation satisfying
+the generated `C4524b` and `C4524r` clique conditions.  Exact replay evidence
+is:
+
+- `src/r4524exist/r4524existTheory.sml` SHA-256:
+  `3f7d7ce365563e333aec821dcb708e15af06d85a37dd5b5dd1061ffb7a00b5bf`;
+- build-log SHA-256:
+  `05a530da33969996b51ecabb1f5012b6f76d9e0220c9c95fdf75bbff04e25425`;
+- time-log SHA-256:
+  `e6ad415b1cfe86556cf24978e3aaa7786c7db41846940382bc56003633b7ee5c`;
+- 758.43 user seconds, 12:46.54 wall, 7,321,892 KiB maximum RSS, exit 0.
+
+This completes the lower-witness input used by the upstream exact-value
+theorem.  It does not discharge any of the three upper-bound gluing
+obligations.
+
 ## Active enumeration stage
 
 An interactive HOL4 run generated the published parallel enumeration scripts
