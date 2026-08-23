@@ -105,6 +105,49 @@ def read_enumeration_manifest(path: Path, upstream_root: Path) -> dict[str, obje
     return manifest
 
 
+def read_settings(path: Path) -> dict[str, str]:
+    settings = {}
+    for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        fields = line.split()
+        if len(fields) != 2:
+            raise ValueError(f"invalid config row {path}:{line_number}")
+        if fields[0] in settings:
+            raise ValueError(f"duplicate config key in {path}: {fields[0]}")
+        settings[fields[0]] = fields[1]
+    return settings
+
+
+def validate_config_snapshots(
+    manifest: dict[str, object],
+    upstream_root: Path,
+    enumeration_snapshot: Path,
+    final_snapshot: Path,
+    expected_memory_mb: int,
+) -> None:
+    expected_original_path = str((upstream_root / "src/config").resolve())
+    recorded = [
+        record
+        for record in manifest.get("evidence", [])
+        if record.get("path") == expected_original_path
+    ]
+    if len(recorded) != 1:
+        raise ValueError("enumeration audit lacks one original config record")
+    enumeration_artifact = artifact(enumeration_snapshot)
+    if any(
+        recorded[0].get(field) != enumeration_artifact[field]
+        for field in ("bytes", "sha256")
+    ):
+        raise ValueError("enumeration config snapshot does not match its audit record")
+    final_artifact = artifact(final_snapshot)
+    live_artifact = artifact(upstream_root / "src/config")
+    if any(
+        final_artifact[field] != live_artifact[field] for field in ("bytes", "sha256")
+    ):
+        raise ValueError("final config snapshot does not match the live config")
+    if read_settings(final_snapshot).get("memory") != str(expected_memory_mb):
+        raise ValueError("final config memory does not match the expected limit")
+
+
 def validate_generated_script(
     final_directory: Path, enumeration_manifest: dict[str, object]
 ) -> tuple[Path, Path, Path]:
@@ -179,6 +222,8 @@ def require_load_markers(text: str, expected_memory_mb: int) -> None:
 def audit(
     enumeration_audit: Path,
     upstream_root: Path,
+    enumeration_config_snapshot: Path,
+    final_config_snapshot: Path,
     build_log: Path,
     build_time_log: Path,
     load_log: Path,
@@ -191,6 +236,13 @@ def audit(
     upstream_root = upstream_root.resolve()
     enumeration_audit = enumeration_audit.resolve()
     enumeration_manifest = read_enumeration_manifest(enumeration_audit, upstream_root)
+    validate_config_snapshots(
+        enumeration_manifest,
+        upstream_root,
+        enumeration_config_snapshot,
+        final_config_snapshot,
+        expected_memory_mb,
+    )
     final_directory = upstream_root / "src/enumf"
     open_template, script_template, generated_script = validate_generated_script(
         final_directory, enumeration_manifest
@@ -224,6 +276,8 @@ def audit(
         "enumeration_audit": artifact(enumeration_audit),
         "enumeration_audit_schema": ENUMERATION_SCHEMA,
         "enumeration_theories": 1239,
+        "enumeration_config_snapshot": artifact(enumeration_config_snapshot),
+        "final_config_snapshot": artifact(final_config_snapshot),
         "final_directory": str(final_directory.resolve()),
         "generated_inputs": {
             "open_template": artifact(open_template),
@@ -272,6 +326,8 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("enumeration_audit", type=Path)
     parser.add_argument("--upstream-root", type=Path, required=True)
+    parser.add_argument("--enumeration-config-snapshot", type=Path, required=True)
+    parser.add_argument("--final-config-snapshot", type=Path, required=True)
     parser.add_argument("--build-log", type=Path, required=True)
     parser.add_argument("--build-time-log", type=Path, required=True)
     parser.add_argument("--load-log", type=Path, required=True)
@@ -286,6 +342,8 @@ def main() -> None:
         document = audit(
             arguments.enumeration_audit,
             arguments.upstream_root,
+            arguments.enumeration_config_snapshot,
+            arguments.final_config_snapshot,
             arguments.build_log,
             arguments.build_time_log,
             arguments.load_log,

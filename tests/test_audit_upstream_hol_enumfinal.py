@@ -21,6 +21,16 @@ class UpstreamHolEnumfinalAuditTests(unittest.TestCase):
         buildheap = enumf / "buildheap"
         enump.mkdir(parents=True)
         buildheap.mkdir(parents=True)
+        live_config = upstream / "src/config"
+        enumeration_config_snapshot = root / "enumeration-config"
+        final_config_snapshot = root / "final-config"
+        enumeration_config_snapshot.write_text(
+            "ncore 40\nmemory 8000\n", encoding="utf-8"
+        )
+        final_config_snapshot.write_text(
+            "ncore 40\nmemory 50000\n", encoding="utf-8"
+        )
+        live_config.write_bytes(final_config_snapshot.read_bytes())
         records = [{"theory": f"ramseyEnumX{i}"} for i in range(1239)]
         enumeration_audit = root / "enumeration.json"
         enumeration_audit.write_text(
@@ -29,6 +39,15 @@ class UpstreamHolEnumfinalAuditTests(unittest.TestCase):
                     "schema": MODULE.ENUMERATION_SCHEMA,
                     "directory": str(enump.resolve()),
                     "records": records,
+                    "evidence": [
+                        {
+                            "path": str(live_config.resolve()),
+                            "bytes": enumeration_config_snapshot.stat().st_size,
+                            "sha256": MODULE.file_sha256(
+                                enumeration_config_snapshot
+                            ),
+                        }
+                    ],
                     "summary": {
                         "complete": True,
                         "scripts": 1239,
@@ -83,6 +102,8 @@ class UpstreamHolEnumfinalAuditTests(unittest.TestCase):
         return {
             "enumeration_audit": enumeration_audit,
             "upstream_root": upstream,
+            "enumeration_config_snapshot": enumeration_config_snapshot,
+            "final_config_snapshot": final_config_snapshot,
             "build_log": build_log,
             "build_time_log": build_time,
             "load_log": load_log,
@@ -112,6 +133,24 @@ class UpstreamHolEnumfinalAuditTests(unittest.TestCase):
             paths = self.populate(Path(raw))
             (paths["upstream_root"] / "src/enumf/ramseyEnumTheory.dat").unlink()
             with self.assertRaisesRegex(ValueError, "missing or empty artifact"):
+                MODULE.audit(**paths)
+
+    def test_rejects_changed_enumeration_config_snapshot(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            paths = self.populate(Path(raw))
+            paths["enumeration_config_snapshot"].write_text(
+                "ncore 40\nmemory 9000\n", encoding="utf-8"
+            )
+            with self.assertRaisesRegex(ValueError, "does not match its audit"):
+                MODULE.audit(**paths)
+
+    def test_rejects_final_config_snapshot_live_mismatch(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            paths = self.populate(Path(raw))
+            paths["final_config_snapshot"].write_text(
+                "ncore 40\nmemory 49000\n", encoding="utf-8"
+            )
+            with self.assertRaisesRegex(ValueError, "does not match the live"):
                 MODULE.audit(**paths)
 
     def test_rejects_reordered_load_markers(self) -> None:

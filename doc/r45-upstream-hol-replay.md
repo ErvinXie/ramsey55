@@ -416,7 +416,11 @@ theorems.  Every theorem must conclude `F`, contain exactly the symmetry and
 two matching no-clique hypotheses, contain no `F` hypothesis, and retain the
 corresponding `G` cover hypothesis exactly at the intermediate orders where
 upstream defines one.  The terminal `R3514` and `R4418` theorems must have no
-cover hypothesis.  This gate is prepared and tested, but it has not run on the
+cover hypothesis.  Because the enumeration and final merge need different
+HOL heap limits, the gate also requires immutable before/after config
+snapshots: the first must match the config hash already recorded in the
+enumeration manifest, and the second must match both the live build config and
+the declared final memory limit.  This gate is prepared and tested, but it has not run on the
 unfinished enumeration and therefore does not yet establish either terminal
 theorem.
 

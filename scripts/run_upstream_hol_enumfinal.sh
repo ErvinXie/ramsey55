@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -ne 4 ]]; then
-  echo "usage: $0 UPSTREAM_ROOT ENUMERATION_AUDIT_MANIFEST MEMORY_MB OUTPUT_PREFIX" >&2
+if [[ $# -ne 6 ]]; then
+  echo "usage: $0 UPSTREAM_ROOT ENUMERATION_AUDIT_MANIFEST ENUMERATION_CONFIG_SNAPSHOT FINAL_CONFIG_SNAPSHOT MEMORY_MB OUTPUT_PREFIX" >&2
   exit 2
 fi
 
 upstream_root=$1
 enumeration_audit=$2
-memory_mb=$3
-output_prefix=$4
+enumeration_config_snapshot=$3
+final_config_snapshot=$4
+memory_mb=$5
+output_prefix=$6
 repository_root=$(cd "$(dirname "$0")/.." && pwd -P)
 final_directory=$upstream_root/src/enumf
 
@@ -21,7 +23,8 @@ if [[ ! -x $upstream_root/HOL/bin/Holmake || ! -x $upstream_root/HOL/bin/hol ]];
   echo "missing HOL executables under $upstream_root" >&2
   exit 2
 fi
-for input_path in "$enumeration_audit" "$upstream_root/src/config" \
+for input_path in "$enumeration_audit" "$enumeration_config_snapshot" \
+                  "$final_config_snapshot" "$upstream_root/src/config" \
                   "$final_directory/Holmakefile" \
                   "$final_directory/open_template" \
                   "$final_directory/ramseyEnumScript_template" \
@@ -34,6 +37,8 @@ done
 
 upstream_root=$(cd "$upstream_root" && pwd -P)
 enumeration_audit=$(cd "$(dirname "$enumeration_audit")" && pwd -P)/$(basename "$enumeration_audit")
+enumeration_config_snapshot=$(cd "$(dirname "$enumeration_config_snapshot")" && pwd -P)/$(basename "$enumeration_config_snapshot")
+final_config_snapshot=$(cd "$(dirname "$final_config_snapshot")" && pwd -P)/$(basename "$final_config_snapshot")
 final_directory=$upstream_root/src/enumf
 output_parent=$(cd "$(dirname "$output_prefix")" && pwd -P)
 output_prefix=$output_parent/$(basename "$output_prefix")
@@ -58,11 +63,19 @@ for suffix in Theory.sml Theory.sig Theory.dat Theory.ui Theory.uo; do
 done
 
 python3 - "$enumeration_audit" "$upstream_root/src/enump" \
-          "$final_directory/open_template" "$memory_mb" \
-          "$upstream_root/src/config" <<'PY'
+          "$final_directory/open_template" "$enumeration_config_snapshot" \
+          "$final_config_snapshot" "$memory_mb" "$upstream_root/src/config" <<'PY'
+import hashlib
 import json
 import sys
 from pathlib import Path
+
+def sha256(path):
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(1 << 20), b""):
+            digest.update(block)
+    return digest.hexdigest()
 
 manifest = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
 expected_directory = str(Path(sys.argv[2]).resolve())
@@ -82,9 +95,26 @@ if not words or words[0] != "open" or len(words[1:]) != len(set(words[1:])):
     raise SystemExit("invalid enumf open_template")
 if set(words[1:]) != expected:
     raise SystemExit("enumf open_template does not match the enumeration audit")
-requested_memory = int(sys.argv[4])
+enumeration_config = Path(sys.argv[4])
+recorded_configs = [
+    record for record in manifest.get("evidence", [])
+    if record.get("path") == str((Path(sys.argv[2]).parent / "config").resolve())
+]
+if len(recorded_configs) != 1:
+    raise SystemExit("enumeration audit lacks one original config record")
+recorded_config = recorded_configs[0]
+if (
+    recorded_config.get("bytes") != enumeration_config.stat().st_size
+    or recorded_config.get("sha256") != sha256(enumeration_config)
+):
+    raise SystemExit("enumeration config snapshot does not match its audit record")
+final_config = Path(sys.argv[5])
+live_config = Path(sys.argv[7])
+if final_config.read_bytes() != live_config.read_bytes():
+    raise SystemExit("final config snapshot does not match the live config")
+requested_memory = int(sys.argv[6])
 settings = {}
-for line in Path(sys.argv[5]).read_text(encoding="utf-8").splitlines():
+for line in final_config.read_text(encoding="utf-8").splitlines():
     fields = line.split()
     if len(fields) == 2:
         if fields[0] in settings:
@@ -114,12 +144,13 @@ PY
 python3 "$repository_root/tools/audit_upstream_hol_enumfinal.py" \
   "$enumeration_audit" \
   --upstream-root "$upstream_root" \
+  --enumeration-config-snapshot "$enumeration_config_snapshot" \
+  --final-config-snapshot "$final_config_snapshot" \
   --build-log "$build_log" \
   --build-time-log "$build_time_log" \
   --load-log "$load_log" \
   --load-time-log "$load_time_log" \
   --expected-memory-mb "$memory_mb" \
-  --evidence "$upstream_root/src/config" \
   --evidence "$upstream_root/src/dir.sml" \
   --evidence "$upstream_root/HOL/bin/Holmake" \
   --evidence "$upstream_root/HOL/bin/hol" \
