@@ -7132,6 +7132,34 @@ promotion manifests for all three children bind `checker_verified=true` and
 their promotion audits bind `verified=true`.  No accepted fragment, manifest,
 audit, or failure/timeout transcript was removed.
 
+The legacy v411 recovery root 1 then closed before its four-hour boundary.
+Seed2129/phase1 completes 45 attempts and 22 splits at maximum depth 22.  Its
+3,294,003,528-byte proof and selection manifest hash to
+`37a6ce564e2d7b0c49dc0736c05e33d46b3688f452084883deb234d3f4747cb8`
+and
+`4b7940a082bca3e0f6077d5de3ec7b815b143d68f8378ca4434c3b9cb064bbcc`.
+Thus both v411 recovery children are complete at the producer layer and the
+J326 terminal metric is 9/16.
+
+Unlike an incomplete checkpoint, this completed child fragment needs no
+recovery-time exit attestation, and the enclosing v411 prefix is byte-exact.
+A tertiary-lock finalizer is therefore checking the two-child historical
+composition as a bounded race against the fresh `row-1.icnf` route.  No group
+credit is assigned unless the ordinary checker, independent replay audit, and
+checker rerun all pass.
+
+The last three legacy f23 descendant producers ended at the internal
+four-hour boundary with `status=0`, `checkpoint=1`.  Their attempt/split
+counts are 37/19, 37/19, and 35/18; proof-prefix sizes are 2,983,291,961,
+2,675,614,083, and 3,230,793,356 bytes.  Because they have neither the legacy
+batch's GNU-time record nor complete enclosing f23-sub2/sub3 prefixes, no
+recovery manifest or further descendant is created.  Only the fresh original
+f23 source routes can certify those groups.
+
+The v411 historical validation race has composed a 5,195,788,941-byte
+fragment and 5,195,788,943-byte standalone proof.  Its ordinary checker is
+running; no acceptance is claimed before that check and both audit gates.
+
 In parallel, the original 1,239 upstream HOL enumeration theories for orders
 8--17 completed their five-artifact build with exit zero in 7:26:35.  Their
 historical inventory hash is
