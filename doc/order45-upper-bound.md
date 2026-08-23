@@ -5925,6 +5925,55 @@ or f222, the enclosing f22 group, strengthened parent 1, either fixed-pair
 mother, or the order-45 theorem. The addition-only finalizer races remain
 independent alternatives.
 
+The checked standalone proof is now also available as a recursively
+embeddable child. `promote_checked_binary_drat_fragment.py` requires the
+protected-composition manifest, a fresh independent source-audit JSON, and
+the exact checker evidence; it then removes only the final binary `a\0`
+record. The fresh source audit passed in 607.50 seconds and its pure JSON
+hashes to
+`8475acc230842b59b97ebf5b48ba83579de508e19d375b949cfb21142f7438e4`.
+Promotion took 12.20 seconds and produced a 3,916,568,667-byte fragment with
+SHA-256
+`58a3c0f1a4c14c56dd80a041ef0e78d59cf8d85997331b245addde27ac495c03`:
+29,631,564 nonempty additions, 29,077,845 deletions, and no empty addition.
+`audit_checked_binary_drat_fragment_promotion.py` is independent of the
+producer, scans both binary streams, verifies the exact fragment-plus-empty
+relationship and every source/checker binding, and can rerun the complete
+source-composition audit. Recursive checkpoint finalization and its separate
+auditor now accept this schema. The independent promotion audit, including a
+fresh source-audit rerun, passed in 653.48 seconds with 113,860 KiB peak RSS.
+Its report SHA-256 is
+`3d8482ad9abfb63c4184c62d0867035dda3447170ff7f665a7b6548bb99fc93a`
+and its timing-log SHA-256 is
+`fa57af832c39e4f82ac8e9345b52751718de409c471376975b2e954540c55000`.
+This promotion does not close f22 by itself; it makes the already checked
+f221 result consumable once f220 and f222 are also finalized.
+
+The remaining f222 checkpoint-7 work was next replayed into three exact
+checkpoint-8 roots. v418, derived from v413 row 2 seed503/phase0, has two
+frontier rows; its proof prefix, augmented CNF, and frontier hashes are
+`070a550bd6b15514154663d1eab825f2ff77e128f9351bfa6c62fd5616969a60`,
+`e84af1ae7f651f68bab137430e5ba53a20436a2bb5a340baab8abfbc9d89273a`,
+and
+`c10b2a61dda0910bcbe1961737ccb90caca861a1521634a5ddb19f35556684cd`.
+v419, derived from v414 row 1 seed521/phase0, has one row and corresponding
+hashes
+`ec1ff20b0c14df5bf9c276148df13375875e3406216fede65b8a2efc4c2d25b7`,
+`f3c904e0792d913df1d588b2d205fb1a56aa0b779e1124910416e540f6bab8f0`,
+and
+`3c4a2de9fcfbeb0a5c4e5070594389ef41057b60c74ff06ae07f636761c99487`.
+v420, derived from v414 row 3 seed541/phase0, has two rows and hashes
+`35dd1967866b80b44600358fe1a93225fa8e64bf7db93d9b07b2eb9f42fd2aa8`,
+`f06a267d09aab813457f6edb8983ad36d6c87f4944472b3ba69390bc8727adf3`,
+and
+`9f685d7f3fef687b023141f124d59da808fa9246ffcd3d8746e2fb0415ef7f8a`.
+All five rows were launched with the internally framed v7 runner, 500,000
+base conflicts, 1,000,000 maximum conflicts, one-second lookahead,
+60-second solve slices, and a 14,400-second wall checkpoint. Distinct
+seed/phase pairs are 701/0, 709/1, 719/0, 727/1, and 733/0. These active jobs
+are search state only; they are not UNSAT evidence until finalized and
+independently checked.
+
 The formal non-lex mother assignment is now constructive. The new
 `Order45DegreeWindowAssignment.lean` identifies each generator incident stream
 with the corresponding graph degree, fills all 35,200 degree-counter state
@@ -6015,6 +6064,26 @@ handshake parity argument selects an even degree. The resulting theorem is
 `forcesRed4OrBlue5_of_threeExactFixedStarUnsat`. These three are among the
 hard scouting branches, matching the structure and difficulty of the
 published HOL4 gluing computation.
+
+The two smaller Ramsey inputs have since collapsed to one retained
+`R(3,4,9)` certificate. A direct unsymmetrized run has only 36 variables and
+210 clauses; Kissat returned UNSAT in 0.13 seconds and ordinary `drat-trim`
+verified its 210,962-byte binary proof in 0.149 seconds with zero core RAT
+lemmas. The CNF and proof hashes are
+`1c5d12b0f0b76943d2c0ac750c158ac94939009a3fa55924aa8be4418f2bd2c4`
+and
+`6410b4135b83c8040024d32688b453954447f71ef7fb704d5f235041394ae2c6`.
+The retained certificate auditor rechecked every artifact hash, independently
+reconstructed the CNF, reran the exact typed Lean comparison, and reran
+`drat-trim`; its report hashes to
+`93d2ac434d6a4623c2588497805222a19899c96ee894bb677e7269861a92b4e5`.
+`RamseySmallBounds.lean` formally derives both `R(3,5) <= 14` and
+`R(4,4) <= 18` from this single fact, while `Ramsey34Target.lean` proves the
+exact 210-clause formula complete. Thus
+`forcesRed4OrBlue5_of_r34ExactCnfAndThreeExactFixedStarUnsat` leaves only the
+d08/d10/d12 UNSAT facts. By contrast, the superseded raw R(3,5,14) and
+R(4,4,18) Kissat probes both timed out at 1,800 seconds after producing 1.1
+and 1.2 GiB incomplete traces; they are strategy evidence, not certificates.
 
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.

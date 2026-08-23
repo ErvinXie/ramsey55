@@ -1,0 +1,10 @@
+{
+  "blue_clique": 4,
+  "clauses": 210,
+  "order": 9,
+  "path": "r34-n9.cnf",
+  "red_clique": 3,
+  "schema": "ramsey55.asymmetric-ramsey-upper-bound.v1",
+  "sha256": "1c5d12b0f0b76943d2c0ac750c158ac94939009a3fa55924aa8be4418f2bd2c4",
+  "variables": 36
+}

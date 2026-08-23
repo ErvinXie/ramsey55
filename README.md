@@ -50,14 +50,23 @@ Lean proves that UNSAT for all 25 exact branch formulas implies
 `ForcesRed4OrBlue5 25`. Those 25 UNSAT certificates have not yet been
 produced, so this is a checked reduction rather than a new proof of
 `R(4,5)=25`. The optimized theorem
-`forcesRed4OrBlue5_of_threeExactFixedStarUnsat` uses the standard
-`R(3,5) <= 14` and `R(4,4) <= 18` inputs plus handshake parity to require
-only the degree-8, degree-10, and degree-12 UNSAT certificates.
+`forcesRed4OrBlue5_of_r34ExactCnfAndThreeExactFixedStarUnsat` derives both
+smaller inputs from the retained `R(3,4) <= 9` certificate and uses handshake
+parity to require only the degree-8, degree-10, and degree-12 UNSAT
+certificates.
 
-The two smaller direct CNFs can be generated and independently reconstructed
-with `generate_asymmetric_ramsey_cnf.py` and
-`verify_asymmetric_ramsey_cnf.py`; solver output is not accepted until its
-proof is checked against the unsymmetrized generated formula.
+The 36-variable / 210-clause `R(3,4,9)` CNF, its 210,962-byte DRAT proof, and
+all checker logs are retained in `data/certificates/r34-n9`. Recheck its file
+bindings, independently reconstructed CNF, typed Lean formula, and DRAT proof
+with:
+
+    python3 tools/audit_small_ramsey_certificate.py \
+      data/certificates/r34-n9/manifest.json --root . \
+      --checker .tools/src/drat-trim/drat-trim \
+      --rerun-checker --rerun-reconstructor --rerun-typed
+
+Lean proves the exact CNF UNSAT fact implies `ForcesRed3OrBlue4 9`, which in
+turn implies both `ForcesRed3OrBlue5 14` and `ForcesRed4OrBlue4 18`.
 
 The principal theorems already checked by Lean are:
 

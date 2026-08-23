@@ -13,6 +13,7 @@ from typing import Any
 
 
 SCHEMA = "ramsey55.cadical-dfs-checkpoint-finalization.v1"
+PROMOTION_SCHEMA = "ramsey55.checked-binary-drat-fragment-promotion.v1"
 REPLAY_SCHEMA = "ramsey55.cadical-dfs-prefix-replay.v1"
 
 
@@ -107,7 +108,10 @@ def read_finalized_child(
         document = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
         return None
-    if not isinstance(document, dict) or document.get("schema") != SCHEMA:
+    if not isinstance(document, dict) or document.get("schema") not in (
+        SCHEMA,
+        PROMOTION_SCHEMA,
+    ):
         raise ValueError(f"unexpected child finalization manifest schema: {path}")
     if document.get("checker_verified") is not True:
         raise ValueError(f"child finalization manifest is not checker-verified: {path}")
@@ -116,7 +120,10 @@ def read_finalized_child(
         raise ValueError(
             f"child finalization manifest does not certify a no-empty fragment: {path}"
         )
-    if output["sha256"] != proof_record["sha256"] or output["size"] != proof_record["size"]:
+    if (
+        output["sha256"] != proof_record["sha256"]
+        or output["size"] != proof_record["size"]
+    ):
         raise ValueError(
             f"child proof does not match finalization manifest output: {path}"
         )
@@ -127,15 +134,17 @@ def read_finalized_child(
         raise ValueError(
             f"child finalization manifest lacks standalone empty-clause marker: {path}"
         )
-    for label in (
-        "cnf",
-        "replay_manifest",
-        "prefix",
-        "checker",
-        "checker_log",
-    ):
+    common_records = ("cnf", "checker", "checker_log")
+    schema_records = (
+        ("replay_manifest", "prefix")
+        if document["schema"] == SCHEMA
+        else ("source_composition_manifest", "source_composition_audit")
+    )
+    for label in (*common_records, *schema_records):
         validate_file_record(document.get(label), label)
-    if not isinstance(document.get("children"), list) or not document["children"]:
+    if document["schema"] == SCHEMA and (
+        not isinstance(document.get("children"), list) or not document["children"]
+    ):
         raise ValueError(f"child finalization manifest has no children: {path}")
     return {
         **file_record(path),

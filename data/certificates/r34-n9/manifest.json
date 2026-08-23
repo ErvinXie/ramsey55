@@ -1,0 +1,69 @@
+{
+  "schema": "ramsey55.checked-small-ramsey-certificate.v1",
+  "statement": "R(3,4) <= 9",
+  "dimensions": {
+    "variables": 36,
+    "clauses": 210
+  },
+  "cnf": {
+    "path": "data/certificates/r34-n9/r34-n9.cnf",
+    "sha256": "1c5d12b0f0b76943d2c0ac750c158ac94939009a3fa55924aa8be4418f2bd2c4",
+    "size": 3457
+  },
+  "generator_manifest": {
+    "path": "data/certificates/r34-n9/r34-n9.json",
+    "sha256": "81a9ceea774ace7f887153323aa159e906845c603a59aa8308ca1cc7c8a64098",
+    "size": 254
+  },
+  "proof": {
+    "format": "binary DRAT",
+    "path": "data/certificates/r34-n9/r34-n9.drat",
+    "sha256": "6410b4135b83c8040024d32688b453954447f71ef7fb704d5f235041394ae2c6",
+    "size": 210962
+  },
+  "solver": {
+    "name": "kissat",
+    "sha256": "5d6188420ad85f22304954c4206204d6f371d022346725ba3286cdb104b73ef2",
+    "log": {
+      "path": "data/certificates/r34-n9/r34-n9-kissat.log",
+      "sha256": "2c8a4fc76e9898f51cc00d7e0b09fc9742ef0f64f4e1d7fd8b82ffbad3419e0d",
+      "size": 5651
+    },
+    "exit_status": 20,
+    "process_seconds": 0.13
+  },
+  "checker": {
+    "name": "drat-trim",
+    "sha256": "8de9a77e5ddf754f10cce7980a7495810ce9f4328c2df4e55419970ae1858d42",
+    "log": {
+      "path": "data/certificates/r34-n9/r34-n9-checker.log",
+      "sha256": "84be651043b3af506f3329fa66cf50eaaecab9b461b4ae5f55f296a4f00f8249",
+      "size": 448
+    },
+    "verified": true,
+    "verification_seconds": 0.149,
+    "core_rat_lemmas": 0
+  },
+  "typed_formula_check": {
+    "tool": "tools/VerifyRamsey34Exact.lean",
+    "tool_sha256": "caf73ccece620101e25934eda9483b26429427ceeab22547ad64ad267cd38985",
+    "log": {
+      "path": "data/certificates/r34-n9/r34-n9-lean.log",
+      "sha256": "3be3aba3242aff5179c85653ea7e24d44ec0c3486017aa4614630e0708b81152",
+      "size": 55
+    },
+    "timing_log": {
+      "path": "data/certificates/r34-n9/r34-n9-lean-time.log",
+      "sha256": "7a7434be9e3ad36444be6837a62c20dab6857fff4b0dc76b99a599265286c336",
+      "size": 804
+    },
+    "matched_clauses": 210,
+    "verified": true
+  },
+  "reproduction": [
+    "PYTHONPATH=src:tools python3 tools/verify_asymmetric_ramsey_cnf.py data/certificates/r34-n9/r34-n9.json --cnf-dir data/certificates/r34-n9",
+    "lake env lean --run tools/VerifyRamsey34Exact.lean data/certificates/r34-n9/r34-n9.cnf",
+    ".tools/src/drat-trim/drat-trim data/certificates/r34-n9/r34-n9.cnf data/certificates/r34-n9/r34-n9.drat"
+  ],
+  "verified": true
+}

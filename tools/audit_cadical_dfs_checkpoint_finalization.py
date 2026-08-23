@@ -12,6 +12,7 @@ from typing import Any
 
 AUDIT_SCHEMA = "ramsey55.cadical-dfs-checkpoint-finalization-audit.v1"
 FINALIZATION_SCHEMA = "ramsey55.cadical-dfs-checkpoint-finalization.v1"
+PROMOTION_SCHEMA = "ramsey55.checked-binary-drat-fragment-promotion.v1"
 REPLAY_SCHEMA = "ramsey55.cadical-dfs-prefix-replay.v1"
 
 
@@ -81,9 +82,7 @@ def expected_scan(
         empty_additions += 1
     return {
         "additions": additions,
-        "deletions": 0
-        if drop_deletions
-        else sum(scan["deletions"] for scan in scans),
+        "deletions": 0 if drop_deletions else sum(scan["deletions"] for scan in scans),
         "empty_additions": empty_additions,
         "empty_deletions": 0
         if drop_deletions
@@ -179,9 +178,9 @@ def checked_child_finalization(
 ) -> Path:
     validated, path = checked_file_record(record, "child finalization manifest", root)
     document = json.loads(path.read_text(encoding="utf-8"))
-    if (
-        not isinstance(document, dict)
-        or document.get("schema") != FINALIZATION_SCHEMA
+    if not isinstance(document, dict) or document.get("schema") not in (
+        FINALIZATION_SCHEMA,
+        PROMOTION_SCHEMA,
     ):
         raise ValueError(f"unexpected child finalization manifest schema: {path}")
     if document.get("checker_verified") is not True:
@@ -189,10 +188,13 @@ def checked_child_finalization(
     output = validate_file_record(document.get("output_fragment"), "output_fragment")
     if output.get("contains_empty_addition") is not False:
         raise ValueError(f"child finalization output is not embeddable: {path}")
-    if output["sha256"] != proof_record["sha256"] or output["size"] != proof_record["size"]:
+    if (
+        output["sha256"] != proof_record["sha256"]
+        or output["size"] != proof_record["size"]
+    ):
         raise ValueError(f"child proof does not match finalization manifest: {path}")
     expected = {
-        "schema": FINALIZATION_SCHEMA,
+        "schema": document["schema"],
         "checker_verified": True,
         "output_fragment_sha256": output["sha256"],
         "output_fragment_size": output["size"],
@@ -220,9 +222,13 @@ def audit_manifest(
             not isinstance(document, dict)
             or document.get("schema") != FINALIZATION_SCHEMA
         ):
-            raise ValueError(f"unexpected finalization manifest schema: {manifest_path}")
+            raise ValueError(
+                f"unexpected finalization manifest schema: {manifest_path}"
+            )
         if document.get("checker_verified") is not True:
-            raise ValueError(f"finalization manifest is not checker-verified: {manifest_path}")
+            raise ValueError(
+                f"finalization manifest is not checker-verified: {manifest_path}"
+            )
 
         _, cnf = checked_file_record(document.get("cnf"), "cnf", root)
         _, replay_path = checked_file_record(
@@ -302,13 +308,31 @@ def audit_manifest(
                     finalized, proof_record, root
                 )
                 if recursive:
-                    audit_manifest(
-                        child_manifest,
-                        root,
-                        recursive=True,
-                        rerun_checker=False,
-                        active=active,
+                    child_document = json.loads(
+                        child_manifest.read_text(encoding="utf-8")
                     )
+                    if child_document.get("schema") == FINALIZATION_SCHEMA:
+                        audit_manifest(
+                            child_manifest,
+                            root,
+                            recursive=True,
+                            rerun_checker=False,
+                            active=active,
+                        )
+                    else:
+                        from audit_checked_binary_drat_fragment_promotion import (
+                            audit_promotion,
+                        )
+
+                        audit_promotion(
+                            child_manifest,
+                            root,
+                            rerun_checker=False,
+                            rerun_source_audit=False,
+                            source_auditor=Path(__file__).with_name(
+                                "audit_binary_drat_protect_cnf.py"
+                            ),
+                        )
                     recursive_children += 1
 
         expected_fragment_scan = expected_scan(

@@ -25,4 +25,6 @@ import Ramsey55.Order45CubeCover
 import Ramsey55.Order45Dimacs
 import Ramsey55.Order45Target
 import Ramsey55.Ramsey45Target
+import Ramsey55.RamseySmallBounds
+import Ramsey55.Ramsey34Target
 import Ramsey55.Symmetry

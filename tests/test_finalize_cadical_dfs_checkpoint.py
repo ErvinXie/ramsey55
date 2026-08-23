@@ -107,6 +107,39 @@ class FinalizeCadicalDfsCheckpointTests(unittest.TestCase):
         )
         return path
 
+    def promoted_child_manifest(self, root: Path, proof: Path) -> Path:
+        placeholder = {
+            "path": "recorded-elsewhere",
+            "sha256": "0" * 64,
+            "size": 0,
+        }
+        path = root / "child-promotion.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "schema": "ramsey55.checked-binary-drat-fragment-promotion.v1",
+                    "source_composition_manifest": placeholder,
+                    "source_composition_audit": placeholder,
+                    "cnf": placeholder,
+                    "output_fragment": {
+                        "path": str(proof),
+                        "sha256": sha256(proof),
+                        "size": proof.stat().st_size,
+                        "contains_empty_addition": False,
+                    },
+                    "standalone_proof": {
+                        **placeholder,
+                        "appended_empty_clause": True,
+                    },
+                    "checker": placeholder,
+                    "checker_log": placeholder,
+                    "checker_verified": True,
+                }
+            ),
+            encoding="utf-8",
+        )
+        return path
+
     def test_composes_checks_and_hash_binds_checkpoint(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -117,9 +150,7 @@ class FinalizeCadicalDfsCheckpointTests(unittest.TestCase):
             self.assertEqual(standalone.read_bytes(), fragment.read_bytes() + b"a\0")
             manifest = json.loads((root / "manifest.json").read_text())
             self.assertTrue(manifest["checker_verified"])
-            self.assertFalse(
-                manifest["output_fragment"]["contains_empty_addition"]
-            )
+            self.assertFalse(manifest["output_fragment"]["contains_empty_addition"])
             self.assertEqual(len(manifest["children"]), 1)
 
     def test_rejects_embedded_empty_clause(self) -> None:
@@ -164,6 +195,22 @@ class FinalizeCadicalDfsCheckpointTests(unittest.TestCase):
                 child["proof"]["sha256"],
                 child["finalization_manifest"]["output_fragment_sha256"],
             )
+
+    def test_accepts_checker_verified_promoted_child(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            command = self.fixture(root)
+            proof = root / "child.drat"
+            promoted = self.promoted_child_manifest(root, proof)
+            command[command.index(str(root / "child.log"))] = str(promoted)
+            subprocess.run(command, check=True, stdout=subprocess.PIPE)
+            manifest = json.loads((root / "manifest.json").read_text())
+            evidence = manifest["children"][0]["finalization_manifest"]
+            self.assertEqual(
+                evidence["schema"],
+                "ramsey55.checked-binary-drat-fragment-promotion.v1",
+            )
+            self.assertEqual(evidence["output_fragment_sha256"], sha256(proof))
 
     def test_rejects_finalized_child_with_mismatched_proof(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -220,9 +267,7 @@ class FinalizeCadicalDfsCheckpointTests(unittest.TestCase):
             self.assertEqual(standalone.read_bytes(), fragment.read_bytes() + b"a\0")
             manifest = json.loads((root / "manifest.json").read_text())
             self.assertTrue(manifest["composition"]["drop_deletions"])
-            self.assertEqual(
-                manifest["output_fragment"]["binary_drat"]["deletions"], 0
-            )
+            self.assertEqual(manifest["output_fragment"]["binary_drat"]["deletions"], 0)
             self.assertEqual(
                 manifest["standalone_proof"]["binary_drat"]["empty_additions"],
                 1,
@@ -382,12 +427,8 @@ class FinalizeCadicalDfsCheckpointTests(unittest.TestCase):
                 check=True,
                 stdout=subprocess.PIPE,
             )
-            self.assertIn(
-                "s VERIFIED", (root / "lower-checker.log").read_text()
-            )
-            self.assertIn(
-                "s VERIFIED", (root / "upper-checker.log").read_text()
-            )
+            self.assertIn("s VERIFIED", (root / "lower-checker.log").read_text())
+            self.assertIn("s VERIFIED", (root / "upper-checker.log").read_text())
 
 
 if __name__ == "__main__":

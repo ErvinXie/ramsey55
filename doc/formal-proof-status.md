@@ -499,13 +499,38 @@ only degrees 8, 10, and 12 remain after fixed-star relabeling. The theorem
 therefore derives `ForcesRed4OrBlue5 25` from the two smaller Ramsey inputs
 and UNSAT of those three exact typed formulas. This is the same three-degree
 shape used by the published HOL4 gluing proof, now connected directly to the
-repository DIMACS definitions. No new `R(4,5)=25` claim is made: the two
-smaller inputs and three hard UNSAT certificates remain explicit.
+repository DIMACS definitions.
 
-The complete incremental ARM build now covers 93 jobs and hashes to
-`a14fa295ac1732c7e0f753cdbcf80e027b4eb9df8e4cb456965dab97e67c4f0e`.
-The full dependency-free suite passes all 223 tests; its log SHA-256 is
-`ddcb2a6d150b65d5cb9980aa8747cead1f8cf5022080143c748490dd0f37bdba`.
+The two smaller inputs are now discharged from one much smaller certificate.
+[RamseySmallBounds.lean](../formal/Ramsey55/RamseySmallBounds.lean) proves the
+classical recurrences
+
+    R(3,4) <= 9  ->  R(3,5) <= 14
+    R(3,4) <= 9  ->  R(4,4) <= 18
+
+by fixed-star relabeling, neighbourhood induction, and colour complementation.
+[Ramsey34Target.lean](../formal/Ramsey55/Ramsey34Target.lean) defines the exact
+36-variable / 210-clause formula, constructs a satisfying assignment from any
+counterexample, and proves exact CNF UNSAT implies `ForcesRed3OrBlue4 9`.
+`VerifyRamsey34Exact.lean` independently compared all 210 typed clauses to the
+retained DIMACS stream. Kissat solved that stream in 0.13 seconds; ordinary
+`drat-trim` verified the 210,962-byte proof in 0.149 seconds with no core RAT
+lemmas. The CNF and proof SHA-256 values are respectively
+`1c5d12b0f0b76943d2c0ac750c158ac94939009a3fa55924aa8be4418f2bd2c4`
+and
+`6410b4135b83c8040024d32688b453954447f71ef7fb704d5f235041394ae2c6`.
+All artifacts and an independently rerunnable audit are retained under
+`data/certificates/r34-n9/`. The final combined theorem is
+
+    forcesRed4OrBlue5_of_r34ExactCnfAndThreeExactFixedStarUnsat
+
+so only the degree-8, degree-10, and degree-12 UNSAT certificates remain on
+this `R(4,5) <= 25` route. No new `R(4,5)=25` claim is made yet.
+
+The complete incremental ARM build now covers 95 jobs and hashes to
+`e095dde784f4d6062277f93b24d7208cd50ab8aa4a7d25d3d8340e3d363571d2`.
+The full dependency-free suite passes all 232 tests; its log SHA-256 is
+`f6c671bf20495f95e68ad8d79bdee210167ee730f519d5c91a3b26359b30b895`.
 
 [Symmetry.lean](../formal/Ramsey55/Symmetry.lean) adds the generic bridge for
 an optional symmetry-reduced route. It proves that a nonempty finite orbit
