@@ -6916,6 +6916,45 @@ and
 J297 terminal recovery is therefore 13/27 and the f21 recovery group is 1/2;
 its remaining root still blocks the subgroup and all ancestors.
 
+Two more original J326 terminal producers then close: v395 f23-sub3 root 0
+at seed2089/phase1 and f23-sub2 root 1 at seed2083/phase1.  Both replay 21
+attempts, ten splits, and maximum depth ten.  Their proof/selection hashes are
+`82175e5068f85a36a74797f5ef5f556b259e2da455ce28f2662971165d59d391` /
+`4a130645ccb0b133895dfed77a4fd85a79cd89fcfdb125aeb48e0403510eaea3`
+and
+`9746989a97238c1335ad671babd6a015a80e6df753ff57f8792db2eb43385f07` /
+`0e23b57d26ce352e4c200c3730f2f6ca7fa8a7ea2d9c081e56435e2407439cc7`.
+J326 terminal progress is now 7/16; the two affected three-root groups are
+2/3 and 1/3, respectively.
+
+The seven remaining v396 J297 leaf producers reached clean four-hour,
+exit-zero `status=0` checkpoints.  Independent atomic replay expands them to
+`1,2,2,2,2,2,3` roots, fourteen in total.  The seven recovery manifests hash
+to
+`9f0297e86bff26ee5e5f44bfc6a4262fc6271cefec4e9ac2849fa443b7bff9e6`,
+`edfa9b5c99a1cbb0f910363605d9a97201c477dc87741bfe97f361d9467eb324`,
+`dcc7ecf777e9201f35425f6667d20336b714ed5ef5b3b8c0af1a171fa54118c8`,
+`6937207e1e9f520871dee20adb5d3675a5d2f4c58187c1d78950d474337cc0a8`,
+`a24c8a3c516d0b549d6fd06c9ddf76037c1a67a7435ee48faec25d89ce7e033e`,
+`4e5d4a86e2d6b53cf1d7398d4dae003bd4382f566baef7c236a81f90bbdbe42c`,
+and
+`35aa21ac15667a6cab277e5d4c6d4958f57ab647c1a04f9ff63f800be517bf98`.
+All fourteen exact roots have proof-producing seed/phase routes from 2309/0
+through 2393/1.  Seven leaf finalizers and four enclosing recursive subgroup
+watchers are live; the latter retain selected direct roots in their original
+positions.  This checkpoint recovery is not a v396 subgroup or ancestor
+certificate.
+
+The first deep child, f32-sub2 original root 2 / deep root 0, closes in one
+seed2311/phase1 UNSAT attempt without splitting.  Its 7,253,309-byte proof and
+selection manifest hash to
+`4e94a2bb4beadbf1e3d91a5439c5ea5537b6f9b934fbcca5305ac9bfe446a07f`
+and
+`c73d162eeabedf2704a885d5c2786cd83b8f394856f6bf1ab07b6ff37565c06f`.
+This is one of fourteen deep roots, not one of the 27 top-level J297 terminal
+leaves; its sibling must close and the enclosing checker gates must pass
+before the old root can be credited.
+
 In parallel, the original 1,239 upstream HOL enumeration theories for orders
 8--17 completed their five-artifact build with exit zero in 7:26:35.  Their
 historical inventory hash is
