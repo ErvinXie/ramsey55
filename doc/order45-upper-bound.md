@@ -7108,6 +7108,30 @@ GNU-time-wrapped run from the exact `row-1.icnf` source at seed2663/phase1.
 Startup is not proof credit; only a completed selection and the ordinary
 checker/audit gates can close that source root.
 
+Eleven obsolete leaf/parent watchers were stopped after exact process-command
+validation, without stopping a proof producer or checker and without deleting
+an artifact.  Five replacement immediate-parent watchers now bind directly
+to the fresh source-root proof/log pairs for v392 f1/f2, v393 f1, v395 f23,
+and v411.  Each emitted its recursive start marker.  They retain the original
+parent replay and output paths, so the existing ancestor tree can advance only
+after the replacement compositions pass the ordinary checker, independent
+replay audit, and checker rerun.
+
+The storage audit also identified two stale v399 addition-only finalizer
+streams totaling 14,543,193,376 bytes.  They were `.tmp` outputs from a
+retained `s NOT VERIFIED` checker failure, had no open descriptor, no
+finalization manifest, and no JSON/log reference.  Only those two temporary
+streams were removed.  The failed checker transcript and the separate,
+independently accepted protected-CNF proof, promoted fragment, and both
+audits remain intact.
+
+The identical cleanup gate then removed ten unreferenced, unopened f220,
+f221, and f320 `.tmp` streams totaling 42,493,347,872 bytes.  The retained
+addition-only checker attempts report `TIMEOUT`; independently, the formal
+promotion manifests for all three children bind `checker_verified=true` and
+their promotion audits bind `verified=true`.  No accepted fragment, manifest,
+audit, or failure/timeout transcript was removed.
+
 In parallel, the original 1,239 upstream HOL enumeration theories for orders
 8--17 completed their five-artifact build with exit zero in 7:26:35.  Their
 historical inventory hash is
