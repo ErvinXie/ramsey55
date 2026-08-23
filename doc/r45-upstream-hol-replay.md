@@ -82,12 +82,28 @@ The reproducible ARM build and audit evidence is:
 - direct/kernel proof SHA-256:
   `17ffb1ba521f09e0f17b81c170f781c31c8531dd3ec64d05cd6a245597eb3712`.
 
-The active enumeration run was started before this diagnosis.  Its bundled
-executable remains mode `0644`, so that run continues uniformly through the
-internal checked DPLL route.  The audited signed executable is isolated under
-`/data/ramsey55/external/hol-minisat-signed-char-v2` until a clean build
-boundary; it has not silently changed the semantics or provenance of an
-already running worker.
+The active enumeration run was started before this diagnosis.  Its first 199
+complete theories therefore used the deliberately non-executable old binary
+and the internal checked DPLL route.  The Holmake dispatcher was then stopped
+while its eight in-flight workers finished naturally.  A targeted Holmake
+pass produced their remaining `.ui` and `.uo` files, and the five nonempty
+artifact sets were checked to be exactly equal at 199 theories before the
+solver path changed.
+
+The old 0644 binary, SHA-256
+`75eac670cd770c0be7c90e1226e9af763896ea62b9318ea008c1c23533f30390`,
+is retained as a recovery copy.  The installed 0755 binary hashes to the
+audited
+`4eeb116e0ca97a55c5e1def0f7a9c1559ee04c68690703aee1993818f33053e2`.
+The clean-boundary installation manifest hashes to
+`5fd1042b4c1f06b49c7963b9949e36d365fa86224ebe978ee11b03fc316f2551`.
+After installation, a fresh `GEN_SAT` call through the unmodified default
+`SatSolvers.minisatp` path returned a kernel theorem without a DPLL fallback;
+that separate replay audit hashes to
+`8c16cc83937dd56541f75a507569b772dabea077f1b6d8b44325aaaf04650043`.
+Holmake then resumed with eight new workers.  Thus no in-flight theory saw a
+mid-execution binary change, and both sides of the boundary produce HOL4
+kernel-checked theorems.
 
 ## Completed stages
 
@@ -149,6 +165,39 @@ This completes the lower-witness input used by the upstream exact-value
 theorem.  It does not discharge any of the three upper-bound gluing
 obligations.
 
+## Prepared gluing problem lists
+
+The pinned HOL4 runtime has also generated deterministic problem lists for
+all three fixed-star degrees by applying upstream `read_par` to the published
+cover files and writing the exact ordered `cartesian_product`, without
+shuffling.  The independent
+[`audit_upstream_hol_gluing_problem_list.py`](../tools/audit_upstream_hol_gluing_problem_list.py)
+auditor rereads the first integer field of every cover row and compares every
+problem-list pair, in order, against a separately constructed product.
+
+| degree | cover product | pairs | problem-list SHA-256 | audit SHA-256 |
+|---:|---:|---:|---|---|
+| 8 | 27 x 2 | 54 | `98803bdf4b51f28219821787c1c7e0f842fb31563cc1b39b2da07c8085dc01fb` | `3390cd1f8467336ea1ca772f370209baa2c306b77904076a386b6e6831e00006` |
+| 10 | 43 x 11,752 | 505,336 | `f9ec1dbe7f447f2b2530c8acd3eddf0a86991205a6bc84cd41c7405db43546ab` | `a3319126d869d2cd721f7074a69fd6b9f8041ff52f85bb6e6b525fdb40a8750f` |
+| 12 | 12 x 26,845 | 322,140 | `eb4b5a4b1d51bdc815c6993574f960afa7d998cc56d4e93a26fdc506f225fd6c` | `ae12b8962779c93baf23a65ffe696be197e7b4ab0bbc22530eec5e3a8f553dd6` |
+
+The degree-8 generation log/time hashes are
+`4275c7d21c0636278fd2c22eb5a07f1e6bebf5ecb70d0db835658dcef588cf34`
+and
+`78c9256c2950c5e7b7dc494c7bc2a7e65b5f60a72f95f54fded6e1851a8606d2`.
+The corresponding degree-10 hashes are
+`1181c554d24c108dfbfa2da1e064297b53b11c8cb330e333aabd518d55083c95`
+and
+`2fbc6a9c7a1770d764ec5b6ac28438ff8aad1cb2e4c7a4788f75f88ec0b54e3e`;
+the degree-12 hashes are
+`b2a7000d7b17b72c70a2df5e5520e4413e5075b778a120caf5a75e35ffb3a332`
+and
+`6168de977a3f5bfb51d55423b9e61001b18c629e85d3b81cf711997849aa0f61`.
+
+This fixes and audits the finite gluing task index only.  It neither proves
+that the published cover files are globally exhaustive nor checks a gluing
+leaf theorem; those remain separate kernel and computation obligations.
+
 ## Active enumeration stage
 
 An interactive HOL4 run generated the published parallel enumeration scripts
@@ -201,7 +250,9 @@ because its stopped parent could not reap those workers, so they are not used
 as performance evidence.
 
 Completed theory outputs are durable, so later sessions can audit progress
-and resume the same tree.  The active safe setting is eight workers.  Success
+and resume the same tree.  The active safe setting is eight workers; theories
+after the audited 199-theory boundary use the signed-char external solver when
+their proof tactic requests MiniSat.  Success
 of all 1,239 scripts is still insufficient on its own: the final `enumf`
 script must then be generated and checked, followed by the existence, gluing
 merge, and final theorem stages.

@@ -471,10 +471,13 @@ An exact-commit `-fsigned-char` build now passes both its internal resolution
 traversal and HOL4 kernel proof replay on the retained regression.  Its build
 and replay tools, narrow claim boundary, and exact hashes are recorded in the
 [upstream HOL4 replay note](r45-upstream-hol-replay.md).  In particular, the
-currently running enumeration still uses the deliberately non-executable old
-binary and therefore the uniform internal proof-producing DPLL path.  Before
-this solver diagnosis, the pinned HOL4 system built successfully, followed by
-`src/def` and `src/basicRamsey`.  The checked conditional theorem
+first 199 enumeration theories used the deliberately non-executable old binary
+and the internal proof-producing DPLL path.  At a zero-worker boundary, all
+five artifact sets were checked equal before the audited signed binary was
+installed and the dispatcher resumed; a default-path `GEN_SAT` replay also
+passed after installation.  Before this solver diagnosis, the pinned HOL4
+system built successfully, followed by `src/def` and `src/basicRamsey`.  The
+checked conditional theorem
 `ramsey_4_5_25_hyp` has precisely the three
 degree-8/10/12 gluing obligations plus the order-24 witness as hypotheses.
 The separate `r4524existTheory` witness stage has also replayed successfully;
@@ -491,6 +494,15 @@ The upstream reproduction guide used 40 cores and about 500 GB RAM for this stag
 so the 244 GiB ARM host trades wall time for a safe memory margin.  This is
 therefore a partial replay checkpoint, not a new `R(4,5)=25` result and not an
 import into the Lean kernel.
+
+Ahead of the gluing stage, the pinned HOL4 runtime has now written all three
+deterministic fixed-star problem lists, and a separate repository auditor has
+checked them pair-by-pair as exact ordered products of the published cover
+rows: 27 x 2 = 54 for degree 8, 43 x 11,752 = 505,336 for degree 10, and
+12 x 26,845 = 322,140 for degree 12.  The exact artifacts and hashes are in
+the [upstream HOL4 replay note](r45-upstream-hol-replay.md).  This establishes
+the task index, not global cover exhaustiveness or any unsampled gluing
+refutation.
 
 There is now a second, self-contained route to the same input in
 [Ramsey45Target.lean](../formal/Ramsey55/Ramsey45Target.lean). Lean proves

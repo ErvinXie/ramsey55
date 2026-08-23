@@ -6280,5 +6280,30 @@ and hashes to
 This accepts v421 row 0 only.  Its row 1 race and the other v422/v423 rows
 remain search state, so neither v419 nor f222 is closed.
 
+The first continuation row below the selected v420 row-1 checkpoint has also
+passed the full gate.  Both v423 row-0 races closed; schema v3 selected
+seed953/phase1, with selection-manifest and source-proof SHA-256 values
+`cf2d1e431d5d2bac1a182255e80b29818185c3ca8f1087774005006fcbb162f5`
+and
+`f1a2417aa8a4ef38346d17105279e3a7649e0dc67a699a71f4a3bc67985fb886`.
+The independently materialized 126,884-clause child CNF hashes to
+`befb37c3211167156cbafbd4043826c904b989fe49842198bca1c6ca59b94d9e`.
+Ordinary `drat-trim` checked the 346,614,423-byte protected-CNF standalone
+proof, emitted exact `s VERIFIED`, and exited zero; that proof hashes to
+`bb5d495c305d2f71fd5e333f3228abf0cb4619225d889686f011189caf428d23`.
+The independent source-composition audit reports `verified: true` and hashes
+to
+`9d8e1fe544681652f2069e599d08a20da515008bbce367e93cf072ac88941d6d`.
+Removing exactly the final binary empty addition yielded the 346,614,421-byte
+embeddable fragment with SHA-256
+`227cba82ac006da78d20d8b8b252b221e5cf15c5ed4e83894aee76a06e341861`.
+The promotion manifest hashes to
+`3081e32d2703f28dd0fcb455035c71615ef2dd80551cb03767287af2c23f6df8`,
+and the final promotion audit reran the source audit, reports
+`verified: true`, and hashes to
+`02e1cb84d730438e60c29426904856ccc79274f07d8a1a5fea2c39df1fe0d28f`.
+This accepts v423 row 0 only.  v423 row 1 remains open, so the enclosing v420
+row 1 and v420 checkpoint are not closed.
+
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.
