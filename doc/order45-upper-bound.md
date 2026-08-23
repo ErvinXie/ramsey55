@@ -6977,6 +6977,64 @@ and
 `a31ccb9ce689ad9c4b162d6a682ea15adc533a1e289a6601f82c3d727d688d32`.
 Deep progress is 3/14; its sibling and all enclosing gates remain open.
 
+The fourth v396 deep completion is f33-sub2 original root 2 / deep root 0.
+Seed2383/phase1 closes it in 11 attempts and five splits, at maximum depth
+five.  Its 862,259,806-byte proof and selection manifest hash to
+`4b4f5a431fb1935480dfc0c97c84a1561f004a98670296a1fa09e61d9bbd5c6b`
+and
+`1c415fb0f99d32591c9d62aed74873f95870500123c070549e352218d74419e6`.
+Thus the v396 deep layer is 4/14, while the top-level J297 terminal count
+remains 13/27.
+
+The seven remaining original J297 producers outside v396 subsequently ended
+at exact four-hour, exit-zero, clause-framed checkpoints.  In route order
+v415, v416, v417-row1, v417-row2, v394-f11-sub1, v394-f11-sub2, and v403-f21,
+independent atomic replay reconstructs `1,1,3,1,1,1,1` roots.  The seven
+recovery manifests hash to
+`9ff29c84119683f64d67166d4357fb53ea86f4adbbd08281f8f690d20e8c4c45`,
+`9a7c94d48a4785ee2bcc14ef768c744363f34acd9b91990d3d6ad298ab59ecff`,
+`525e68dbf4b49d0b8ba8303920def292ff02ab21806c5dd6c5f5a4a497dd70af`,
+`d1b4f0a2d1bead73efedee209931449aed77a387da178066d80ab2684c5b3c38`,
+`caf663d29282dadc5046bcaa8e08f2716a603a7b517510f1ee880028917643ea`,
+`a5906ee697905495959671dbaece0df1bf4c27d665da55da737f0439251a70a7`,
+and
+`9c3d2f1640f970664299f81e1cfe058c0dde8c7038c36b568c2aa29a7fb3985a`.
+Their bound proof-prefix byte sizes are 2,666,199,880; 2,662,829,088;
+2,700,857,806; 2,673,860,700; 2,810,931,385; 2,696,716,561; and
+3,084,092,331.  This is recovery state only, not a proof of any old terminal
+root.
+
+Exactly the nine reconstructed roots now have nice-19 fragment producers at
+seed/phase pairs 2411/0 through 2473/0.  Seven leaf finalizers feed seven
+replacement recursive group watchers, each retaining completed direct
+siblings in original order.  An initial replacement launch encountered only
+the old poll sleeps' transient locks and failed closed before reading a child;
+after every lock was observed free, all seven routes passed their live and
+start-marker gates.  No parent or subgroup acceptance follows from startup.
+
+The first two roots beneath the three-root v417-row1 recovery close in one
+attempt without splitting.  Seed2423/phase0 produces a 13,154,521-byte proof
+with hash
+`336c73a78ab669119b7cdd144159e5fa1a8499e75f0269bc5d3074ac9526e19c`;
+its selection hashes to
+`e1af221ad64c1c0411a15a58b8c927a0f2b43344a550c291d9354fd326f46981`.
+Seed2437/phase1 produces a 146,835,493-byte proof with hash
+`09ea79041cc7dcbea53372049f1fa487dd15ca3fff9ae7b5d95d1d23f63e3e9b`;
+its selection hashes to
+`348fee4fec339dd8a1a347c4c80888e2c0dc352319dd88632dd7b6a5d56f68cf`.
+The third sibling remains open, so the old v417 terminal root is not yet
+closed.
+
+On the J326 side, v392 f2-sub1 root 1 closes at seed2017/phase0 in 37 attempts
+and 18 splits, at maximum depth 18.  Its 2,919,678,189-byte proof and
+selection manifest hash to
+`907bd0362711036d005b8daeceda6e45a97e0c2133b8fea4d0297658c8ba6088`
+and
+`574622273a0e87f792f5c1e89e315c8213cd79e266a8e1e5b8ac13bbcafbecfb`.
+This advances J326 terminal recovery to 8/16 and completes f2-sub1's two
+children only at the producer layer.  Its finalizer remains serialized behind
+the older heavy checker; no subgroup or ancestor is yet accepted.
+
 In parallel, the original 1,239 upstream HOL enumeration theories for orders
 8--17 completed their five-artifact build with exit zero in 7:26:35.  Their
 historical inventory hash is
