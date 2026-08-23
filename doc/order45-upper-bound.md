@@ -6551,5 +6551,78 @@ Its checked header matches the 8,000,000--16,000,000-conflict, 1,200-second,
 7,200-second-wall, fragment, nice-19 policy and complements the existing
 2,000,000-conflict seed1639/phase0 route.  This remains active search state.
 
+A dependency audit of the J297 v396 parent found four additional required
+children which were incomplete and no longer had a live producer: f32 sub-1,
+f32 sub-2, f33 sub-1, and f33 sub-2.  The old raw proof streams contained
+2,904,035,328, 3,056,930,816, 3,253,166,080, and 3,415,777,280 bytes and ended
+inside binary clauses.  They were retained unchanged.  Schema-v2 replay of
+their immutable TSV prefixes followed by explicit clause-boundary framing
+produced the following recovery artifacts:
+
+| child | attempts | splits | max depth | truncated tail | frontier cubes | frontier SHA-256 | framed-prefix SHA-256 |
+| --- | ---: | ---: | ---: | ---: | ---: | --- | --- |
+| f32 sub-1 | 405 | 203 | 42 | 43 | 2 | `67f841f8a33614a359a7fab9bc0fae5c89b02c63c48f339bf88932e964cfa206` | `387df10159ef02038d8a7188e8d7285587a62dfd12578ee7436a358ea979e22f` |
+| f32 sub-2 | 403 | 203 | 59 | 39 | 4 | `3b3269bd6bcde5c710c2c260ca00be885e87b978ea6756b44ce7d4290049e6bb` | `cf9bc8fbb4228725f0115e1625cd5531d14d307d3c7c49bea145da20a0c9d923` |
+| f33 sub-1 | 421 | 212 | 63 | 51 | 4 | `bd8fa0f3ef9bba14b5fa73e1fa9cebc7dac907e0d62cde76a9623dc5af2f790b` | `328d397f93608c7724f065697e25c8fb8242566158c7e639d5336e91c407c856` |
+| f33 sub-2 | 406 | 204 | 56 | 51 | 3 | `24e31192882fa50affd6ef3422a662123da7cbe5175e22ee24f0fa45ddf46aaf` | `ea593888b7858b9bf58f106da2db6c31a9a480a9d662379da36447cbebfc48f7` |
+
+For f32 sub-1/sub-2 and f33 sub-1/sub-2 respectively, the raw replay,
+framed replay, and framing-manifest SHA-256 triples are:
+
+- `f8b4b71474616705f19290ed2e3e577f0df7875be96e47d7d542bf1b002f91f1`,
+  `8d227dd365347023540b96565ce8404b9440e9e977eb420b5419f30d884da9b4`,
+  `2afaf98cfe650fd27e2337cdc8bc769c789cf757c38b0a3ad889b2d9782911fc`;
+- `e46f963cf7eadbd31ef7eafb033d60df1303c7da5c2ce93a50d2490929d0be56`,
+  `176b0410911dbf19e4f1fb4510d1ba2b0f4f00fc075843c747e58e92ec7a98d8`,
+  `d01f1866d8d6bb203cce73909464987700e1043557f2a1c21d9c91416dc1a2b2`;
+- `527117d860fa90540ab4da725f1ce05bfcc0b310d97f41bee632bf520da41288`,
+  `7d612ceb7049f467677161c14b3fee12c6b41a047334b769cc06c29f015930af`,
+  `2a20f88ba1bd89f2db17ebc0818171fd7e20f2ea82ea405252f2848633384815`;
+- `5a7d82b2dcc14b65f15deefe663fef28bdd50bab8d22e8a2617e89def1f701d2`,
+  `c4e05e58f741f71a849485f43285f603a54e7bdb2e8cc3bce98cf52f082ae404`,
+  `d983e3dfec0cb834f8125248091ca06a1c3d18af09dce9ea1ee80215ebc5b61d`.
+
+The exact frontiers were split into 13 one-row ICNFs.  Their first producer
+routes use seed/phase pairs 1801/0 and 1807/1; 1811/0, 1823/1, 1831/0, and
+1847/1; 1861/0, 1867/1, 1871/0, and 1873/1; and 1877/0, 1879/1, and 1889/0.
+Every route binds a 2,000,000-conflict initial budget, a 4,000,000 ceiling,
+600-second solves, `maximum_primary_split_variable=0`, fragment mode, and a
+14,400-second wall checkpoint, and runs at nice 19.  Four nice-15 watchers use
+explicit CNF/replay/prefix arguments but share the same serialized final-check
+lock as the J326 watchers.
+
+At the first monitor checkpoint, f32-sub2 root 0 and f33-sub1 root 0 had each
+closed in one attempt.  Their selected proofs are 97,209,372 and 101,985,166
+bytes and hash to
+`785d8c90a4a79a8f6b36b9af057acffb1483c0a2cd0d3a5557d4d5f4cfe816f2`
+and
+`80537ae6aca10dd6293ef5c6a68fc4ee0728c624e99117c0cb523806376c64bf`;
+their selection manifests hash to
+`ddc8debd5864389359278167d5d128a0d620ed2aca365e33e5d1d36f4d03ee2b`
+and
+`b9ae1c5a3d654381cb64230ce524b321a4965b9c3ef36e28621d6df4ff76d5cb`.
+The other 11 leaves remained active, so no recovered subgroup was complete.
+
+The finalization trust boundary was strengthened before any such subgroup
+could finish.  For a schema-v2 replay,
+`audit_cadical_dfs_checkpoint_finalization.py` now independently rehashes the
+source roots, snapshot, and output; parses every telemetry row; rebuilds the
+exact LIFO DFS stacks in source-root order; rejects SAT, malformed, repeated-
+split, nonfinite-time, and post-closure rows; reconstructs the frontier bytes;
+and checks all counts and depths.  The watcher requires the resulting
+`replay_independently_verified: true` field in addition to ordinary checker
+success.  Focused tests include rehashed false telemetry and a rehashed false
+frontier.  This code is public as commit `1ef3d4f`, and the ARM worktree was
+fast-forwarded to that commit while all four subgroup watchers were still
+waiting.  Recovery and launch records do not accept f32, f33, v396, or any
+ancestor.
+
+The complete documented ARM Python regression at `1ef3d4f` passed all 307
+tests in 55.570 seconds / 55.96 seconds wall with 197,724 KiB peak RSS and
+exit zero.  Its verbose and GNU-time log SHA-256 values are
+`408a17af99a986ba31bd4c4d7ab3f495604eed094b9241ddf8e6d9ab1dfd3d5e`
+and
+`6a1eb36fc625d320c23cdee484891ddb5ab07fdc01c9a4a61d26ae91af5edd1b`.
+
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.
