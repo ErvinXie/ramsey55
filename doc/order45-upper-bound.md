@@ -6745,13 +6745,78 @@ state-3704 residual cube.  It will still have to be imported through the
 materialized-proof auditor and selective-residual join before it contributes
 to a fixed-pair or global conclusion.
 
-In parallel, all 1,239 upstream HOL enumeration theories completed their
-five-artifact build with exit zero in 7:26:35.  The audited inventory hash is
+### Recursive recovery through the J326 state-3752 root
+
+A separate full dependency walk now reaches the retained J326 state-3752
+checkpoint.  The ordered route is v373 direct fragments 0/1/2 plus v379-f3
+and v379-f4.  The f3 side descends through v386 and v393; the f4 side descends
+through v390-f0/f1/f2, v392, v395, v398, v404, v407, and v411--v423.  Every
+prepared edge uses a fresh schema-v2 replay, a clause-framed immutable prefix,
+and the same serialized recursive finalizer used by the J297 tree.  Sleeping
+watchers are readiness automation only and do not certify an ancestor.
+
+Three deepest parents, v421, v422, and v423, each have two independently
+prepared equivalent child routes.  Public commit `7500ca6` adds
+`select_finalized_drat_child.py` and
+`watch_recursive_cadical_dfs_checkpoint_choice.sh`.  The selector accepts the
+first candidate only after rehashing its proof and manifest, checking its
+standalone empty marker, and verifying its recursive audit.  It records a
+deterministic hash-bound choice and revalidates that choice on restart before
+the ordinary ordered parent finalizer can run.  Five focused selector tests
+pass locally and on ARM.  The six superseded watchers had used the wrong
+mother CNF and were stopped before they selected or composed anything; their
+fail-closed rejection created no proof credit.
+
+The exact state boundary replays from
+`v353.../r3752-parents.icnf`, whose SHA-256 is
+`549dda26fa2062f2abf65eccf9b9ac177fef47fee55addbada8b725cb93679a2`.
+Its snapshot hashes to
+`c5ee87ad73d944472892ea951a100bdd0148f664b988165fc358cbbe95ac97f8`.
+Replaying 212 attempts and 108 splits at maximum depth 21 reconstructs five
+frontier rows with SHA-256
+`5e276bf59ee5cf30e72e848e84510ec580fb28257a4b223aa048321ffd0b539d`.
+Clause framing removed only the final 29 incomplete bytes from the
+2,497,826,816-byte raw stream.  The 2,497,826,787-byte framed prefix, bound
+replay manifest, and framing manifest hash to
+`f41522bf066543d92984a0b8936e062642b4ab6230458742937005b0e5553cb0`,
+`99ecd0905d4af7c11a73dae35e6ee2c8755f04682c5f35f0a4b1d47f7b4f77f6`,
+and
+`55838aa687b63f88e29a1ea726babbf02a0d0a758ea9837ad3b6bd41ad74f875`.
+
+The terminal recovery count is 16, correcting the earlier provisional count
+of 13:
+
+| recovery checkpoint | frontier roots |
+| --- | ---: |
+| v392 f1-sub0 | 1 |
+| v392 f2-sub1 | 2 |
+| v392 f2-sub2 | 2 |
+| v393 f1-sub2 | 3 |
+| v395 f23-sub2 | 3 |
+| v395 f23-sub3 | 3 |
+| v411 row1 | 2 |
+| **total** | **16** |
+
+All seven historical prefixes were independently replayed and split into
+hash-bound one-row ICNFs.  The first eight rows received distinct nice-19
+seeded producers at seed/phase pairs 2003/0, 2011/1, 2017/0, 2027/1, 2029/0,
+2039/1, 2053/0, and 2063/1.  They bind 2,000,000--4,000,000 conflicts,
+600-second solves, a 14,400-second wall checkpoint, fragment mode, and no
+primary split-variable cap.  By the 23:17 monitor, v393 f1-sub2 roots 0 and 1
+and v392 f2-sub1 root 0 had produced exact `status=20` selections.  The other
+five rows in that first batch remained open.  With load near 40/64 and 308 GiB
+free, the other eight rows then received seed/phase pairs 2081/0, 2083/1,
+2087/0, 2089/1, 2099/0, 2111/1, 2113/0, and 2129/1 under the identical checked
+policy.  Thus every one of the 16 roots now has a live or selected route.  No
+recovered subgroup or J326 ancestor was accepted at launch.
+
+In parallel, the original 1,239 upstream HOL enumeration theories for orders
+8--17 completed their five-artifact build with exit zero in 7:26:35.  Their
+historical inventory hash is
 `a592041145d80d92d6c50f9375fa08c3ace563e701c5955a7e612ac2aea570ba`.
-The generated `enumf` theory imports exactly those audited theories and is now
-running its one-core final build/load gate with the configuration memory
-setting raised from 8,000 to 50,000.  This establishes a reproducible formal
-enumeration boundary, not the final gluing theorem.
+That inventory is now known to be one terminal batch short and is retained as
+diagnostic evidence rather than claimed as complete; the corrected formal
+status is recorded in the upstream HOL replay note.
 
 No J297/J326 root certificate, parent-1 UNSAT, fixed-pair UNSAT, order-45
 UNSAT, or `R(5,5) <= 45` theorem is claimed by these preparations or leaf

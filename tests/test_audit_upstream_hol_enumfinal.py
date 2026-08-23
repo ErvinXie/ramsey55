@@ -32,9 +32,9 @@ class UpstreamHolEnumfinalAuditTests(unittest.TestCase):
         )
         live_config.write_bytes(final_config_snapshot.read_bytes())
         records = [
-            {"theory": f"ramseyEnumX{i}"}
-            for i in range(MODULE.ENUMERATION_THEORY_COUNT - 1)
-        ] + [{"theory": MODULE.TERMINAL_ENUMERATION_THEORY}]
+            {"theory": theory}
+            for theory in sorted(MODULE.expected_enumeration_theories())
+        ]
         enumeration_audit = root / "enumeration.json"
         enumeration_audit.write_text(
             json.dumps(
@@ -206,6 +206,16 @@ class UpstreamHolEnumfinalAuditTests(unittest.TestCase):
             audit_path = paths["enumeration_audit"]
             document = json.loads(audit_path.read_text(encoding="utf-8"))
             document["records"][-1]["theory"] = "ramseyEnumMissingTerminal"
+            audit_path.write_text(json.dumps(document), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "not complete"):
+                MODULE.audit(**paths)
+
+    def test_rejects_wrong_nonterminal_enumeration_batch(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            paths = self.populate(Path(raw))
+            audit_path = paths["enumeration_audit"]
+            document = json.loads(audit_path.read_text(encoding="utf-8"))
+            document["records"][0]["theory"] = "ramseyEnumUnexpected"
             audit_path.write_text(json.dumps(document), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "not complete"):
                 MODULE.audit(**paths)

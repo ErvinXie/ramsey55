@@ -336,13 +336,17 @@ dependencies, contains 379 files totaling only 1,067,129 bytes.
 
 This closes the exact listed d08 gluing leaves at the HOL kernel boundary.
 It does not prove that the listed generalized graphs exhaust all required
-isomorphism classes.  The 1,239-theory global enumeration, final merge, and
-connection to the fixed-star theorem remain separate open gates.
+isomorphism classes.  The corrected 1,240-theory global enumeration, final
+merge, and connection to the fixed-star theorem remain separate open gates.
 
 ## Active enumeration stage
 
-An interactive HOL4 run generated the published parallel enumeration scripts
-for sizes 8 through 17.  Their exact counts are:
+An interactive HOL4 run originally generated the published parallel
+enumeration scripts for sizes 8 through 17.  Inspection after the failed final
+merge found that the upstream example command uses the half-open range
+`range (8,18,...)` and therefore omits the required size-18 batch.  Running
+the same upstream generator for size 18 adds one script, based on the unique
+size-17 parent.  The corrected exact counts are:
 
 | order | scripts |
 |---:|---:|
@@ -356,7 +360,8 @@ for sizes 8 through 17.  Their exact counts are:
 | 15 | 236 |
 | 16 | 2 |
 | 17 | 1 |
-| **total** | **1,239** |
+| 18 | 1 |
+| **total** | **1,240** |
 
 The reproducible runner is
 [`scripts/run_upstream_hol_enumeration.sh`](../scripts/run_upstream_hol_enumeration.sh).
@@ -391,25 +396,29 @@ because its stopped parent could not reap those workers, so they are not used
 as performance evidence.
 
 Completed theory outputs are durable, so later sessions can audit progress
-and resume the same tree.  The active safe setting is eight workers; theories
-after the audited 199-theory boundary use the signed-char external solver when
-their proof tactic requests MiniSat.  Success
-of all 1,239 scripts is still insufficient on its own: the final `enumf`
-script must then be generated and checked, followed by the existence, gluing
-merge, and final theorem stages.
+and resume the same tree.  The safe setting for the large middle orders was
+eight workers; theories after the audited 199-theory boundary use the
+signed-char external solver when their proof tactic requests MiniSat.  The
+first 1,239 size-8--17 scripts all completed, but that fact is insufficient:
+the terminal size-18 theory must also be built and the final `enumf` script
+must then be generated and checked, followed by the existence, gluing merge,
+and final theorem stages.
 
 The final-script boundary is now guarded by
 `audit_upstream_hol_enumeration.py`.  It requires an exact one-to-one match
-between all 1,239 generated `Script.sml` files and nonempty `.sml`, `.sig`,
-`.dat`, `.ui`, and `.uo` theory artifacts, and hash-binds every file plus the
-supplied build evidence.  `generate_upstream_hol_enumfinal.sh` refuses to run
-without that complete manifest and checks that the generated `open_template`
+between all 1,240 generated `Script.sml` files and nonempty `.sml`, `.sig`,
+`.dat`, `.ui`, and `.uo` theory artifacts, checks the exact per-order batch
+family including `ramseyEnum4418_0`, and hash-binds every file plus the supplied
+build evidence.  `generate_upstream_hol_terminal_enumeration.sh` invokes the
+upstream generator for that terminal batch and validates its unique input and
+five-line theorem script.  `generate_upstream_hol_enumfinal.sh` refuses to run
+without the complete corrected manifest and checks that `open_template`
 imports exactly the audited theory set.  This prevents the upstream directory
 scan from silently constructing a partial final enumeration script.
 
 The next boundary is also prepared as a fail-closed build-and-load gate.
 `run_upstream_hol_enumfinal.sh` refuses partial or reused outputs, requires the
-exact 1,239-theory manifest and import set, records separate GNU-time build and
+exact 1,240-theory manifest and import set, records separate GNU-time build and
 fresh-load runs, and calls `audit_upstream_hol_enumfinal.py` to hash-bind the
 complete final theory.  The fresh HOL4 process checks all 25 exported
 theorems.  Every theorem must conclude `F`, contain exactly the symmetry and
@@ -420,9 +429,37 @@ cover hypothesis.  Because the enumeration and final merge need different
 HOL heap limits, the gate also requires immutable before/after config
 snapshots: the first must match the config hash already recorded in the
 enumeration manifest, and the second must match both the live build config and
-the declared final memory limit.  This gate is prepared and tested, but it has not run on the
-unfinished enumeration and therefore does not yet establish either terminal
-theorem.
+the declared final memory limit.
+
+The historical 1,239-theory manifest passed its then-current count check and
+the old final runner began, but the build stopped after 23:47.91 at `R4418`
+with `HOL_ERR {origin_function = "end_itlist", message = "list too short"}`.
+The preceding `R4417` was saved normally.  `collect_44k 18` returned an empty
+list because no `ramseyEnum4418_*Theory` existed, while `G4417_DEF` and the
+input data contain one order-17 parent.  The old manifest and failed log are
+therefore retained as diagnosis, not completeness evidence.  The regenerated
+terminal script hashes to
+`3d48aa9a6e4c9c17f45067d9f2517b1178fa30753f8d39f66379369402362372`.
+Its first HOL build exported `R4418_0`; the build log and GNU-time log hash to
+`8e32980c235c76ba862590b795e8ec45c7cff706404c42f39d36b38e717d72a7`
+and
+`9fb1de8de05eac37a820312dd6c04e3ee501d436419ce8f10e911e76b45e1c2e`.
+That diagnostic build used the later 50,000 MB config.  A clean rebuild under
+the original 8,000 MB enumeration snapshot also exported `R4418_0`, exiting
+zero in 2:19.77 with 3,684,876 KiB peak RSS.  Its build and GNU-time logs hash
+to
+`6271d0ac7898354a6abb0847f6817b70042dcf241cad1c056f872a6d80200b7a`
+and
+`45fccb170c7033ee982b683398a9bef55fa22c368020469125a0990a88573eeb`.
+The corrected five-artifact audit then accepted all 1,240 theories; its
+manifest hashes to
+`6c9a429655bd8774a3dfcaaf4826d02ea6e2001785bc06e753cf60f9b207b922`.
+The regenerated final open template imports those 1,240 theories and exactly
+one `ramseyEnum4418_0Theory`; its hash is
+`3cde91b4ab3f50b2ade0904d00a52eb58ddb792c727544f92f68ae6566193dd4`.
+The 50,000 MB enumf v2 build/load/audit gate is now active.  These successful
+preconditions do not establish `R4418` until that gate and its independent
+fresh load both exit zero.
 
 ## Claim boundary
 

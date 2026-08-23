@@ -11,7 +11,20 @@ from pathlib import Path
 
 SCHEMA = "ramsey55.upstream-hol-enumfinal-audit.v1"
 ENUMERATION_SCHEMA = "ramsey55.upstream-hol-enumeration-artifacts.v1"
-ENUMERATION_THEORY_COUNT = 1240
+ENUMERATION_BATCH_COUNTS = {
+    8: 1,
+    9: 1,
+    10: 6,
+    11: 34,
+    12: 159,
+    13: 537,
+    14: 262,
+    15: 236,
+    16: 2,
+    17: 1,
+    18: 1,
+}
+ENUMERATION_THEORY_COUNT = sum(ENUMERATION_BATCH_COUNTS.values())
 TERMINAL_ENUMERATION_THEORY = "ramseyEnum4418_0"
 THEORY_SUFFIXES = (
     "Script.sml",
@@ -48,6 +61,14 @@ EXPECTED_THEOREMS = (
     ("R4417", 17, 4, 4, True),
     ("R4418", 18, 4, 4, False),
 )
+
+
+def expected_enumeration_theories() -> set[str]:
+    return {
+        f"ramseyEnum44{order}_{batch}"
+        for order, batch_count in ENUMERATION_BATCH_COUNTS.items()
+        for batch in range(batch_count)
+    }
 
 
 def file_sha256(path: Path) -> str:
@@ -105,6 +126,8 @@ def read_enumeration_manifest(path: Path, upstream_root: Path) -> dict[str, obje
         or summary.get("complete_five_artifact_theories")
         != ENUMERATION_THEORY_COUNT
         or len(records) != ENUMERATION_THEORY_COUNT
+        or set(theory_names) != expected_enumeration_theories()
+        or len(theory_names) != len(set(theory_names))
         or theory_names.count(TERMINAL_ENUMERATION_THEORY) != 1
     ):
         raise ValueError("enumeration audit is not complete")

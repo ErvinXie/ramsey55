@@ -39,12 +39,22 @@ if manifest.get("directory") != expected_directory:
     raise SystemExit("enumeration audit directory mismatch")
 summary = manifest.get("summary", {})
 records = manifest.get("records", [])
+batch_counts = {8: 1, 9: 1, 10: 6, 11: 34, 12: 159, 13: 537,
+                14: 262, 15: 236, 16: 2, 17: 1, 18: 1}
+expected = {
+    f"ramseyEnum44{order}_{batch}"
+    for order, count in batch_counts.items()
+    for batch in range(count)
+}
+observed = [record.get("theory") for record in records]
 if (
     summary.get("complete") is not True
     or summary.get("scripts") != 1240
     or summary.get("complete_five_artifact_theories") != 1240
     or len(records) != 1240
-    or sum(record.get("theory") == "ramseyEnum4418_0" for record in records) != 1
+    or set(observed) != expected
+    or len(observed) != len(set(observed))
+    or observed.count("ramseyEnum4418_0") != 1
 ):
     raise SystemExit("enumeration audit does not certify all 1,240 theories")
 PY
