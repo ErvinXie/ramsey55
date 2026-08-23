@@ -6475,5 +6475,34 @@ Thus 8 of the exact 18 leaves have selected complete fragments.  No one
 prefix yet has every ordered child, so none is checker-accepted as a residual
 row.
 
+The ninth selected leaf is v422 seed929 frontier root 1.  Its first completed
+race, seed1439/phase0, emitted a 1,091,065,162-byte binary-framed fragment with
+SHA-256
+`68f96d8b74854bd9cf8dbb114ced315a35f541c46754c5e4b6aff7a286a78db0`.
+Schema-v3 replay records 75 attempts, 38 closed nodes, an empty residual
+frontier, producer `status=20`, and selection-manifest SHA-256
+`ee1c9aaad85df71063e74eb4b5a9a2aeb710032a18abb6d210a0ecb7ed699bce`.
+This raises the leaf count to 9/18 and leaves only root 2 below that exact
+three-root prefix.
+
+The repository script
+`scripts/watch_cadical_dfs_checkpoint_finalization.sh` now attaches a
+fail-closed finalization watcher to each of the six replayed prefixes.  It
+dynamically discovers both ordinary and long-solve producer logs, waits for
+every exact child, reruns schema-v3 selection, composes the prefix and children
+in frontier order, runs ordinary `drat-trim`, and then invokes the independent
+finalization auditor with a fresh checker run.  A per-prefix lock rejects
+duplicate watchers and one global lock serializes all expensive final checks.
+Watcher existence is only automation state, not acceptance evidence.
+
+Four additional nice-19 races target the four prefixes that are exactly one
+leaf short: v421 seed911 root 2 at seed1601/phase0, v422 seed929 root 2 at
+seed1607/phase1, v422 seed937 root 1 at seed1609/phase0, and v423 seed967 root
+1 at seed1613/phase1.  Checked producer headers bind a 2,000,000-conflict
+initial budget, 4,000,000-conflict ceiling, 600-second cube solves,
+`maximum_primary_split_variable=0`, fragment mode, and a 14,400-second wall
+checkpoint.  Their proof paths are distinct from every prior race.  These are
+active searches and do not close a leaf or prefix at launch.
+
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.
