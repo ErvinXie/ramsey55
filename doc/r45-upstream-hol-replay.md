@@ -286,6 +286,8 @@ The audit reports `verified: true`, 54 complete six-file theories, 54 exact
 scripts and child logs, and 54 fresh-loaded false conclusions without false
 hypotheses.  The compact PBL, logs, and audit are retained under
 [`data/certificates/r45-gluing-d08/`](../data/certificates/r45-gluing-d08/).
+The complete retained theory directory, including child logs and generated
+dependencies, contains 379 files totaling only 1,067,129 bytes.
 
 This closes the exact listed d08 gluing leaves at the HOL kernel boundary.
 It does not prove that the listed generalized graphs exhaust all required
