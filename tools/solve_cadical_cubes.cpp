@@ -36,6 +36,18 @@ struct Result {
   std::string model;
 };
 
+int environmentInteger(const char* name, int fallback, int minimum,
+                       int maximum) {
+  const char* raw = std::getenv(name);
+  if (!raw || !*raw) return fallback;
+  std::size_t consumed = 0;
+  const long long value = std::stoll(raw, &consumed);
+  if (raw[consumed] || value < minimum || value > maximum) {
+    throw std::runtime_error(std::string("invalid ") + name);
+  }
+  return static_cast<int>(value);
+}
+
 std::vector<std::vector<int>> read_cubes(const std::string& path) {
   std::ifstream input(path);
   if (!input) throw std::runtime_error("cannot open " + path);
@@ -79,6 +91,12 @@ int main(int argc, char** argv) try {
   if (!(timeLimit > 0) || jobs < 1 || jobs > 256) {
     throw std::runtime_error("invalid time limit or job count");
   }
+  const int randomSeed = environmentInteger(
+      "RAMSEY55_CADICAL_SEED", 0, 0, 2'000'000'000);
+  const int initialPhase =
+      environmentInteger("RAMSEY55_CADICAL_PHASE", 1, 0, 1);
+  std::cout << "cadical_seed\t" << randomSeed << '\n';
+  std::cout << "cadical_phase\t" << initialPhase << '\n';
 
   CaDiCaL::Solver probe;
   probe.set("quiet", 1);
@@ -109,6 +127,8 @@ int main(int argc, char** argv) try {
     workers.emplace_back([&, worker] {
       CaDiCaL::Solver solver;
       solver.set("quiet", 1);
+      solver.set("seed", randomSeed);
+      solver.set("phase", initialPhase);
       int workerVariables = 0;
       if (const char* error =
               solver.read_dimacs(cnfPath.c_str(), workerVariables, 1)) {
