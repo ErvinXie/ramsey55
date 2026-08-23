@@ -6383,5 +6383,28 @@ environment variables.  Their checked headers bind seed/phase pairs 1009/0,
 changes search accounting only; none of the three residual rows is thereby
 closed.
 
+The preceding, correctly configured seed907/911, 929/937, and 967/971 runs
+then reached their 14,400-second internal limit.  Each emitted
+`checkpoint=1`, `status=0`, and ended its binary proof at a NUL clause
+boundary.  Schema-v2 replay parsed every exact TSV and rehashed all six proof
+prefixes before producing the following ordered residual frontiers:
+
+| residual row | seed/phase | attempts | proof-prefix bytes | proof-prefix SHA-256 | frontier count | frontier SHA-256 |
+| --- | ---: | ---: | ---: | --- | ---: | --- |
+| v421 row 1 | 907/0 | 377 | 5,025,475,637 | `525442e646818f93a52f9caf44e8bcc395a0f19880e92bd3b7f54bf77254a764` | 4 | `d507b86869f814bcaef51727c2f70446ae7a1980cf6a0602a98fc79988e6d6da` |
+| v421 row 1 | 911/1 | 384 | 5,061,444,558 | `b4332a802657ff5c2a2f5a2d8d2006182ed656a8f6a9da43d2d4928df23e1009` | 3 | `374577a2f9d6f57c4adf22555873892241b404fafba4e561aa30e54efa061ed0` |
+| v422 row 0 | 929/0 | 388 | 4,719,592,548 | `a570d65b069f0d6d4511d390cd91400925e0138b38fdf309b40d0a93481871b4` | 3 | `510e8ba60446314c23f031928d8a2a44777226d649b897250075bb941c82401a` |
+| v422 row 0 | 937/1 | 381 | 4,987,855,298 | `d560a8dbe94476996453d6d9515c61ff21543465ddc47a215f4a04f09a37c27e` | 2 | `7adb1a57c951f518e2b105887e9afa011598c76e83da9445c50e686193ffa594` |
+| v423 row 1 | 967/0 | 393 | 4,067,038,670 | `ca8bfa747b9e132066fd0457e7cff320597ffa79675cf2b01dcd614f7b53f3e2` | 2 | `a61e348c3d3952a4bea1048d3e0363c3fbf3f28bdcb3de8dfa6fe59ae97c2dd4` |
+| v423 row 1 | 971/1 | 375 | 4,103,435,640 | `81bf396794ece7f431d1f45c72eb88a7eeda7b8ba2ee88c111ae8b05a717c10f` | 4 | `4cd5e1476e7fa6151c47356331797a5dd504eff7cbf102834aef519fc2a8dac3` |
+
+The six prefix proofs total 27,964,842,351 bytes.  Their replay commands all
+exited zero in 3.52--4.86 seconds.  Fresh continuation runs from these exact
+frontiers have checked seed/phase pairs 1109/0, 1117/1, 1123/0, 1129/1,
+1151/0, and 1153/1; all use the explicit 14,400-second wall limit,
+`maximum_primary_split_variable=0`, 60-second cube solves, all-root mode, and
+fragment output.  A replayed frontier is recovery and coverage state, not an
+UNSAT result, so none of these rows is accepted yet.
+
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.
