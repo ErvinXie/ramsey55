@@ -7076,6 +7076,38 @@ root `f2-row-1.icnf`, using seed2609/phase1 and the current clean
 policy.  This deliberately discards the defective historical prefix.  The
 fresh run is in progress and has no proof status yet.
 
+One clean descendant has also closed below the unrelated v422
+seed937/root1 checkpoint.  Seed2153/phase0 finishes in 25 attempts and 12
+splits, at maximum depth 11.  Its 2,115,104,022-byte proof and selection
+manifest hash to
+`a8b189bd73bea1587ed788b8f3ca069962b86796ae7f4b2f83f90f6e213126e8`
+and
+`80401b0d64096048e424925d22a6c055f1e231dcae0cc300118f53812fbcc645`.
+The sibling and enclosing recursive composition remain open.
+
+The same historical-prefix audit covers the six next J326 groups.  f1-sub0
+and v411-row1 are byte-exact, but f2-sub2, v393-f1-sub2, f23-sub2, and
+f23-sub3 have 31-, 40-, 44-, and 39-byte incomplete tails.  Fresh source-root
+producers therefore replace the latter four at seed/phase pairs 2617/0,
+2621/1, 2633/0, and 2647/1.  Their old children and checkpoints remain
+diagnostic artifacts and cannot establish the historical parents.
+
+A further fail-closed audit applies to the legacy descendant-launch batch.
+Four of its producers reached the internal 14,400-second boundary and wrote
+complete `status=0`, `checkpoint=1` tails, with attempt/split counts
+42/21, 42/21, 39/20, and 40/20.  However, the launch retained no per-producer
+GNU-time exit record.  The atomic recovery gate therefore rejects all four
+before emitting a manifest.  Even the byte-exact f1-sub0 route is recomputed
+from its exact original source at seed2659/phase0 under a verified GNU-time
+wrapper; the other three already have fresh source-root replacements.  No
+proof credit is assigned to the legacy prefixes.
+
+The pending v411 descendant was launched by the same legacy mechanism.
+Consequently its otherwise byte-exact historical route is also replaced by a
+GNU-time-wrapped run from the exact `row-1.icnf` source at seed2663/phase1.
+Startup is not proof credit; only a completed selection and the ordinary
+checker/audit gates can close that source root.
+
 In parallel, the original 1,239 upstream HOL enumeration theories for orders
 8--17 completed their five-artifact build with exit zero in 7:26:35.  Their
 historical inventory hash is
