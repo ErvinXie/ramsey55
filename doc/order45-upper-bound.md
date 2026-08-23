@@ -6504,5 +6504,24 @@ initial budget, 4,000,000-conflict ceiling, 600-second cube solves,
 checkpoint.  Their proof paths are distinct from every prior race.  These are
 active searches and do not close a leaf or prefix at launch.
 
+The next ordinary producer completion raised the selected count to 10/18.
+For v421 seed907 frontier root 1, seed1401/phase0 completed the one-row search
+after 117 attempts, 58 splits, and 59 closed nodes, reaching maximum processed
+depth 38.  Schema-v3
+replay selected its 1,590,128,739-byte binary-framed proof with SHA-256
+`a5ed3dd5ca8621695772c9faeb98b2e77f84bcd91e36883d59e318b9b3c32622`;
+the selection manifest hashes to
+`8fedbe0c1b5437cfa82fc3824c6daa388806c1b45f68508b012a72ef34865c8b`.
+The v421 seed907 prefix is consequently 2/4, and no whole prefix is accepted
+yet.
+
+Four more checked nice-19 long-solve races cover the remaining open leaves
+that were not in the first long-solve batch: v421 seed907 roots 2 and 3 at
+seed1621/phase0 and seed1627/phase1, and v423 seed971 roots 2 and 3 at
+seed1637/phase1 and seed1639/phase0.  They use the same distinct-output,
+2,000,000--4,000,000-conflict, 600-second, fragment, and 14,400-second wall
+policy.  Thus each of the eight currently unselected leaves has an independent
+long-solve route, but launch remains search state rather than proof evidence.
+
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.
