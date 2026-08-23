@@ -6545,5 +6545,11 @@ still-running redundant single-root searches were stopped precisely and their
 evidentiary credit.  The selected total is now 11/18; no complete prefix has
 yet passed composition and audit.
 
+Because that completion made v423 seed971 root 3 a fifth one-leaf prefix
+blocker, it also received an orthogonal high-budget race at seed1741/phase1.
+Its checked header matches the 8,000,000--16,000,000-conflict, 1,200-second,
+7,200-second-wall, fragment, nice-19 policy and complements the existing
+2,000,000-conflict seed1639/phase0 route.  This remains active search state.
+
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.
