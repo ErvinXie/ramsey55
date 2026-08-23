@@ -38,12 +38,15 @@ if manifest.get("schema") != "ramsey55.upstream-hol-enumeration-artifacts.v1":
 if manifest.get("directory") != expected_directory:
     raise SystemExit("enumeration audit directory mismatch")
 summary = manifest.get("summary", {})
+records = manifest.get("records", [])
 if (
     summary.get("complete") is not True
-    or summary.get("scripts") != 1239
-    or summary.get("complete_five_artifact_theories") != 1239
+    or summary.get("scripts") != 1240
+    or summary.get("complete_five_artifact_theories") != 1240
+    or len(records) != 1240
+    or sum(record.get("theory") == "ramseyEnum4418_0" for record in records) != 1
 ):
-    raise SystemExit("enumeration audit does not certify all 1,239 theories")
+    raise SystemExit("enumeration audit does not certify all 1,240 theories")
 PY
 
 cd "$upstream_root/src"

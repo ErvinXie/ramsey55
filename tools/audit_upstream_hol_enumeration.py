@@ -10,6 +10,20 @@ from pathlib import Path
 
 SCHEMA = "ramsey55.upstream-hol-enumeration-artifacts.v1"
 SCRIPT_SUFFIX = "Script.sml"
+EXPECTED_BATCH_COUNTS = {
+    8: 1,
+    9: 1,
+    10: 6,
+    11: 34,
+    12: 159,
+    13: 537,
+    14: 262,
+    15: 236,
+    16: 2,
+    17: 1,
+    18: 1,
+}
+EXPECTED_THEORY_COUNT = sum(EXPECTED_BATCH_COUNTS.values())
 THEORY_SUFFIXES = (
     "Theory.sml",
     "Theory.sig",
@@ -17,6 +31,27 @@ THEORY_SUFFIXES = (
     "Theory.ui",
     "Theory.uo",
 )
+
+
+def expected_enumeration_bases() -> set[str]:
+    return {
+        f"ramseyEnum44{order}_{batch}"
+        for order, batch_count in EXPECTED_BATCH_COUNTS.items()
+        for batch in range(batch_count)
+    }
+
+
+def validate_expected_family(bases: set[str], expected_count: int) -> None:
+    if expected_count != EXPECTED_THEORY_COUNT:
+        return
+    expected = expected_enumeration_bases()
+    if bases != expected:
+        missing = sorted(expected - bases)
+        extra = sorted(bases - expected)
+        raise ValueError(
+            "enumeration script family mismatch: "
+            f"missing={missing[:5]}, extra={extra[:5]}"
+        )
 
 
 def file_sha256(path: Path) -> str:
@@ -56,6 +91,7 @@ def audit(
         )
 
     expected_bases = {script.name[: -len(SCRIPT_SUFFIX)] for script in scripts}
+    validate_expected_family(expected_bases, expected_count)
     observed_bases: dict[str, set[str]] = {suffix: set() for suffix in THEORY_SUFFIXES}
     for suffix in THEORY_SUFFIXES:
         observed_bases[suffix] = {
@@ -106,7 +142,9 @@ def audit(
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("directory", type=Path)
-    parser.add_argument("--expected-count", type=int, default=1239)
+    parser.add_argument(
+        "--expected-count", type=int, default=EXPECTED_THEORY_COUNT
+    )
     parser.add_argument("--evidence", type=Path, action="append", default=[])
     parser.add_argument("--output", type=Path, required=True)
     arguments = parser.parse_args()

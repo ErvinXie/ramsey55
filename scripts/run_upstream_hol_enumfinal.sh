@@ -82,13 +82,16 @@ expected_directory = str(Path(sys.argv[2]).resolve())
 if manifest.get("schema") != "ramsey55.upstream-hol-enumeration-artifacts.v1":
     raise SystemExit("unexpected enumeration audit schema")
 summary = manifest.get("summary", {})
+records = manifest.get("records", [])
 if (
     manifest.get("directory") != expected_directory
     or summary.get("complete") is not True
-    or summary.get("scripts") != 1239
-    or summary.get("complete_five_artifact_theories") != 1239
+    or summary.get("scripts") != 1240
+    or summary.get("complete_five_artifact_theories") != 1240
+    or len(records) != 1240
+    or sum(record.get("theory") == "ramseyEnum4418_0" for record in records) != 1
 ):
-    raise SystemExit("enumeration audit does not certify all 1,239 theories")
+    raise SystemExit("enumeration audit does not certify all 1,240 theories")
 expected = {record["theory"] + "Theory" for record in manifest["records"]}
 words = Path(sys.argv[3]).read_text(encoding="utf-8").split()
 if not words or words[0] != "open" or len(words[1:]) != len(set(words[1:])):

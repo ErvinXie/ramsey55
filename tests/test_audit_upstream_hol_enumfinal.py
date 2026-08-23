@@ -31,7 +31,10 @@ class UpstreamHolEnumfinalAuditTests(unittest.TestCase):
             "ncore 40\nmemory 50000\n", encoding="utf-8"
         )
         live_config.write_bytes(final_config_snapshot.read_bytes())
-        records = [{"theory": f"ramseyEnumX{i}"} for i in range(1239)]
+        records = [
+            {"theory": f"ramseyEnumX{i}"}
+            for i in range(MODULE.ENUMERATION_THEORY_COUNT - 1)
+        ] + [{"theory": MODULE.TERMINAL_ENUMERATION_THEORY}]
         enumeration_audit = root / "enumeration.json"
         enumeration_audit.write_text(
             json.dumps(
@@ -50,8 +53,10 @@ class UpstreamHolEnumfinalAuditTests(unittest.TestCase):
                     ],
                     "summary": {
                         "complete": True,
-                        "scripts": 1239,
-                        "complete_five_artifact_theories": 1239,
+                        "scripts": MODULE.ENUMERATION_THEORY_COUNT,
+                        "complete_five_artifact_theories": (
+                            MODULE.ENUMERATION_THEORY_COUNT
+                        ),
                     },
                 }
             ),
@@ -115,7 +120,10 @@ class UpstreamHolEnumfinalAuditTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as raw:
             document = MODULE.audit(**self.populate(Path(raw)))
             self.assertTrue(document["verified"])
-            self.assertEqual(document["summary"]["enumeration_theories"], 1239)
+            self.assertEqual(
+                document["summary"]["enumeration_theories"],
+                MODULE.ENUMERATION_THEORY_COUNT,
+            )
             self.assertEqual(
                 document["summary"]["fresh_loaded_exact_shape_theorems"], 25
             )
@@ -190,6 +198,16 @@ class UpstreamHolEnumfinalAuditTests(unittest.TestCase):
                 encoding="utf-8",
             )
             with self.assertRaisesRegex(ValueError, "R4418"):
+                MODULE.audit(**paths)
+
+    def test_rejects_missing_terminal_enumeration_batch(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            paths = self.populate(Path(raw))
+            audit_path = paths["enumeration_audit"]
+            document = json.loads(audit_path.read_text(encoding="utf-8"))
+            document["records"][-1]["theory"] = "ramseyEnumMissingTerminal"
+            audit_path.write_text(json.dumps(document), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "not complete"):
                 MODULE.audit(**paths)
 
 

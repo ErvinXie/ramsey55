@@ -11,6 +11,8 @@ from pathlib import Path
 
 SCHEMA = "ramsey55.upstream-hol-enumfinal-audit.v1"
 ENUMERATION_SCHEMA = "ramsey55.upstream-hol-enumeration-artifacts.v1"
+ENUMERATION_THEORY_COUNT = 1240
+TERMINAL_ENUMERATION_THEORY = "ramseyEnum4418_0"
 THEORY_SUFFIXES = (
     "Script.sml",
     "Theory.sml",
@@ -95,11 +97,15 @@ def read_enumeration_manifest(path: Path, upstream_root: Path) -> dict[str, obje
         raise ValueError("unexpected enumeration audit schema")
     if manifest.get("directory") != str((upstream_root / "src/enump").resolve()):
         raise ValueError("enumeration audit directory mismatch")
+    records = manifest.get("records", [])
+    theory_names = [record.get("theory") for record in records]
     if (
         summary.get("complete") is not True
-        or summary.get("scripts") != 1239
-        or summary.get("complete_five_artifact_theories") != 1239
-        or len(manifest.get("records", [])) != 1239
+        or summary.get("scripts") != ENUMERATION_THEORY_COUNT
+        or summary.get("complete_five_artifact_theories")
+        != ENUMERATION_THEORY_COUNT
+        or len(records) != ENUMERATION_THEORY_COUNT
+        or theory_names.count(TERMINAL_ENUMERATION_THEORY) != 1
     ):
         raise ValueError("enumeration audit is not complete")
     return manifest
@@ -264,7 +270,7 @@ def audit(
     return {
         "schema": SCHEMA,
         "claim": (
-            "the hash-bound 1,239-theory enumeration manifest generated the exact "
+            "the hash-bound 1,240-theory enumeration manifest generated the exact "
             "enumf import/script pair; HOL4 built all 25 listed final Ramsey "
             "theorems, and a fresh HOL4 session loaded each with conclusion F, "
             "the exact base hypotheses, and the expected intermediate cover "
@@ -275,7 +281,7 @@ def audit(
         "upstream_root": str(upstream_root),
         "enumeration_audit": artifact(enumeration_audit),
         "enumeration_audit_schema": ENUMERATION_SCHEMA,
-        "enumeration_theories": 1239,
+        "enumeration_theories": ENUMERATION_THEORY_COUNT,
         "enumeration_config_snapshot": artifact(enumeration_config_snapshot),
         "final_config_snapshot": artifact(final_config_snapshot),
         "final_directory": str(final_directory.resolve()),
@@ -292,7 +298,7 @@ def audit(
         "load_time_log": artifact(load_time_log),
         "evidence": [artifact(path.resolve()) for path in evidence or []],
         "summary": {
-            "enumeration_theories": 1239,
+            "enumeration_theories": ENUMERATION_THEORY_COUNT,
             "complete_final_theory_artifacts": len(THEORY_SUFFIXES),
             "saved_final_theorems": len(EXPECTED_THEOREMS),
             "fresh_loaded_exact_shape_theorems": len(EXPECTED_THEOREMS),

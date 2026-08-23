@@ -64,6 +64,13 @@ class UpstreamHolEnumerationAuditTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "missing or empty artifact"):
                 MODULE.audit(root, 2)
 
+    def test_full_family_requires_terminal_order18_batch(self) -> None:
+        bases = MODULE.expected_enumeration_bases()
+        bases.remove("ramseyEnum4418_0")
+        bases.add("ramseyEnum4417_1")
+        with self.assertRaisesRegex(ValueError, "script family mismatch"):
+            MODULE.validate_expected_family(bases, MODULE.EXPECTED_THEORY_COUNT)
+
 
 if __name__ == "__main__":
     unittest.main()
