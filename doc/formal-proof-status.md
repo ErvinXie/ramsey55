@@ -372,10 +372,12 @@ the new axiom audits contain only `propext`, `Classical.choice`, and
 `Quot.sound`, with no `sorryAx` or native-decision axiom.
 
 Thus graph-to-mother completeness is no longer an open mathematical bridge
-for the typed formula. The remaining data boundary is to bind the exact
-generated DIMACS Ramsey/fixed streams and complete block concatenation to
-these typed formulas. The external `R(4,5)=25` theorem, five catalog edge
-ranges, and all 109 leaf UNSAT certificates also remain explicit inputs.
+for the typed formula.  The direct Lean executable
+`tools/VerifyOrder45ExactMothers.lean` and the independent Python
+reconstruction later closed the external sequence boundary by comparing every
+generated DIMACS clause with these typed formulas.  The remaining substantive
+inputs are the exact small-Ramsey UNSAT facts, five catalog edge ranges, and
+all 109 leaf UNSAT certificates.
 
 The concrete theorem
 `forcesMonochromatic5_45_of_exactFullMotherCubeRefutations` now performs the
@@ -390,14 +392,26 @@ the theorem's axiom audit lists only `propext`, `Classical.choice`, and
 `Quot.sound`.  This composition does not by itself import the generated
 DIMACS bytes or any solver certificate.
 
+[Order45ConcreteTarget.lean](../formal/Ramsey55/Order45ConcreteTarget.lean)
+expands the remaining abstract `ForcesRed4OrBlue5 25` premise as well.  Its
+`forcesMonochromatic5_45_of_exactCnfInputs` theorem consumes the exact
+`R(3,4,9)` CNF refutation, the exact d8/d10/d12 order-25 fixed-star CNF
+refutations, the five catalog ranges, and the 109 order-45 mother/cube
+refutations.  The full 96-job ARM build passed with log SHA-256
+`579dff97c0230ea3c440fc15014fce9eff6ab0197508b04a22ce0f2a5a0f55ae`;
+the final theorem's axiom audit again contains only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
 The order-45 file instantiates this theorem at the actual H/J row counts and
 counter widths: `(190,101)/(276,133)`, `(210,108)/(253,123)`, and
 `(231,115)/(231,115)`. It now derives three formula-relative cube covers from
 mother-CNF satisfaction and inclusion of the two row-major counter substreams
 plus the generated constraint tail. No separate semantic range or density
-hypothesis remains. At the data boundary, the generated mother formula must
-still be shown to contain that concrete typed suffix. The state-variable
-assignment and its numeric DIMACS allocation are no longer open.
+hypothesis remains.  Counter-tail inclusion in each exact typed mother is now
+discharged structurally by the concrete end-to-end theorem; the direct Lean
+executable and independent Python audit bind the complete typed streams to the
+hash-fixed DIMACS files.  The state-variable assignment and its numeric
+allocation are no longer open.
 
 [Order45Dimacs.lean](../formal/Ramsey55/Order45Dimacs.lean) fixes the numeric
 counter-variable allocation used by the DIMACS generator. It defines the
@@ -419,15 +433,13 @@ any mother CNF containing it. The full 79-target ARM build succeeds; the new
 theorems contain only Lean's standard axioms and no `sorryAx` or
 `native_decide`.
 
-This closes the abstract input/state/bound/sum semantics. Still missing at the
-data boundary is a kernel-checked or equivalently audited statement that the
-three generated mother DIMACS streams contain these exact suffixes. The
-independent byte-level statement is now recorded in
-`data/order45-counter-tail-manifest.json`: a second audit reconstructs and
-compares clauses 2,584,036/2,584,054/2,584,060 onward and binds the three
-167,810/161,604/159,612-clause suffixes by SHA-256. This is equivalently
-audited external data, not yet an embedded Lean theorem. Graph/excess reduction
-and checked UNSAT-certificate import remain separate obligations.
+This closes the abstract input/state/bound/sum semantics.  In addition to the
+complete-stream checks, `data/order45-counter-tail-manifest.json` records an
+independent byte-level suffix audit: it reconstructs and compares clauses
+2,584,036/2,584,054/2,584,060 onward and binds the three
+167,810/161,604/159,612-clause suffixes by SHA-256.  These are audited external
+file checks rather than an embedded kernel parser.  Checked UNSAT-certificate
+completion and the published catalog facts remain separate obligations.
 
 [Order45Target.lean](../formal/Ramsey55/Order45Target.lean) now packages the
 end-to-end upper-bound interface.  `FixedStarCnfComplete d formula` states the
