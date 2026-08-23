@@ -6027,6 +6027,39 @@ peak RSS; its log hashes to
 and the GNU-time log hashes to
 `d97ad168aa2125bfcc874f46b63f7ad5c0b2abe3191af794bb5d2f136798e938`.
 
+Schema v3 closes a wall-checkpoint telemetry edge case. The C++ producer
+updates its maximum depth after popping a pending node but emits the TSV row
+only after the solve/lookahead. If the global timer expires in that interval,
+the producer depth can equal the deepest reconstructed frontier depth rather
+than the deepest logged depth. The selector now records all three quantities
+and accepts exactly those two control-flow possibilities; an unrelated depth
+is still rejected. This recovered the v419 checkpoint for selection without
+weakening its DFS, status, framing, or hash checks.
+
+On the two real v419 races, v3 selected seed757/phase1 after both replayed to
+two frontier rows.  The two depth triples `(producer, processed, frontier)`
+were `(83,82,83)` and `(78,78,74)`.  The selection manifest hashes to
+`af543f663013cb8b0d061e98561577daf3b2174ca57165dc5bec024c6a6254f9`;
+the selected framed prefix hashes to
+`7f6b96899324256e81ab5296821cdc4ed42ecee1702c19263a6b7c9700173258`.
+A hash-bound replay produced the two-row frontier with SHA-256
+`8a10a29380ca7d5f79a343fe1ee5d69cf319d5fc1bcfad1b2d768cef8b3aa34d`
+and replay-manifest SHA-256
+`47878511c7c37e0c0de6fcfb58e4e42eb2e7e475dbe2e559235c6523f5aa5c97`.
+
+The selected incomplete v418 row 1 and v420 row 1 prefixes were replayed in
+the same way.  Their frontier/replay-manifest hashes are respectively
+`b4a69cda5271fc213b7cd00052bf437d2a0039d718f2ed019f483c30c3231117` /
+`8127810ef0df0c6b04e6812b38a12bd5bbc29fbebcbbe0959e24b37ff54ef571`
+for one row, and
+`97833c7485a246c8aa4f4c831743779ea8df48257f3fd4e1134adb69d0a6589c` /
+`1200baca80189aabc93fba55636ead14ffbb76bd641e0384e99316532a587898`
+for two rows.  Two opposite-phase v7 races are active on each of these five
+rows, using seeds 881/887, 907/911, 929/937, 947/953, and 967/971.  The exact
+runner hash is
+`86a1d4685141d341dab71d0b128eabff2d14f855bf2f5dc0e4e8c827c673ed60`.
+These are resumable searches, not accepted child refutations.
+
 Checkpoint continuation now has the same multi-root guarantees.
 `tools/replay_cadical_dfs_prefix.py` schema v2 reconstructs an ordered forest,
 including an active LIFO stack and every untouched later root. It rejects a

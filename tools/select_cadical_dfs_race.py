@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 
 
-SCHEMA = "ramsey55.cadical-dfs-race-selection.v2"
+SCHEMA = "ramsey55.cadical-dfs-race-selection.v3"
 HEADER = "root\tattempt\tdepth\tlimit\tstatus\tcore\tsplit\tseconds"
 
 
@@ -107,7 +107,7 @@ def replay_snapshot(
     ]
     active_root = 0
     globally_unsat = False
-    attempts = splits = closed = maximum_depth = 0
+    attempts = splits = closed = maximum_processed_depth = 0
     for line_number, raw in enumerate(lines[1:], 2):
         if not raw:
             continue
@@ -140,7 +140,7 @@ def replay_snapshot(
             or parsed_seconds < 0
         ):
             raise ValueError(f"invalid DFS telemetry at line {line_number}")
-        maximum_depth = max(maximum_depth, parsed_depth)
+        maximum_processed_depth = max(maximum_processed_depth, parsed_depth)
         attempts += 1
         if parsed_status == 20:
             if parsed_split != 0:
@@ -161,17 +161,22 @@ def replay_snapshot(
     if globally_unsat:
         frontier: list[tuple[int, ...]] = []
         root_frontier_counts = [0] * len(roots)
+        maximum_frontier_depth = 0
     else:
         root_frontiers = [
             [cube for cube, _ in reversed(stack)] for stack in stacks
         ]
         frontier = [cube for root_frontier in root_frontiers for cube in root_frontier]
         root_frontier_counts = [len(root_frontier) for root_frontier in root_frontiers]
+        maximum_frontier_depth = max(
+            (depth for stack in stacks for _, depth in stack), default=0
+        )
     return frontier, {
         "attempts": attempts,
         "splits": splits,
         "closed": closed,
-        "maximum_depth": maximum_depth,
+        "maximum_processed_depth": maximum_processed_depth,
+        "maximum_frontier_depth": maximum_frontier_depth,
         "global_unsat": globally_unsat,
         "root_frontier_counts": root_frontier_counts,
     }
@@ -199,7 +204,17 @@ def inspect_race(
         raise ValueError(f"producer/replay attempt mismatch: {log}")
     if producer["splits"] != replay["splits"]:
         raise ValueError(f"producer/replay split mismatch: {log}")
-    if producer["maximum_extra_depth"] != replay["maximum_depth"]:
+    # The producer updates maximumDepth immediately after popping a pending
+    # node, but writes a TSV row only after its interrupted solve/lookahead.
+    # At a wall checkpoint it can therefore report either the deepest logged
+    # node or, if deeper, the deepest reconstructed frontier node. No other
+    # value is compatible with its control flow.
+    processed_depth = replay["maximum_processed_depth"]
+    allowed_depths = {
+        processed_depth,
+        max(processed_depth, replay["maximum_frontier_depth"]),
+    }
+    if producer["maximum_extra_depth"] not in allowed_depths:
         raise ValueError(f"producer/replay maximum-depth mismatch: {log}")
     completed = producer["status"] == 20
     if completed and producer.get("cubes") != len(roots):
@@ -215,7 +230,9 @@ def inspect_race(
         "attempts": replay["attempts"],
         "splits": replay["splits"],
         "closed_nodes": replay["closed"],
-        "maximum_depth": replay["maximum_depth"],
+        "producer_maximum_depth": producer["maximum_extra_depth"],
+        "maximum_processed_depth": replay["maximum_processed_depth"],
+        "maximum_frontier_depth": replay["maximum_frontier_depth"],
         "global_unsat": replay["global_unsat"],
         "frontier_count": len(frontier),
         "root_frontier_counts": replay["root_frontier_counts"],

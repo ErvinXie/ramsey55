@@ -91,6 +91,45 @@ class CadicalDfsRaceSelectionTests(unittest.TestCase):
             self.assertEqual(document["races"][0]["frontier_count"], 2)
             self.assertEqual(document["races"][1]["frontier_count"], 1)
 
+    def test_checkpoint_accepts_unlogged_popped_frontier_depth(self) -> None:
+        snapshot = HEADER + "0\t0\t0\t10\t0\t0\t2\t0.1\n"
+        with tempfile.TemporaryDirectory() as raw:
+            directory = Path(raw)
+            self.run_tool(
+                directory,
+                [(b"a\x02\0", snapshot, producer_log(0, 1, 1, 1))],
+            )
+            race = json.loads((directory / "selection.json").read_text())[
+                "races"
+            ][0]
+            self.assertEqual(race["producer_maximum_depth"], 1)
+            self.assertEqual(race["maximum_processed_depth"], 0)
+            self.assertEqual(race["maximum_frontier_depth"], 1)
+
+    def test_checkpoint_rejects_impossible_producer_depth(self) -> None:
+        snapshot = HEADER + "0\t0\t0\t10\t0\t0\t2\t0.1\n"
+        with tempfile.TemporaryDirectory() as raw:
+            self.run_tool(
+                Path(raw),
+                [(b"a\x02\0", snapshot, producer_log(0, 1, 1, 2))],
+                expect_success=False,
+            )
+
+    def test_checkpoint_cannot_forget_a_deeper_processed_node(self) -> None:
+        snapshot = (
+            HEADER
+            + "0\t0\t0\t10\t0\t0\t2\t0.1\n"
+            + "0\t1\t1\t10\t0\t0\t3\t0.1\n"
+            + "0\t2\t2\t10\t20\t1\t0\t0.1\n"
+            + "0\t3\t2\t10\t20\t1\t0\t0.1\n"
+        )
+        with tempfile.TemporaryDirectory() as raw:
+            self.run_tool(
+                Path(raw),
+                [(b"a\x02\0", snapshot, producer_log(0, 4, 2, 1))],
+                expect_success=False,
+            )
+
     def test_rejects_unframed_proof(self) -> None:
         snapshot = HEADER + "0\t0\t0\t10\t20\t1\t0\t0.1\n"
         with tempfile.TemporaryDirectory() as raw:
