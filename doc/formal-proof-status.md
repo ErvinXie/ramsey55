@@ -479,8 +479,11 @@ gluing stages.
 
 The global generalized-graph enumeration is the current long-running stage.
 Exactly 1,239 generated `R(4,4,k)` theory scripts for `k=8..17` are being
-checked eight at a time; the subsequent `enumf` merge has not yet run.  The
-upstream reproduction guide used 40 cores and about 500 GB RAM for this stage,
+checked incrementally.  A 12-worker trial was rolled back at a clean boundary
+after aggregate worker RSS reached 124.9 GiB and available memory fell to
+27 GiB without swap; 106 completed theories were retained, and the active
+safe setting is eight workers.  The subsequent `enumf` merge has not yet run.
+The upstream reproduction guide used 40 cores and about 500 GB RAM for this stage,
 so the 244 GiB ARM host trades wall time for a safe memory margin.  This is
 therefore a partial replay checkpoint, not a new `R(4,5)=25` result and not an
 import into the Lean kernel.
