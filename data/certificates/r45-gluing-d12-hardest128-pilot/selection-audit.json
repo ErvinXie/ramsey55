@@ -1,0 +1,53 @@
+{
+  "claim": "selection audit for one HOL pilot from a checked sparse sample; no unsampled UNSAT claim",
+  "inputs": {
+    "branch_manifest": {
+      "bytes": 51203,
+      "path": "/data/ramsey55/build/r45-gluing-d12-stratified128-v1/manifest.json",
+      "sha256": "78aa98e1832ddb588f166b0d667a7d1694eb9126504a4c09b9e4b67e5936049d"
+    },
+    "full_problem_list": {
+      "bytes": 21261240,
+      "path": "/data/ramsey55/external/barakeel-formal-poly592/src/glue3512_pbl_ramsey55_v1",
+      "sha256": "eb4b5a4b1d51bdc815c6993574f960afa7d998cc56d4e93a26fdc506f225fd6c"
+    },
+    "pilot_problem_list": {
+      "bytes": 66,
+      "path": "/data/ramsey55/external/barakeel-formal-poly592/src/glue3512_pbl_ramsey55_hardest128_v1",
+      "sha256": "e946ea813e4cc49e9a23fb5351c9799738a58a75bda63f46fb3b803c1d8c7f45"
+    },
+    "proof_directory": "/data/ramsey55/build/r45-gluing-d12-stratified128-v1/proofs-v1",
+    "proof_manifest": {
+      "bytes": 162956,
+      "path": "/data/ramsey55/build/r45-gluing-d12-stratified128-v1/proof-manifest.json",
+      "sha256": "0d59f039b91d686d3ca7420190005b39644492df44e936652958d54e850c50bf"
+    }
+  },
+  "sample": {
+    "fixed_star_degree": 12,
+    "formulas": 128,
+    "raw_proof_artifacts_rehashed": 128,
+    "raw_proof_bytes": 8264274560,
+    "total_pairs": 322140,
+    "verified_unsat": 128
+  },
+  "schema": "ramsey55.r45-gluing-hol-pilot-selection-audit.v1",
+  "selection": {
+    "criterion": "maximum raw proof bytes; least pair_index breaks ties",
+    "full_problem_list_line_one_based": 251148,
+    "left_code": 61799329827687162405135973520825,
+    "pair_index_zero_based": 251147,
+    "proof": {
+      "bytes": 1127021956,
+      "path": "/data/ramsey55/build/r45-gluing-d12-stratified128-v1/proofs-v1/r45-glue-d12-i00009-j09542.drat",
+      "sha256": "a5c8fed8afe5f42b5da4b40cf02b2b18875bd832f54bff92473f3f1913426632"
+    },
+    "rank": 1,
+    "right_code": 44550800702264017901261388647987,
+    "runner_up": {
+      "pair_index": 248630,
+      "proof_bytes": 1088909872
+    }
+  },
+  "verified": true
+}

@@ -1,0 +1,23 @@
+	Command being timed: "nice -n 10 ionice -c 3 python3 - /data/ramsey55/build/r45-gluing-d12-stratified128-v1/proof-manifest.json /data/ramsey55/build/r45-gluing-d12-stratified128-v1/manifest.json /data/ramsey55/build/r45-gluing-d12-stratified128-v1/proofs-v1 /data/ramsey55/external/barakeel-formal-poly592/src/glue3512_pbl_ramsey55_v1 /data/ramsey55/external/barakeel-formal-poly592/src/glue3512_pbl_ramsey55_hardest128_v1 --output /data/ramsey55/build/r45-gluing-d12-stratified128-v1/hol-pilot-selection-audit-v1.json"
+	User time (seconds): 5.25
+	System time (seconds): 1.85
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:07.12
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 70444
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 1
+	Minor (reclaiming a frame) page faults: 76432
+	Voluntary context switches: 4
+	Involuntary context switches: 11
+	Swaps: 0
+	File system inputs: 136
+	File system outputs: 8
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

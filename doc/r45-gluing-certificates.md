@@ -141,6 +141,25 @@ of raw proofs and 24.45 days of solve-plus-check CPU time on 64 cores.  These
 figures are capacity estimates only and make no claim about the 322,012
 unsampled pairs.
 
+The sample's largest raw proof has now also passed the upstream HOL4 kernel
+route.  A new fail-closed selection auditor checked the ordered branch and
+proof manifests, required all 128 checked results, rehashed all 8,264,274,560
+raw proof bytes, and matched zero-based pair 251,147 to line 251,148 of the
+full upstream d12 problem list.  Its audit hashes to
+`d0f06c1d2000366bd71ae1004eedfc2b133866b49a7ef52f989bcbe34c4ae5f3`.
+The selected proof has 1,127,021,956 bytes, versus 1,088,909,872 for the
+runner-up.  This is a proof-size selection inside the sample, not a claim of
+maximum runtime or maximum difficulty in the full product.
+
+The exact one-row HOL build used a checked 20,000 MB child-heap limit.  It
+finished in 1:43:51 wall time with 21,297,100 KiB peak whole-process RSS.  A
+fresh session loaded the result as a theorem with conclusion `F`, both
+`C4524` hypotheses, and no `F` hypothesis.  The final HOL audit hashes to
+`f867b5c755bf744ea14a5311dbec0a3bbe3579bce442cabf1632a90b3ef8536e`.
+The manifests, logs, problem list, and both audits are retained under
+[`data/certificates/r45-gluing-d12-hardest128-pilot/`](../data/certificates/r45-gluing-d12-hardest128-pilot/README.md).
+This closes one sampled leaf only; all unsampled d12 pairs remain open.
+
 ## Selector-formula experiment
 
 As an alternative to one proof per Cartesian pair, one exact selector CNF

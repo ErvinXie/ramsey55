@@ -256,8 +256,53 @@ These are two checked leaves, not representative timing samples and not
 evidence for the other 827,474 d10/d12 pairs.  The important operational
 result is that temporary solver traces need not be retained: each checked
 leaf leaves only small HOL theory artifacts, removing the multi-terabyte
-persistent-DRAT disk requirement.  Total computation and worst-case per-leaf
-memory remain open capacity questions.
+persistent-DRAT disk requirement.
+
+### Degree-12 sampled-tail pilot
+
+To exercise the observed sample tail instead of another easy first pair, the
+largest raw proof in the deterministic 128-formula d12 sample was selected by
+[`audit_r45_gluing_hol_pilot_selection.py`](../tools/audit_r45_gluing_hol_pilot_selection.py).
+The auditor requires an exact ordered match between the branch and proof
+manifests, all 128 `VERIFIED_UNSAT` records, an exact complete summary, and
+the corresponding row in the full 322,140-line upstream problem list.  It
+also rehashed all 128 raw proofs before choosing maximum byte count, with the
+least global pair index as a deterministic tie-break.  Its output reports
+`verified: true` and hashes to
+`d0f06c1d2000366bd71ae1004eedfc2b133866b49a7ef52f989bcbe34c4ae5f3`.
+
+The selected zero-based pair index is 251,147:
+
+```text
+61799329827687162405135973520825 44550800702264017901261388647987
+```
+
+Its raw proof contains 1,127,021,956 bytes; the runner-up contains
+1,088,909,872.  “Tail” here is relative to proof size in this sample, not a
+claim that this is the maximum-time or maximum-memory leaf in the full d12
+product.  The exact one-row PBL hashes to
+`e946ea813e4cc49e9a23fb5351c9799738a58a75bda63f46fb3b803c1d8c7f45`.
+
+The direct HOL build completed under the explicit 20,000 MB child-heap limit
+and emitted `RAMSEY55_GLUE3512_KERNEL_FULL_1_OK`.  It took 1:43:51 wall,
+6,056.77 user seconds, and 186.85 system seconds, with 21,297,100 KiB peak
+whole-process RSS.  A fresh HOL session then loaded the theorem in 2.27
+seconds with 181,940 KiB peak RSS and emitted the required conclusion and
+hypothesis-shape marker.  Build/time hashes are
+`036c0e7cd993ee1aecec36347ebec8b0bf3095e7e9fa4332c813f7d7bccc07ba` /
+`7a707dc0f97e892d298bef6a996931d2f50fa653c9865daeeb8950e641d23874`;
+load/time hashes are
+`7efd71d0b886389a45567bd52325db8399098fd9f004a695745b0abba853d985` /
+`b6d785fcb6ad490793fc76a971dbf914596a7a3167bdfed09a56b21c62e8dcfa`.
+The final theory audit reports `verified: true` and hashes to
+`f867b5c755bf744ea14a5311dbec0a3bbe3579bce442cabf1632a90b3ef8536e`.
+Public compact evidence is retained under
+[`data/certificates/r45-gluing-d12-hardest128-pilot/`](../data/certificates/r45-gluing-d12-hardest128-pilot/).
+
+This pilot demonstrates that a large sampled leaf fits the ARM host only with
+a materially larger memory allowance than the first-pair pilots.  Full-
+product runtime, the unsampled memory tail, and every unsampled theorem remain
+open capacity and proof obligations.
 
 ### Complete d08 gluing family
 

@@ -1,0 +1,140 @@
+{
+  "auditor": {
+    "bytes": 12268,
+    "path": "/root/ramsey55/tools/audit_upstream_hol_gluing_theories.py",
+    "sha256": "9c51eead19578607f02fe6333f5fd0ed9bb6e22048e6649b5b5e4edbf29898b1"
+  },
+  "build_log": {
+    "bytes": 22097,
+    "path": "/data/ramsey55/external/barakeel-formal-poly592/glue3512-hardest128-pilot-v1-build.log",
+    "sha256": "036c0e7cd993ee1aecec36347ebec8b0bf3095e7e9fa4332c813f7d7bccc07ba"
+  },
+  "build_time_log": {
+    "bytes": 1127,
+    "path": "/data/ramsey55/external/barakeel-formal-poly592/glue3512-hardest128-pilot-v1-build.time.log",
+    "sha256": "7a707dc0f97e892d298bef6a996931d2f50fa653c9865daeeb8950e641d23874"
+  },
+  "claim": "the exact listed gluing scripts produced nonempty HOL4 theory artifacts and a fresh HOL4 session loaded each exported theorem with conclusion F, both C4524 hypotheses, and no F hypothesis; global cover exhaustiveness is separate",
+  "evidence": [
+    {
+      "bytes": 21,
+      "path": "/data/ramsey55/external/barakeel-formal-poly592/src/config",
+      "sha256": "89d771405673e10517c278e2186613b5b84431dfc3f3aaefa771ecf98e201208"
+    },
+    {
+      "bytes": 106,
+      "path": "/data/ramsey55/external/barakeel-formal-poly592/src/dir.sml",
+      "sha256": "8d6fdf60634dd5afd1d0c7bb593c0718ce3c9a6d18331854e2d9f07ba89a6ec9"
+    },
+    {
+      "bytes": 418,
+      "path": "/data/ramsey55/external/barakeel-formal-poly592/HOL/bin/hol",
+      "sha256": "ae6bcd93973cfd5a9d8b704caac40f2015b3023b4cda8748826049ffe41a8dd8"
+    },
+    {
+      "bytes": 79256,
+      "path": "/data/ramsey55/external/barakeel-formal-poly592/HOL/src/HolSat/sat_solvers/minisat/minisat",
+      "sha256": "4eeb116e0ca97a55c5e1def0f7a9c1559ee04c68690703aee1993818f33053e2"
+    },
+    {
+      "bytes": 2421,
+      "path": "/root/ramsey55/scripts/run_upstream_hol_gluing_batch.sh",
+      "sha256": "e0913792dad4210202e30c8a1bb3d98b115c317bdfa348fa9a3546cdefad07c6"
+    },
+    {
+      "bytes": 2806,
+      "path": "/root/ramsey55/scripts/upstream_hol_gluing_batch.sml",
+      "sha256": "a8dc99b6ff89eebf1a1b496145c722fa6ae17cdf547660c74f4204877b3406cc"
+    },
+    {
+      "bytes": 4195,
+      "path": "/root/ramsey55/scripts/audit_upstream_hol_gluing_theories.sh",
+      "sha256": "880821a8f3feb2b80c1745d2848eb793adb67cd833c1b464bb5b6272dfd2ffc4"
+    },
+    {
+      "bytes": 1644,
+      "path": "/root/ramsey55/scripts/upstream_hol_gluing_load_audit.sml",
+      "sha256": "b814255aeb5c2229f21b040eb599c723d043019556810abea12373333b8fb01f"
+    }
+  ],
+  "label": "GLUE3512",
+  "load_log": {
+    "bytes": 22611,
+    "path": "/data/ramsey55/external/barakeel-formal-poly592/glue3512-hardest128-pilot-v1-load.log",
+    "sha256": "7efd71d0b886389a45567bd52325db8399098fd9f004a695745b0abba853d985"
+  },
+  "load_time_log": {
+    "bytes": 924,
+    "path": "/data/ramsey55/external/barakeel-formal-poly592/glue3512-hardest128-pilot-v1-load.time.log",
+    "sha256": "b6d785fcb6ad490793fc76a971dbf914596a7a3167bdfed09a56b21c62e8dcfa"
+  },
+  "problem_list": {
+    "bytes": 66,
+    "path": "/data/ramsey55/external/barakeel-formal-poly592/src/glue3512_pbl_ramsey55_hardest128_v1",
+    "sha256": "e946ea813e4cc49e9a23fb5351c9799738a58a75bda63f46fb3b803c1d8c7f45"
+  },
+  "schema": "ramsey55.upstream-hol-gluing-theory-audit.v1",
+  "summary": {
+    "build_memory_limit_mb": 20000,
+    "complete_six_file_theories": 1,
+    "exact_generated_scripts": 1,
+    "exact_successful_buildheap_logs": 1,
+    "fresh_loaded_false_theorems": 1,
+    "fresh_loaded_theorems_without_false_hypothesis": 1,
+    "pairs": 1,
+    "unique_pairs": 1
+  },
+  "theories": [
+    {
+      "buildheap_log": {
+        "bytes": 397,
+        "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue3512_ramsey55_hardest128_pilot_v1/buildheap/buildheap_r45_61799329827687162405135973520825_44550800702264017901261388647987Script",
+        "sha256": "c299127c0c12a7925a0e38f05c066ba6b6f3d55eca37cd00e82b1bf9b73cd6c8"
+      },
+      "files": {
+        "Script.sml": {
+          "bytes": 330,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue3512_ramsey55_hardest128_pilot_v1/r45_61799329827687162405135973520825_44550800702264017901261388647987Script.sml",
+          "sha256": "1d6904f644fa74693796fae1ac905b9bb0d2a7e9ef0296f4ea4bbd853e4e9f36"
+        },
+        "Theory.dat": {
+          "bytes": 8408,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue3512_ramsey55_hardest128_pilot_v1/r45_61799329827687162405135973520825_44550800702264017901261388647987Theory.dat",
+          "sha256": "27e2256237b0d61f2bea82b05c1e0e3eb4da0921ac1756dee9bb03ce5b0776f6"
+        },
+        "Theory.sig": {
+          "bytes": 7180,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue3512_ramsey55_hardest128_pilot_v1/r45_61799329827687162405135973520825_44550800702264017901261388647987Theory.sig",
+          "sha256": "9d7a327f92e2070f0750b49b2d3a0432ba19c22bc71201f8b1b45e5377bba010"
+        },
+        "Theory.sml": {
+          "bytes": 1495,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue3512_ramsey55_hardest128_pilot_v1/r45_61799329827687162405135973520825_44550800702264017901261388647987Theory.sml",
+          "sha256": "76fdaadb3fbf5b4eb16743fa7d5cda37159ab7800377f478cb31e6537cd67623"
+        },
+        "Theory.ui": {
+          "bytes": 427,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue3512_ramsey55_hardest128_pilot_v1/r45_61799329827687162405135973520825_44550800702264017901261388647987Theory.ui",
+          "sha256": "03db99082a2655d1659caf32fa25f4267976c18d71851a6c47df49d1dfc58ed7"
+        },
+        "Theory.uo": {
+          "bytes": 787,
+          "path": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue3512_ramsey55_hardest128_pilot_v1/r45_61799329827687162405135973520825_44550800702264017901261388647987Theory.uo",
+          "sha256": "5b5c7e79bddb0b62a564d8769a0a23eb6d0f4c7b13684143c3c24335641dd23a"
+        }
+      },
+      "fresh_loaded_conclusion": "F",
+      "fresh_loaded_contains_false_hypothesis": false,
+      "fresh_loaded_required_hypotheses": [
+        "C4524B",
+        "C4524R"
+      ],
+      "index": 0,
+      "left_code": 61799329827687162405135973520825,
+      "right_code": 44550800702264017901261388647987,
+      "theory_name": "r45_61799329827687162405135973520825_44550800702264017901261388647987"
+    }
+  ],
+  "theory_directory": "/data/ramsey55/external/barakeel-formal-poly592/src/work_glue3512_ramsey55_hardest128_pilot_v1",
+  "verified": true
+}

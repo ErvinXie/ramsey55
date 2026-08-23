@@ -511,9 +511,18 @@ for d10 and d12 completed in 15.45 and 8.90 wall seconds with sub-512 MiB peak
 RSS; fresh sessions loaded both results as `F` conclusions with the two
 required `C4524` hypotheses and no `F` hypothesis.  The retained theory files
 are only kilobytes, so this streamed kernel route avoids keeping the many-TB
-raw DRAT family estimated from the sparse samples.  The pilots cover only two
-leaves; full-product time, tail memory, and all unsampled theorems remain
-open.  Exact artifacts and audit hashes are in the
+raw DRAT family estimated from the sparse samples.
+
+The d12 leaf with the largest raw proof in the deterministic 128-formula
+sample has now passed the same complete gate.  A separate selection audit
+rehashed all 8,264,274,560 sample proof bytes and tied the maximum record to
+the exact full-problem-list row.  The HOL build completed in 1:43:51 with a
+20,000 MB child-heap limit and 21,297,100 KiB peak whole-process RSS; a fresh
+session loaded the theorem with the required shape.  This adds one sampled
+tail observation, not an unsampled result or a proof of worst-case resource
+use.  The three pilots cover only three leaves; full-product time, unsampled
+tail memory, and all unsampled theorems remain open.  Exact artifacts and
+audit hashes are in the
 [upstream HOL4 replay note](r45-upstream-hol-replay.md).
 
 There is now a second, self-contained route to the same input in
