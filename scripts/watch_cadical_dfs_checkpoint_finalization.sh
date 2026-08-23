@@ -17,6 +17,7 @@ directory_rel=$3
 prefix=$4
 root_count=$5
 poll_seconds=${RAMSEY55_POLL_SECONDS:-30}
+global_lock=${RAMSEY55_FINALIZER_LOCK:-/tmp/ramsey55-residual-finalizer.lock}
 
 if [[ ! $root_count =~ ^[1-9][0-9]*$ ]]; then
   echo "ROOT_COUNT must be positive" >&2
@@ -142,7 +143,7 @@ for suffix in \
   test ! -e "$final.$suffix"
 done
 
-exec 9>/tmp/ramsey55-residual-finalizer.lock
+exec 9>"$global_lock"
 flock 9
 printf 'RAMSEY55_PREFIX_FINALIZER_START %s %s\n' \
   "$prefix" "$(date -Is)"

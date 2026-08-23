@@ -7035,6 +7035,23 @@ This advances J326 terminal recovery to 8/16 and completes f2-sub1's two
 children only at the producer layer.  Its finalizer remains serialized behind
 the older heavy checker; no subgroup or ancestor is yet accepted.
 
+The finalizer serialization policy was then tuned from measured capacity,
+without weakening a proof gate.  At load 34 on 64 logical CPUs the host still
+had 141 GiB available memory, while each mature ordinary checker used about
+12 GiB RSS.  The already ready v410 J297 finalizer was therefore moved from
+the default queue to a single secondary lock.  It composed a
+5,110,111,061-byte fragment and 5,110,111,063-byte standalone stream and is
+now running its ordinary checker concurrently with v412 and the independent
+f31 checker.  Its audit and checker rerun remain mandatory, so no v410
+acceptance is claimed yet.
+
+The standard leaf watcher now accepts the same optional
+`RAMSEY55_FINALIZER_LOCK` override as the recursive watcher; the default lock
+path and behavior are unchanged.  This permits explicitly bounded checker
+parallelism after a resource audit rather than weakening serialization by
+default.  Shell syntax validation passes, and the local regression passes all
+323 tests with four platform skips.
+
 In parallel, the original 1,239 upstream HOL enumeration theories for orders
 8--17 completed their five-artifact build with exit zero in 7:26:35.  Their
 historical inventory hash is
