@@ -6027,6 +6027,22 @@ peak RSS; its log hashes to
 and the GNU-time log hashes to
 `d97ad168aa2125bfcc874f46b63f7ad5c0b2abe3191af794bb5d2f136798e938`.
 
+Checkpoint continuation now has the same multi-root guarantees.
+`tools/replay_cadical_dfs_prefix.py` schema v2 reconstructs an ordered forest,
+including an active LIFO stack and every untouched later root. It rejects a
+root transition before the prior stack closes and rejects a prefix that
+already closes globally. `frame_binary_drat_prefix.py`,
+`finalize_cadical_dfs_checkpoint.py`, and the independent finalization auditor
+accept both historical v1 and new v2 manifests, so a stopped two-root proof
+prefix can be hash-bound, extended recursively, composed, and checked without
+discarding earlier work. A copied live d12/seed823 snapshot replayed 73 exact
+attempts and 45 splits into root-frontier counts `[18, 1]`. Three new focused
+tests cover this path. The complete ARM suite passes all 243 tests in 28.035
+seconds with 197,740 KiB peak RSS; its log hashes to
+`3be2c29450c9fb7a45bed51f17c00b2db8934f130e053c2104d1daf6509650fe`,
+and the GNU-time log hashes to
+`861c65e47b50c41b1087e2822496368304d73adf72f0b0f8d60b2d8d02012a9e`.
+
 The formal non-lex mother assignment is now constructive. The new
 `Order45DegreeWindowAssignment.lean` identifies each generator incident stream
 with the corresponding graph degree, fills all 35,200 degree-counter state

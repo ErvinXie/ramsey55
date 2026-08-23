@@ -25,7 +25,7 @@ class FrameBinaryDratPrefixTests(unittest.TestCase):
         replay.write_text(
             json.dumps(
                 {
-                    "schema": "ramsey55.cadical-dfs-prefix-replay.v1",
+                    "schema": "ramsey55.cadical-dfs-prefix-replay.v2",
                     "proof_prefix": str(source),
                     "proof_prefix_sha256": sha256(source),
                     "output_count": 3,

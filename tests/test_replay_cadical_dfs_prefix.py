@@ -88,6 +88,43 @@ class ReplayCadicalDfsPrefixTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "SAT row"):
                 REPLAY.replay_prefix((1,), snapshot)
 
+    def test_replays_ordered_two_root_forest(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            snapshot = Path(raw) / "snapshot.tsv"
+            snapshot.write_text(
+                REPLAY.HEADER
+                + "\n0\t0\t0\t500000\t20\t1\t0\t0.1\n"
+                + "1\t1\t0\t500000\t0\t0\t2\t0.1\n",
+                encoding="ascii",
+            )
+            frontier, replay = REPLAY.replay_forest(((1,), (-1,)), snapshot)
+            self.assertEqual(frontier, [(-1, 2), (-1, -2)])
+            self.assertEqual(replay["root_frontier_counts"], [0, 2])
+            self.assertEqual(replay["attempts"], 2)
+            self.assertEqual(replay["splits"], 1)
+
+    def test_rejects_early_root_transition(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            snapshot = Path(raw) / "snapshot.tsv"
+            snapshot.write_text(
+                REPLAY.HEADER + "\n1\t0\t0\t500000\t20\t1\t0\t0.1\n",
+                encoding="ascii",
+            )
+            with self.assertRaisesRegex(ValueError, "unexpected root"):
+                REPLAY.replay_forest(((1,), (-1,)), snapshot)
+
+    def test_global_unsat_core_closes_forest(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            snapshot = Path(raw) / "snapshot.tsv"
+            snapshot.write_text(
+                REPLAY.HEADER + "\n0\t0\t0\t500000\t20\t0\t0\t0.1\n",
+                encoding="ascii",
+            )
+            frontier, replay = REPLAY.replay_forest(((1,), (-1,)), snapshot)
+            self.assertEqual(frontier, [])
+            self.assertTrue(replay["global_unsat"])
+            self.assertEqual(replay["root_frontier_counts"], [0, 0])
+
 
 if __name__ == "__main__":
     unittest.main()

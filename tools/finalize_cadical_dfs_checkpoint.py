@@ -14,7 +14,10 @@ from typing import Any
 
 SCHEMA = "ramsey55.cadical-dfs-checkpoint-finalization.v1"
 PROMOTION_SCHEMA = "ramsey55.checked-binary-drat-fragment-promotion.v1"
-REPLAY_SCHEMA = "ramsey55.cadical-dfs-prefix-replay.v1"
+REPLAY_SCHEMAS = {
+    "ramsey55.cadical-dfs-prefix-replay.v1",
+    "ramsey55.cadical-dfs-prefix-replay.v2",
+}
 
 
 def file_sha256(path: Path) -> str:
@@ -157,7 +160,7 @@ def read_finalized_child(
 
 def load_replay_manifest(path: Path) -> dict[str, Any]:
     document = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(document, dict) or document.get("schema") != REPLAY_SCHEMA:
+    if not isinstance(document, dict) or document.get("schema") not in REPLAY_SCHEMAS:
         raise ValueError("unexpected DFS replay manifest schema")
     return document
 

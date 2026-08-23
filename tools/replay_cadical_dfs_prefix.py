@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Reconstruct a single-root CaDiCaL DFS frontier from a TSV prefix."""
+"""Reconstruct a CaDiCaL DFS-forest frontier from a TSV prefix."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 
 
-SCHEMA = "ramsey55.cadical-dfs-prefix-replay.v1"
+SCHEMA = "ramsey55.cadical-dfs-prefix-replay.v2"
 HEADER = "root\tattempt\tdepth\tlimit\tstatus\tcore\tsplit\tseconds"
 
 
@@ -29,7 +29,7 @@ def binary_drat_is_framed(path: Path) -> bool:
         return stream.read(1) == b"\0"
 
 
-def read_single_root(path: Path) -> tuple[int, ...]:
+def read_roots(path: Path) -> tuple[tuple[int, ...], ...]:
     roots: list[tuple[int, ...]] = []
     for line_number, raw in enumerate(path.read_text(encoding="ascii").splitlines(), 1):
         fields = raw.split()
@@ -47,18 +47,35 @@ def read_single_root(path: Path) -> tuple[int, ...]:
         if not cube or 0 in cube or len({abs(value) for value in cube}) != len(cube):
             raise ValueError(f"invalid root cube at line {line_number}")
         roots.append(cube)
+    if not roots:
+        raise ValueError("at least one source root is required")
+    return tuple(roots)
+
+
+def read_single_root(path: Path) -> tuple[int, ...]:
+    """Compatibility helper for callers that intentionally require one root."""
+    roots = read_roots(path)
     if len(roots) != 1:
         raise ValueError("exactly one source root is required")
     return roots[0]
 
 
-def replay_prefix(root: tuple[int, ...], snapshot: Path) -> tuple[list[tuple[int, ...]], int]:
+def replay_forest(
+    roots: tuple[tuple[int, ...], ...], snapshot: Path
+) -> tuple[list[tuple[int, ...]], dict[str, object]]:
     lines = snapshot.read_text(encoding="ascii").splitlines()
     if not lines or lines[0] != HEADER:
         raise ValueError("unexpected DFS snapshot header")
-    stack: list[tuple[tuple[int, ...], int]] = [(root, 0)]
+    if not roots:
+        raise ValueError("at least one source root is required")
+    stacks: list[list[tuple[tuple[int, ...], int]]] = [
+        [(root, 0)] for root in roots
+    ]
+    active_root = 0
+    globally_unsat = False
     maximum_depth = 0
     expected_attempt = 0
+    splits = closed = 0
     for line_number, raw in enumerate(lines[1:], 2):
         if not raw:
             continue
@@ -66,15 +83,21 @@ def replay_prefix(root: tuple[int, ...], snapshot: Path) -> tuple[list[tuple[int
         if len(fields) != 8:
             raise ValueError(f"invalid DFS row at line {line_number}")
         root_index, attempt, depth, limit, status, core, split, seconds = fields
-        if int(root_index) != 0 or int(attempt) != expected_attempt:
+        parsed_root = int(root_index)
+        if int(attempt) != expected_attempt:
             raise ValueError(f"unexpected root or attempt at line {line_number}")
         expected_attempt += 1
         parsed_depth = int(depth)
-        if int(limit) <= 0 or int(core) < 0 or float(seconds) < 0:
+        parsed_core = int(core)
+        if int(limit) <= 0 or parsed_core < 0 or float(seconds) < 0:
             raise ValueError(f"invalid telemetry at line {line_number}")
-        if not stack:
-            raise ValueError("DFS prefix continues after closing the root")
-        cube, pending_depth = stack.pop()
+        while active_root < len(stacks) and not stacks[active_root]:
+            active_root += 1
+        if globally_unsat or active_root == len(stacks):
+            raise ValueError("DFS prefix continues after closing the source forest")
+        if parsed_root != active_root:
+            raise ValueError(f"unexpected root or attempt at line {line_number}")
+        cube, pending_depth = stacks[active_root].pop()
         if parsed_depth != pending_depth:
             raise ValueError(f"DFS depth mismatch at line {line_number}")
         maximum_depth = max(maximum_depth, parsed_depth)
@@ -83,20 +106,48 @@ def replay_prefix(root: tuple[int, ...], snapshot: Path) -> tuple[list[tuple[int
         if parsed_status == 20:
             if parsed_split != 0:
                 raise ValueError(f"UNSAT row has a split at line {line_number}")
+            closed += 1
+            if parsed_core == 0:
+                globally_unsat = True
             continue
         if parsed_status == 10:
             raise ValueError(f"SAT row requires investigation at line {line_number}")
-        if parsed_status != 0 or parsed_split == 0:
+        if parsed_status != 0 or parsed_core != 0 or parsed_split == 0:
             raise ValueError(f"invalid status or split at line {line_number}")
         if abs(parsed_split) in {abs(literal) for literal in cube}:
             raise ValueError(f"repeated split variable at line {line_number}")
         # Match prove_cadical_cubes.cpp: negative is pushed first, positive
         # second, and the LIFO stack therefore visits the positive child next.
-        stack.append((cube + (-parsed_split,), parsed_depth + 1))
-        stack.append((cube + (parsed_split,), parsed_depth + 1))
-    if not stack:
+        splits += 1
+        stacks[active_root].append((cube + (-parsed_split,), parsed_depth + 1))
+        stacks[active_root].append((cube + (parsed_split,), parsed_depth + 1))
+    if globally_unsat:
+        frontier: list[tuple[int, ...]] = []
+        root_frontier_counts = [0] * len(roots)
+    else:
+        root_frontiers = [
+            [cube for cube, _ in reversed(stack)] for stack in stacks
+        ]
+        frontier = [cube for root_frontier in root_frontiers for cube in root_frontier]
+        root_frontier_counts = [len(root_frontier) for root_frontier in root_frontiers]
+    return frontier, {
+        "attempts": expected_attempt,
+        "splits": splits,
+        "closed": closed,
+        "maximum_depth": maximum_depth,
+        "global_unsat": globally_unsat,
+        "root_frontier_counts": root_frontier_counts,
+    }
+
+
+def replay_prefix(
+    root: tuple[int, ...], snapshot: Path
+) -> tuple[list[tuple[int, ...]], int]:
+    """Compatibility wrapper for a single open source root."""
+    frontier, replay = replay_forest((root,), snapshot)
+    if not frontier:
         raise ValueError("DFS prefix already closes the source root")
-    return [cube for cube, _ in reversed(stack)], maximum_depth
+    return frontier, int(replay["maximum_depth"])
 
 
 def atomic_write(path: Path, data: bytes) -> None:
@@ -129,8 +180,10 @@ def main() -> None:
     if arguments.output.exists() or arguments.manifest.exists():
         parser.error("refusing to overwrite output or manifest")
 
-    root = read_single_root(arguments.root)
-    frontier, maximum_depth = replay_prefix(root, arguments.snapshot)
+    roots = read_roots(arguments.root)
+    frontier, replay = replay_forest(roots, arguments.snapshot)
+    if not frontier:
+        raise ValueError("DFS prefix already closes the source forest")
     output_bytes = "".join(
         "a " + " ".join(map(str, cube)) + " 0\n" for cube in frontier
     ).encode("ascii")
@@ -144,7 +197,11 @@ def main() -> None:
         "snapshot_rows": sum(
             bool(line) for line in arguments.snapshot.read_text(encoding="ascii").splitlines()[1:]
         ),
-        "maximum_processed_depth": maximum_depth,
+        "processed_attempts": replay["attempts"],
+        "processed_splits": replay["splits"],
+        "maximum_processed_depth": replay["maximum_depth"],
+        "source_root_count": len(roots),
+        "root_frontier_counts": replay["root_frontier_counts"],
         "output": str(arguments.output),
         "output_sha256": hashlib.sha256(output_bytes).hexdigest(),
         "output_count": len(frontier),

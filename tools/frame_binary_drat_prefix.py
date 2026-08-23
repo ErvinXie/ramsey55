@@ -11,7 +11,10 @@ from typing import Any, BinaryIO
 
 
 SCHEMA = "ramsey55.binary-drat-prefix-framing.v1"
-REPLAY_SCHEMA = "ramsey55.cadical-dfs-prefix-replay.v1"
+REPLAY_SCHEMAS = {
+    "ramsey55.cadical-dfs-prefix-replay.v1",
+    "ramsey55.cadical-dfs-prefix-replay.v2",
+}
 BLOCK_SIZE = 1 << 23
 
 
@@ -77,7 +80,7 @@ def main() -> None:
         parser.error("refusing to overwrite a temporary output")
 
     replay = json.loads(arguments.replay_manifest.read_text(encoding="utf-8"))
-    if not isinstance(replay, dict) or replay.get("schema") != REPLAY_SCHEMA:
+    if not isinstance(replay, dict) or replay.get("schema") not in REPLAY_SCHEMAS:
         raise ValueError("unexpected DFS replay manifest schema")
 
     source_size = arguments.source_prefix.stat().st_size

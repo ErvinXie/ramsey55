@@ -13,7 +13,10 @@ from typing import Any
 AUDIT_SCHEMA = "ramsey55.cadical-dfs-checkpoint-finalization-audit.v1"
 FINALIZATION_SCHEMA = "ramsey55.cadical-dfs-checkpoint-finalization.v1"
 PROMOTION_SCHEMA = "ramsey55.checked-binary-drat-fragment-promotion.v1"
-REPLAY_SCHEMA = "ramsey55.cadical-dfs-prefix-replay.v1"
+REPLAY_SCHEMAS = {
+    "ramsey55.cadical-dfs-prefix-replay.v1",
+    "ramsey55.cadical-dfs-prefix-replay.v2",
+}
 
 
 def file_sha256(path: Path) -> str:
@@ -254,7 +257,10 @@ def audit_manifest(
         drop_deletions = composition["drop_deletions"]
 
         replay = json.loads(replay_path.read_text(encoding="utf-8"))
-        if not isinstance(replay, dict) or replay.get("schema") != REPLAY_SCHEMA:
+        if (
+            not isinstance(replay, dict)
+            or replay.get("schema") not in REPLAY_SCHEMAS
+        ):
             raise ValueError(f"unexpected replay manifest schema: {replay_path}")
 
         expected_digest = hashlib.sha256()
