@@ -16,6 +16,7 @@ import Ramsey55.Order45CounterAssignment
 import Ramsey55.Order45MotherPrefix
 import Ramsey55.Order45DegreeWindowAssignment
 import Ramsey55.Order45LexAssignment
+import Ramsey55.Order45LexRelabeling
 import Ramsey55.Order45Window
 import Ramsey55.CubeCover
 import Ramsey55.CnfCardinality

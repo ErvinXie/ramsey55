@@ -350,10 +350,32 @@ formula and lex formula whenever the concrete cross rows are sorted. The full
 91-job ARM build log has SHA-256
 `56ea53bcee64b56da08aabf9a3c78c774800af7c6d7046f1467697b3f263df97`;
 all new audits contain only the standard Lean axioms. The remaining lex
-obligation is the graph relabeling/coverage theorem that sorts the neighbour
-rows while preserving the fixed-star problem. Exact external DIMACS stream
-binding and the H/J overlay on top of this lex-filled source remain separate
-steps.
+assignment layer then overlays the actual H/J tables without overwriting the
+degree or lex intervals. For each of d20/d21/d22, one concrete assignment now
+satisfies the Ramsey-shape interface, fixed star, all degree windows, the lex
+block, and the complete H/J tail whenever the rows are sorted.
+
+[Order45LexRelabeling.lean](../formal/Ramsey55/Order45LexRelabeling.lean)
+discharges that sorting premise constructively. It embeds every cross row as
+a fixed-length 0/1 key, merge-sorts the neighbour indices, and extends the
+result to a proved permutation of all 45 vertices that fixes vertex zero and
+the complete nonneighbour block. The relabeling is proved to preserve
+simplicity, Ramsey-freeness, fixed-star structure, both local H/J counts, and
+the excess witness. The resulting d20/d21/d22 assignments automatically meet
+the exact adjacent-row lex predicate. Consequently
+`order45Degree20/21/22FullMotherFormula_complete` prove the three concrete
+`CatalogBoundedDenseExcessCnfComplete` obligations from only the already
+isolated Ramsey/fixed prefix-shape interfaces and `ForcesRed4OrBlue5 25`.
+The full 92-job ARM build log has SHA-256
+`70c94b5697a895c9960598daf98916db43435fd3baf7f1233cdcdd3585f0b120`;
+the new axiom audits contain only `propext`, `Classical.choice`, and
+`Quot.sound`, with no `sorryAx` or native-decision axiom.
+
+Thus graph-to-mother completeness is no longer an open mathematical bridge
+for the typed formula. The remaining data boundary is to bind the exact
+generated DIMACS Ramsey/fixed streams and complete block concatenation to
+these typed formulas. The external `R(4,5)=25` theorem, five catalog edge
+ranges, and all 109 leaf UNSAT certificates also remain explicit inputs.
 
 The order-45 file instantiates this theorem at the actual H/J row counts and
 counter widths: `(190,101)/(276,133)`, `(210,108)/(253,123)`, and

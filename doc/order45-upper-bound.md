@@ -5931,8 +5931,23 @@ checks give 2622/2640/2646 lex clauses and final variables
 complete degree-plus-lex prefix has a constructed satisfying assignment. The
 91-job ARM log hash is
 `56ea53bcee64b56da08aabf9a3c78c774800af7c6d7046f1467697b3f263df97`.
-The required neighbour permutation/relabeling theorem and external DIMACS
-binding are not yet discharged.
+The same module now overlays the H/J counter tables above the filled lex
+source and proves the complete five-block typed mother formula satisfied in
+all three branches.
+
+`Order45LexRelabeling.lean` closes the symmetry-coverage side. It sorts the
+neighbour-to-nonneighbour rows by fixed-length 0/1 keys, proves the sorted
+index map injective, extends it to a 45-vertex relabeling fixing vertex zero
+and every nonneighbour, and derives the exact adjacent-row predicate used by
+the lex clauses. General relabeling lemmas show that both padded local degree
+sums, the H/J counts, and the excess score are unchanged. The three final
+`order45Degree20/21/22FullMotherFormula_complete` theorems therefore establish
+the previously open range-bounded graph-to-mother completeness obligations.
+The complete 92-job ARM build log hashes to
+`70c94b5697a895c9960598daf98916db43435fd3baf7f1233cdcdd3585f0b120` and
+contains no `sorryAx` or native-decision axiom. Exact external DIMACS stream
+binding, the external `R(4,5)=25` and catalog-range facts, and the 109 leaf
+UNSAT certificates remain open.
 
 No parent-1 UNSAT, fixed-pair UNSAT, order-45 UNSAT, or `R(5,5) <= 45`
 theorem is claimed.
