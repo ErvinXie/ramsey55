@@ -6955,6 +6955,12 @@ This is one of fourteen deep roots, not one of the 27 top-level J297 terminal
 leaves; its sibling must close and the enclosing checker gates must pass
 before the old root can be credited.
 
+The finite no-proof strategy screen then ended.  All remaining seed0 phase
+complements, seed37/phase0 terminal runs, and deep-route complements returned
+`UNKNOWN` with exit zero.  No direct run was therefore promoted to a
+proof-producing replay, and no scout remains active.  Subsequent compute is
+reserved for the certificate-producing DFS trees and ordinary checkers.
+
 In parallel, the original 1,239 upstream HOL enumeration theories for orders
 8--17 completed their five-artifact build with exit zero in 7:26:35.  Their
 historical inventory hash is
