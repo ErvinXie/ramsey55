@@ -37,7 +37,7 @@ generation_log=$temporary_directory/generation.log
     ../HOL/bin/hol --maxheap=50000 --q
 ) | tee "$generation_log"
 
-if [[ $(grep -c '^par: 1$' "$generation_log") -ne 1 ]]; then
+if [[ $(grep -Ec '(^|> )par: 1$' "$generation_log") -ne 1 ]]; then
   echo "HOL did not report the unique order-17 input graph" >&2
   exit 1
 fi
