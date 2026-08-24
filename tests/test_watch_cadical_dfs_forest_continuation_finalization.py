@@ -7,6 +7,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import tempfile
+import time
 import unittest
 
 
@@ -58,6 +59,7 @@ class WatchCadicalDfsForestContinuationFinalizationTests(unittest.TestCase):
             continuation = directory / "continuation.drat"
             continuation_snapshot = directory / "continuation.tsv"
             continuation_log = directory / "continuation.log"
+            continuation_time = directory / "continuation.time"
             cnf.write_text("p cnf 2 1\n1 0\n", encoding="ascii")
             source.write_text("a 1 0\n", encoding="ascii")
             prefix_snapshot.write_text(
@@ -107,6 +109,7 @@ class WatchCadicalDfsForestContinuationFinalizationTests(unittest.TestCase):
                 "maximum_extra_depth\t0\n",
                 encoding="ascii",
             )
+            continuation_time.touch()
 
             environment = os.environ.copy()
             environment.update(
@@ -116,7 +119,7 @@ class WatchCadicalDfsForestContinuationFinalizationTests(unittest.TestCase):
                     "RAMSEY55_DRAT_CHECKER": str(override_checker),
                 }
             )
-            completed = subprocess.run(
+            process = subprocess.Popen(
                 [
                     str(WATCHER),
                     str(repository),
@@ -130,15 +133,23 @@ class WatchCadicalDfsForestContinuationFinalizationTests(unittest.TestCase):
                     str(continuation),
                     str(continuation_snapshot),
                     str(continuation_log),
+                    str(continuation_time),
                 ],
                 env=environment,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
-                timeout=30,
             )
-            self.assertEqual(completed.returncode, 0, completed.stderr)
-            self.assertIn("RAMSEY55_FOREST_CONTINUATION_ACCEPTED", completed.stdout)
+            time.sleep(1.2)
+            self.assertIsNone(process.poll())
+            self.assertFalse((directory / "forest-final-v1.selection.json").exists())
+            continuation_time.write_text(
+                "Command being timed: forest continuation\nExit status: 0\n",
+                encoding="ascii",
+            )
+            stdout, stderr = process.communicate(timeout=30)
+            self.assertEqual(process.returncode, 0, stderr)
+            self.assertIn("RAMSEY55_FOREST_CONTINUATION_ACCEPTED", stdout)
             audit = json.loads(
                 (directory / "forest-final-v1.audit.log").read_text(encoding="utf-8")
             )

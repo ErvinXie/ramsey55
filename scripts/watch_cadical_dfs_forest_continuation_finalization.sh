@@ -2,11 +2,11 @@
 set -euo pipefail
 
 usage() {
-  echo "usage: $0 REPOSITORY DATA_ROOT DIRECTORY_REL PREFIX BASE_CNF REPLAY_MANIFEST PREFIX_PROOF SOURCE_FRONTIER CONTINUATION_PROOF CONTINUATION_TSV CONTINUATION_LOG" >&2
+  echo "usage: $0 REPOSITORY DATA_ROOT DIRECTORY_REL PREFIX BASE_CNF REPLAY_MANIFEST PREFIX_PROOF SOURCE_FRONTIER CONTINUATION_PROOF CONTINUATION_TSV CONTINUATION_LOG CONTINUATION_TIME" >&2
   exit 2
 }
 
-if [[ $# -ne 11 ]]; then
+if [[ $# -ne 12 ]]; then
   usage
 fi
 
@@ -21,6 +21,7 @@ source_frontier=$8
 continuation_proof=$9
 continuation_tsv=${10}
 continuation_log=${11}
+continuation_time=${12}
 poll_seconds=${RAMSEY55_POLL_SECONDS:-30}
 global_lock=${RAMSEY55_FINALIZER_LOCK:-/tmp/ramsey55-residual-finalizer.lock}
 checker=${RAMSEY55_DRAT_CHECKER:-$repository/.tools/src/drat-trim/drat-trim}
@@ -46,7 +47,8 @@ if [[ -z $prefix || $prefix = */* ]]; then
 fi
 for input in \
   "$base_cnf" "$replay" "$prefix_proof" "$source_frontier" \
-  "$continuation_proof" "$continuation_tsv" "$continuation_log"; do
+  "$continuation_proof" "$continuation_tsv" "$continuation_log" \
+  "$continuation_time"; do
   if [[ $input != /* ]]; then
     echo "explicit input paths must be absolute: $input" >&2
     exit 2
@@ -76,7 +78,7 @@ fi
 
 printf 'RAMSEY55_FOREST_CONTINUATION_WATCHER_V1_START %s %s\n' \
   "$prefix" "$(date -Is)"
-while [[ ! -f $continuation_proof || ! -s $continuation_tsv || ! -s $continuation_log ]]; do
+while [[ ! -s $continuation_time || ! -f $continuation_proof || ! -s $continuation_tsv || ! -s $continuation_log ]]; do
   sleep "$poll_seconds" 8>&-
 done
 

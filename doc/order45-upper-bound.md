@@ -7251,7 +7251,11 @@ auditor reconstructs the checkpoint frontier and continuation forest again,
 verifies exact byte composition, and reruns the recorded checker.  The
 fail-closed watcher retains only a selection manifest when a continuation
 reaches another checkpoint; it publishes a final fragment only after both
-checker passes.  This makes three sequential forest streams sufficient for
+checker passes.  The watcher also requires the producer's explicit GNU-time
+file to be nonempty before it reads the live DRAT/TSV/log triple.  That
+terminal-state gate prevents a nonempty intermediate TSV from racing an
+unflushed binary proof tail; file existence and telemetry alone are not a
+completion signal.  This makes three sequential forest streams sufficient for
 the next d08/d10/d12 recovery stage, rather than 121 simultaneous leaf proof
 writers.  It changes resource use only and does not establish any new UNSAT
 fact.
