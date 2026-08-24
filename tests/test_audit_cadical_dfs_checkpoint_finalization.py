@@ -13,6 +13,7 @@ import unittest
 ROOT = Path(__file__).parents[1]
 FINALIZER = ROOT / "tools/finalize_cadical_dfs_checkpoint.py"
 AUDITOR = ROOT / "tools/audit_cadical_dfs_checkpoint_finalization.py"
+SELECTOR = ROOT / "tools/select_cadical_dfs_race.py"
 
 
 def sha256(path: Path) -> str:
@@ -115,6 +116,111 @@ class AuditCadicalDfsCheckpointFinalizationTests(unittest.TestCase):
         subprocess.run(command, check=True, stdout=subprocess.PIPE)
         return manifest
 
+    def finalize_forest(self, root: Path) -> Path:
+        cnf = root / "forest.cnf"
+        source = root / "forest-source.icnf"
+        prefix_snapshot = root / "forest-prefix.tsv"
+        frontier = root / "forest-frontier.icnf"
+        replay = root / "forest-replay.json"
+        prefix = root / "forest-prefix.drat"
+        proof = root / "forest-child.drat"
+        snapshot = root / "forest-child.tsv"
+        producer = root / "forest-child.log"
+        selection = root / "forest-selection.json"
+        checker = root / "checker.py"
+        cnf.write_text("p cnf 2 1\n1 0\n", encoding="ascii")
+        source.write_text("a 1 0\n", encoding="ascii")
+        prefix_snapshot.write_text(
+            "root\tattempt\tdepth\tlimit\tstatus\tcore\tsplit\tseconds\n"
+            "0\t0\t0\t100\t0\t0\t2\t0.125\n",
+            encoding="ascii",
+        )
+        frontier.write_text("a 1 2 0\na 1 -2 0\n", encoding="ascii")
+        prefix.write_bytes(b"d\x02\0a\x02\0")
+        replay.write_text(
+            json.dumps(
+                {
+                    "schema": "ramsey55.cadical-dfs-prefix-replay.v2",
+                    "source_root": str(source),
+                    "source_root_sha256": sha256(source),
+                    "snapshot": str(prefix_snapshot),
+                    "snapshot_sha256": sha256(prefix_snapshot),
+                    "snapshot_rows": 1,
+                    "processed_attempts": 1,
+                    "processed_splits": 1,
+                    "maximum_processed_depth": 0,
+                    "source_root_count": 1,
+                    "root_frontier_counts": [2],
+                    "output": str(frontier),
+                    "output_sha256": sha256(frontier),
+                    "output_count": 2,
+                    "proof_prefix": str(prefix),
+                    "proof_prefix_sha256": sha256(prefix),
+                }
+            ),
+            encoding="utf-8",
+        )
+        proof.write_bytes(b"d\x04\0a\x04\0")
+        snapshot.write_text(
+            "root\tattempt\tdepth\tlimit\tstatus\tcore\tsplit\tseconds\n"
+            "0\t0\t0\t100\t20\t1\t0\t0.250\n"
+            "1\t1\t0\t100\t20\t1\t0\t0.375\n",
+            encoding="ascii",
+        )
+        producer.write_text(
+            "proof_fragment\t1\n"
+            "root_index\tall\n"
+            "status\t20\n"
+            "cubes\t2\n"
+            "attempts\t2\n"
+            "splits\t0\n"
+            "maximum_extra_depth\t0\n",
+            encoding="ascii",
+        )
+        subprocess.run(
+            [
+                sys.executable,
+                str(SELECTOR),
+                str(frontier),
+                "--race",
+                str(proof),
+                str(snapshot),
+                str(producer),
+                "--manifest",
+                str(selection),
+            ],
+            check=True,
+            stdout=subprocess.PIPE,
+        )
+        checker.write_text(
+            "#!/usr/bin/env python3\nprint('s VERIFIED')\n", encoding="utf-8"
+        )
+        checker.chmod(0o755)
+        manifest = root / "forest-finalization.json"
+        subprocess.run(
+            [
+                sys.executable,
+                str(FINALIZER),
+                str(cnf),
+                str(replay),
+                str(prefix),
+                str(root / "forest-fragment.drat"),
+                str(root / "forest-standalone.drat"),
+                str(root / "forest-checker.log"),
+                "--forest-continuation",
+                str(proof),
+                str(selection),
+                "--checker",
+                str(checker),
+                "--drop-deletions",
+                "--manifest",
+                str(manifest),
+            ],
+            check=True,
+            stdout=subprocess.PIPE,
+        )
+        return manifest
+
     def audit(self, manifest: Path, *options: str) -> subprocess.CompletedProcess[str]:
         return subprocess.run(
             [sys.executable, str(AUDITOR), str(manifest), *options],
@@ -158,6 +264,34 @@ class AuditCadicalDfsCheckpointFinalizationTests(unittest.TestCase):
             self.assertEqual(completed.returncode, 0, completed.stderr)
             report = json.loads(completed.stdout)
             self.assertTrue(report["replay_independently_verified"])
+
+    def test_independently_audits_completed_forest_continuation(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            manifest = self.finalize_forest(root)
+            completed = self.audit(manifest, "--rerun-checker")
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            report = json.loads(completed.stdout)
+            self.assertEqual(report["forest_continuations"], 1)
+            self.assertTrue(report["replay_independently_verified"])
+            self.assertTrue(report["checker_rerun"]["verified"])
+
+    def test_rejects_rehashed_false_forest_race_telemetry(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            manifest = self.finalize_forest(root)
+            finalization = json.loads(manifest.read_text(encoding="utf-8"))
+            selection_record = finalization["children"][0]["race_selection_manifest"]
+            selection = Path(selection_record["path"])
+            selection_document = json.loads(selection.read_text(encoding="utf-8"))
+            selection_document["races"][0]["attempts"] = 3
+            selection.write_text(json.dumps(selection_document), encoding="utf-8")
+            selection_record["sha256"] = sha256(selection)
+            selection_record["size"] = selection.stat().st_size
+            manifest.write_text(json.dumps(finalization), encoding="utf-8")
+            completed = self.audit(manifest)
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn("record is not exact", completed.stderr)
 
     def test_rejects_rehashed_false_v2_replay_telemetry(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

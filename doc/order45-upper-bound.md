@@ -7232,3 +7232,26 @@ The ARM override fixture deliberately makes the default checker fail and the
 explicit checker succeed; its passing log has SHA-256
 `a0fc967e40570e3ec96f54172d7ebe635b57dcc585345c1207040ab6fc61eabb`.
 This option does not relax the required exact `s VERIFIED` line.
+
+The direct d08/d10/d12 fixed-star races reached their four-hour resource
+bound without closing.  Exact ordered-forest replay selects seed809/phase1,
+seed811/phase0, and seed823/phase0, leaving respectively 36, 39, and 46
+frontier roots.  The three alternatives leave 38, 45, and 48 roots.  Every
+producer reports `status=0` and `checkpoint=1`; the promotion gate therefore
+rejects all six prefixes as incomplete.  They are resumable search state, not
+UNSAT evidence.
+
+Checkpoint finalization can now consume one completed continuation over the
+entire replayed forest instead of requiring a separate proof process for each
+frontier root.  The schema-v3 race manifest binds the exact frontier input,
+proof, snapshot, producer log, root count, selection policy, and empty final
+frontier.  The finalizer independently replays that selection and checks the
+old prefix plus selected continuation against the original CNF.  Its separate
+auditor reconstructs the checkpoint frontier and continuation forest again,
+verifies exact byte composition, and reruns the recorded checker.  The
+fail-closed watcher retains only a selection manifest when a continuation
+reaches another checkpoint; it publishes a final fragment only after both
+checker passes.  This makes three sequential forest streams sufficient for
+the next d08/d10/d12 recovery stage, rather than 121 simultaneous leaf proof
+writers.  It changes resource use only and does not establish any new UNSAT
+fact.

@@ -11,6 +11,7 @@ import unittest
 
 ROOT = Path(__file__).parents[1]
 TOOL = ROOT / "tools/finalize_cadical_dfs_checkpoint.py"
+SELECTOR = ROOT / "tools/select_cadical_dfs_race.py"
 REAL_CHECKER = ROOT / ".tools/src/drat-trim/drat-trim"
 
 
@@ -65,6 +66,104 @@ class FinalizeCadicalDfsCheckpointTests(unittest.TestCase):
             "--child",
             str(child),
             str(producer_log),
+            "--checker",
+            str(checker),
+            "--manifest",
+            str(root / "manifest.json"),
+        ]
+
+    def forest_fixture(self, root: Path) -> list[str]:
+        cnf = root / "root.cnf"
+        source = root / "source.icnf"
+        prefix_snapshot = root / "prefix.tsv"
+        frontier = root / "frontier.icnf"
+        replay = root / "replay.json"
+        prefix = root / "prefix.drat"
+        proof = root / "forest.drat"
+        snapshot = root / "forest.tsv"
+        producer_log = root / "forest.log"
+        selection = root / "selection.json"
+        checker = root / "checker.py"
+        cnf.write_text("p cnf 2 1\n1 0\n", encoding="ascii")
+        source.write_text("a 1 0\n", encoding="ascii")
+        prefix_snapshot.write_text(
+            "root\tattempt\tdepth\tlimit\tstatus\tcore\tsplit\tseconds\n"
+            "0\t0\t0\t100\t0\t0\t2\t0.125\n",
+            encoding="ascii",
+        )
+        frontier.write_text("a 1 2 0\na 1 -2 0\n", encoding="ascii")
+        prefix.write_bytes(b"a\x02\0")
+        replay.write_text(
+            json.dumps(
+                {
+                    "schema": "ramsey55.cadical-dfs-prefix-replay.v2",
+                    "source_root": str(source),
+                    "source_root_sha256": sha256(source),
+                    "snapshot": str(prefix_snapshot),
+                    "snapshot_sha256": sha256(prefix_snapshot),
+                    "snapshot_rows": 1,
+                    "processed_attempts": 1,
+                    "processed_splits": 1,
+                    "maximum_processed_depth": 0,
+                    "source_root_count": 1,
+                    "root_frontier_counts": [2],
+                    "output": str(frontier),
+                    "output_sha256": sha256(frontier),
+                    "output_count": 2,
+                    "proof_prefix": str(prefix),
+                    "proof_prefix_sha256": sha256(prefix),
+                }
+            ),
+            encoding="utf-8",
+        )
+        proof.write_bytes(b"a\x04\0")
+        snapshot.write_text(
+            "root\tattempt\tdepth\tlimit\tstatus\tcore\tsplit\tseconds\n"
+            "0\t0\t0\t100\t20\t1\t0\t0.250\n"
+            "1\t1\t0\t100\t20\t1\t0\t0.375\n",
+            encoding="ascii",
+        )
+        producer_log.write_text(
+            "proof_fragment\t1\n"
+            "root_index\tall\n"
+            "status\t20\n"
+            "cubes\t2\n"
+            "attempts\t2\n"
+            "splits\t0\n"
+            "maximum_extra_depth\t0\n",
+            encoding="ascii",
+        )
+        subprocess.run(
+            [
+                sys.executable,
+                str(SELECTOR),
+                str(frontier),
+                "--race",
+                str(proof),
+                str(snapshot),
+                str(producer_log),
+                "--manifest",
+                str(selection),
+            ],
+            check=True,
+            stdout=subprocess.PIPE,
+        )
+        checker.write_text(
+            "#!/usr/bin/env python3\nprint('s VERIFIED')\n", encoding="utf-8"
+        )
+        checker.chmod(0o755)
+        return [
+            sys.executable,
+            str(TOOL),
+            str(cnf),
+            str(replay),
+            str(prefix),
+            str(root / "fragment.drat"),
+            str(root / "standalone.drat"),
+            str(root / "checker.log"),
+            "--forest-continuation",
+            str(proof),
+            str(selection),
             "--checker",
             str(checker),
             "--manifest",
@@ -152,6 +251,34 @@ class FinalizeCadicalDfsCheckpointTests(unittest.TestCase):
             self.assertTrue(manifest["checker_verified"])
             self.assertFalse(manifest["output_fragment"]["contains_empty_addition"])
             self.assertEqual(len(manifest["children"]), 1)
+
+    def test_accepts_one_completed_stream_for_the_whole_frontier(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subprocess.run(
+                self.forest_fixture(root), check=True, stdout=subprocess.PIPE
+            )
+            manifest = json.loads((root / "manifest.json").read_text())
+            self.assertEqual(manifest["composition"]["frontier_cover"], "forest")
+            self.assertEqual(manifest["children"][0]["frontier_count"], 2)
+            self.assertTrue(
+                manifest["children"][0]["race_selection_manifest"]["chosen_completed"]
+            )
+            self.assertEqual((root / "fragment.drat").read_bytes(), b"a\x02\0a\x04\0")
+
+    def test_rejects_incomplete_forest_selection(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            command = self.forest_fixture(root)
+            selection = root / "selection.json"
+            document = json.loads(selection.read_text())
+            document["chosen_completed"] = False
+            selection.write_text(json.dumps(document), encoding="utf-8")
+            completed = subprocess.run(
+                command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+            )
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn("forest continuation is not complete", completed.stderr)
 
     def test_rejects_embedded_empty_clause(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

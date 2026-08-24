@@ -19,6 +19,7 @@ REPLAY_SCHEMAS = {
     "ramsey55.cadical-dfs-prefix-replay.v2",
 }
 REPLAY_V2_SCHEMA = "ramsey55.cadical-dfs-prefix-replay.v2"
+RACE_SELECTION_SCHEMA = "ramsey55.cadical-dfs-race-selection.v3"
 DFS_HEADER = "root\tattempt\tdepth\tlimit\tstatus\tcore\tsplit\tseconds"
 
 
@@ -117,9 +118,7 @@ def checked_file_record(
 
 def replay_roots(path: Path) -> tuple[tuple[int, ...], ...]:
     roots: list[tuple[int, ...]] = []
-    for line_number, raw in enumerate(
-        path.read_text(encoding="ascii").splitlines(), 1
-    ):
+    for line_number, raw in enumerate(path.read_text(encoding="ascii").splitlines(), 1):
         fields = raw.split()
         if not fields or fields[0] == "c":
             continue
@@ -146,6 +145,260 @@ def replay_roots(path: Path) -> tuple[tuple[int, ...], ...]:
     return tuple(roots)
 
 
+def replay_race_snapshot(
+    roots: tuple[tuple[int, ...], ...], snapshot: Path
+) -> tuple[list[tuple[int, ...]], dict[str, Any]]:
+    """Independently replay the selector's ordered-forest state machine."""
+    lines = snapshot.read_text(encoding="ascii").splitlines()
+    if not lines or lines[0] != DFS_HEADER:
+        raise ValueError(f"unexpected DFS race header: {snapshot}")
+    stacks: list[list[tuple[tuple[int, ...], int]]] = [[(cube, 0)] for cube in roots]
+    active_root = 0
+    globally_unsat = False
+    attempts = splits = closed = maximum_processed_depth = 0
+    for line_number, raw in enumerate(lines[1:], 2):
+        if not raw:
+            continue
+        fields = raw.split("\t")
+        if len(fields) != 8:
+            raise ValueError(f"invalid DFS race row {line_number}: {snapshot}")
+        root_index, attempt, depth, limit, status, core, split, seconds = fields
+        parsed_root = int(root_index)
+        if int(attempt) != attempts:
+            raise ValueError(f"unexpected DFS race attempt at row {line_number}")
+        while active_root < len(stacks) and not stacks[active_root]:
+            active_root += 1
+        if globally_unsat or active_root == len(stacks) or parsed_root != active_root:
+            raise ValueError(f"unexpected DFS race root at row {line_number}")
+        cube, expected_depth = stacks[active_root].pop()
+        parsed_depth = int(depth)
+        parsed_limit = int(limit)
+        parsed_status = int(status)
+        parsed_core = int(core)
+        parsed_split = int(split)
+        parsed_seconds = float(seconds)
+        if (
+            parsed_depth != expected_depth
+            or parsed_limit <= 0
+            or parsed_core < 0
+            or not math.isfinite(parsed_seconds)
+            or parsed_seconds < 0
+        ):
+            raise ValueError(f"invalid DFS race telemetry at row {line_number}")
+        attempts += 1
+        maximum_processed_depth = max(maximum_processed_depth, parsed_depth)
+        if parsed_status == 20:
+            if parsed_split != 0:
+                raise ValueError(f"DFS race UNSAT row has a split at {line_number}")
+            closed += 1
+            if parsed_core == 0:
+                globally_unsat = True
+            continue
+        if parsed_status == 10:
+            raise ValueError(f"DFS race contains SAT at row {line_number}")
+        if parsed_status != 0 or parsed_core != 0 or parsed_split == 0:
+            raise ValueError(f"invalid DFS race result at row {line_number}")
+        if abs(parsed_split) in {abs(literal) for literal in cube}:
+            raise ValueError(f"DFS race repeats a split variable at {line_number}")
+        splits += 1
+        stacks[active_root].append((cube + (-parsed_split,), parsed_depth + 1))
+        stacks[active_root].append((cube + (parsed_split,), parsed_depth + 1))
+    if globally_unsat:
+        root_frontiers: list[list[tuple[int, ...]]] = [[] for _ in roots]
+        maximum_frontier_depth = 0
+    else:
+        root_frontiers = [[cube for cube, _ in reversed(stack)] for stack in stacks]
+        maximum_frontier_depth = max(
+            (depth for stack in stacks for _, depth in stack), default=0
+        )
+    frontier = [cube for per_root in root_frontiers for cube in per_root]
+    return frontier, {
+        "attempts": attempts,
+        "splits": splits,
+        "closed_nodes": closed,
+        "maximum_processed_depth": maximum_processed_depth,
+        "maximum_frontier_depth": maximum_frontier_depth,
+        "global_unsat": globally_unsat,
+        "root_frontier_counts": [len(per_root) for per_root in root_frontiers],
+    }
+
+
+def read_race_producer_log(path: Path) -> dict[str, int | str]:
+    values: dict[str, int | str] = {}
+    selected = {
+        "root_index",
+        "proof_fragment",
+        "checkpoint",
+        "status",
+        "cubes",
+        "attempts",
+        "splits",
+        "maximum_extra_depth",
+    }
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        fields = raw.split()
+        if len(fields) != 2 or fields[0] not in selected:
+            continue
+        key, value = fields
+        if key in values:
+            raise ValueError(f"duplicate {key} in race producer log: {path}")
+        values[key] = value if key == "root_index" else int(value)
+    if values.get("proof_fragment") != 1 or values.get("root_index") != "all":
+        raise ValueError(f"invalid forest race producer mode: {path}")
+    if values.get("status") not in (0, 20):
+        raise ValueError(f"invalid forest race producer status: {path}")
+    if values["status"] == 0 and values.get("checkpoint") != 1:
+        raise ValueError(f"incomplete forest race is not a checkpoint: {path}")
+    for key in ("attempts", "splits", "maximum_extra_depth"):
+        if not isinstance(values.get(key), int) or values[key] < 0:
+            raise ValueError(f"invalid forest race producer {key}: {path}")
+    return values
+
+
+def proof_is_framed(path: Path) -> bool:
+    if path.stat().st_size == 0:
+        return True
+    with path.open("rb") as stream:
+        stream.seek(-1, 2)
+        return stream.read(1) == b"\0"
+
+
+def checked_completed_forest_selection(
+    record: Any,
+    proof_record: dict[str, Any],
+    replay: dict[str, Any],
+    root: Path,
+) -> Path:
+    """Independently audit a completed race over the whole replay frontier."""
+    summary, selection_path = checked_file_record(
+        record, "forest race-selection manifest", root
+    )
+    document = json.loads(selection_path.read_text(encoding="utf-8"))
+    if (
+        not isinstance(document, dict)
+        or document.get("schema") != RACE_SELECTION_SCHEMA
+    ):
+        raise ValueError(f"unexpected forest race-selection schema: {selection_path}")
+    source_record, source_path = checked_file_record(
+        document.get("source_root"), "forest race source", root
+    )
+    if source_record["sha256"] != replay.get("output_sha256"):
+        raise ValueError("forest race source does not match replay output")
+    roots = replay_roots(source_path)
+    if document.get("root_count") != len(roots):
+        raise ValueError("forest race source/root count mismatch")
+    if document.get("root_count") != replay.get("output_count"):
+        raise ValueError("forest race does not cover the full replay frontier")
+    races = document.get("races")
+    if not isinstance(races, list) or not races:
+        raise ValueError("forest race-selection manifest has no races")
+
+    audited: list[dict[str, Any]] = []
+    for index, race in enumerate(races):
+        if not isinstance(race, dict):
+            raise ValueError(f"forest race {index} is not an object")
+        race_proof_record, race_proof = checked_file_record(
+            race.get("proof"), f"forest race {index} proof", root
+        )
+        snapshot_record, snapshot = checked_file_record(
+            race.get("snapshot"), f"forest race {index} snapshot", root
+        )
+        producer_record, producer = checked_file_record(
+            race.get("producer_log"), f"forest race {index} producer log", root
+        )
+        if race_proof_record.get(
+            "binary_clause_framed"
+        ) is not True or not proof_is_framed(race_proof):
+            raise ValueError(f"forest race {index} proof is not framed")
+        telemetry = read_race_producer_log(producer)
+        frontier, replayed = replay_race_snapshot(roots, snapshot)
+        if telemetry["attempts"] != replayed["attempts"]:
+            raise ValueError(f"forest race {index} attempt mismatch")
+        if telemetry["splits"] != replayed["splits"]:
+            raise ValueError(f"forest race {index} split mismatch")
+        allowed_depths = {
+            replayed["maximum_processed_depth"],
+            max(
+                replayed["maximum_processed_depth"],
+                replayed["maximum_frontier_depth"],
+            ),
+        }
+        if telemetry["maximum_extra_depth"] not in allowed_depths:
+            raise ValueError(f"forest race {index} depth mismatch")
+        completed = telemetry["status"] == 20
+        if completed and telemetry.get("cubes") != len(roots):
+            raise ValueError(f"forest race {index} completed cube-count mismatch")
+        if completed != (replayed["global_unsat"] or not frontier):
+            raise ValueError(f"forest race {index} status/frontier mismatch")
+        expected = {
+            "proof": race_proof_record,
+            "snapshot": snapshot_record,
+            "producer_log": producer_record,
+            "producer_status": telemetry["status"],
+            "completed": completed,
+            "attempts": replayed["attempts"],
+            "splits": replayed["splits"],
+            "closed_nodes": replayed["closed_nodes"],
+            "producer_maximum_depth": telemetry["maximum_extra_depth"],
+            "maximum_processed_depth": replayed["maximum_processed_depth"],
+            "maximum_frontier_depth": replayed["maximum_frontier_depth"],
+            "global_unsat": replayed["global_unsat"],
+            "frontier_count": len(frontier),
+            "root_frontier_counts": replayed["root_frontier_counts"],
+            "frontier_sha256": hashlib.sha256(
+                "".join(
+                    "a " + " ".join(map(str, cube)) + " 0\n" for cube in frontier
+                ).encode("ascii")
+            ).hexdigest(),
+        }
+        if expected != race:
+            raise ValueError(f"forest race {index} record is not exact")
+        audited.append(expected)
+
+    policy = [
+        "completed first",
+        "minimum frontier count",
+        "minimum proof size",
+        "input order",
+    ]
+    if document.get("selection_policy") != policy:
+        raise ValueError("forest race selection policy mismatch")
+    chosen_index = min(
+        range(len(audited)),
+        key=lambda index: (
+            not audited[index]["completed"],
+            audited[index]["frontier_count"],
+            audited[index]["proof"]["size"],
+            index,
+        ),
+    )
+    if document.get("chosen_index") != chosen_index:
+        raise ValueError("forest race chosen index violates selection policy")
+    chosen = audited[chosen_index]
+    if document.get("chosen_completed") is not True or not chosen["completed"]:
+        raise ValueError("forest continuation is not complete")
+    if chosen["frontier_count"] != 0 or any(chosen["root_frontier_counts"]):
+        raise ValueError("completed forest continuation has a frontier")
+    if document.get("chosen_proof_sha256") != chosen["proof"]["sha256"]:
+        raise ValueError("forest chosen proof hash mismatch")
+    if (
+        chosen["proof"]["sha256"] != proof_record["sha256"]
+        or chosen["proof"]["size"] != proof_record["size"]
+    ):
+        raise ValueError("forest continuation is not the selected proof")
+    expected_summary = {
+        "schema": RACE_SELECTION_SCHEMA,
+        "root_count": len(roots),
+        "chosen_index": chosen_index,
+        "chosen_proof_sha256": chosen["proof"]["sha256"],
+        "chosen_completed": True,
+    }
+    for key, value in expected_summary.items():
+        if summary.get(key) != value:
+            raise ValueError(f"forest selection summary mismatch for {key}")
+    return selection_path
+
+
 def audit_replay_v2(replay: dict[str, Any], root: Path) -> None:
     required_paths = ("source_root", "snapshot", "output")
     paths: dict[str, Path] = {}
@@ -165,9 +418,7 @@ def audit_replay_v2(replay: dict[str, Any], root: Path) -> None:
     lines = paths["snapshot"].read_text(encoding="ascii").splitlines()
     if not lines or lines[0] != DFS_HEADER:
         raise ValueError("replay snapshot has an unexpected header")
-    stacks: list[list[tuple[tuple[int, ...], int]]] = [
-        [(cube, 0)] for cube in roots
-    ]
+    stacks: list[list[tuple[tuple[int, ...], int]]] = [[(cube, 0)] for cube in roots]
     active_root = 0
     globally_unsat = False
     expected_attempt = 0
@@ -226,15 +477,15 @@ def audit_replay_v2(replay: dict[str, Any], root: Path) -> None:
     if globally_unsat:
         root_frontiers: list[list[tuple[int, ...]]] = [[] for _ in roots]
     else:
-        root_frontiers = [
-            [cube for cube, _ in reversed(stack)] for stack in stacks
-        ]
+        root_frontiers = [[cube for cube, _ in reversed(stack)] for stack in stacks]
     frontier = [cube for per_root in root_frontiers for cube in per_root]
     expected_output = "".join(
         "a " + " ".join(map(str, cube)) + " 0\n" for cube in frontier
     ).encode("ascii")
     if paths["output"].read_bytes() != expected_output:
-        raise ValueError("replay output is not the independently reconstructed frontier")
+        raise ValueError(
+            "replay output is not the independently reconstructed frontier"
+        )
 
     expected_fields: dict[str, Any] = {
         "source_root_count": len(roots),
@@ -393,12 +644,12 @@ def audit_manifest(
         ):
             raise ValueError("invalid composition policy")
         drop_deletions = composition["drop_deletions"]
+        frontier_cover = composition.get("frontier_cover", "roots")
+        if frontier_cover not in ("roots", "forest"):
+            raise ValueError("invalid frontier-cover policy")
 
         replay = json.loads(replay_path.read_text(encoding="utf-8"))
-        if (
-            not isinstance(replay, dict)
-            or replay.get("schema") not in REPLAY_SCHEMAS
-        ):
+        if not isinstance(replay, dict) or replay.get("schema") not in REPLAY_SCHEMAS:
             raise ValueError(f"unexpected replay manifest schema: {replay_path}")
         replay_independently_verified = replay.get("schema") == REPLAY_V2_SCHEMA
         if replay_independently_verified:
@@ -420,14 +671,25 @@ def audit_manifest(
         children = document.get("children")
         if not isinstance(children, list) or not children:
             raise ValueError("finalization manifest has no children")
-        if replay.get("output_count") != len(children):
+        if frontier_cover == "roots" and replay.get("output_count") != len(children):
             raise ValueError("replay output count does not match children")
+        if frontier_cover == "forest" and len(children) != 1:
+            raise ValueError("forest continuation requires exactly one child stream")
         component_scans = [prefix_scan]
         expected_size = prefix_size
         recursive_children = 0
+        forest_continuations = 0
+        covered_frontier = 0
         for index, child in enumerate(children):
             if not isinstance(child, dict) or child.get("index") != index:
                 raise ValueError(f"invalid child index {index}")
+            frontier_start = child.get("frontier_start", index)
+            frontier_count = child.get("frontier_count", 1)
+            if frontier_start != covered_frontier:
+                raise ValueError(f"child {index} frontier coverage is not contiguous")
+            if not isinstance(frontier_count, int) or frontier_count < 1:
+                raise ValueError(f"child {index} has invalid frontier coverage")
+            covered_frontier += frontier_count
             proof_record, _, proof_scan, emitted_size = checked_binary_record(
                 child.get("proof"),
                 f"child {index} proof",
@@ -441,16 +703,27 @@ def audit_manifest(
             expected_size += emitted_size
             producer = child.get("producer_log")
             finalized = child.get("finalization_manifest")
-            if (producer is None) == (finalized is None):
+            race_selection = child.get("race_selection_manifest")
+            if (
+                sum(
+                    evidence is not None
+                    for evidence in (producer, finalized, race_selection)
+                )
+                != 1
+            ):
                 raise ValueError(f"child {index} needs exactly one evidence record")
             if producer is not None:
+                if frontier_count != 1:
+                    raise ValueError("producer-log child must cover exactly one root")
                 producer_record, producer_path = checked_file_record(
                     producer, f"child {index} producer log", root
                 )
                 telemetry = read_producer_log(producer_path)
                 if producer_record.get("telemetry") != telemetry:
                     raise ValueError(f"child {index} producer telemetry mismatch")
-            else:
+            elif finalized is not None:
+                if frontier_count != 1:
+                    raise ValueError("finalized child must cover exactly one root")
                 child_manifest = checked_child_finalization(
                     finalized, proof_record, root
                 )
@@ -481,6 +754,20 @@ def audit_manifest(
                             ),
                         )
                     recursive_children += 1
+            else:
+                if frontier_cover != "forest" or frontier_count != replay.get(
+                    "output_count"
+                ):
+                    raise ValueError(
+                        "forest race selection must cover the complete frontier"
+                    )
+                checked_completed_forest_selection(
+                    race_selection, proof_record, replay, root
+                )
+                forest_continuations += 1
+
+        if covered_frontier != replay.get("output_count"):
+            raise ValueError("children do not exactly cover the replay frontier")
 
         expected_fragment_scan = expected_scan(
             component_scans, drop_deletions, append_empty=False
@@ -548,6 +835,7 @@ def audit_manifest(
             },
             "children": len(children),
             "recursively_audited_children": recursive_children,
+            "forest_continuations": forest_continuations,
             "drop_deletions": drop_deletions,
             "output_fragment_sha256": fragment_record["sha256"],
             "standalone_proof_sha256": standalone_record["sha256"],

@@ -18,6 +18,7 @@ REPLAY_SCHEMAS = {
     "ramsey55.cadical-dfs-prefix-replay.v1",
     "ramsey55.cadical-dfs-prefix-replay.v2",
 }
+RACE_SELECTION_SCHEMA = "ramsey55.cadical-dfs-race-selection.v3"
 
 
 def file_sha256(path: Path) -> str:
@@ -158,6 +159,95 @@ def read_finalized_child(
     }
 
 
+def read_completed_forest_selection(
+    path: Path,
+    proof_record: dict[str, Any],
+    replay: dict[str, Any],
+) -> dict[str, Any]:
+    """Validate one completed race that covers the whole replay frontier."""
+    from select_cadical_dfs_race import inspect_race, read_roots
+
+    document = json.loads(path.read_text(encoding="utf-8"))
+    if (
+        not isinstance(document, dict)
+        or document.get("schema") != RACE_SELECTION_SCHEMA
+    ):
+        raise ValueError(f"unexpected forest race-selection schema: {path}")
+    source_record = validate_file_record(document.get("source_root"), "source_root")
+    source_path = Path(source_record["path"])
+    if not source_path.is_file():
+        raise ValueError(f"forest race source does not exist: {source_path}")
+    actual_source = file_record(source_path)
+    if (
+        actual_source["sha256"] != source_record["sha256"]
+        or actual_source["size"] != source_record["size"]
+    ):
+        raise ValueError("forest race source file does not match its record")
+    if source_record["sha256"] != replay.get("output_sha256"):
+        raise ValueError("forest race source does not match the replayed frontier")
+    roots = read_roots(source_path)
+    if document.get("root_count") != len(roots):
+        raise ValueError("forest race root count does not match its source")
+    if document.get("root_count") != replay.get("output_count"):
+        raise ValueError("forest race does not cover the complete replayed frontier")
+
+    races = document.get("races")
+    if not isinstance(races, list) or not races:
+        raise ValueError("forest race-selection manifest has no races")
+    inspected: list[dict[str, Any]] = []
+    for index, race in enumerate(races):
+        if not isinstance(race, dict):
+            raise ValueError(f"forest race {index} is not an object")
+        race_proof = validate_file_record(race.get("proof"), f"race {index} proof")
+        snapshot = validate_file_record(race.get("snapshot"), f"race {index} snapshot")
+        producer = validate_file_record(
+            race.get("producer_log"), f"race {index} producer_log"
+        )
+        checked = inspect_race(
+            roots,
+            Path(race_proof["path"]),
+            Path(snapshot["path"]),
+            Path(producer["path"]),
+        )
+        if checked != race:
+            raise ValueError(f"forest race {index} does not replay exactly")
+        inspected.append(checked)
+
+    chosen_index = min(
+        range(len(inspected)),
+        key=lambda index: (
+            not inspected[index]["completed"],
+            inspected[index]["frontier_count"],
+            inspected[index]["proof"]["size"],
+            index,
+        ),
+    )
+    if document.get("chosen_index") != chosen_index:
+        raise ValueError("forest race chosen index violates the selection policy")
+    chosen = inspected[chosen_index]
+    if document.get("chosen_completed") is not True or not chosen["completed"]:
+        raise ValueError("forest continuation is not complete")
+    if chosen["frontier_count"] != 0 or any(chosen["root_frontier_counts"]):
+        raise ValueError("completed forest continuation has a nonempty frontier")
+    if document.get("chosen_proof_sha256") != chosen["proof"]["sha256"]:
+        raise ValueError("forest chosen proof hash is inconsistent")
+    if (
+        chosen["proof"]["sha256"] != proof_record["sha256"]
+        or chosen["proof"]["size"] != proof_record["size"]
+        or Path(chosen["proof"]["path"]).resolve()
+        != Path(proof_record["path"]).resolve()
+    ):
+        raise ValueError("forest continuation proof is not the selected proof")
+    return {
+        **file_record(path),
+        "schema": RACE_SELECTION_SCHEMA,
+        "root_count": len(roots),
+        "chosen_index": chosen_index,
+        "chosen_proof_sha256": chosen["proof"]["sha256"],
+        "chosen_completed": True,
+    }
+
+
 def load_replay_manifest(path: Path) -> dict[str, Any]:
     document = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(document, dict) or document.get("schema") not in REPLAY_SCHEMAS:
@@ -233,15 +323,24 @@ def main() -> None:
     parser.add_argument("output_fragment", type=Path)
     parser.add_argument("standalone_proof", type=Path)
     parser.add_argument("checker_log", type=Path)
-    parser.add_argument(
+    evidence_group = parser.add_mutually_exclusive_group(required=True)
+    evidence_group.add_argument(
         "--child",
         action="append",
         nargs=2,
         metavar=("PROOF", "EVIDENCE"),
-        required=True,
         help=(
             "ordered no-empty child proof and either its producer log or a "
             "checker-verified child finalization manifest"
+        ),
+    )
+    evidence_group.add_argument(
+        "--forest-continuation",
+        nargs=2,
+        metavar=("PROOF", "RACE_SELECTION"),
+        help=(
+            "one no-empty proof selected from a completed DFS race over the "
+            "entire replayed frontier"
         ),
     )
     parser.add_argument(
@@ -270,7 +369,14 @@ def main() -> None:
         arguments.prefix,
         arguments.checker,
     ]
-    child_pairs = [(Path(proof), Path(log)) for proof, log in arguments.child]
+    child_pairs = [(Path(proof), Path(log)) for proof, log in (arguments.child or [])]
+    forest_continuation = (
+        tuple(Path(value) for value in arguments.forest_continuation)
+        if arguments.forest_continuation is not None
+        else None
+    )
+    if forest_continuation is not None:
+        child_pairs = [forest_continuation]
     inputs.extend(path for pair in child_pairs for path in pair)
     for path in inputs:
         if not path.is_file():
@@ -290,8 +396,12 @@ def main() -> None:
     replay = load_replay_manifest(arguments.replay_manifest)
     if replay.get("proof_prefix_sha256") != file_sha256(arguments.prefix):
         raise ValueError("prefix hash does not match the DFS replay manifest")
-    if replay.get("output_count") != len(child_pairs):
+    if forest_continuation is None and replay.get("output_count") != len(child_pairs):
         raise ValueError("child count does not match the replayed frontier")
+    if forest_continuation is not None and (
+        not isinstance(replay.get("output_count"), int) or replay["output_count"] < 1
+    ):
+        raise ValueError("forest continuation requires a nonempty replayed frontier")
 
     prefix_scan = scan_binary_drat(arguments.prefix)
     if prefix_scan["empty_additions"]:
@@ -303,19 +413,28 @@ def main() -> None:
         if proof_scan["empty_additions"]:
             raise ValueError(f"child proof {index} contains an embedded empty clause")
         proof_record = file_record(proof)
-        finalized = read_finalized_child(evidence, proof_record)
         child = {
             "index": index,
             "proof": {**proof_record, "binary_drat": proof_scan},
         }
-        if finalized is None:
-            telemetry = read_producer_log(evidence)
-            child["producer_log"] = {
-                **file_record(evidence),
-                "telemetry": telemetry,
-            }
+        if forest_continuation is not None:
+            child["frontier_start"] = 0
+            child["frontier_count"] = replay["output_count"]
+            child["race_selection_manifest"] = read_completed_forest_selection(
+                evidence, proof_record, replay
+            )
         else:
-            child["finalization_manifest"] = finalized
+            finalized = read_finalized_child(evidence, proof_record)
+            child["frontier_start"] = index
+            child["frontier_count"] = 1
+            if finalized is None:
+                telemetry = read_producer_log(evidence)
+                child["producer_log"] = {
+                    **file_record(evidence),
+                    "telemetry": telemetry,
+                }
+            else:
+                child["finalization_manifest"] = finalized
         children.append(child)
         child_scans.append(proof_scan)
 
@@ -378,6 +497,7 @@ def main() -> None:
         },
         "composition": {
             "drop_deletions": arguments.drop_deletions,
+            "frontier_cover": "forest" if forest_continuation is not None else "roots",
         },
         "children": children,
         "output_fragment": {
