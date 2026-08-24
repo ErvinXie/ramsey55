@@ -18,6 +18,18 @@ of the operation.  Each shard is completed, audited, and made recoverable
 before its exact source directory is removed; this progressively creates the
 space needed for the remaining shards.
 
+The immutable frozen-state record is `snapshot.json` with SHA-256
+`1bf162690b4a6f2d697f6e244d559eb3286cdbd63315c3824f20f7bb4d60d8f9`.
+It covers `/data/ramsey55`, `/root/ramsey55/build`, and
+`/root/ramsey55-artifact-archives`, including the five absolute symlink
+relationships between the first and third locations.  The immutable 214-shard
+execution plan is `archive-plan.json` with SHA-256
+`f86866c11ac09e88c5721b86c68df218dd5d07f1f3c822a3108d2ba506ccf966`.
+`tools/run_arm_cold_archive.py` verifies both identities, resumes only from
+complete receipts, and processes the plan sequentially.  Production uses
+zstd level 1 with eight compression threads under nice 19 and idle I/O
+priority.
+
 ## Per-shard artifacts
 
 Each completed shard has four retained files:

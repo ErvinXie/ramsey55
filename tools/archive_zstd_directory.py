@@ -86,6 +86,7 @@ def compress_directory(
     zstd: Path,
     tar: Path,
     level: int,
+    threads: int,
 ) -> tuple[int, str]:
     digest = hashlib.sha256()
     total = 0
@@ -106,7 +107,7 @@ def compress_directory(
         )
         assert producer.stdout is not None
         compressor = subprocess.Popen(
-            [str(zstd), "-q", f"-{level}", "-T0", "-c"],
+            [str(zstd), "-q", f"-{level}", f"-T{threads}", "-c"],
             stdin=subprocess.PIPE,
             stdout=output,
             stderr=zstd_error,
@@ -145,6 +146,7 @@ def create_archive(
     zstd: Path,
     tar: Path,
     level: int = 1,
+    threads: int = 0,
 ) -> dict[str, Any]:
     require_absolute_directory(source, "source")
     require_absolute_regular(provenance, "provenance")
@@ -154,6 +156,8 @@ def create_archive(
         raise ValueError("directory archives require GNU tar")
     if not 1 <= level <= 19:
         raise ValueError("compression level must be in [1,19]")
+    if not 0 <= threads <= 256:
+        raise ValueError("compression threads must be in [0,256]")
 
     for path, label in (
         (archive, "archive"),
@@ -184,7 +188,7 @@ def create_archive(
     manifest_published = False
     try:
         payload_bytes, payload_sha256 = compress_directory(
-            source, temporary_archive, zstd, tar, level
+            source, temporary_archive, zstd, tar, level, threads
         )
         subprocess.run(
             [str(zstd), "-q", "-f", "-t", str(temporary_archive)],
@@ -216,6 +220,7 @@ def create_archive(
             "compression": {
                 "format": "zstd",
                 "level": level,
+                "threads": threads,
                 "executable": {
                     "path": str(zstd),
                     "sha256": file_sha256(zstd),
@@ -267,6 +272,7 @@ def main() -> None:
     parser.add_argument("--zstd", type=Path, default=Path("/usr/bin/zstd"))
     parser.add_argument("--tar", type=Path, default=Path("/usr/bin/tar"))
     parser.add_argument("--level", type=int, default=1)
+    parser.add_argument("--threads", type=int, default=0)
     arguments = parser.parse_args()
     print(
         json.dumps(
@@ -279,6 +285,7 @@ def main() -> None:
                 arguments.zstd,
                 arguments.tar,
                 arguments.level,
+                arguments.threads,
             ),
             sort_keys=True,
         )

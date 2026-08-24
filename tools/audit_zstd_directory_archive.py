@@ -276,6 +276,8 @@ def audit(
         not isinstance(compression, dict)
         or compression.get("format") != "zstd"
         or not isinstance(compression.get("level"), int)
+        or not isinstance(compression.get("threads"), int)
+        or compression["threads"] < 0
     ):
         raise ValueError("invalid compression record")
     zstd, zstd_record, zstd_version = checked_executable(
