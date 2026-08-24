@@ -206,7 +206,7 @@ def archive_one(
                 "available_bytes": free_before,
             },
         )
-        create_archive(
+        created = create_archive(
             source,
             provenance,
             archive,
@@ -224,7 +224,7 @@ def archive_one(
                 "event": "archive-audited",
                 "phase": phase_name,
                 "source": str(source),
-                "archive": file_record(archive),
+                "archive": created["audit"]["archive"],
                 "manifest": file_record(manifest),
                 "audit": file_record(audit_path),
             },
