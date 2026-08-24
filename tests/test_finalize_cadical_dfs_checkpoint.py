@@ -266,6 +266,40 @@ class FinalizeCadicalDfsCheckpointTests(unittest.TestCase):
             )
             self.assertEqual((root / "fragment.drat").read_bytes(), b"a\x02\0a\x04\0")
 
+    @unittest.skipUnless(REAL_CHECKER.is_file(), "drat-trim is not built")
+    def test_real_checker_accepts_whole_forest_composition(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            command = self.forest_fixture(root)
+            (root / "root.cnf").write_text("p cnf 1 2\n1 0\n-1 0\n", encoding="ascii")
+            (root / "prefix.drat").write_bytes(b"")
+            (root / "forest.drat").write_bytes(b"")
+            replay = json.loads((root / "replay.json").read_text())
+            replay["proof_prefix_sha256"] = sha256(root / "prefix.drat")
+            (root / "replay.json").write_text(json.dumps(replay), encoding="utf-8")
+            selection = root / "selection.json"
+            selection.unlink()
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(SELECTOR),
+                    str(root / "frontier.icnf"),
+                    "--race",
+                    str(root / "forest.drat"),
+                    str(root / "forest.tsv"),
+                    str(root / "forest.log"),
+                    "--manifest",
+                    str(selection),
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+            )
+            command[command.index(str(root / "checker.py"))] = str(REAL_CHECKER)
+            subprocess.run(command, check=True, stdout=subprocess.PIPE)
+            self.assertEqual((root / "fragment.drat").read_bytes(), b"")
+            self.assertEqual((root / "standalone.drat").read_bytes(), b"a\0")
+            self.assertIn("s VERIFIED", (root / "checker.log").read_text())
+
     def test_rejects_incomplete_forest_selection(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
