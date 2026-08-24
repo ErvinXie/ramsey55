@@ -133,7 +133,7 @@ def audit(
 
     provenance_labels = [
         label
-        for label in ("recovery_manifest", "race_selection")
+        for label in ("recovery_manifest", "race_selection", "provenance")
         if label in document
     ]
     if len(provenance_labels) != 1:

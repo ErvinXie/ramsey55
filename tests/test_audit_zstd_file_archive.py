@@ -135,6 +135,18 @@ class AuditZstdFileArchiveTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "recovery manifest artifact mismatch"):
                 MODULE.audit(manifest, zstd)
 
+    def test_accepts_generic_provenance_record(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            manifest, zstd, source, _ = self.populate(root)
+            document = json.loads(manifest.read_text(encoding="utf-8"))
+            document["provenance"] = document.pop("recovery_manifest")
+            manifest.write_text(json.dumps(document) + "\n", encoding="utf-8")
+            source.unlink()
+            result = MODULE.audit(manifest, zstd)
+            self.assertTrue(result["verified"])
+            self.assertEqual(result["provenance"]["kind"], "provenance")
+
 
 if __name__ == "__main__":
     unittest.main()

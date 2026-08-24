@@ -10,6 +10,16 @@ this checkpoint is the normalization to two labelled SAT branches, an exact
 independent audit of those CNFs, and a quantitative test of how much the
 public extreme \(R(4,5)\) catalogs cover under the elementary excess identity.
 
+On 2026-08-24 the ARM search was deliberately stopped for a user-requested
+cold archive of `/data/ramsey55`.  The stopped producers, checkers, and
+watchers do not receive proof credit: several proof streams are incomplete
+snapshots.  The archive procedure stores each large directory as a separate
+GNU-tar/zstd shard outside the source tree, binds it to an immutable snapshot
+record, reruns zstd integrity and complete tar parsing, compares archive data
+and metadata against the live source with GNU tar, and only then permits that
+exact source directory to be removed.  See `doc/arm-cold-archive.md` for the
+archive and restoration protocol.
+
 ## Complete labelled reduction
 
 Let \(G\) be a hypothetical graph on 45 vertices with neither a \(K_5\) nor an
